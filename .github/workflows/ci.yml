@@ -1,0 +1,55 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    outputs:
+      docker-tag: ${{ steps.meta.outputs.version }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # required for changesets
+          fetch-depth: '0'
+          # don't persist the credentials so the changesets action doesn't use the
+          # github actions token but the git token provided via environment variable
+          persist-credentials: false
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'yarn'
+
+      - name: yarn install
+        run: yarn install --frozen-lockfile
+
+      - name: depcheck
+        run: yarn depcheck
+
+      - name: prettier:check
+        run: yarn prettier:check
+
+      - name: Check Linting Rules
+        run: yarn lint
+
+      - name: type checking and declarations
+        run: yarn tsc
+
+      - name: Check Translations
+        run: yarn translate --fail-on-update
+
+      - name: test
+        run: yarn run test:all
+
+      - name: build
+        run: yarn build
+
+      - name: generate disclaimer
+        run: yarn generate-disclaimer
