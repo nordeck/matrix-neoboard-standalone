@@ -47,6 +47,7 @@ In the project directory, you can run:
 - `yarn changeset`: Generate a changeset that provides a description of a change.
 - `yarn translate`: Update translation files from code.
 - `yarn generate-disclaimer`: Generates license disclaimer and include it in the build output.
+- `yarn docker:build`: Builds a container image from the output of `yarn build` and `yarn generate-disclaimer`.
 
 ### Versioning
 
