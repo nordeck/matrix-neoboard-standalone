@@ -14,23 +14,11 @@
  * limitations under the License.
  */
 
-const config = {
-  setupFiles: ['<rootDir>/src/setupTests.ts'],
-  testEnvironment: 'jsdom',
-  transform: {
-    '^.+\\.(t|j)sx?$': [
-      '@swc/jest',
-      {
-        jsc: {
-          transform: {
-            react: {
-              runtime: 'automatic',
-            },
-          },
-        },
-      },
-    ],
-  },
-};
+import { useDistinctObserveBehaviorSubject } from '../../state';
+import { ApplicationState } from './Application';
+import { useApplication } from './ApplicationContext';
 
-export default config;
+export function useApplicationState(): ApplicationState {
+  const application = useApplication();
+  return useDistinctObserveBehaviorSubject(application.getStateSubject());
+}

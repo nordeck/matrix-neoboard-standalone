@@ -14,23 +14,17 @@
  * limitations under the License.
  */
 
-const config = {
-  setupFiles: ['<rootDir>/src/setupTests.ts'],
-  testEnvironment: 'jsdom',
-  transform: {
-    '^.+\\.(t|j)sx?$': [
-      '@swc/jest',
-      {
-        jsc: {
-          transform: {
-            react: {
-              runtime: 'automatic',
-            },
-          },
-        },
-      },
-    ],
-  },
+import App from './App';
+import { Application, ApplicationProvider } from './state';
+
+export type AppContainerProps = {
+  application: Application;
 };
 
-export default config;
+export function AppContainer({ application }: AppContainerProps) {
+  return (
+    <ApplicationProvider application={application}>
+      <App />
+    </ApplicationProvider>
+  );
+}

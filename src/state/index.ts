@@ -14,23 +14,8 @@
  * limitations under the License.
  */
 
-const config = {
-  setupFiles: ['<rootDir>/src/setupTests.ts'],
-  testEnvironment: 'jsdom',
-  transform: {
-    '^.+\\.(t|j)sx?$': [
-      '@swc/jest',
-      {
-        jsc: {
-          transform: {
-            react: {
-              runtime: 'automatic',
-            },
-          },
-        },
-      },
-    ],
-  },
-};
-
-export default config;
+export * from './Application';
+export { Credentials } from './Credentials';
+export type { MatrixCredentials } from './Credentials';
+export type * from './types';
+export { useDistinctObserveBehaviorSubject } from './useDistinctObserveBehaviorSubject';

@@ -14,23 +14,21 @@
  * limitations under the License.
  */
 
-const config = {
-  setupFiles: ['<rootDir>/src/setupTests.ts'],
-  testEnvironment: 'jsdom',
-  transform: {
-    '^.+\\.(t|j)sx?$': [
-      '@swc/jest',
-      {
-        jsc: {
-          transform: {
-            react: {
-              runtime: 'automatic',
-            },
-          },
-        },
-      },
-    ],
-  },
-};
+import { MatrixClient } from 'matrix-js-sdk';
 
-export default config;
+/**
+ * Start a temporary MatrixClient and issue a whoami request.
+ */
+export async function fetchWhoami(
+  homeserverUrl: string,
+  accessToken: string,
+): Promise<ReturnType<MatrixClient['whoami']>> {
+  const tempClient = new MatrixClient({
+    baseUrl: homeserverUrl,
+    accessToken,
+    fetchFn: fetch.bind(window),
+  });
+  const whoAmIData = await tempClient.whoami();
+  tempClient.stopClient();
+  return whoAmIData;
+}

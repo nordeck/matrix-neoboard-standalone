@@ -14,23 +14,11 @@
  * limitations under the License.
  */
 
-const config = {
-  setupFiles: ['<rootDir>/src/setupTests.ts'],
-  testEnvironment: 'jsdom',
-  transform: {
-    '^.+\\.(t|j)sx?$': [
-      '@swc/jest',
-      {
-        jsc: {
-          transform: {
-            react: {
-              runtime: 'automatic',
-            },
-          },
-        },
-      },
-    ],
-  },
-};
-
-export default config;
+export { TokenRefresher } from './TokenRefresher';
+export { completeOidcLogin } from './completeOidcLogin';
+export { createOidcTokenRefresher } from './createOidcTokenRefresher';
+export { maybeCompleteOidcLogin } from './maybeCompleteOidcLogin';
+export { registerOidcClient } from './registerOidcClient';
+export { startOidcLogin } from './startOidcLogin';
+export { oidcCodeAndStateSchema, oidcCredentialsSchema } from './types';
+export type { OidcCodeAndState, OidcCredentials } from './types';

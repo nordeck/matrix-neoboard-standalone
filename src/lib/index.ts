@@ -15,3 +15,4 @@
  */
 
 export { setLocale } from './locale';
+export { randomString } from './randomString';

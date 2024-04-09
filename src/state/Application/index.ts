@@ -14,23 +14,8 @@
  * limitations under the License.
  */
 
-const config = {
-  setupFiles: ['<rootDir>/src/setupTests.ts'],
-  testEnvironment: 'jsdom',
-  transform: {
-    '^.+\\.(t|j)sx?$': [
-      '@swc/jest',
-      {
-        jsc: {
-          transform: {
-            react: {
-              runtime: 'automatic',
-            },
-          },
-        },
-      },
-    ],
-  },
-};
-
-export default config;
+export { Application } from './Application';
+export type { LifecycleState } from './Application';
+export { ApplicationProvider, useApplication } from './ApplicationContext';
+export { MatrixClientProvider, useMatrixClient } from './MatrixClientContext';
+export { useApplicationState } from './useApplicationState';

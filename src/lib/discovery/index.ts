@@ -14,23 +14,6 @@
  * limitations under the License.
  */
 
-const config = {
-  setupFiles: ['<rootDir>/src/setupTests.ts'],
-  testEnvironment: 'jsdom',
-  transform: {
-    '^.+\\.(t|j)sx?$': [
-      '@swc/jest',
-      {
-        jsc: {
-          transform: {
-            react: {
-              runtime: 'automatic',
-            },
-          },
-        },
-      },
-    ],
-  },
-};
-
-export default config;
+export { discoverClientConfig } from './discoverClientConfig';
+export { fetchAuthIssuer } from './fetchAuthIssuer';
+export type { AuthIssuerResponse } from './fetchAuthIssuer';
