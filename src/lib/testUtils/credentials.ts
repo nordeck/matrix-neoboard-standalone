@@ -16,21 +16,30 @@
  * along with NeoBoard Standalone. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import React, { Suspense } from 'react';
-import ReactDOM from 'react-dom';
-import { AppContainer } from './AppContainer';
-import './i18n';
-import './index.css';
-import { Application } from './state/index';
+import { MatrixCredentials } from '../../state';
+import { OidcCredentials } from '../oidc';
 
-const application = new Application();
-application.start();
+export function createOidcTestCredentials(): OidcCredentials {
+  return {
+    issuer: 'https://example.com',
+    clientId: 'test_client_id',
+    accessToken: 'test_access_token',
+    refreshToken: 'test_refresh_token',
+    homeserverUrl: 'https://matrix.example.com/',
+    identityServerUrl: undefined,
+    idTokenClaims: {
+      aud: 'test_aud',
+      exp: 100000,
+      iat: 200000,
+      iss: 'https://example.com',
+      sub: 'test_sub',
+    },
+  };
+}
 
-ReactDOM.render(
-  <React.StrictMode>
-    <Suspense fallback={<div>Loading</div>}>
-      <AppContainer application={application} />
-    </Suspense>
-  </React.StrictMode>,
-  document.getElementById('root')!,
-);
+export function createMatrixTestCredentials(): MatrixCredentials {
+  return {
+    userId: '@test:example.com',
+    deviceId: 'test_device_id',
+  };
+}

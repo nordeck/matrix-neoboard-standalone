@@ -16,21 +16,34 @@
  * along with NeoBoard Standalone. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import React, { Suspense } from 'react';
-import ReactDOM from 'react-dom';
-import { AppContainer } from './AppContainer';
-import './i18n';
-import './index.css';
-import { Application } from './state/index';
+import { PropsWithChildren, createContext, useContext } from 'react';
+import { Application } from './Application';
 
-const application = new Application();
-application.start();
+const ApplicationContext = createContext<Application | null>(null);
 
-ReactDOM.render(
-  <React.StrictMode>
-    <Suspense fallback={<div>Loading</div>}>
-      <AppContainer application={application} />
-    </Suspense>
-  </React.StrictMode>,
-  document.getElementById('root')!,
-);
+type ApplicationProviderProps = {
+  application: Application;
+};
+
+export function ApplicationProvider({
+  application,
+  children,
+}: PropsWithChildren<ApplicationProviderProps>) {
+  return (
+    <ApplicationContext.Provider value={application}>
+      {children}
+    </ApplicationContext.Provider>
+  );
+}
+
+export function useApplication(): Application {
+  const value = useContext(ApplicationContext);
+
+  if (value === null) {
+    throw new Error(
+      'useApplication can only be used inside of <ApplicationProvider>',
+    );
+  }
+
+  return value;
+}

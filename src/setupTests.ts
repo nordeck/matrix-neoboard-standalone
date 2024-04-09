@@ -16,21 +16,28 @@
  * along with NeoBoard Standalone. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import React, { Suspense } from 'react';
-import ReactDOM from 'react-dom';
-import { AppContainer } from './AppContainer';
-import './i18n';
-import './index.css';
-import { Application } from './state/index';
+import crypto from 'crypto';
+import fetchMock from 'fetch-mock';
+import { TextDecoder, TextEncoder } from 'util';
 
-const application = new Application();
-application.start();
+// Set up parts of the crypto API needed for the tests
+Object.defineProperty(global.self, 'crypto', {
+  value: {
+    getRandomValues: crypto.getRandomValues,
+    subtle: crypto.webcrypto.subtle,
+  },
+});
 
-ReactDOM.render(
-  <React.StrictMode>
-    <Suspense fallback={<div>Loading</div>}>
-      <AppContainer application={application} />
-    </Suspense>
-  </React.StrictMode>,
-  document.getElementById('root')!,
-);
+// Publish TextEncoder and TextDecoder in the global scope
+Object.assign(global, { TextDecoder, TextEncoder });
+
+// Set the window location to 'https://example.com'
+Object.defineProperty(window, 'location', {
+  value: new URL('http://example.com'),
+  configurable: true,
+});
+
+// Mock the fetch API
+Object.assign(global, {
+  fetch: fetchMock.sandbox(),
+});

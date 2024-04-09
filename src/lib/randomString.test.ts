@@ -16,21 +16,19 @@
  * along with NeoBoard Standalone. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import React, { Suspense } from 'react';
-import ReactDOM from 'react-dom';
-import { AppContainer } from './AppContainer';
-import './i18n';
-import './index.css';
-import { Application } from './state/index';
+import { randomString } from './randomString';
 
-const application = new Application();
-application.start();
+describe('randomString', () => {
+  it('should create random strings of the given lengths', () => {
+    const string1 = randomString(23);
 
-ReactDOM.render(
-  <React.StrictMode>
-    <Suspense fallback={<div>Loading</div>}>
-      <AppContainer application={application} />
-    </Suspense>
-  </React.StrictMode>,
-  document.getElementById('root')!,
-);
+    expect(string1).toHaveLength(23);
+
+    const string2 = randomString(23);
+    expect(string1).toHaveLength(23);
+    expect(string2).not.toEqual(string1);
+
+    const string3 = randomString(42);
+    expect(string3).toHaveLength(42);
+  });
+});

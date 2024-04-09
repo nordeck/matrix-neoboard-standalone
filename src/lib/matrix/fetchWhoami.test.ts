@@ -16,21 +16,33 @@
  * along with NeoBoard Standalone. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import React, { Suspense } from 'react';
-import ReactDOM from 'react-dom';
-import { AppContainer } from './AppContainer';
-import './i18n';
-import './index.css';
-import { Application } from './state/index';
+import fetchMock from 'fetch-mock-jest';
+import { fetchWhoami } from './fetchWhoami';
 
-const application = new Application();
-application.start();
+describe('fetchWhoami', () => {
+  afterEach(() => {
+    fetchMock.mockReset();
+  });
 
-ReactDOM.render(
-  <React.StrictMode>
-    <Suspense fallback={<div>Loading</div>}>
-      <AppContainer application={application} />
-    </Suspense>
-  </React.StrictMode>,
-  document.getElementById('root')!,
-);
+  it('should issue a who-am-I-request with a temporary MatrixClient', async () => {
+    fetchMock.get(
+      {
+        url: 'https://matrix.example.com/_matrix/client/v3/account/whoami',
+        headers: {
+          Authorization: 'Bearer test_access_token',
+        },
+      },
+      {
+        user_id: 'test_user_id',
+        device_id: 'test_device_id',
+      },
+    );
+
+    expect(
+      await fetchWhoami('https://matrix.example.com', 'test_access_token'),
+    ).toEqual({
+      user_id: 'test_user_id',
+      device_id: 'test_device_id',
+    });
+  });
+});

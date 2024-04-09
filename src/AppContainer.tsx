@@ -16,21 +16,17 @@
  * along with NeoBoard Standalone. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import React, { Suspense } from 'react';
-import ReactDOM from 'react-dom';
-import { AppContainer } from './AppContainer';
-import './i18n';
-import './index.css';
-import { Application } from './state/index';
+import App from './App';
+import { Application, ApplicationProvider } from './state';
 
-const application = new Application();
-application.start();
+export type AppContainerProps = {
+  application: Application;
+};
 
-ReactDOM.render(
-  <React.StrictMode>
-    <Suspense fallback={<div>Loading</div>}>
-      <AppContainer application={application} />
-    </Suspense>
-  </React.StrictMode>,
-  document.getElementById('root')!,
-);
+export function AppContainer({ application }: AppContainerProps) {
+  return (
+    <ApplicationProvider application={application}>
+      <App />
+    </ApplicationProvider>
+  );
+}

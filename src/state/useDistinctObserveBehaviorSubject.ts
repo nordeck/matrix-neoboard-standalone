@@ -16,21 +16,28 @@
  * along with NeoBoard Standalone. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import React, { Suspense } from 'react';
-import ReactDOM from 'react-dom';
-import { AppContainer } from './AppContainer';
-import './i18n';
-import './index.css';
-import { Application } from './state/index';
+import { useEffect, useState } from 'react';
+import { distinctUntilChanged } from 'rxjs';
+import { ObservableBehaviorSubject } from './types';
 
-const application = new Application();
-application.start();
+/**
+ * Use the latest distinct (strict equal) value of a BehaviorSubject.
+ *
+ * @param subject - BehaviorSubject to observe
+ * @return The latest value of the BehaviorSubject
+ */
+export function useDistinctObserveBehaviorSubject<T>(
+  subject: ObservableBehaviorSubject<T>,
+): T {
+  const [value, setValue] = useState(subject.getValue());
 
-ReactDOM.render(
-  <React.StrictMode>
-    <Suspense fallback={<div>Loading</div>}>
-      <AppContainer application={application} />
-    </Suspense>
-  </React.StrictMode>,
-  document.getElementById('root')!,
-);
+  useEffect(() => {
+    const subscription = subject
+      .pipe(distinctUntilChanged())
+      .subscribe(setValue);
+
+    return () => subscription.unsubscribe();
+  }, [subject]);
+
+  return value;
+}

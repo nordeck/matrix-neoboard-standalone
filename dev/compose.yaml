@@ -1,0 +1,63 @@
+name: neoboard
+
+services:
+  web:
+    build:
+      context: ./nginx
+      dockerfile: Containerfile
+    depends_on:
+      - synapse
+      - mas
+    ports:
+      - '443:443'
+      - '8448:8448'
+    networks:
+      default:
+        aliases:
+          - matrix.local
+          - mas.matrix.local
+          - synapse.matrix.local
+
+  synapse-db:
+    image: postgres
+    environment:
+      - POSTGRES_DB=synapse
+      - POSTGRES_PASSWORD=s3cr3t
+      - POSTGRES_INITDB_ARGS=--encoding=UTF-8 --lc-collate=C --lc-ctype=C
+    volumes:
+      - 'synapse-db:/var/lib/postgresql/data'
+
+  synapse:
+    image: matrixdotorg/synapse:latest
+    depends_on:
+      - synapse-db
+    environment:
+      # make Synapse easily work with every container runtime
+      - UID=0
+      - GID=0
+    volumes:
+      - synapse:/data
+      - ./synapse/homeserver.yaml:/data/homeserver.yaml:ro
+      - ./synapse/matrix.local.log.config:/data/matrix.local.log.config:ro
+      - ./synapse/matrix.local.signing.key:/data/matrix.local.signing.key:ro
+
+  mas-db:
+    image: postgres
+    environment:
+      - POSTGRES_DB=mas
+      - POSTGRES_PASSWORD=s3cr3t
+      - POSTGRES_INITDB_ARGS=--encoding=UTF-8 --lc-collate=C --lc-ctype=C
+    volumes:
+      - 'mas-db:/var/lib/postgresql/data'
+
+  mas:
+    image: ghcr.io/matrix-org/matrix-authentication-service:main
+    depends_on:
+      - mas-db
+    volumes:
+      - ./mas/config.yaml:/config.yaml:ro
+
+volumes:
+  synapse:
+  synapse-db:
+  mas-db:

@@ -23,9 +23,25 @@ After checkout, run `yarn install` to download the required dependencies
 
 > **Warning** Do not use `npm install` when working with this package.
 
-### Running NeoBoard standalone locally
+### NeoBoard standalone local development environment
 
-Run `yarn dev` to start a development environment.
+Synapse with MAS is required to run NeoBoard standalone locally.
+
+It is possible to use the Compose file in `./dev` to create the environment:
+
+- Add the following to the host's hosts-file:
+  `127.0.0.1 matrix.local mas.matrix.local synapse.matrix.local`
+- cd `dev`
+- Depending on the runtime:
+  - `podman compose --podman-run-args="--no-hosts" up`
+  - `docker compose up`
+- Visit the following URLs and accept the certificate
+  - https://matrix.local
+  - https://mas.matrix.local
+  - https://synapse.matrix.local/_matrix/client/versions
+
+Then run `yarn dev` from the project root to start a development environment.
+When asked for a server name enter `matrix.local`.
 
 ### Available Scripts
 

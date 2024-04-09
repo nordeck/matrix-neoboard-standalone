@@ -16,21 +16,21 @@
  * along with NeoBoard Standalone. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import React, { Suspense } from 'react';
-import ReactDOM from 'react-dom';
-import { AppContainer } from './AppContainer';
-import './i18n';
-import './index.css';
-import { Application } from './state/index';
+import { MatrixClient } from 'matrix-js-sdk';
 
-const application = new Application();
-application.start();
-
-ReactDOM.render(
-  <React.StrictMode>
-    <Suspense fallback={<div>Loading</div>}>
-      <AppContainer application={application} />
-    </Suspense>
-  </React.StrictMode>,
-  document.getElementById('root')!,
-);
+/**
+ * Start a temporary MatrixClient and issue a whoami request.
+ */
+export async function fetchWhoami(
+  homeserverUrl: string,
+  accessToken: string,
+): Promise<ReturnType<MatrixClient['whoami']>> {
+  const tempClient = new MatrixClient({
+    baseUrl: homeserverUrl,
+    accessToken,
+    fetchFn: fetch.bind(window),
+  });
+  const whoAmIData = await tempClient.whoami();
+  tempClient.stopClient();
+  return whoAmIData;
+}

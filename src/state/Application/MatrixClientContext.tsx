@@ -16,23 +16,34 @@
  * along with NeoBoard Standalone. If not, see <https://www.gnu.org/licenses/>.
  */
 
-const config = {
-  setupFiles: ['<rootDir>/src/setupTests.ts'],
-  testEnvironment: 'jsdom',
-  transform: {
-    '^.+\\.(t|j)sx?$': [
-      '@swc/jest',
-      {
-        jsc: {
-          transform: {
-            react: {
-              runtime: 'automatic',
-            },
-          },
-        },
-      },
-    ],
-  },
+import { MatrixClient } from 'matrix-js-sdk';
+import { PropsWithChildren, createContext, useContext } from 'react';
+
+const MatrixClientContext = createContext<MatrixClient | null>(null);
+
+type MatrixClientProviderProps = {
+  matrixClient: MatrixClient;
 };
 
-export default config;
+export function MatrixClientProvider({
+  matrixClient,
+  children,
+}: PropsWithChildren<MatrixClientProviderProps>) {
+  return (
+    <MatrixClientContext.Provider value={matrixClient}>
+      {children}
+    </MatrixClientContext.Provider>
+  );
+}
+
+export function useMatrixClient(): MatrixClient {
+  const value = useContext(MatrixClientContext);
+
+  if (value === null) {
+    throw new Error(
+      'useMatrixClient can only be used inside of <MatrixClientProvider>',
+    );
+  }
+
+  return value;
+}

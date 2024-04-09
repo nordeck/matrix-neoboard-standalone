@@ -16,21 +16,23 @@
  * along with NeoBoard Standalone. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import React, { Suspense } from 'react';
-import ReactDOM from 'react-dom';
-import { AppContainer } from './AppContainer';
-import './i18n';
-import './index.css';
-import { Application } from './state/index';
+import { MatrixClient } from 'matrix-js-sdk';
+import { MatrixClientProvider, useMatrixClient } from '../state';
 
-const application = new Application();
-application.start();
+function LoggedInDemo() {
+  const matrixClient = useMatrixClient();
+  return <div>Matrix ID: {matrixClient.getUserId()}</div>;
+}
 
-ReactDOM.render(
-  <React.StrictMode>
-    <Suspense fallback={<div>Loading</div>}>
-      <AppContainer application={application} />
-    </Suspense>
-  </React.StrictMode>,
-  document.getElementById('root')!,
-);
+type LoggedInViewProps = {
+  matrixClient: MatrixClient;
+};
+
+export function LoggedInView({ matrixClient }: LoggedInViewProps) {
+  return (
+    <MatrixClientProvider matrixClient={matrixClient}>
+      <h3>Logged in</h3>
+      <LoggedInDemo />
+    </MatrixClientProvider>
+  );
+}

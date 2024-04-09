@@ -16,21 +16,6 @@
  * along with NeoBoard Standalone. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import React, { Suspense } from 'react';
-import ReactDOM from 'react-dom';
-import { AppContainer } from './AppContainer';
-import './i18n';
-import './index.css';
-import { Application } from './state/index';
-
-const application = new Application();
-application.start();
-
-ReactDOM.render(
-  <React.StrictMode>
-    <Suspense fallback={<div>Loading</div>}>
-      <AppContainer application={application} />
-    </Suspense>
-  </React.StrictMode>,
-  document.getElementById('root')!,
-);
+export { discoverClientConfig } from './discoverClientConfig';
+export { fetchAuthIssuer } from './fetchAuthIssuer';
+export type { AuthIssuerResponse } from './fetchAuthIssuer';
