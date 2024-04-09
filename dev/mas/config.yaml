@@ -1,0 +1,90 @@
+clients:
+  - client_id: 0000000000000000000SYNAPSE
+    client_auth_method: client_secret_basic
+    client_secret: 'XL6sbtX35uF8'
+upstream_oauth2:
+  providers: []
+
+policy:
+  data:
+    client_registration:
+      allow_host_mismatch: true
+      allow_insecure_uris: true
+
+http:
+  listeners:
+    - name: web
+      resources:
+        - name: discovery
+        - name: human
+        - name: oauth
+        - name: compat
+        - name: graphql
+          playground: true
+        - name: assets
+          path: /usr/local/share/mas-cli/assets/
+      binds:
+        - address: '[::]:8081'
+      proxy_protocol: false
+  public_base: https://mas.matrix.local/
+  issuer: https://matrix.local/
+database:
+  uri: postgres://postgres:s3cr3t@mas-db:5432/mas
+secrets:
+  encryption: 30446abeddbd316b78efcf982c0e7a2d14e3924f29e034ae50b01efd65e3fd35
+  keys:
+    - kid: b2HxbC4MjI
+      key: |
+        -----BEGIN RSA PRIVATE KEY-----
+        MIIEogIBAAKCAQEAzR1KgaczfmSXJiDQEJkp8/ysDcvAZl4e7uQU+pyxX0pKiuAQ
+        RhVSgMuFDVOHrr9bzpxwD25HOEUNf4C3fKg+GYuQPDsqCUVIj8DEGwtBO+hbGZoi
+        d3lXwGy142bvDOl64/mOcNYpVwNIJuLfBZG7SjZoJhXYYG9but5b5aj3d8oH+W7m
+        tqtA35Yb085RpfYwgBVst8BRSDTN8SD+tCWNzLKGSlL9Xy/e7d4mB0FeiB/irSRF
+        nc41ZTd3cXkwMRV/dhRfhrH2t9AQyO0v3Pv7o+0EPuMWZ6KnFzsAbmDYtzikID7u
+        WFtAuaN1hwM+1oP37uECujlqj3rsZ7Xuf+TDxwIDAQABAoIBADUrDpElIjf1IykD
+        AGwNB87zBDZfRnRCmYobHUUJMQEeZMwy4IUKKeSw3MBjkpw9hjK8Yl/dmiB/5cvT
+        Nbzeb5p3jt/OBkt45iI9OZg5BqPcyyCLz7tgfNqoU02q9PRH4U8O9VlSakzf0Ogj
+        juQGrqHCEKUurHPy6bg6w194uQ0XnqX38Ex31PV/YOTiB1tQVDn9vprTo6oua3PY
+        hoNVudDXQ1QFBTxEuRuUPXsDT4nNnA2jcGxPpJNcXI47EdgVBbTXZwyzyFm/pwT+
+        gTC0hrcUOzDPAGA64sho4gN65e6Tg24nF7R2lKYzL3zntCxXBUu7ypIzRLcYGQX6
+        ZO8jNWECgYEA2wAhbz7lnodyH3QjFHKYw2tHIP0YMFdfmjxSqwF/F8441jqACP9z
+        I7LtRChugPXok8WPounP1/I+0034OMsp7r5iwkpZqQNY3lh2aoKdA7pSeWi2Iwp7
+        1q9QwsVzBNNWKk7H9zkkF5MZXvVraOyjQDJc6STAxJmuB2D7+OLC3tsCgYEA78SU
+        rlCHd1ieIgsdhbHVJRMWnsiMD9rMzHn5oZQ00eELIriYxH5zDRU/Oj+9EReIiOc6
+        AcPYf0etedhIXUfMX+y4uod3/mqgDcfYBsQxaDdRVLEC60xYYJnj73lbJoJF53BC
+        QSZapcsZtG9eEru3lWWUODw7e4yacLgSlZFvtIUCgYBPErH/x9cCsWcMYlOUO3ha
+        /u4UxC2qrrGPL/6tTgIEp2owN7kpBosdNaqjtHGJ0MBkMq4VJZTtJMN4aiuY3gpK
+        8KUZ/9x1wQaiaZCADp8AzJKg0aUJ6+wg7PYdDUvlTyVKa12aLyCP/oXnmndo0CB1
+        unl/mMydb9u9QFBaYg34hwKBgBxJoRD/xzu5ZM63aQBA/tik6+JH3t5v/gGR0nXR
+        unmYh2vNQ5jLIl/ExfTlWDUQBbfBMALNTFmX50uczMzUj7QxhYncObf2dHOrxDzo
+        ILwe6qWHTMTd+P9MqKu0MaDVddHcWLS/BarRz3KOQRcMtpgVp+sKkCn/aKkrzmV/
+        ByLRAoGAEHm52Cb6u+sRqzPYMrefaVvni5iELWhPVBOaycJ6dcGA4mDYszpVdMwx
+        1PgK9vptCrV1O446fc8ErA/EUnlvJ7KbjkBw8BRd8GCEgMmbjjD0iYi2jObGvQj7
+        zbL++Kzvo5SvtkdsvUgPU05AjAX3XyH815ehudbXciFKWubAdrc=
+        -----END RSA PRIVATE KEY-----
+    - kid: pXneMBso4a
+      key: |
+        -----BEGIN EC PRIVATE KEY-----
+        MHcCAQEEIC8zDFkJ4nVJv0/JVnwoOQVMVxFJ1enMYvTzNlfEusbWoAoGCCqGSM49
+        AwEHoUQDQgAEPQ/NP1kkjuGwGrCYY/91bAm+/DfXJfPexhHtBxXa8YnbRaIG8M/B
+        VbEKPJOCOSNdNyvcpmeiPe2BKtl0lWXf3A==
+        -----END EC PRIVATE KEY-----
+    - kid: 28Ds44QqyB
+      key: |
+        -----BEGIN EC PRIVATE KEY-----
+        MIGkAgEBBDAA1noWc0FMuOq1gBNyhH6buLt1GxdBCI815llySSmYyFYzpp3mS8xr
+        ubIXROoAurGgBwYFK4EEACKhZANiAASwJSyvV1jUCGt8t44+czylSV2du96GMORj
+        aZdtiO7Toac2QKwxDRhL9JBSVgfL/0LInmvHfVBLd7Soa5ZagqXyVm5BPeAVixYh
+        n+/ADs2rq+eMNNQvDPyqn27jCkD16k4=
+        -----END EC PRIVATE KEY-----
+    - kid: CqOJKxp81j
+      key: |
+        -----BEGIN EC PRIVATE KEY-----
+        MHQCAQEEIMv9HyTVK+OU8LIOQQBTR9WVHBkOTudygL4xhFcqoj98oAcGBSuBBAAK
+        oUQDQgAEJ7gYtdo6FGBwp/f25Vs5apAxmerIvAC406giKvqW8APdHV52h+JoUfyC
+        oUsLpPuWtCbLZCvk/AoMKf3AnMlffQ==
+        -----END EC PRIVATE KEY-----
+matrix:
+  homeserver: matrix.local
+  secret: 'o0athzVosHioRx7JDO5DOxi8qH5ToX5s'
+  endpoint: http://synapse:8008/

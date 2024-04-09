@@ -14,23 +14,19 @@
  * limitations under the License.
  */
 
-const config = {
-  setupFiles: ['<rootDir>/src/setupTests.ts'],
-  testEnvironment: 'jsdom',
-  transform: {
-    '^.+\\.(t|j)sx?$': [
-      '@swc/jest',
-      {
-        jsc: {
-          transform: {
-            react: {
-              runtime: 'automatic',
-            },
-          },
-        },
-      },
-    ],
-  },
-};
+import { randomString } from './randomString';
 
-export default config;
+describe('randomString', () => {
+  it('should create random strings of the given lengths', () => {
+    const string1 = randomString(23);
+
+    expect(string1).toHaveLength(23);
+
+    const string2 = randomString(23);
+    expect(string1).toHaveLength(23);
+    expect(string2).not.toEqual(string1);
+
+    const string3 = randomString(42);
+    expect(string3).toHaveLength(42);
+  });
+});

@@ -14,7 +14,7 @@
     "prettier:check": "prettier --check .",
     "prettier:write": "prettier --write .",
     "prepare": "husky install",
-    "depcheck": "depcheck --ignores=@babel/plugin-proposal-private-property-in-object,@babel/plugin-transform-private-property-in-object,@changesets/cli,@swc/core,@swc/jest,@testing-library/dom,@testing-library/jest-dom,@testing-library/react,@testing-library/react-hooks,@types/jest,@types/jest-axe,@typescript-eslint/eslint-plugin,@typescript-eslint/parser,jest-axe,jest-environment-jsdom,prettier-plugin-organize-imports",
+    "depcheck": "depcheck --ignores=@babel/plugin-proposal-private-property-in-object,@babel/plugin-transform-private-property-in-object,@changesets/cli,@swc/core,@swc/jest,@testing-library/dom,@testing-library/jest-dom,@testing-library/react,@testing-library/react-hooks,@types/jest,@types/jest-axe,@typescript-eslint/eslint-plugin,@typescript-eslint/parser,jest-axe,jest-mock,jest-environment-jsdom,prettier-plugin-organize-imports",
     "deduplicate": "yarn-deduplicate",
     "translate": "i18next \"src/**/*.{ts,tsx}\"",
     "generate-disclaimer": "cp LICENSE ./build/LICENSE.txt && cp NOTICE ./build/NOTICE.txt && yarn licenses generate-disclaimer --prod >> ./build/NOTICE.txt && yarn licenses list --prod --json --no-progress > ./build/licenses.json",
@@ -25,8 +25,12 @@
     "yarn": "^1.22.1"
   },
   "dependencies": {
+    "joi": "^17.12.2",
+    "matrix-js-sdk": "^31.5.0",
+    "oidc-client-ts": "^3.0.1",
     "react": "^17.0.2",
-    "react-dom": "^17.0.2"
+    "react-dom": "^17.0.2",
+    "rxjs": "^7.8.1"
   },
   "browserslist": {
     "production": [
@@ -65,6 +69,8 @@
     "eslint-config-react-app": "^7.0.1",
     "eslint-plugin-notice": "^0.9.10",
     "eslint-plugin-promise": "^6.1.1",
+    "fetch-mock": "^9.11.0",
+    "fetch-mock-jest": "^1.5.1",
     "husky": "^9.0.11",
     "i18next": "^23.10.1",
     "i18next-chained-backend": "^4.6.2",
@@ -73,11 +79,28 @@
     "jest": "^29.7.0",
     "jest-axe": "^8.0.0",
     "jest-environment-jsdom": "^29.7.0",
+    "lint-staged": "^15.2.2",
     "prettier": "^3.2.5",
     "prettier-plugin-organize-imports": "^3.2.4",
     "react-i18next": "^14.1.0",
     "typescript": "^5.4.3",
     "vite": "^5.2.7"
+  },
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx}": [
+      "yarn eslint",
+      "bash -c \"yarn tsc --pretty\"",
+      "prettier --write"
+    ],
+    "*.{package.json,js,jsx,ts,tsx}": [
+      "bash -c \"yarn depcheck\""
+    ],
+    "*.{json,js,jsx,ts,tsx}": [
+      "bash -c \"yarn translate --fail-on-update\""
+    ],
+    "*.{yaml,yml,json,md}": [
+      "prettier --write"
+    ]
   },
   "repository": {
     "type": "git",

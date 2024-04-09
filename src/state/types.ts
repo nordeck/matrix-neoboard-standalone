@@ -14,23 +14,12 @@
  * limitations under the License.
  */
 
-const config = {
-  setupFiles: ['<rootDir>/src/setupTests.ts'],
-  testEnvironment: 'jsdom',
-  transform: {
-    '^.+\\.(t|j)sx?$': [
-      '@swc/jest',
-      {
-        jsc: {
-          transform: {
-            react: {
-              runtime: 'automatic',
-            },
-          },
-        },
-      },
-    ],
-  },
-};
+import { BehaviorSubject } from 'rxjs';
 
-export default config;
+/**
+ * BehaviorSubject type that only exposes functions for subscribers.
+ */
+export type ObservableBehaviorSubject<T> = Pick<
+  BehaviorSubject<T>,
+  'subscribe' | 'getValue' | 'pipe'
+>;

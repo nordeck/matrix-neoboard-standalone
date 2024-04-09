@@ -14,23 +14,23 @@
  * limitations under the License.
  */
 
-const config = {
-  setupFiles: ['<rootDir>/src/setupTests.ts'],
-  testEnvironment: 'jsdom',
-  transform: {
-    '^.+\\.(t|j)sx?$': [
-      '@swc/jest',
-      {
-        jsc: {
-          transform: {
-            react: {
-              runtime: 'automatic',
-            },
-          },
-        },
-      },
-    ],
-  },
+import { MatrixClient } from 'matrix-js-sdk';
+import { MatrixClientProvider, useMatrixClient } from '../state';
+
+function LoggedInDemo() {
+  const matrixClient = useMatrixClient();
+  return <div>Matrix ID: {matrixClient.getUserId()}</div>;
+}
+
+type LoggedInViewProps = {
+  matrixClient: MatrixClient;
 };
 
-export default config;
+export function LoggedInView({ matrixClient }: LoggedInViewProps) {
+  return (
+    <MatrixClientProvider matrixClient={matrixClient}>
+      <h3>Logged in</h3>
+      <LoggedInDemo />
+    </MatrixClientProvider>
+  );
+}
