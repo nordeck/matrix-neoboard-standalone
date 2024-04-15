@@ -4,7 +4,6 @@ services:
   web:
     build:
       context: ./nginx
-      dockerfile: Containerfile
     depends_on:
       - synapse
       - mas
