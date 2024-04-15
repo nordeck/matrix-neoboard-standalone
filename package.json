@@ -25,7 +25,7 @@
     "yarn": "^1.22.1"
   },
   "dependencies": {
-    "joi": "^17.12.2",
+    "joi": "^17.12.3",
     "matrix-js-sdk": "^31.5.0",
     "oidc-client-ts": "^3.0.1",
     "react": "^17.0.2",
