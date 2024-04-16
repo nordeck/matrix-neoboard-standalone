@@ -41,7 +41,7 @@ export async function startOidcLogin(
 ): Promise<void> {
   const redirectUri = new URL(window.location.href).href;
   const nonce = randomString(10);
-  const prompt = isRegistration ? 'create' : undefined;
+  const prompt = isRegistration === true ? 'create' : undefined;
 
   const authorizationUrl = await generateOidcAuthorizationUrl({
     metadata: clientConfig.metadata,

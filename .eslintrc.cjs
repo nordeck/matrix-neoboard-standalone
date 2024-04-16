@@ -41,4 +41,15 @@ module.exports = {
     'prefer-const': 'error',
     'object-shorthand': 'error',
   },
+  overrides: [
+    {
+      files: ['src/**/*.ts', 'src/**/*.tsx'],
+      rules: {
+        '@typescript-eslint/strict-boolean-expressions': 'error',
+      },
+      parserOptions: {
+        project: true,
+      },
+    },
+  ],
 };
