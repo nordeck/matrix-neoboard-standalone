@@ -14,7 +14,9 @@
  * limitations under the License.
  */
 
+import { WidgetApi } from '@matrix-widget-toolkit/api';
 import { BehaviorSubject } from 'rxjs';
+import { StandaloneClient } from '../toolkit/standalone';
 
 /**
  * BehaviorSubject type that only exposes functions for subscribers.
@@ -23,3 +25,21 @@ export type ObservableBehaviorSubject<T> = Pick<
   BehaviorSubject<T>,
   'subscribe' | 'getValue' | 'pipe'
 >;
+
+/**
+ * Represents a state that is available when user is logged in into the app.
+ */
+export type LoggedInState = {
+  userId: string;
+  homeserverUrl: string;
+  standaloneClient: StandaloneClient;
+  /**
+   * Handler to resolve widgetApi, should be invoked when room with whiteboard is selected.
+   * @param widgetApi
+   */
+  resolveWidgetApi: (widgetApi: WidgetApi) => void;
+  /**
+   * Widget API promise that will be resolved when handler to resolve widget api is called.
+   */
+  widgetApiPromise: Promise<WidgetApi>;
+};

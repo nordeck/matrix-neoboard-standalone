@@ -14,23 +14,59 @@
  * limitations under the License.
  */
 
-import { MatrixClient } from 'matrix-js-sdk';
-import { MatrixClientProvider, useMatrixClient } from '../state';
+import {
+  MuiThemeProvider,
+  MuiWidgetApiProvider,
+} from '@matrix-widget-toolkit/mui';
+import {
+  DraggableStyles,
+  FontsLoadedContextProvider,
+  GuidedTourProvider,
+  LayoutStateProvider,
+  PageLoader,
+  Snackbar,
+  SnackbarProvider,
+  App as WhiteboardApp,
+  WhiteboardHotkeysProvider,
+} from '@nordeck/matrix-neoboard-widget';
+import { Suspense } from 'react';
+import { useLoggedIn } from '../state';
+import { WhiteboardList } from './WhiteboardList';
 
-function LoggedInDemo() {
-  const matrixClient = useMatrixClient();
-  return <div>Matrix ID: {matrixClient.getUserId()}</div>;
-}
+export const LoggedInView = () => {
+  const { widgetApiPromise } = useLoggedIn();
 
-type LoggedInViewProps = {
-  matrixClient: MatrixClient;
-};
-
-export function LoggedInView({ matrixClient }: LoggedInViewProps) {
   return (
-    <MatrixClientProvider matrixClient={matrixClient}>
-      <h3>Logged in</h3>
-      <LoggedInDemo />
-    </MatrixClientProvider>
+    <MuiThemeProvider>
+      <WhiteboardList />
+
+      {/* Only apply styles inside the MuiThemeProvider as the nonce is
+              otherwise missing */}
+      <DraggableStyles />
+
+      <Suspense fallback={<PageLoader />}>
+        <MuiWidgetApiProvider
+          widgetApiPromise={widgetApiPromise}
+          widgetRegistration={{
+            name: 'NeoBoard',
+            // "pad" suffix to get a custom icon
+            type: 'net.nordeck.whiteboard:pad',
+          }}
+        >
+          <FontsLoadedContextProvider>
+            <LayoutStateProvider>
+              <WhiteboardHotkeysProvider>
+                <GuidedTourProvider>
+                  <SnackbarProvider>
+                    <Snackbar />
+                    <WhiteboardApp />
+                  </SnackbarProvider>
+                </GuidedTourProvider>
+              </WhiteboardHotkeysProvider>
+            </LayoutStateProvider>
+          </FontsLoadedContextProvider>
+        </MuiWidgetApiProvider>
+      </Suspense>
+    </MuiThemeProvider>
   );
-}
+};

@@ -14,9 +14,10 @@
  * limitations under the License.
  */
 
-import { MatrixClient } from 'matrix-js-sdk';
+import { WidgetApi } from '@matrix-widget-toolkit/api';
+import { ClientEvent, MatrixClient, SyncState } from 'matrix-js-sdk';
 import { BehaviorSubject } from 'rxjs';
-import { Credentials, ObservableBehaviorSubject } from '..';
+import { Credentials, LoggedInState, ObservableBehaviorSubject } from '..';
 import { fetchWhoami } from '../../lib/matrix';
 import {
   OidcCredentials,
@@ -24,7 +25,13 @@ import {
   createOidcTokenRefresher,
   maybeCompleteOidcLogin,
 } from '../../lib/oidc';
-import { createAndStartMatrixClient } from './createAndStartMatrixClient';
+import {
+  MatrixStandaloneClient,
+  StandaloneApi,
+  StandaloneApiImpl,
+  StandaloneClient,
+} from '../../toolkit/standalone';
+import { createMatrixClient } from './createMatrixClient';
 
 export type LifecycleState =
   // The application is starting
@@ -41,16 +48,40 @@ export type ApplicationState =
   | {
       lifecycleState: 'loggedIn';
       matrixClient: MatrixClient;
+      state: LoggedInState;
     };
 
 /**
  * This class stores the state and handles the application lifecycle on a high level.
  */
 export class Application {
+  private readonly resolveStandaloneApi: (standaloneApi: StandaloneApi) => void;
+  public readonly standaloneApiPromise: Promise<StandaloneApi>;
+  private readonly resolveWidgetApi: (widgetApi: WidgetApi) => void;
+  public readonly widgetApiPromise: Promise<WidgetApi>;
+
   private tokenRefresher: TokenRefresher | null = null;
   private readonly state: BehaviorSubject<ApplicationState> =
     new BehaviorSubject<ApplicationState>({ lifecycleState: 'starting' });
-  public readonly credentials = new Credentials();
+  private readonly credentials = new Credentials();
+
+  constructor() {
+    let resolveStandaloneApi: (standaloneApi: StandaloneApi) => void = (
+      standaloneApi: StandaloneApi,
+    ) => {};
+    this.standaloneApiPromise = new Promise<StandaloneApi>((resolve) => {
+      resolveStandaloneApi = resolve;
+    });
+    this.resolveStandaloneApi = resolveStandaloneApi;
+
+    let resolveWidgetApi: (widgetApi: WidgetApi) => void = (
+      widgetApi: WidgetApi,
+    ) => {};
+    this.widgetApiPromise = new Promise<WidgetApi>((resolve) => {
+      resolveWidgetApi = resolve;
+    });
+    this.resolveWidgetApi = resolveWidgetApi;
+  }
 
   /**
    * Start the application:
@@ -116,7 +147,7 @@ export class Application {
       matrixCredentials.deviceId,
     );
 
-    const matrixClient = await createAndStartMatrixClient(
+    const matrixClient = await createMatrixClient(
       {
         ...oidcCredentials,
         accessToken: oidcCredentials.accessToken,
@@ -125,10 +156,38 @@ export class Application {
       this.tokenRefresher ?? undefined,
     );
 
+    const standaloneClient: StandaloneClient = new MatrixStandaloneClient(
+      matrixClient,
+    );
+    const standaloneApi: StandaloneApi = new StandaloneApiImpl(
+      standaloneClient,
+    );
+
+    matrixClient.once(ClientEvent.Sync, (state, lastState, data) => {
+      if (state === SyncState.Prepared) {
+        this.resolveStandaloneApi(standaloneApi);
+      } else {
+        throw new Error('Cannot sync');
+      }
+    });
+
+    await matrixClient.startClient();
+
+    // wait for sync with the server
+    await this.standaloneApiPromise;
+
     this.state.next({
       lifecycleState: 'loggedIn',
       matrixClient,
+      state: {
+        userId: matrixCredentials.userId,
+        homeserverUrl: oidcCredentials.homeserverUrl,
+        standaloneClient,
+        resolveWidgetApi: this.resolveWidgetApi,
+        widgetApiPromise: this.widgetApiPromise,
+      },
     });
+
     return true;
   }
 

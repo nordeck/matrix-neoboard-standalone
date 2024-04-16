@@ -69,11 +69,7 @@ describe('fetchAuthIssuer', () => {
     );
 
     await expect(fetchAuthIssuer('https://example.com')).rejects.toThrow(
-      new Error('failed to parse auth_issuer response', {
-        cause: new Error(
-          "invalid json response body at https://example.com/_matrix/client/unstable/org.matrix.msc2965/auth_issuer reason: Expected property name or '}' in JSON at position 1",
-        ),
-      }),
+      'failed to parse auth_issuer response',
     );
   });
 

@@ -14,20 +14,40 @@
  * limitations under the License.
  */
 
+import { createWhiteboardManager } from '@nordeck/matrix-neoboard-widget';
 import React, { Suspense } from 'react';
 import ReactDOM from 'react-dom';
+import { Provider } from 'react-redux';
 import { AppContainer } from './AppContainer';
 import './i18n';
 import './index.css';
-import { Application } from './state/index';
+import { Application } from './state';
+import { createStore, initializeStore } from './store';
 
 const application = new Application();
 application.start();
 
+const store = createStore({
+  standaloneApi: application.standaloneApiPromise,
+  widgetApi: application.widgetApiPromise,
+});
+
+initializeStore(store);
+
+const whiteboardManager = createWhiteboardManager(
+  store,
+  application.widgetApiPromise,
+);
+
 ReactDOM.render(
   <React.StrictMode>
     <Suspense fallback={<div>Loading</div>}>
-      <AppContainer application={application} />
+      <Provider store={store}>
+        <AppContainer
+          application={application}
+          whiteboardManager={whiteboardManager}
+        />
+      </Provider>
     </Suspense>
   </React.StrictMode>,
   document.getElementById('root')!,

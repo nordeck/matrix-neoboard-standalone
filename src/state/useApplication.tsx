@@ -14,26 +14,34 @@
  * limitations under the License.
  */
 
-import {
-  WhiteboardManager,
-  WhiteboardManagerProvider,
-} from '@nordeck/matrix-neoboard-widget';
-import { App } from './App';
-import { Application } from './state';
-import { ApplicationProvider } from './state/useApplication';
+import React, { PropsWithChildren, useContext } from 'react';
+import { Application } from './Application';
 
-export const AppContainer = ({
+const ApplicationContext = React.createContext<Application | undefined>(
+  undefined,
+);
+
+export function ApplicationProvider({
   application,
-  whiteboardManager,
-}: {
+  children,
+}: PropsWithChildren<{
   application: Application;
-  whiteboardManager: WhiteboardManager;
-}) => {
+}>) {
   return (
-    <ApplicationProvider application={application}>
-      <WhiteboardManagerProvider whiteboardManager={whiteboardManager}>
-        <App />
-      </WhiteboardManagerProvider>
-    </ApplicationProvider>
+    <ApplicationContext.Provider value={application}>
+      {children}
+    </ApplicationContext.Provider>
   );
-};
+}
+
+export function useApplication(): Application {
+  const context = useContext(ApplicationContext);
+
+  if (context === undefined) {
+    throw new Error(
+      `useApplication can only be used inside of <ApplicationProvider>`,
+    );
+  }
+
+  return context;
+}

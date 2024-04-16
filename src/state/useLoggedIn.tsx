@@ -14,34 +14,34 @@
  * limitations under the License.
  */
 
-import { PropsWithChildren, createContext, useContext } from 'react';
-import { Application } from './Application';
+import React, { PropsWithChildren, useContext } from 'react';
+import { LoggedInState } from './types';
 
-const ApplicationContext = createContext<Application | null>(null);
+const LoggedInContext = React.createContext<LoggedInState | undefined>(
+  undefined,
+);
 
-type ApplicationProviderProps = {
-  application: Application;
-};
-
-export function ApplicationProvider({
-  application,
+export function LoggedInProvider({
+  loggedInState,
   children,
-}: PropsWithChildren<ApplicationProviderProps>) {
+}: PropsWithChildren<{
+  loggedInState: LoggedInState;
+}>) {
   return (
-    <ApplicationContext.Provider value={application}>
+    <LoggedInContext.Provider value={loggedInState}>
       {children}
-    </ApplicationContext.Provider>
+    </LoggedInContext.Provider>
   );
 }
 
-export function useApplication(): Application {
-  const value = useContext(ApplicationContext);
+export function useLoggedIn(): LoggedInState {
+  const context = useContext(LoggedInContext);
 
-  if (value === null) {
+  if (!context) {
     throw new Error(
-      'useApplication can only be used inside of <ApplicationProvider>',
+      `useLoggedIn can only be used inside of <LoggedInProvider>`,
     );
   }
 
-  return value;
+  return context;
 }
