@@ -25,6 +25,8 @@ After checkout, run `yarn install` to download the required dependencies
 
 ### NeoBoard standalone local development environment
 
+#### Synapse and MAS configuration
+
 Synapse with MAS is required to run NeoBoard standalone locally.
 
 It is possible to use the Compose file in `./dev` to create the environment:
@@ -40,8 +42,26 @@ It is possible to use the Compose file in `./dev` to create the environment:
   - https://mas.matrix.local
   - https://synapse.matrix.local/_matrix/client/versions
 
+#### Link to matrix-neoboard-widget
+
+Project currently depends on the branch from the neoboard project: `nordeck/matrix-neoboard#nic/feat/temp_export`.
+This branch exports components and couple of other changes.
+
+Currently after checkout of this project you have to change the directory to `node_modules/@nordeck/matrix-neoboard-widget/`
+and run `yarn install` there.
+
+It is possible to link `matrix-neoboard-widget` to this standalone project with `yarn link` for the development.
+
+Sometimes `yarn` caches the `matrix-neoboard-widget` repository and not downloads a branch for the commit mentioned
+in yarn.lock, then `yarn cache clean` and `yarn install --force` should be executed.
+
+#### Running
+
 Then run `yarn dev` from the project root to start a development environment.
 When asked for a server name enter `matrix.local`.
+
+Currently, the user have to have a room with whiteboard in order to see a widget loaded.
+Otherwise, widget will be in loading state waiting for for such room to appear.
 
 ### Available Scripts
 

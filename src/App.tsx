@@ -20,9 +20,9 @@ import { useTranslation } from 'react-i18next';
 import './App.css';
 import { LoggedInView } from './components/LoggedInView';
 import { Login } from './components/Login';
-import { useApplicationState } from './state';
+import { LoggedInProvider, useApplicationState } from './state';
 
-function App() {
+export const App = () => {
   const { i18n, t } = useTranslation();
   const applicationState = useApplicationState();
 
@@ -37,10 +37,10 @@ function App() {
       {applicationState.lifecycleState === 'starting' && <div>Starting…</div>}
       {applicationState.lifecycleState === 'loggedOut' && <Login />}
       {applicationState.lifecycleState === 'loggedIn' && (
-        <LoggedInView matrixClient={applicationState.matrixClient} />
+        <LoggedInProvider loggedInState={applicationState.state}>
+          <LoggedInView />
+        </LoggedInProvider>
       )}
     </>
   );
-}
-
-export default App;
+};

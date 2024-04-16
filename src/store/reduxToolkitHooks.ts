@@ -16,9 +16,11 @@
  * along with NeoBoard Standalone. If not, see <https://www.gnu.org/licenses/>.
  */
 
-export * from './Application';
-export { Credentials } from './Credentials';
-export type { MatrixCredentials } from './Credentials';
-export type * from './types';
-export { useDistinctObserveBehaviorSubject } from './useDistinctObserveBehaviorSubject';
-export { LoggedInProvider, useLoggedIn } from './useLoggedIn';
+import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux';
+import type { AppDispatch, RootState } from './store';
+
+// Use throughout your app instead of plain `useDispatch` and `useSelector`
+const useAppDispatch = () => useDispatch<AppDispatch>();
+const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;
+
+export { useAppDispatch, useAppSelector };

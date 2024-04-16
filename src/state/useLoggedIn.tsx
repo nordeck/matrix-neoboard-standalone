@@ -16,9 +16,34 @@
  * along with NeoBoard Standalone. If not, see <https://www.gnu.org/licenses/>.
  */
 
-export * from './Application';
-export { Credentials } from './Credentials';
-export type { MatrixCredentials } from './Credentials';
-export type * from './types';
-export { useDistinctObserveBehaviorSubject } from './useDistinctObserveBehaviorSubject';
-export { LoggedInProvider, useLoggedIn } from './useLoggedIn';
+import React, { PropsWithChildren, useContext } from 'react';
+import { LoggedInState } from './types';
+
+const LoggedInContext = React.createContext<LoggedInState | undefined>(
+  undefined,
+);
+
+export function LoggedInProvider({
+  loggedInState,
+  children,
+}: PropsWithChildren<{
+  loggedInState: LoggedInState;
+}>) {
+  return (
+    <LoggedInContext.Provider value={loggedInState}>
+      {children}
+    </LoggedInContext.Provider>
+  );
+}
+
+export function useLoggedIn(): LoggedInState {
+  const context = useContext(LoggedInContext);
+
+  if (!context) {
+    throw new Error(
+      `useLoggedIn can only be used inside of <LoggedInProvider>`,
+    );
+  }
+
+  return context;
+}

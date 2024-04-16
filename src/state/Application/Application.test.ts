@@ -17,7 +17,13 @@
  */
 
 import fetchMock from 'fetch-mock-jest';
-import { MatrixClient, completeAuthorizationCodeGrant } from 'matrix-js-sdk';
+import {
+  ClientEvent,
+  ClientEventHandlerMap,
+  MatrixClient,
+  SyncState,
+  completeAuthorizationCodeGrant,
+} from 'matrix-js-sdk';
 import {
   createMatrixTestCredentials,
   createOidcTestClientConfig,
@@ -68,6 +74,9 @@ describe('Application', () => {
       startClient: jest.fn(),
       stopClient: jest.fn(),
       whoami: jest.fn(),
+      addEventListener: jest.fn(),
+      removeEventListener: jest.fn(),
+      once: jest.fn(),
     } as unknown as MatrixClient;
     jest.mocked(MatrixClient).mockReturnValue(clientMock);
 
@@ -98,6 +107,17 @@ describe('Application', () => {
       matrixCredentialsStorageKey,
       JSON.stringify(matrixTestCredentials),
     );
+
+    // Mock sync prepared
+    jest.mocked(clientMock).once.mockImplementationOnce((event, listener) => {
+      if (event === ClientEvent.Sync) {
+        (listener as ClientEventHandlerMap[ClientEvent.Sync])(
+          SyncState.Prepared,
+          null,
+        );
+      }
+      return clientMock;
+    });
 
     await application.start();
 
@@ -174,6 +194,17 @@ describe('Application', () => {
     jest.mocked(clientMock.whoami).mockResolvedValue({
       user_id: '@test:example.com',
       device_id: 'test_device_id',
+    });
+
+    // Mock sync prepared
+    jest.mocked(clientMock).once.mockImplementationOnce((event, listener) => {
+      if (event === ClientEvent.Sync) {
+        (listener as ClientEventHandlerMap[ClientEvent.Sync])(
+          SyncState.Prepared,
+          null,
+        );
+      }
+      return clientMock;
     });
 
     await application.start();

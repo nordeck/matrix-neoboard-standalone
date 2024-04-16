@@ -28,8 +28,20 @@ if (process.env.VITE_DEV_SSL === 'true') {
 
 // https://vitejs.dev/config/
 export default defineConfig({
+  esbuild: {
+    // needed to fix neoboard yjs errors, see: https://github.com/vitejs/vite/issues/11722
+    target: 'es2020',
+  },
   build: {
     outDir: 'build',
+  },
+  resolve: {
+    dedupe: [
+      'react',
+      'react-dom',
+      '@matrix-widget-toolkit/react',
+      'react-redux',
+    ],
   },
   plugins,
 });

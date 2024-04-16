@@ -16,16 +16,16 @@
  * along with NeoBoard Standalone. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { MatrixClient } from 'matrix-js-sdk';
+import { MatrixClient, MatrixScheduler, MemoryStore } from 'matrix-js-sdk';
 import { OidcCredentials, TokenRefresher } from '../../lib/oidc';
 import { MatrixCredentials } from '../Credentials';
 
-export async function createAndStartMatrixClient(
+export async function createMatrixClient(
   oidcCredentials: OidcCredentials,
   matrixCredentials: MatrixCredentials,
   tokenRefresher?: TokenRefresher,
 ): Promise<MatrixClient> {
-  const client = new MatrixClient({
+  return new MatrixClient({
     baseUrl: oidcCredentials.homeserverUrl,
     accessToken: oidcCredentials.accessToken,
     // use native fetch API
@@ -35,9 +35,11 @@ export async function createAndStartMatrixClient(
     refreshToken: oidcCredentials.refreshToken,
     tokenRefreshFunction:
       tokenRefresher?.doRefreshAccessToken.bind(tokenRefresher),
+    // create a store to save sync data to be requested by the api endpoints
+    store: new MemoryStore({
+      localStorage: global.localStorage,
+    }),
+    // create a scheduler (created by createClient from matrix-js-sdk)
+    scheduler: new MatrixScheduler(),
   });
-
-  await client.startClient();
-
-  return client;
 }

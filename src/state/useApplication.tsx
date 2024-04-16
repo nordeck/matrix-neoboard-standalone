@@ -16,9 +16,34 @@
  * along with NeoBoard Standalone. If not, see <https://www.gnu.org/licenses/>.
  */
 
-export * from './Application';
-export { Credentials } from './Credentials';
-export type { MatrixCredentials } from './Credentials';
-export type * from './types';
-export { useDistinctObserveBehaviorSubject } from './useDistinctObserveBehaviorSubject';
-export { LoggedInProvider, useLoggedIn } from './useLoggedIn';
+import React, { PropsWithChildren, useContext } from 'react';
+import { Application } from './Application';
+
+const ApplicationContext = React.createContext<Application | undefined>(
+  undefined,
+);
+
+export function ApplicationProvider({
+  application,
+  children,
+}: PropsWithChildren<{
+  application: Application;
+}>) {
+  return (
+    <ApplicationContext.Provider value={application}>
+      {children}
+    </ApplicationContext.Provider>
+  );
+}
+
+export function useApplication(): Application {
+  const context = useContext(ApplicationContext);
+
+  if (context === undefined) {
+    throw new Error(
+      `useApplication can only be used inside of <ApplicationProvider>`,
+    );
+  }
+
+  return context;
+}

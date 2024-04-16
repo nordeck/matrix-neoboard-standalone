@@ -17,8 +17,8 @@
  */
 
 import { useDistinctObserveBehaviorSubject } from '../../state';
+import { useApplication } from '../useApplication';
 import { ApplicationState } from './Application';
-import { useApplication } from './ApplicationContext';
 
 export function useApplicationState(): ApplicationState {
   const application = useApplication();

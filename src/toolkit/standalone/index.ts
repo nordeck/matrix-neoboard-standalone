@@ -16,9 +16,7 @@
  * along with NeoBoard Standalone. If not, see <https://www.gnu.org/licenses/>.
  */
 
-export * from './Application';
-export { Credentials } from './Credentials';
-export type { MatrixCredentials } from './Credentials';
-export type * from './types';
-export { useDistinctObserveBehaviorSubject } from './useDistinctObserveBehaviorSubject';
-export { LoggedInProvider, useLoggedIn } from './useLoggedIn';
+export { StandaloneApiImpl } from './StandaloneApiImpl';
+export { StandaloneWidgetApiImpl } from './StandaloneWidgetApiImpl';
+export * from './client';
+export type { StandaloneApi, StandaloneWidgetApi } from './types';

@@ -16,9 +16,18 @@
  * along with NeoBoard Standalone. If not, see <https://www.gnu.org/licenses/>.
  */
 
-export * from './Application';
-export { Credentials } from './Credentials';
-export type { MatrixCredentials } from './Credentials';
-export type * from './types';
-export { useDistinctObserveBehaviorSubject } from './useDistinctObserveBehaviorSubject';
-export { LoggedInProvider, useLoggedIn } from './useLoggedIn';
+import { QueryActionCreatorResult } from '@reduxjs/toolkit/dist/query/core/buildInitiate';
+import { roomNameApi } from './api/roomNameApi';
+import { whiteboardApi } from './api/whiteboardApi';
+import { AppDispatch } from './store';
+
+export async function initializeApi(dispatch: AppDispatch): Promise<void> {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const actions: QueryActionCreatorResult<any>[] = [];
+
+  actions.push(dispatch(roomNameApi.endpoints.getRoomNameEvents.initiate()));
+  actions.push(dispatch(whiteboardApi.endpoints.getWhiteboardsAll.initiate()));
+
+  // wait for initial load
+  await Promise.all(actions.map((a) => a.unwrap()));
+}

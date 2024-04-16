@@ -1,0 +1,171 @@
+/*
+ * Copyright 2024 Nordeck IT + Consulting GmbH
+ *
+ * NeoBoard Standalone is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or (at your
+ * option) any later version.
+ *
+ * NeoBoard Standalone is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+ * or FITNESS FOR A PARTICULAR PURPOSE.
+ *
+ * See the GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with NeoBoard Standalone. If not, see <https://www.gnu.org/licenses/>.
+ */
+
+import {
+  RoomEvent,
+  StateEvent,
+  ToDeviceMessageEvent,
+  WidgetApi,
+} from '@matrix-widget-toolkit/api';
+import { Symbols } from 'matrix-widget-api';
+import { Observable } from 'rxjs';
+
+/**
+ * API for communication to the matrix server that would facilitate standalone apps and running widget in a
+ * standalone mode.
+ *
+ * Similar to WidgetApi from the matrix widget toolkit, but with the following considered:
+ * - A minimum API that would allow implementations of standalone widgets.
+ * - Similar to WidgetApi from matrix widget toolkit for easier usage.
+ * - roomId(s) are always passed explicitly in all the methods.
+ * - Uses types from matrix widget toolkit.
+ * - Methods that are needed and don't have any optional roomId(s) parameter are picked from WidgetApi.
+ */
+export type StandaloneClient = Pick<
+  WidgetApi,
+  | 'observeTurnServers'
+  | 'searchUserDirectory'
+  | 'getMediaConfig'
+  | 'uploadFile'
+  | 'sendToDeviceMessage'
+> & {
+  /**
+   * Observable that emits room and state events.
+   */
+  eventsObservable(): Observable<RoomEvent | StateEvent>;
+
+  /**
+   * Observable that emits to device message events.
+   */
+  toDeviceMessagesObservable(): Observable<ToDeviceMessageEvent>;
+
+  /**
+   * Receives the state events of a give type from the current room if any
+   * exists.
+   *
+   * @remarks While one can type the returned event using the generic parameter
+   *          `T`, it is not recommended to rely on this type till further
+   *          validation of the event structure is performed.
+   *
+   * @param eventType - The type of the event to receive.
+   * @param options - Options for receiving the state event.
+   *                  Use `stateKey` to receive events with a specifc state
+   *                  key.
+   *                  Use `roomIds` to receive the state events from other
+   *                  rooms.
+   *                  Pass `Symbols.AnyRoom` to receive from all rooms of the
+   *                  user.
+   */
+  receiveStateEvents<T>(
+    eventType: string,
+    options: {
+      stateKey?: string;
+      roomIds: string[] | Symbols.AnyRoom;
+    },
+  ): Promise<Array<StateEvent<T>>>;
+
+  /**
+   * Send a state event with a given type to the room
+   * @param eventType - The type of the event to send.
+   * @param stateKey - State key.
+   * @param content - The content of the event.
+   * @param roomId - The room id
+   */
+  sendStateEvent(
+    eventType: string,
+    stateKey: string,
+    content: unknown,
+    roomId: string,
+  ): Promise<string>;
+
+  /**
+   * Receives the state events of a give type from the current room if any
+   * exists.
+   *
+   * @remarks While one can type the returned event using the generic parameter
+   *          `T`, it is not recommended to rely on this type till further
+   *          validation of the event structure is performed.
+   *
+   * @param eventType - The type of the event to receive.
+   * @param options - Options for receiving the state event.
+   *                  Use `stateKey` to receive events with a specifc state
+   *                  key.
+   *                  Use `roomIds` to receive the state events from other
+   *                  rooms.
+   *                  Pass `Symbols.AnyRoom` to receive from all rooms of the
+   *                  user.
+   */
+  receiveRoomEvents<T>(
+    eventType: string,
+    options: {
+      messageType?: string;
+      roomIds: string[] | Symbols.AnyRoom;
+    },
+  ): Promise<Array<RoomEvent<T>>>;
+
+  /**
+   * Sends a room event with a given type to the room.
+   * @param eventType - The event type.
+   * @param content -The event content.
+   * @param roomId - The room id
+   */
+  sendRoomEvent(
+    eventType: string,
+    content: unknown,
+    roomId: string,
+  ): Promise<string>;
+
+  /**
+   * Receive all events that relate to a given `eventId` by means of MSC2674.
+   * `chunk` can include state events or room events.
+   *
+   * @remarks You can only receive events where the capability to receive it was
+   *          approved. If an event in `chunk` is not approved, it is silently
+   *          skipped. Note that the call might return less than `limit` events
+   *          due to various reasons, including missing capabilities or encrypted
+   *          events.
+   *
+   * @param eventId - The id of the event to receive
+   * @param options - Options for receiving the related events.
+   *                  Use `roomId` to receive the event from another room.
+   *                  Use `limit` to control the page size.
+   *                  Use `from` to request the next page of events by providing
+   *                  `nextToken` of a previous call. If `nextToken === undefined`,
+   *                  no further page exists.
+   *                  Use `relationType` to only return events with that `rel_type`.
+   *                  Use `eventType` to only return events with that `type`.
+   *                  Use `direction` to change time-order of the chunks
+   *                  (default: 'b').
+   *
+   * @throws if the capability to receive the type of event is missing.
+   */
+  readEventRelations(
+    eventId: string,
+    options: {
+      roomId: string;
+      limit?: number;
+      from?: string;
+      relationType?: string;
+      eventType?: string;
+      direction?: 'f' | 'b';
+    },
+  ): Promise<{
+    chunk: Array<RoomEvent | StateEvent>;
+    nextToken?: string;
+  }>;
+};

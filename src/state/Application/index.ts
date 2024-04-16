@@ -18,6 +18,5 @@
 
 export { Application } from './Application';
 export type { LifecycleState } from './Application';
-export { ApplicationProvider, useApplication } from './ApplicationContext';
 export { MatrixClientProvider, useMatrixClient } from './MatrixClientContext';
 export { useApplicationState } from './useApplicationState';

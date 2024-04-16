@@ -16,17 +16,26 @@
  * along with NeoBoard Standalone. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import App from './App';
-import { Application, ApplicationProvider } from './state';
+import {
+  WhiteboardManager,
+  WhiteboardManagerProvider,
+} from '@nordeck/matrix-neoboard-widget';
+import { App } from './App';
+import { Application } from './state';
+import { ApplicationProvider } from './state/useApplication';
 
-export type AppContainerProps = {
+export const AppContainer = ({
+  application,
+  whiteboardManager,
+}: {
   application: Application;
-};
-
-export function AppContainer({ application }: AppContainerProps) {
+  whiteboardManager: WhiteboardManager;
+}) => {
   return (
     <ApplicationProvider application={application}>
-      <App />
+      <WhiteboardManagerProvider whiteboardManager={whiteboardManager}>
+        <App />
+      </WhiteboardManagerProvider>
     </ApplicationProvider>
   );
-}
+};
