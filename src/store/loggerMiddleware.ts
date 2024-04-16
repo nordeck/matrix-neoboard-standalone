@@ -14,9 +14,14 @@
  * limitations under the License.
  */
 
-export * from './Application';
-export { Credentials } from './Credentials';
-export type { MatrixCredentials } from './Credentials';
-export type * from './types';
-export { useDistinctObserveBehaviorSubject } from './useDistinctObserveBehaviorSubject';
-export { LoggedInProvider, useLoggedIn } from './useLoggedIn';
+import { Action, Middleware } from '@reduxjs/toolkit';
+import { getLogger } from 'loglevel';
+
+export const loggerMiddleware: Middleware = () => {
+  const logger = getLogger('Redux');
+
+  return (next) => (action: Action) => {
+    logger.debug(action);
+    return next(action);
+  };
+};

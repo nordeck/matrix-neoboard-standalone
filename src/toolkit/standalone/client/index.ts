@@ -14,9 +14,5 @@
  * limitations under the License.
  */
 
-export * from './Application';
-export { Credentials } from './Credentials';
-export type { MatrixCredentials } from './Credentials';
-export type * from './types';
-export { useDistinctObserveBehaviorSubject } from './useDistinctObserveBehaviorSubject';
-export { LoggedInProvider, useLoggedIn } from './useLoggedIn';
+export { MatrixStandaloneClient } from './MatrixStandaloneClient';
+export type { StandaloneClient } from './types';

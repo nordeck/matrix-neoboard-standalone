@@ -20,7 +20,7 @@ import {
   createMatrixTestCredentials,
   createOidcTestCredentials,
 } from '../../lib/testUtils';
-import { createAndStartMatrixClient } from './createAndStartMatrixClient';
+import { createMatrixClient } from './createMatrixClient';
 
 jest.mock('matrix-js-sdk', () => ({
   ...jest.requireActual('matrix-js-sdk'),
@@ -30,8 +30,8 @@ jest.mock('matrix-js-sdk', () => ({
 const matrixTestCredentials = createMatrixTestCredentials();
 const oidcTestCredentials = createOidcTestCredentials();
 
-describe('createAndStartMatrixClient', () => {
-  it('should create and start a MatrixClient', async () => {
+describe('createMatrixClient', () => {
+  it('should create a MatrixClient', async () => {
     const tokenRefresherStub = {
       doRefreshAccessToken: () => {},
     } as unknown as TokenRefresher;
@@ -40,7 +40,7 @@ describe('createAndStartMatrixClient', () => {
     } as unknown as MatrixClient;
     jest.mocked(MatrixClient).mockReturnValue(clientStub);
 
-    await createAndStartMatrixClient(
+    await createMatrixClient(
       oidcTestCredentials,
       matrixTestCredentials,
       tokenRefresherStub,
@@ -55,8 +55,9 @@ describe('createAndStartMatrixClient', () => {
         deviceId: 'test_device_id',
         refreshToken: 'test_refresh_token',
         tokenRefreshFunction: expect.any(Function),
+        store: expect.anything(),
+        scheduler: expect.anything(),
       }),
     );
-    expect(clientStub.startClient).toHaveBeenCalled();
   });
 });

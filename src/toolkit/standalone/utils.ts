@@ -14,9 +14,24 @@
  * limitations under the License.
  */
 
-export * from './Application';
-export { Credentials } from './Credentials';
-export type { MatrixCredentials } from './Credentials';
-export type * from './types';
-export { useDistinctObserveBehaviorSubject } from './useDistinctObserveBehaviorSubject';
-export { LoggedInProvider, useLoggedIn } from './useLoggedIn';
+import { RoomEvent, StateEvent } from '@matrix-widget-toolkit/api';
+import { Symbols } from 'matrix-widget-api';
+
+export function isDefined<T>(arg: T | null | undefined): arg is T {
+  return arg !== null && arg !== undefined;
+}
+
+export function isInRoom(
+  matrixEvent: RoomEvent | StateEvent,
+  roomIds: string[] | Symbols.AnyRoom,
+): boolean {
+  if (typeof roomIds === 'string') {
+    if (roomIds !== Symbols.AnyRoom) {
+      throw Error(`Unknown room id symbol: ${roomIds}`);
+    }
+
+    return true;
+  }
+
+  return roomIds.includes(matrixEvent.room_id);
+}

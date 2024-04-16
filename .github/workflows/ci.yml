@@ -32,6 +32,10 @@ jobs:
       - name: yarn install
         run: yarn install --frozen-lockfile
 
+      - name: yarn install matrix-neoboard-widget
+        working-directory: ./node_modules/@nordeck/matrix-neoboard-widget/
+        run: yarn install --frozen-lockfile
+
       - name: depcheck
         run: yarn depcheck
 
