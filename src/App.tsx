@@ -14,24 +14,16 @@
  * limitations under the License.
  */
 
-import { useTranslation } from 'react-i18next';
 import './App.css';
 import { LoggedInView } from './components/LoggedInView';
 import { Login } from './components/Login';
 import { LoggedInProvider, useApplicationState } from './state';
 
 export const App = () => {
-  const { i18n, t } = useTranslation();
   const applicationState = useApplicationState();
 
   return (
     <>
-      <h1>{t('home.greeting', 'Hello')}</h1>
-      <div>
-        <button onClick={() => i18n.changeLanguage('de')}>DE</button>
-        <button onClick={() => i18n.changeLanguage('en')}>EN</button>
-      </div>
-
       {applicationState.lifecycleState === 'starting' && <div>Starting…</div>}
       {applicationState.lifecycleState === 'loggedOut' && <Login />}
       {applicationState.lifecycleState === 'loggedIn' && (
