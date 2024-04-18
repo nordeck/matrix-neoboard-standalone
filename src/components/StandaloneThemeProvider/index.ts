@@ -16,23 +16,4 @@
  * along with NeoBoard Standalone. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import './App.css';
-import { LoggedInView } from './components/LoggedInView';
-import { Login } from './components/Login';
-import { LoggedInProvider, useApplicationState } from './state';
-
-export const App = () => {
-  const applicationState = useApplicationState();
-
-  return (
-    <>
-      {applicationState.lifecycleState === 'starting' && <div>Starting…</div>}
-      {applicationState.lifecycleState === 'loggedOut' && <Login />}
-      {applicationState.lifecycleState === 'loggedIn' && (
-        <LoggedInProvider loggedInState={applicationState.state}>
-          <LoggedInView />
-        </LoggedInProvider>
-      )}
-    </>
-  );
-};
+export { StandaloneThemeProvider } from './StandaloneThemeProvider';

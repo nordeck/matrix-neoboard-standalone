@@ -93,7 +93,7 @@ export const WhiteboardList = () => {
   ]);
 
   return (
-    <List>
+    <List sx={{ backgroundColor: '#ffffff' }}>
       {whiteboards.map(({ roomName, whiteboard }, idx) => (
         <ListItemButton
           key={idx}

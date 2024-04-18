@@ -28,6 +28,7 @@
     "@matrix-widget-toolkit/api": "^3.2.1",
     "@matrix-widget-toolkit/mui": "^1.2.1",
     "@mui/material": "^5.15.15",
+    "@mui/utils": "^5.15.14",
     "@nordeck/matrix-neoboard-widget": "github:nordeck/matrix-neoboard#nic/feat/temp_export",
     "@reduxjs/toolkit": "^1.9.7",
     "i18next": "^23.7.16",

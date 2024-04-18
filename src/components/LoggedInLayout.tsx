@@ -16,23 +16,32 @@
  * along with NeoBoard Standalone. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import './App.css';
-import { LoggedInView } from './components/LoggedInView';
-import { Login } from './components/Login';
-import { LoggedInProvider, useApplicationState } from './state';
+import { styled } from '@mui/material';
+import { PropsWithChildren } from 'react';
+import { NeoBoard } from './Icons/NeoBoard';
 
-export const App = () => {
-  const applicationState = useApplicationState();
+const Wrapper = styled('div')(({ theme }) => ({
+  backgroundColor: theme.palette.background.default,
+  paddingLeft: '25px',
+  paddingRight: '25px',
+}));
 
+const ContentWrapper = styled('div')(() => ({
+  borderRadius: '8px',
+}));
+
+const Header = styled('div')(() => ({
+  paddingBottom: '34px',
+  paddingTop: '34px',
+}));
+
+export function LoggedInLayout({ children }: PropsWithChildren<{}>) {
   return (
-    <>
-      {applicationState.lifecycleState === 'starting' && <div>Starting…</div>}
-      {applicationState.lifecycleState === 'loggedOut' && <Login />}
-      {applicationState.lifecycleState === 'loggedIn' && (
-        <LoggedInProvider loggedInState={applicationState.state}>
-          <LoggedInView />
-        </LoggedInProvider>
-      )}
-    </>
+    <Wrapper>
+      <Header>
+        <NeoBoard />
+      </Header>
+      <ContentWrapper role="main">{children}</ContentWrapper>
+    </Wrapper>
   );
-};
+}

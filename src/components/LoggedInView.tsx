@@ -16,10 +16,7 @@
  * along with NeoBoard Standalone. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {
-  MuiThemeProvider,
-  MuiWidgetApiProvider,
-} from '@matrix-widget-toolkit/mui';
+import { MuiWidgetApiProvider } from '@matrix-widget-toolkit/mui';
 import {
   DraggableStyles,
   FontsLoadedContextProvider,
@@ -33,42 +30,46 @@ import {
 } from '@nordeck/matrix-neoboard-widget';
 import { Suspense } from 'react';
 import { useLoggedIn } from '../state';
+import { LoggedInLayout } from './LoggedInLayout';
+import { StandaloneThemeProvider } from './StandaloneThemeProvider';
 import { WhiteboardList } from './WhiteboardList';
 
 export const LoggedInView = () => {
   const { widgetApiPromise } = useLoggedIn();
 
   return (
-    <MuiThemeProvider>
-      <WhiteboardList />
+    <StandaloneThemeProvider>
+      <LoggedInLayout>
+        <WhiteboardList />
 
-      {/* Only apply styles inside the MuiThemeProvider as the nonce is
+        {/* Only apply styles inside the MuiThemeProvider as the nonce is
               otherwise missing */}
-      <DraggableStyles />
+        <DraggableStyles />
 
-      <Suspense fallback={<PageLoader />}>
-        <MuiWidgetApiProvider
-          widgetApiPromise={widgetApiPromise}
-          widgetRegistration={{
-            name: 'NeoBoard',
-            // "pad" suffix to get a custom icon
-            type: 'net.nordeck.whiteboard:pad',
-          }}
-        >
-          <FontsLoadedContextProvider>
-            <LayoutStateProvider>
-              <WhiteboardHotkeysProvider>
-                <GuidedTourProvider>
-                  <SnackbarProvider>
-                    <Snackbar />
-                    <WhiteboardApp />
-                  </SnackbarProvider>
-                </GuidedTourProvider>
-              </WhiteboardHotkeysProvider>
-            </LayoutStateProvider>
-          </FontsLoadedContextProvider>
-        </MuiWidgetApiProvider>
-      </Suspense>
-    </MuiThemeProvider>
+        <Suspense fallback={<PageLoader />}>
+          <MuiWidgetApiProvider
+            widgetApiPromise={widgetApiPromise}
+            widgetRegistration={{
+              name: 'NeoBoard',
+              // "pad" suffix to get a custom icon
+              type: 'net.nordeck.whiteboard:pad',
+            }}
+          >
+            <FontsLoadedContextProvider>
+              <LayoutStateProvider>
+                <WhiteboardHotkeysProvider>
+                  <GuidedTourProvider>
+                    <SnackbarProvider>
+                      <Snackbar />
+                      <WhiteboardApp />
+                    </SnackbarProvider>
+                  </GuidedTourProvider>
+                </WhiteboardHotkeysProvider>
+              </LayoutStateProvider>
+            </FontsLoadedContextProvider>
+          </MuiWidgetApiProvider>
+        </Suspense>
+      </LoggedInLayout>
+    </StandaloneThemeProvider>
   );
 };
