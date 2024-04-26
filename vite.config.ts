@@ -44,4 +44,8 @@ export default defineConfig({
     ],
   },
   plugins,
+  define: {
+    global: 'window',
+    'process.env': {},
+  },
 });
