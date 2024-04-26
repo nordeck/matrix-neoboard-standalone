@@ -97,3 +97,19 @@ jobs:
           build-args: |
             REACT_APP_VERSION=${{ fromJSON(steps.meta.outputs.json).labels['org.opencontainers.image.version'] }}
             REACT_APP_REVISION=${{ fromJSON(steps.meta.outputs.json).labels['org.opencontainers.image.revision'] }}
+
+      - name: Create Kubeconfig
+        run: |
+          # Extract the base64 encoded config data and write this to the KUBECONFIG
+          echo "${{ secrets.KUBECONFIG_DEV }}" | base64 -d > /tmp/config
+          chmod 600 /tmp/config
+
+          echo "KUBECONFIG=/tmp/config" >> $GITHUB_ENV
+
+      - name: deploy k8s to cluster
+        uses: wahyd4/kubectl-helm-action@master
+        env:
+          KUBE_CONFIG_DATA: ${{ secrets.KUBECONFIG_RANCHER_DEV_DEMO }}
+        with:
+          args: |
+            helm upgrade --install matrix-neoboard-standalone ./charts/matrix-neoboard-standalone -f ./charts/matrix-neoboard-standalone/values.yaml  -n matrix
