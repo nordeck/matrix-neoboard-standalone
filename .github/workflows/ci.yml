@@ -82,6 +82,7 @@ jobs:
             org.opencontainers.image.description=Standalone version of NeoBoard: A whiteboard widget for Matrix
             org.opencontainers.image.vendor=Nordeck IT + Consulting GmbH
           tags: |
+            type=raw,value=latest
             type=sha,prefix=
 
       - name: Build and push
@@ -89,7 +90,8 @@ jobs:
         with:
           push: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' || github.event_name == 'pull_request' && secrets.GH_APP_OS_APP_ID != '' }}
           context: .
-          tags: ${{ steps.meta.outputs.tags }}
+          tags: |
+            ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           platforms: linux/amd64,linux/arm64,linux/s390x
           sbom: true
