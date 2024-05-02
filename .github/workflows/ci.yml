@@ -100,6 +100,13 @@ jobs:
             REACT_APP_VERSION=${{ fromJSON(steps.meta.outputs.json).labels['org.opencontainers.image.version'] }}
             REACT_APP_REVISION=${{ fromJSON(steps.meta.outputs.json).labels['org.opencontainers.image.revision'] }}
 
+  deploy:
+    if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
+    name: Deploy to Dev
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    needs: build
+    steps:
       - name: Create Kubeconfig
         run: |
           # Extract the base64 encoded config data and write this to the KUBECONFIG
