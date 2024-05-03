@@ -17,13 +17,14 @@
 import './App.css';
 import { LoggedInView } from './components/LoggedInView';
 import { Login } from './components/Login';
+import { StandaloneThemeProvider } from './components/StandaloneThemeProvider';
 import { LoggedInProvider, useApplicationState } from './state';
 
 export const App = () => {
   const applicationState = useApplicationState();
 
   return (
-    <>
+    <StandaloneThemeProvider>
       {applicationState.lifecycleState === 'starting' && <div>Starting…</div>}
       {applicationState.lifecycleState === 'loggedOut' && <Login />}
       {applicationState.lifecycleState === 'loggedIn' && (
@@ -31,6 +32,6 @@ export const App = () => {
           <LoggedInView />
         </LoggedInProvider>
       )}
-    </>
+    </StandaloneThemeProvider>
   );
 };
