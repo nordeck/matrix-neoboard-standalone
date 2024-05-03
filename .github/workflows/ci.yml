@@ -107,6 +107,12 @@ jobs:
     timeout-minutes: 5
     needs: build
     steps:
+      # Clone repot to get the helm charts
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: '0'
+          persist-credentials: false
+
       - name: Create Kubeconfig
         run: |
           # Extract the base64 encoded config data and write this to the KUBECONFIG
@@ -121,7 +127,7 @@ jobs:
           KUBE_CONFIG_DATA: ${{ secrets.KUBECONFIG_RANCHER_DEV_DEMO }}
         with:
           args: |
-            helm upgrade --install matrix-neoboard-standalone ./charts/matrix-neoboard-standalone/ -f ./charts/matrix-neoboard-standalone/values.yaml  -n matrix
+            helm upgrade --install matrix-neoboard-standalone ./charts/matrix-neoboard-standalone -f ./charts/matrix-neoboard-standalone/values.yaml  -n matrix
 
       - name: restart rollout
         uses: wahyd4/kubectl-helm-action@master
