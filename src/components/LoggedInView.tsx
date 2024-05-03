@@ -31,45 +31,38 @@ import {
 import { Suspense } from 'react';
 import { useLoggedIn } from '../state';
 import { LoggedInLayout } from './LoggedInLayout';
-import { StandaloneThemeProvider } from './StandaloneThemeProvider';
 import { WhiteboardList } from './WhiteboardList';
 
 export const LoggedInView = () => {
   const { widgetApiPromise } = useLoggedIn();
 
   return (
-    <StandaloneThemeProvider>
-      <LoggedInLayout>
-        <WhiteboardList />
-
-        {/* Only apply styles inside the MuiThemeProvider as the nonce is
-              otherwise missing */}
-        <DraggableStyles />
-
-        <Suspense fallback={<PageLoader />}>
-          <MuiWidgetApiProvider
-            widgetApiPromise={widgetApiPromise}
-            widgetRegistration={{
-              name: 'NeoBoard',
-              // "pad" suffix to get a custom icon
-              type: 'net.nordeck.whiteboard:pad',
-            }}
-          >
-            <FontsLoadedContextProvider>
-              <LayoutStateProvider>
-                <WhiteboardHotkeysProvider>
-                  <GuidedTourProvider>
-                    <SnackbarProvider>
-                      <Snackbar />
-                      <WhiteboardApp />
-                    </SnackbarProvider>
-                  </GuidedTourProvider>
-                </WhiteboardHotkeysProvider>
-              </LayoutStateProvider>
-            </FontsLoadedContextProvider>
-          </MuiWidgetApiProvider>
-        </Suspense>
-      </LoggedInLayout>
-    </StandaloneThemeProvider>
+    <LoggedInLayout>
+      <WhiteboardList />
+      <DraggableStyles />
+      <Suspense fallback={<PageLoader />}>
+        <MuiWidgetApiProvider
+          widgetApiPromise={widgetApiPromise}
+          widgetRegistration={{
+            name: 'NeoBoard',
+            // "pad" suffix to get a custom icon
+            type: 'net.nordeck.whiteboard:pad',
+          }}
+        >
+          <FontsLoadedContextProvider>
+            <LayoutStateProvider>
+              <WhiteboardHotkeysProvider>
+                <GuidedTourProvider>
+                  <SnackbarProvider>
+                    <Snackbar />
+                    <WhiteboardApp />
+                  </SnackbarProvider>
+                </GuidedTourProvider>
+              </WhiteboardHotkeysProvider>
+            </LayoutStateProvider>
+          </FontsLoadedContextProvider>
+        </MuiWidgetApiProvider>
+      </Suspense>
+    </LoggedInLayout>
   );
 };
