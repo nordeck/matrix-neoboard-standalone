@@ -22,7 +22,7 @@ import {
   RoomNameEvent,
   STATE_EVENT_ROOM_NAME,
   baseApi as whiteboardBaseApi,
-} from '@nordeck/matrix-neoboard-widget';
+} from '@nordeck/matrix-neoboard-react-sdk';
 import { createEntityAdapter, EntityState } from '@reduxjs/toolkit';
 import { Symbols } from 'matrix-widget-api';
 import { bufferTime, filter } from 'rxjs';

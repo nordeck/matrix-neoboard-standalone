@@ -22,7 +22,7 @@ import {
   powerLevelsApi,
   roomNameApi,
   useWhiteboardManager,
-} from '@nordeck/matrix-neoboard-widget';
+} from '@nordeck/matrix-neoboard-react-sdk';
 import { isEqual } from 'lodash';
 import { useEffect, useMemo, useState } from 'react';
 import { useLoggedIn } from '../state';

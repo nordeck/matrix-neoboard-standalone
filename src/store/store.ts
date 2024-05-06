@@ -17,7 +17,7 @@
  */
 
 import { WidgetApi } from '@matrix-widget-toolkit/api';
-import { baseApi } from '@nordeck/matrix-neoboard-widget';
+import { baseApi } from '@nordeck/matrix-neoboard-react-sdk';
 import { autoBatchEnhancer, configureStore } from '@reduxjs/toolkit';
 import { StandaloneApi } from '../toolkit/standalone';
 import { initializeApi } from './initializeApi';

@@ -19,7 +19,7 @@
 import {
   WhiteboardManager,
   WhiteboardManagerProvider,
-} from '@nordeck/matrix-neoboard-widget';
+} from '@nordeck/matrix-neoboard-react-sdk';
 import { App } from './App';
 import { Application } from './state';
 import { ApplicationProvider } from './state/useApplication';

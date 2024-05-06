@@ -17,7 +17,7 @@
  */
 
 import { StateEvent } from '@matrix-widget-toolkit/api';
-import { Whiteboard } from '@nordeck/matrix-neoboard-widget';
+import { Whiteboard } from '@nordeck/matrix-neoboard-react-sdk';
 import { createSelector } from '@reduxjs/toolkit';
 import { RootState } from '../../store';
 import { selectRoomNameEventEntities } from '../roomNameApi';

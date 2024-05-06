@@ -27,7 +27,7 @@ import {
   SnackbarProvider,
   App as WhiteboardApp,
   WhiteboardHotkeysProvider,
-} from '@nordeck/matrix-neoboard-widget';
+} from '@nordeck/matrix-neoboard-react-sdk';
 import { Suspense } from 'react';
 import { useLoggedIn } from '../state';
 import { LoggedInLayout } from './LoggedInLayout';

@@ -22,7 +22,7 @@ import {
   STATE_EVENT_WHITEBOARD,
   Whiteboard,
   baseApi as whiteboardBaseApi,
-} from '@nordeck/matrix-neoboard-widget';
+} from '@nordeck/matrix-neoboard-react-sdk';
 import { createEntityAdapter, EntityState } from '@reduxjs/toolkit';
 import { isEqual, isError } from 'lodash';
 import { Symbols } from 'matrix-widget-api';
