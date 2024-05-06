@@ -17,11 +17,13 @@
  */
 
 import { styled } from '@mui/material';
+import { t } from 'i18next';
 import { PropsWithChildren } from 'react';
-import { NeoBoard } from './Icons/NeoBoard';
+import neoBoardLogo from './neoboard-logo.png';
 
 const Wrapper = styled('div')(({ theme }) => ({
   backgroundColor: theme.palette.background.default,
+  height: '100vh',
   paddingLeft: '25px',
   paddingRight: '25px',
 }));
@@ -35,11 +37,17 @@ const Header = styled('div')(() => ({
   paddingTop: '34px',
 }));
 
-export function LoggedInLayout({ children }: PropsWithChildren<{}>) {
+type LoggedInLayoutProps = PropsWithChildren<{}> & {
+  onLogoClick: () => void;
+};
+
+export function LoggedInLayout({ children, onLogoClick }: LoggedInLayoutProps) {
   return (
     <Wrapper>
       <Header>
-        <NeoBoard />
+        <div style={{ cursor: 'pointer' }} role="button" onClick={onLogoClick}>
+          <img height="35" src={neoBoardLogo} alt={t('NeoBoard Logo')} />
+        </div>
       </Header>
       <ContentWrapper role="main">{children}</ContentWrapper>
     </Wrapper>

@@ -24,3 +24,6 @@ build
 
 # testing
 /coverage
+
+# translation helper files
+public/locales/*/translation_old.json

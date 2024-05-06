@@ -1,5 +1,4 @@
 {
-  "home": {
-    "greeting": "Moin"
-  }
+  "Last view {{lastView}} hours ago": "Zuletzt vor {{lastview}} Stunden",
+  "NeoBoard Logo": "NeoBoard Logo"
 }
