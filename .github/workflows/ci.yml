@@ -150,7 +150,7 @@ jobs:
           KUBE_CONFIG_DATA: ${{ secrets.KUBECONFIG_RANCHER_DEV_DEMO }}
         with:
           args: |
-            helm upgrade --install matrix-neoboard-standalone ./matrix-neoboard-standalone/charts/matrix-neoboard-standalone -f ./matrix-neoboard-standalone/charts/matrix-neoboard-standalone/values.yaml  -n matrix
+            helm upgrade --install matrix-neoboard-standalone ./charts/matrix-neoboard-standalone -f ./charts/matrix-neoboard-standalone/values.yaml  -n matrix
 
       - name: restart rollout
         uses: wahyd4/kubectl-helm-action@master
