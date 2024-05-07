@@ -16,7 +16,7 @@
  * along with NeoBoard Standalone. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { createWhiteboardManager } from '@nordeck/matrix-neoboard-widget';
+import { createWhiteboardManager } from '@nordeck/matrix-neoboard-react-sdk';
 import React, { Suspense } from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
