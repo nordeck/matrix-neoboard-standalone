@@ -1,10 +1,20 @@
 {
   "app": {
+    "cancel": "cancel",
     "logo": "NeoBoard Logo"
   },
   "dashboard": {
     "boardTile": {
       "lastView": "Last view {{lastView}} hours ago"
     }
+  },
+  "logOutDialog": {
+    "logOut": "Log out",
+    "title": "Are you sure you want to log out?"
+  },
+  "userMenu": {
+    "logOut": "Log out",
+    "profile": "Profile",
+    "userManagement": "User Management"
   }
 }
