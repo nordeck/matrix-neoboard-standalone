@@ -1,4 +1,10 @@
 {
-  "Last view {{lastView}} hours ago": "",
-  "NeoBoard Logo": ""
+  "app": {
+    "logo": "NeoBoard Logo"
+  },
+  "dashboard": {
+    "boardTile": {
+      "lastView": "Last view {{lastView}} hours ago"
+    }
+  }
 }

@@ -56,7 +56,11 @@ export function BoardTile({ onClick, previewUrl, whiteboard }: BoardTileProps) {
             {whiteboard.roomName}
           </Typography>
           <Typography color="text.secondary">
-            {t(`Last view {{lastView}} hours ago`, { lastView })}
+            {t(
+              'dashboard.boardTile.lastView',
+              'Last view {{lastView}} hours ago',
+              { lastView },
+            )}
           </Typography>
         </CardContent>
         <CardActions>

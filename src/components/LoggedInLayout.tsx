@@ -46,7 +46,11 @@ export function LoggedInLayout({ children, onLogoClick }: LoggedInLayoutProps) {
     <Wrapper>
       <Header>
         <div style={{ cursor: 'pointer' }} role="button" onClick={onLogoClick}>
-          <img height="35" src={neoBoardLogo} alt={t('NeoBoard Logo')} />
+          <img
+            height="35"
+            src={neoBoardLogo}
+            alt={t('app.logo', 'NeoBoard Logo')}
+          />
         </div>
       </Header>
       <ContentWrapper role="main">{children}</ContentWrapper>
