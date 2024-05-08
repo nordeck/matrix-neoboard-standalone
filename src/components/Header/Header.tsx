@@ -17,29 +17,32 @@
  */
 
 import { styled } from '@mui/material';
-import { PropsWithChildren } from 'react';
-import { Header } from './Header';
+import { t } from 'i18next';
+import { UserMenu } from './UserMenu';
+import neoBoardLogo from './neoboard-logo.png';
 
-const Wrapper = styled('div')(({ theme }) => ({
-  backgroundColor: theme.palette.background.default,
-  height: '100vh',
-  paddingLeft: '25px',
-  paddingRight: '25px',
+const StyledHeader = styled('nav')(() => ({
+  display: 'flex',
+  justifyContent: 'space-between',
+  paddingBottom: '34px',
+  paddingTop: '34px',
 }));
 
-const ContentWrapper = styled('div')(() => ({
-  borderRadius: '8px',
-}));
-
-type LoggedInLayoutProps = PropsWithChildren<{}> & {
+type HeaderProps = {
   onLogoClick: () => void;
 };
 
-export function LoggedInLayout({ children, onLogoClick }: LoggedInLayoutProps) {
+export function Header({ onLogoClick }: HeaderProps) {
   return (
-    <Wrapper>
-      <Header onLogoClick={onLogoClick} />
-      <ContentWrapper role="main">{children}</ContentWrapper>
-    </Wrapper>
+    <StyledHeader>
+      <div style={{ cursor: 'pointer' }} role="button" onClick={onLogoClick}>
+        <img
+          height="35"
+          src={neoBoardLogo}
+          alt={t('app.logo', 'NeoBoard Logo')}
+        />
+      </div>
+      <UserMenu />
+    </StyledHeader>
   );
 }

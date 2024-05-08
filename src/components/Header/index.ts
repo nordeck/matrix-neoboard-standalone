@@ -16,30 +16,4 @@
  * along with NeoBoard Standalone. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { styled } from '@mui/material';
-import { PropsWithChildren } from 'react';
-import { Header } from './Header';
-
-const Wrapper = styled('div')(({ theme }) => ({
-  backgroundColor: theme.palette.background.default,
-  height: '100vh',
-  paddingLeft: '25px',
-  paddingRight: '25px',
-}));
-
-const ContentWrapper = styled('div')(() => ({
-  borderRadius: '8px',
-}));
-
-type LoggedInLayoutProps = PropsWithChildren<{}> & {
-  onLogoClick: () => void;
-};
-
-export function LoggedInLayout({ children, onLogoClick }: LoggedInLayoutProps) {
-  return (
-    <Wrapper>
-      <Header onLogoClick={onLogoClick} />
-      <ContentWrapper role="main">{children}</ContentWrapper>
-    </Wrapper>
-  );
-}
+export { Header } from './Header';
