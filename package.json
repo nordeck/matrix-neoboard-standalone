@@ -27,6 +27,7 @@
   "dependencies": {
     "@matrix-widget-toolkit/api": "^3.2.1",
     "@matrix-widget-toolkit/mui": "^1.2.1",
+    "@mui/icons-material": "^5.15.16",
     "@mui/material": "^5.15.15",
     "@mui/utils": "^5.15.14",
     "@nordeck/matrix-neoboard-react-sdk": "link:../matrix-neoboard/packages/react-sdk",
@@ -67,7 +68,7 @@
     "@swc/jest": "^0.2.36",
     "@testing-library/dom": "^10.0.0",
     "@testing-library/jest-dom": "^6.4.2",
-    "@testing-library/react": "^15.0.2",
+    "@testing-library/react": "^14.2.2",
     "@testing-library/react-hooks": "^8.0.1",
     "@types/jest": "^29.5.12",
     "@types/jest-axe": "^3.5.9",
