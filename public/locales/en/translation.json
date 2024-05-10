@@ -1,5 +1,10 @@
 {
-  "home": {
-    "greeting": "Hello"
+  "app": {
+    "logo": "NeoBoard Logo"
+  },
+  "dashboard": {
+    "boardTile": {
+      "lastView": "Last view {{lastView}} hours ago"
+    }
   }
 }
