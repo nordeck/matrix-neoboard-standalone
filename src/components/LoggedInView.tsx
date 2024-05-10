@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import { WidgetParameters } from '@matrix-widget-toolkit/api';
 import { MuiWidgetApiProvider } from '@matrix-widget-toolkit/mui';
 import {
   DraggableStyles,
@@ -25,42 +26,145 @@ import {
   SnackbarProvider,
   App as WhiteboardApp,
   WhiteboardHotkeysProvider,
+  powerLevelsApi,
+  roomNameApi,
+  useWhiteboardManager,
 } from '@nordeck/matrix-neoboard-react-sdk';
-import { Suspense } from 'react';
+import { isEqual } from 'lodash';
+import { Suspense, useCallback, useEffect, useMemo, useState } from 'react';
 import { useLoggedIn } from '../state';
+import { useAppDispatch, useAppSelector } from '../store';
+import { makeSelectWhiteboards } from '../store/api/selectors/selectWhiteboards';
+import {
+  StandaloneApiImpl,
+  StandaloneWidgetApi,
+  StandaloneWidgetApiImpl,
+} from '../toolkit/standalone';
+import { Dashboard } from './Dashboard';
 import { LoggedInLayout } from './LoggedInLayout';
-import { WhiteboardList } from './WhiteboardList';
 
 export const LoggedInView = () => {
-  const { widgetApiPromise } = useLoggedIn();
+  const {
+    homeserverUrl,
+    resolveWidgetApi,
+    standaloneClient,
+    userId,
+    widgetApiPromise,
+  } = useLoggedIn();
+  const [selectedRoomId, setSelectedRoomId] = useState<string>();
+  const [widgetApi, setWidgetApi] = useState<StandaloneWidgetApi>();
+  const dispatch = useAppDispatch();
+
+  const handleLogoClick = useCallback(() => {
+    setSelectedRoomId(undefined);
+  }, [setSelectedRoomId]);
+
+  const selectWhiteboards = useMemo(makeSelectWhiteboards, []);
+  const whiteboardManager = useWhiteboardManager();
+
+  const whiteboards = useAppSelector(
+    (state) => selectWhiteboards(state),
+    isEqual,
+  );
+
+  useEffect(() => {
+    if (selectedRoomId === undefined) {
+      return;
+    }
+
+    if (widgetApi === undefined) {
+      const widgetParameters: WidgetParameters = {
+        userId,
+        displayName: '',
+        avatarUrl: '',
+        roomId: selectedRoomId,
+        theme: 'light',
+        clientId: 'net.nordeck.matrix_neoboard_standalone',
+        clientLanguage: 'EN',
+        baseUrl: homeserverUrl,
+        isOpenedByClient: false,
+      };
+
+      const widgetApi = new StandaloneWidgetApiImpl(
+        new StandaloneApiImpl(standaloneClient),
+        'widgetId',
+        widgetParameters,
+      );
+
+      resolveWidgetApi(widgetApi);
+      setWidgetApi(widgetApi);
+      return;
+    }
+
+    const whiteboardEvent = whiteboards.find(
+      (w) => w.whiteboard.room_id === selectedRoomId,
+    );
+
+    if (whiteboardEvent?.whiteboard === undefined) {
+      return;
+    }
+
+    widgetApi.overrideWidgetParameters({
+      roomId: selectedRoomId,
+    });
+    whiteboardManager.selectActiveWhiteboardInstance(
+      whiteboardEvent.whiteboard,
+      userId,
+    );
+
+    // Force refetch room widget related endpoints
+    dispatch(
+      powerLevelsApi.endpoints.getPowerLevels.initiate(undefined, {
+        forceRefetch: true,
+      }),
+    );
+    dispatch(
+      roomNameApi.endpoints.getRoomName.initiate(undefined, {
+        forceRefetch: true,
+      }),
+    );
+  }, [
+    dispatch,
+    homeserverUrl,
+    resolveWidgetApi,
+    selectedRoomId,
+    standaloneClient,
+    userId,
+    whiteboardManager,
+    whiteboards,
+    widgetApi,
+  ]);
 
   return (
-    <LoggedInLayout>
-      <WhiteboardList />
+    <LoggedInLayout onLogoClick={handleLogoClick}>
       <DraggableStyles />
-      <Suspense fallback={<PageLoader />}>
-        <MuiWidgetApiProvider
-          widgetApiPromise={widgetApiPromise}
-          widgetRegistration={{
-            name: 'NeoBoard',
-            // "pad" suffix to get a custom icon
-            type: 'net.nordeck.whiteboard:pad',
-          }}
-        >
-          <FontsLoadedContextProvider>
-            <LayoutStateProvider>
-              <WhiteboardHotkeysProvider>
-                <GuidedTourProvider>
-                  <SnackbarProvider>
-                    <Snackbar />
-                    <WhiteboardApp />
-                  </SnackbarProvider>
-                </GuidedTourProvider>
-              </WhiteboardHotkeysProvider>
-            </LayoutStateProvider>
-          </FontsLoadedContextProvider>
-        </MuiWidgetApiProvider>
-      </Suspense>
+      {selectedRoomId === undefined ? (
+        <Dashboard setSelectedRoomId={setSelectedRoomId} />
+      ) : (
+        <Suspense fallback={<PageLoader />}>
+          <MuiWidgetApiProvider
+            widgetApiPromise={widgetApiPromise}
+            widgetRegistration={{
+              name: 'NeoBoard',
+              // "pad" suffix to get a custom icon
+              type: 'net.nordeck.whiteboard:pad',
+            }}
+          >
+            <FontsLoadedContextProvider>
+              <LayoutStateProvider>
+                <WhiteboardHotkeysProvider>
+                  <GuidedTourProvider>
+                    <SnackbarProvider>
+                      <Snackbar />
+                      <WhiteboardApp />
+                    </SnackbarProvider>
+                  </GuidedTourProvider>
+                </WhiteboardHotkeysProvider>
+              </LayoutStateProvider>
+            </FontsLoadedContextProvider>
+          </MuiWidgetApiProvider>
+        </Suspense>
+      )}
     </LoggedInLayout>
   );
 };
