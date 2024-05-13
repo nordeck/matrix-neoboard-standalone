@@ -36,6 +36,7 @@ import { isEqual } from 'lodash';
 import { Suspense, useCallback, useEffect, useMemo, useState } from 'react';
 import { useLoggedIn } from '../state';
 import { useAppDispatch, useAppSelector } from '../store';
+import { useGetRoomNameEventsQuery } from '../store/api/roomNameApi';
 import { makeSelectWhiteboards } from '../store/api/selectors/selectWhiteboards';
 import {
   StandaloneApiImpl,
@@ -68,6 +69,8 @@ export const LoggedInView = () => {
     (state) => selectWhiteboards(state),
     isEqual,
   );
+
+  const { data: roomNameState } = useGetRoomNameEventsQuery();
 
   useEffect(() => {
     if (selectedRoomId === undefined) {
@@ -152,6 +155,11 @@ export const LoggedInView = () => {
               type: 'net.nordeck.whiteboard:pad',
             }}
           >
+            <h1>
+              {roomNameState && selectedRoomId
+                ? roomNameState.entities[selectedRoomId]?.content.name
+                : undefined}
+            </h1>
             <FontsLoadedContextProvider>
               <LayoutStateProvider>
                 <WhiteboardHotkeysProvider>

@@ -88,6 +88,8 @@ export const roomNameApi = whiteboardBaseApi.injectEndpoints({
   }),
 });
 
+export const { useGetRoomNameEventsQuery } = roomNameApi;
+
 const getRoomNameEventsSelectors =
   roomNameApi.endpoints.getRoomNameEvents.select();
 export const { selectEntities: selectRoomNameEventEntities } =
