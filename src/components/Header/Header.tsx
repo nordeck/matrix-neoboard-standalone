@@ -18,30 +18,45 @@
 
 import { styled } from '@mui/material';
 import { t } from 'i18next';
+import { NeoBoardIcon } from './NeoBoardIcon';
 import { UserMenu } from './UserMenu';
-import neoBoardLogo from './neoboard-logo.png';
 
 const StyledHeader = styled('nav')(() => ({
+  alignItems: 'center',
   display: 'flex',
-  justifyContent: 'space-between',
+  gap: '16px',
   paddingBottom: '34px',
   paddingTop: '34px',
 }));
 
+const Title = styled('div')(({ theme }) => ({
+  color: theme.palette.primary.main,
+  fontSize: '25px',
+  fontWeight: '600',
+  overflow: 'hidden',
+  position: 'relative',
+  textOverflow: 'ellipsis',
+  top: '-4px',
+  whiteSpace: 'nowrap',
+}));
+
 type HeaderProps = {
+  title: string;
   onLogoClick: () => void;
 };
 
-export function Header({ onLogoClick }: HeaderProps) {
+export function Header({ onLogoClick, title }: HeaderProps) {
   return (
     <StyledHeader>
-      <div style={{ cursor: 'pointer' }} role="button" onClick={onLogoClick}>
-        <img
-          height="35"
-          src={neoBoardLogo}
-          alt={t('app.logo', 'NeoBoard Logo')}
-        />
+      <div
+        style={{ cursor: 'pointer' }}
+        role="button"
+        onClick={onLogoClick}
+        aria-label={t('header.dashboard', 'Go back to the dashboard')}
+      >
+        <NeoBoardIcon onClick={onLogoClick} />
       </div>
+      <Title>{title}</Title>
       <UserMenu />
     </StyledHeader>
   );

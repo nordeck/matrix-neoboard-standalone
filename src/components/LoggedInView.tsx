@@ -36,6 +36,7 @@ import { isEqual } from 'lodash';
 import { Suspense, useCallback, useEffect, useMemo, useState } from 'react';
 import { useLoggedIn } from '../state';
 import { useAppDispatch, useAppSelector } from '../store';
+import { useGetRoomNameEventsQuery } from '../store/api/roomNameApi';
 import { makeSelectWhiteboards } from '../store/api/selectors/selectWhiteboards';
 import {
   StandaloneApiImpl,
@@ -137,8 +138,14 @@ export const LoggedInView = () => {
     widgetApi,
   ]);
 
+  const { data: roomNameState } = useGetRoomNameEventsQuery();
+  const title =
+    selectedRoomId === undefined
+      ? 'neoboard'
+      : roomNameState?.entities[selectedRoomId]?.content.name ?? 'neoboard';
+
   return (
-    <LoggedInLayout onLogoClick={handleLogoClick}>
+    <LoggedInLayout onLogoClick={handleLogoClick} title={title}>
       <DraggableStyles />
       {selectedRoomId === undefined ? (
         <Dashboard setSelectedRoomId={setSelectedRoomId} />
