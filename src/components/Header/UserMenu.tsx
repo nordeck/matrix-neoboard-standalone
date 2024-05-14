@@ -30,6 +30,7 @@ import {
 } from '@mui/material';
 import { t } from 'i18next';
 import React, { useCallback, useState } from 'react';
+import { useLoggedIn } from '../../state';
 import { LogoutDialog } from './LogoutDialog';
 import dummyAvatar from './dummy-avatar.png';
 
@@ -49,6 +50,10 @@ export function UserMenu() {
     setLogoutDialogOpen(true);
   }, [setAnchorEl, setLogoutDialogOpen]);
 
+  const { userId } = useLoggedIn();
+  const username = userId.substring(1, userId.indexOf(':'));
+  const initial = username.substring(0, 1);
+
   return (
     <>
       <LogoutDialog
@@ -58,16 +63,27 @@ export function UserMenu() {
       <IconButton
         onClick={handleClick}
         size="small"
-        sx={{ ml: 2 }}
+        sx={{ ml: 'auto' }}
         aria-controls={open ? 'account-menu' : undefined}
         aria-haspopup="true"
         aria-expanded={open ? 'true' : undefined}
       >
         <Avatar sx={{ width: 30, height: 30 }} src={dummyAvatar}>
-          M
+          {initial}
         </Avatar>
       </IconButton>
       <Menu anchorEl={anchorEl} open={open} onClose={handleClose}>
+        <MenuItem disabled={true}>
+          <ListItemIcon />
+          <ListItemText>{username}</ListItemText>
+        </MenuItem>
+        <MenuItem onClick={handleClose}>
+          <ListItemIcon>
+            <AccountCircleIcon fontSize="small" />
+          </ListItemIcon>
+          <ListItemText>{t('userMenu.profile', 'Profile')}</ListItemText>
+        </MenuItem>
+        <Divider />
         <MenuItem onClick={handleClose}>
           <ListItemIcon>
             <PeopleIcon fontSize="small" />
@@ -75,12 +91,6 @@ export function UserMenu() {
           <ListItemText>
             {t('userMenu.userManagement', 'User Management')}
           </ListItemText>
-        </MenuItem>
-        <MenuItem onClick={handleClose}>
-          <ListItemIcon>
-            <AccountCircleIcon fontSize="small" />
-          </ListItemIcon>
-          <ListItemText>{t('userMenu.profile', 'Profile')}</ListItemText>
         </MenuItem>
         <Divider />
         <MenuItem onClick={handleLogoutClick}>
