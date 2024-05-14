@@ -17,4 +17,6 @@
  */
 
 export { MatrixStandaloneClient } from './MatrixStandaloneClient';
+export { mockStandaloneClient } from './mockStandaloneClient';
+export type { MockedStandaloneClient } from './mockStandaloneClient';
 export type { StandaloneClient } from './types';

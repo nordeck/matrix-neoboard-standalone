@@ -22,31 +22,17 @@ import {
   ToDeviceMessageEvent,
 } from '@matrix-widget-toolkit/api';
 import { Symbols } from 'matrix-widget-api';
-import { Observable, firstValueFrom, of, take, toArray } from 'rxjs';
+import { firstValueFrom, of, take, toArray } from 'rxjs';
 import { StandaloneApiImpl } from './StandaloneApiImpl';
-import { StandaloneClient } from './client';
+import { MockedStandaloneClient, mockStandaloneClient } from './client';
 import { StandaloneApi } from './types';
 
 describe('StandaloneApiImpl', () => {
-  type MockedStandaloneClient = jest.Mocked<StandaloneClient>;
   let standaloneClient: MockedStandaloneClient;
   let standaloneApi: StandaloneApi;
 
   beforeEach(() => {
-    standaloneClient = {
-      eventsObservable: jest.fn().mockReturnValue(new Observable()),
-      toDeviceMessagesObservable: jest.fn().mockReturnValue(new Observable()),
-      receiveStateEvents: jest.fn(),
-      sendStateEvent: jest.fn(),
-      receiveRoomEvents: jest.fn(),
-      sendRoomEvent: jest.fn(),
-      readEventRelations: jest.fn(),
-      observeTurnServers: jest.fn(),
-      searchUserDirectory: jest.fn(),
-      getMediaConfig: jest.fn(),
-      uploadFile: jest.fn(),
-      sendToDeviceMessage: jest.fn(),
-    };
+    standaloneClient = mockStandaloneClient();
   });
 
   describe('observeStateEvents', () => {

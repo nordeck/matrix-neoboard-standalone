@@ -16,31 +16,25 @@
  * along with NeoBoard Standalone. If not, see <https://www.gnu.org/licenses/>.
  */
 
-const config = {
-  setupFiles: ['<rootDir>/src/setupTests.ts'],
-  testEnvironment: 'jsdom',
-  transform: {
-    '^.+\\.(t|j)sx?$': [
-      '@swc/jest',
-      {
-        jsc: {
-          transform: {
-            react: {
-              runtime: 'automatic',
-            },
-          },
-        },
-      },
-    ],
-  },
-  moduleNameMapper: {
-    // Allow imports from other packages in this repository.
-    '@nordeck/matrix-neoboard-(.*)':
-      '<rootDir>/../matrix-neoboard/packages/$1/src/index.ts',
-    '\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$':
-      '<rootDir>/__mocks__/fileMock.js',
-    '\\.(css|less)$': 'identity-obj-proxy',
-  },
-};
+import { createSvgIcon } from '@mui/material';
 
-export default config;
+export const AddIcon = createSvgIcon(
+  <svg viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <rect width="30" height="30" rx="4" fill="#B7251E" />
+    <path
+      d="M15.3057 9.07166V19.5408"
+      stroke="#F8FDDE"
+      strokeWidth="2.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <path
+      d="M20.5405 14.3063H10.0713"
+      stroke="#F8FDDE"
+      strokeWidth="2.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </svg>,
+  'Add',
+);

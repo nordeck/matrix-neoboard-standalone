@@ -60,9 +60,6 @@ in yarn.lock, then `yarn cache clean` and `yarn install --force` should be execu
 Then run `yarn dev` from the project root to start a development environment.
 When asked for a server name enter `matrix.local`.
 
-Currently, the user have to have a room with whiteboard in order to see a widget loaded.
-Otherwise, widget will be in loading state waiting for for such room to appear.
-
 ### Available Scripts
 
 In the project directory, you can run:

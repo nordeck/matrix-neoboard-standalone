@@ -22,12 +22,15 @@ import { useAppSelector } from '../../store';
 import { makeSelectWhiteboards } from '../../store/api/selectors/selectWhiteboards';
 import { BoardTile } from './BoardTile';
 
+import { useLoggedIn } from '../../state';
+import { CreateBoardTile } from './CreateBoardTile';
 import { TilesContainer } from './TilesContainer';
 import boardPreview1 from './board1.png';
 import boardPreview2 from './board2.png';
 import boardPreview3 from './board3.png';
 import boardPreview4 from './board4.png';
 import boardPreview5 from './board5.png';
+import { createWhiteboard } from './createWhiteboard.ts';
 
 const boardPreviews = [
   boardPreview1,
@@ -42,7 +45,11 @@ type DashboardProps = {
 };
 
 export function Dashboard({ setSelectedRoomId }: DashboardProps) {
-  const selectWhiteboards = useMemo(makeSelectWhiteboards, []);
+  const { userId, standaloneClient } = useLoggedIn();
+  const selectWhiteboards = useMemo(
+    () => makeSelectWhiteboards(userId),
+    [userId],
+  );
   const whiteboards = useAppSelector(
     (state) => selectWhiteboards(state),
     isEqual,
@@ -50,8 +57,14 @@ export function Dashboard({ setSelectedRoomId }: DashboardProps) {
 
   return (
     <TilesContainer>
+      <CreateBoardTile
+        onClick={() => {
+          createWhiteboard(standaloneClient, 'Untitled');
+        }}
+      />
       {whiteboards.map((whiteboard, index) => (
         <BoardTile
+          key={whiteboard.whiteboard.room_id}
           whiteboard={whiteboard}
           previewUrl={boardPreviews[index % 5]}
           onClick={() => {

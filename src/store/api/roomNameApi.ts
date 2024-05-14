@@ -36,7 +36,7 @@ const roomNameEventEntityAdapter = createEntityAdapter<
 
 export const roomNameApi = whiteboardBaseApi.injectEndpoints({
   endpoints: (builder) => ({
-    getRoomNameEvents: builder.query<
+    getAllRoomNameEvents: builder.query<
       EntityState<StateEvent<RoomNameEvent>>,
       void
     >({
@@ -88,11 +88,11 @@ export const roomNameApi = whiteboardBaseApi.injectEndpoints({
   }),
 });
 
-export const { useGetRoomNameEventsQuery } = roomNameApi;
+export const { useGetAllRoomNameEventsQuery } = roomNameApi;
 
 const getRoomNameEventsSelectors =
-  roomNameApi.endpoints.getRoomNameEvents.select();
-export const { selectEntities: selectRoomNameEventEntities } =
+  roomNameApi.endpoints.getAllRoomNameEvents.select();
+export const { selectEntities: selectAllRoomNameEventEntities } =
   roomNameEventEntityAdapter.getSelectors((rootState: RootState) => {
     return (
       getRoomNameEventsSelectors(rootState).data ??

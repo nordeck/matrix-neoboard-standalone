@@ -64,7 +64,7 @@ export function BoardTile({ onClick, previewUrl, whiteboard }: BoardTileProps) {
           </Typography>
         </CardContent>
         <CardActions>
-          <IconButton onClick={noop}>
+          <IconButton onClick={noop} component="span">
             <PeopleAltIcon />
           </IconButton>
         </CardActions>

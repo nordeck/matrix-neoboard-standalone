@@ -28,6 +28,7 @@ import {
   EventTimeline,
   EventType,
   ITurnServer as IClientTurnServer,
+  ICreateRoomOpts,
   MatrixClient,
   MatrixEvent,
   Room,
@@ -69,6 +70,10 @@ export class MatrixStandaloneClient implements StandaloneClient {
         return event.getEffectiveEvent() as unknown as ToDeviceMessageEvent;
       },
     );
+  }
+
+  async createRoom(options: ICreateRoomOpts): Promise<{ room_id: string }> {
+    return await this.matrixClient.createRoom(options);
   }
 
   eventsObservable(): Observable<RoomEvent | StateEvent> {

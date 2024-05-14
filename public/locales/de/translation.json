@@ -5,6 +5,9 @@
   "dashboard": {
     "boardTile": {
       "lastView": "Zuletzt vor {{lastview}} Stunden"
+    },
+    "createBoardTile": {
+      "createBoard": "Create a New Board"
     }
   },
   "header": {

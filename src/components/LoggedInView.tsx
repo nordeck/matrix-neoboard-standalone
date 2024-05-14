@@ -36,7 +36,7 @@ import { isEqual } from 'lodash';
 import { Suspense, useCallback, useEffect, useMemo, useState } from 'react';
 import { useLoggedIn } from '../state';
 import { useAppDispatch, useAppSelector } from '../store';
-import { useGetRoomNameEventsQuery } from '../store/api/roomNameApi';
+import { useGetAllRoomNameEventsQuery } from '../store/api/roomNameApi';
 import { makeSelectWhiteboards } from '../store/api/selectors/selectWhiteboards';
 import {
   StandaloneApiImpl,
@@ -62,7 +62,10 @@ export const LoggedInView = () => {
     setSelectedRoomId(undefined);
   }, [setSelectedRoomId]);
 
-  const selectWhiteboards = useMemo(makeSelectWhiteboards, []);
+  const selectWhiteboards = useMemo(
+    () => makeSelectWhiteboards(userId),
+    [userId],
+  );
   const whiteboardManager = useWhiteboardManager();
 
   const whiteboards = useAppSelector(
@@ -138,7 +141,7 @@ export const LoggedInView = () => {
     widgetApi,
   ]);
 
-  const { data: roomNameState } = useGetRoomNameEventsQuery();
+  const { data: roomNameState } = useGetAllRoomNameEventsQuery();
   const title =
     selectedRoomId === undefined
       ? 'neoboard'

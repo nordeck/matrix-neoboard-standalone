@@ -16,31 +16,25 @@
  * along with NeoBoard Standalone. If not, see <https://www.gnu.org/licenses/>.
  */
 
-const config = {
-  setupFiles: ['<rootDir>/src/setupTests.ts'],
-  testEnvironment: 'jsdom',
-  transform: {
-    '^.+\\.(t|j)sx?$': [
-      '@swc/jest',
-      {
-        jsc: {
-          transform: {
-            react: {
-              runtime: 'automatic',
-            },
-          },
-        },
-      },
-    ],
-  },
-  moduleNameMapper: {
-    // Allow imports from other packages in this repository.
-    '@nordeck/matrix-neoboard-(.*)':
-      '<rootDir>/../matrix-neoboard/packages/$1/src/index.ts',
-    '\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$':
-      '<rootDir>/__mocks__/fileMock.js',
-    '\\.(css|less)$': 'identity-obj-proxy',
-  },
-};
+import { Observable } from 'rxjs';
+import { StandaloneClient } from './types';
 
-export default config;
+export type MockedStandaloneClient = jest.Mocked<StandaloneClient>;
+
+export function mockStandaloneClient(): MockedStandaloneClient {
+  return {
+    createRoom: jest.fn(),
+    eventsObservable: jest.fn().mockReturnValue(new Observable()),
+    toDeviceMessagesObservable: jest.fn().mockReturnValue(new Observable()),
+    receiveStateEvents: jest.fn(),
+    sendStateEvent: jest.fn(),
+    receiveRoomEvents: jest.fn(),
+    sendRoomEvent: jest.fn(),
+    readEventRelations: jest.fn(),
+    observeTurnServers: jest.fn(),
+    searchUserDirectory: jest.fn(),
+    getMediaConfig: jest.fn(),
+    uploadFile: jest.fn(),
+    sendToDeviceMessage: jest.fn(),
+  };
+}
