@@ -14,7 +14,4 @@
  * limitations under the License.
  */
 
-export { MatrixStandaloneClient } from './MatrixStandaloneClient';
-export { mockStandaloneClient } from './mockStandaloneClient';
-export type { MockedStandaloneClient } from './mockStandaloneClient';
-export type { StandaloneClient } from './types';
+module.exports = 'test-file-stub';
