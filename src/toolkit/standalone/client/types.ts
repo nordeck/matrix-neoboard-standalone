@@ -20,6 +20,7 @@ import {
   ToDeviceMessageEvent,
   WidgetApi,
 } from '@matrix-widget-toolkit/api';
+import { ICreateRoomOpts } from 'matrix-js-sdk';
 import { Symbols } from 'matrix-widget-api';
 import { Observable } from 'rxjs';
 
@@ -42,6 +43,12 @@ export type StandaloneClient = Pick<
   | 'uploadFile'
   | 'sendToDeviceMessage'
 > & {
+  /**
+   * Creates a new room
+   * @param options - Options to create a room
+   */
+  createRoom(options: ICreateRoomOpts): Promise<{ room_id: string }>;
+
   /**
    * Observable that emits room and state events.
    */

@@ -18,7 +18,8 @@ import { StateEvent } from '@matrix-widget-toolkit/api';
 import { Whiteboard } from '@nordeck/matrix-neoboard-react-sdk';
 import { createSelector } from '@reduxjs/toolkit';
 import { RootState } from '../../store';
-import { selectRoomNameEventEntities } from '../roomNameApi';
+import { selectAllRoomMemberEventEntities } from '../roomMemberApi';
+import { selectAllRoomNameEventEntities } from '../roomNameApi';
 import { selectAllWhiteboards } from '../whiteboardApi';
 
 export type WhiteboardEntry = {
@@ -26,17 +27,25 @@ export type WhiteboardEntry = {
   whiteboard: StateEvent<Whiteboard>;
 };
 
-export function makeSelectWhiteboards(): (
-  state: RootState,
-) => WhiteboardEntry[] {
+export function makeSelectWhiteboards(
+  userId: string,
+): (state: RootState) => WhiteboardEntry[] {
   return createSelector(
     selectAllWhiteboards,
-    selectRoomNameEventEntities,
-    (whiteboards, roomNameEvents): WhiteboardEntry[] => {
+    selectAllRoomNameEventEntities,
+    selectAllRoomMemberEventEntities,
+    (whiteboards, roomNameEvents, roomMemberEvents): WhiteboardEntry[] => {
       return whiteboards.flatMap((whiteboard) => {
         const roomName = roomNameEvents[whiteboard.room_id]?.content.name;
 
-        if (roomName) {
+        if (
+          roomName &&
+          // select rooms where user is a member (invited or joined, filters out leave membership)
+          Object.values(roomMemberEvents).some(
+            (e) =>
+              e && e.room_id === whiteboard.room_id && e.state_key === userId,
+          )
+        ) {
           return [
             {
               roomName,

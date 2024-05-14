@@ -14,7 +14,25 @@
  * limitations under the License.
  */
 
-export { MatrixStandaloneClient } from './MatrixStandaloneClient';
-export { mockStandaloneClient } from './mockStandaloneClient';
-export type { MockedStandaloneClient } from './mockStandaloneClient';
-export type { StandaloneClient } from './types';
+import { createSvgIcon } from '@mui/material';
+
+export const AddIcon = createSvgIcon(
+  <svg viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <rect width="30" height="30" rx="4" fill="#B7251E" />
+    <path
+      d="M15.3057 9.07166V19.5408"
+      stroke="#F8FDDE"
+      strokeWidth="2.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <path
+      d="M20.5405 14.3063H10.0713"
+      stroke="#F8FDDE"
+      strokeWidth="2.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </svg>,
+  'Add',
+);

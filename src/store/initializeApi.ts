@@ -15,6 +15,7 @@
  */
 
 import { QueryActionCreatorResult } from '@reduxjs/toolkit/dist/query/core/buildInitiate';
+import { roomMemberApi } from './api/roomMemberApi';
 import { roomNameApi } from './api/roomNameApi';
 import { whiteboardApi } from './api/whiteboardApi';
 import { AppDispatch } from './store';
@@ -23,8 +24,9 @@ export async function initializeApi(dispatch: AppDispatch): Promise<void> {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const actions: QueryActionCreatorResult<any>[] = [];
 
-  actions.push(dispatch(roomNameApi.endpoints.getRoomNameEvents.initiate()));
+  actions.push(dispatch(roomNameApi.endpoints.getAllRoomNameEvents.initiate()));
   actions.push(dispatch(whiteboardApi.endpoints.getWhiteboardsAll.initiate()));
+  actions.push(dispatch(roomMemberApi.endpoints.getRoomMembersAll.initiate()));
 
   // wait for initial load
   await Promise.all(actions.map((a) => a.unwrap()));
