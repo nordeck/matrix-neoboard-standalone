@@ -16,11 +16,22 @@
  * along with NeoBoard Standalone. If not, see <https://www.gnu.org/licenses/>.
  */
 
+import { t } from 'i18next';
 import { discoverAndValidateOIDCIssuerWellKnown } from 'matrix-js-sdk';
 import { ensureNoTrailingSlash } from 'matrix-js-sdk/lib/utils';
 import { ChangeEvent, FormEvent, useCallback, useState } from 'react';
-import { discoverClientConfig, fetchAuthIssuer } from '../lib/discovery';
-import { registerOidcClient, startOidcLogin } from '../lib/oidc';
+
+import { Typography } from '@mui/material';
+import {
+  FullWidthButton,
+  LoginWrapper,
+  StyledFormInput,
+  StyledFormLabel,
+  StyledLoginForm,
+} from './styles';
+
+import { discoverClientConfig, fetchAuthIssuer } from '../../lib/discovery';
+import { registerOidcClient, startOidcLogin } from '../../lib/oidc';
 
 /**
  * Simple login component demonstrating the login flow.
@@ -72,25 +83,28 @@ export function Login() {
   );
 
   return (
-    <div>
-      <h4 style={{ marginTop: '2rem' }}>Log in to NeoBoard</h4>
-      <form
-        onSubmit={handleFormSubmit}
-        style={{
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'flex-start',
-        }}
+    <LoginWrapper>
+      <Typography
+        variant="h3"
+        align="center"
+        style={{ fontSize: '2rem', fontWeight: 500 }}
       >
-        <label>Homeserver</label>
-        <input
+        {t('login.title', 'Log in to NeoBoard')}
+      </Typography>
+      <StyledLoginForm onSubmit={handleFormSubmit}>
+        <StyledFormLabel>
+          {t('login.homeserver.label', 'Homeserver')}
+        </StyledFormLabel>
+        <StyledFormInput
           value={serverName}
-          placeholder="e.g. matrix.org"
+          placeholder={t('login.homeserver.placeholder', 'e.g. matrix.org')}
           onChange={handleServerNameChange}
           style={{ marginBottom: '0.5rem' }}
           autoFocus={true}
         />
-        <button>login</button>
+        <FullWidthButton type="submit" variant="contained" color="primary">
+          {t('login.button', 'Log In')}
+        </FullWidthButton>
         {message !== '' && (
           <small
             style={{
@@ -101,7 +115,7 @@ export function Login() {
             {message}
           </small>
         )}
-      </form>
-    </div>
+      </StyledLoginForm>
+    </LoginWrapper>
   );
 }

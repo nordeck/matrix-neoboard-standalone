@@ -10,6 +10,14 @@
   "header": {
     "dashboard": "Go back to the dashboard"
   },
+  "login": {
+    "button": "Log In",
+    "homeserver": {
+      "label": "Homeserver",
+      "placeholder": "e.g. matrix.org"
+    },
+    "title": "Log in to NeoBoard"
+  },
   "logOutDialog": {
     "logOut": "Log out",
     "title": "Are you sure you want to log out?"
@@ -18,5 +26,9 @@
     "logOut": "Log out",
     "profile": "Profile",
     "userManagement": "User Management"
+  },
+  "welcome": {
+    "loading": "Starting…",
+    "title": "Welcome"
   }
 }

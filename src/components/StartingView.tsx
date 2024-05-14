@@ -16,35 +16,25 @@
  * along with NeoBoard Standalone. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { ThemeOptions } from '@mui/material';
+import { CircularProgress, Typography, styled } from '@mui/material';
+import { t } from 'i18next';
+import React from 'react';
 
-const fontFamily = [
-  'Roboto',
-  'Inter',
-  'Noto Sans',
-  'Ubuntu',
-  'Cantarel',
-  'Arial',
-  'Helvetica',
-  'sans-serif',
-  'Twemoji',
-  '"Apple Color Emoji"',
-  '"Segoe UI Emoji"',
-  '"Noto Color Emoji"',
-].join(',');
+const StyledStartingView = styled('div')(({ theme }) => ({
+  display: 'flex',
+  flexDirection: 'column',
+  justifyContent: 'center',
+  alignItems: 'center',
+  height: '100vh',
+}));
 
-export const standaloneLightTheme: ThemeOptions = {
-  palette: {
-    primary: {
-      main: '#e85e10',
-      light: '#ff8a42',
-      dark: '#b52e00',
-    },
-    background: {
-      default: '#fcf9f3',
-    },
-  },
-  typography: {
-    fontFamily,
-  },
+export const StartingView: React.FC = () => {
+  return (
+    <StyledStartingView>
+      <CircularProgress />
+      <Typography variant="h6" color="textPrimary">
+        {t('welcome.loading', 'Starting…')}
+      </Typography>
+    </StyledStartingView>
+  );
 };
