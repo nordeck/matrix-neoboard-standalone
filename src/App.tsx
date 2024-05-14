@@ -16,8 +16,9 @@
 
 import './App.css';
 import { LoggedInView } from './components/LoggedInView';
-import { Login } from './components/Login';
 import { StandaloneThemeProvider } from './components/StandaloneThemeProvider';
+import { StartingView } from './components/StartingView';
+import { WelcomePane } from './components/Welcome/WelcomePane';
 import { LoggedInProvider, useApplicationState } from './state';
 
 export const App = () => {
@@ -25,8 +26,8 @@ export const App = () => {
 
   return (
     <StandaloneThemeProvider>
-      {applicationState.lifecycleState === 'starting' && <div>Starting…</div>}
-      {applicationState.lifecycleState === 'loggedOut' && <Login />}
+      {applicationState.lifecycleState === 'starting' && <StartingView />}
+      {applicationState.lifecycleState === 'loggedOut' && <WelcomePane />}
       {applicationState.lifecycleState === 'loggedIn' && (
         <LoggedInProvider loggedInState={applicationState.state}>
           <LoggedInView />

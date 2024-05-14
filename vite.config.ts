@@ -32,6 +32,9 @@ export default defineConfig({
   },
   build: {
     outDir: 'build',
+    commonjsOptions: {
+      strictRequires: true,
+    },
   },
   resolve: {
     dedupe: [
