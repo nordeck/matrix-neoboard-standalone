@@ -1,12 +1,14 @@
 {
   "app": {
-    "cancel": "abbrechen",
-    "logo": "NeoBoard Logo"
+    "cancel": "abbrechen"
   },
   "dashboard": {
     "boardTile": {
       "lastView": "Zuletzt vor {{lastview}} Stunden"
     }
+  },
+  "header": {
+    "dashboard": "Zurück zum Dashboard"
   },
   "logOutDialog": {
     "logOut": "Abmelden",
