@@ -16,7 +16,12 @@
 
 import basicSsl from '@vitejs/plugin-basic-ssl';
 import react from '@vitejs/plugin-react-swc';
-import { Plugin, PluginOption, defineConfig } from 'vite';
+import {
+  Plugin,
+  PluginOption,
+  defineConfig,
+  searchForWorkspaceRoot,
+} from 'vite';
 
 const plugins: [Plugin | PluginOption] = [react()];
 
@@ -44,9 +49,19 @@ export default defineConfig({
       'react-redux',
     ],
   },
+  server: {
+    fs: {
+      allow: [
+        searchForWorkspaceRoot(process.cwd()),
+        '../matrix-neoboard/packages/react-sdk/src/components/BoardBar/pdf/',
+        '../matrix-neoboard/node_modules/@fontsource/',
+        '../matrix-neoboard/node_modules/pdfmake/build/',
+      ],
+    },
+  },
   plugins,
   define: {
-    global: 'window',
+    global: {},
     'process.env': {},
   },
 });
