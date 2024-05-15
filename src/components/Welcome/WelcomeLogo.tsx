@@ -30,14 +30,14 @@ export function WelcomeLogo() {
         fill="white"
       />
       <path
-        fill-rule="evenodd"
-        clip-rule="evenodd"
+        fillRule="evenodd"
+        clipRule="evenodd"
         d="M24.8834 0C11.1407 0 0 11.1407 0 24.8834C0 38.6262 11.1407 49.7669 24.8834 49.7669"
         fill="white"
       />
       <path
-        fill-rule="evenodd"
-        clip-rule="evenodd"
+        fillRule="evenodd"
+        clipRule="evenodd"
         d="M54.7668 24.8838C54.7668 11.141 43.6261 0.000343323 29.8834 0.000343323V24.8838"
         fill="white"
       />
