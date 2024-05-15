@@ -14,36 +14,10 @@
  * limitations under the License.
  */
 
-import { ThemeOptions } from '@mui/material';
+import '@mui/material/styles';
 
-const fontFamily = [
-  'Roboto',
-  'Inter',
-  'Noto Sans',
-  'Ubuntu',
-  'Cantarel',
-  'Arial',
-  'Helvetica',
-  'sans-serif',
-  'Twemoji',
-  '"Apple Color Emoji"',
-  '"Segoe UI Emoji"',
-  '"Noto Color Emoji"',
-].join(',');
-
-export const standaloneLightTheme: ThemeOptions = {
-  palette: {
-    primary: {
-      main: '#e85e10',
-      light: '#ff8a42',
-      dark: '#b52e00',
-    },
-    background: {
-      chrome: '#fcf9f3',
-      paper: '#fff',
-    },
-  },
-  typography: {
-    fontFamily,
-  },
-};
+declare module '@mui/material/styles' {
+  interface TypeBackground {
+    chrome: string;
+  }
+}
