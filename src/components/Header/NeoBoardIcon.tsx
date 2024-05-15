@@ -29,14 +29,14 @@ export function NeoBoardIcon(props: SVGProps<SVGSVGElement>) {
       {...props}
     >
       <path
-        fill-rule="evenodd"
-        clip-rule="evenodd"
+        fillRule="evenodd"
+        clipRule="evenodd"
         d="M17.5 0C7.83503 0 0 7.83503 0 17.5C0 27.165 7.83503 35.0001 17.5 35.0001"
         fill="#E95D12"
       />
       <path
-        fill-rule="evenodd"
-        clip-rule="evenodd"
+        fillRule="evenodd"
+        clipRule="evenodd"
         d="M35 17.5003C35 7.8353 27.165 0.000272751 17.5 0.000272751V17.5003"
         fill="#B7251E"
       />
