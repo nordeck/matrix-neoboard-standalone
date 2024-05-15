@@ -61,8 +61,9 @@ export default defineConfig({
     },
   },
   plugins,
+  // Use the env prefix from CRA for backward compatibility.
+  envPrefix: 'REACT_APP_',
   define: {
     global: {},
-    'process.env': {},
   },
 });
