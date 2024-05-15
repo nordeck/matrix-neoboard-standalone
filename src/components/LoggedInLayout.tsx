@@ -21,7 +21,7 @@ import { PropsWithChildren } from 'react';
 import { Header } from './Header';
 
 const Wrapper = styled('div')(({ theme }) => ({
-  backgroundColor: theme.palette.background.default,
+  backgroundColor: theme.palette.background.chrome,
   height: '100vh',
   paddingLeft: '25px',
   paddingRight: '25px',

@@ -49,6 +49,7 @@ export default defineConfig({
       'react-dom',
       '@matrix-widget-toolkit/react',
       'react-redux',
+      '@mui/material',
     ],
   },
   server: {
