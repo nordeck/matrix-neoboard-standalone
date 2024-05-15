@@ -8,9 +8,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>NeoBoard | Visual Collaboration for Teams</title>
 
+    <!--#echo var="__INJECT_SCRIPT_TAG__" encoding="none"-->
+
     <script nonce='<!--#echo var="cspNonce"-->'>
-      window.NONCE = '<!--#echo var="cspNonce"-->';
       __webpack_nonce__ = '<!--#echo var="cspNonce"-->';
+    </script>
+
+    <script nonce='<!--#echo var="cspNonce"-->' type="module">
+      // Copy environment variables to process.env for backward compatibility with CRA.
+      window.process = window.process ?? {};
+      window.process.env = import.meta.env;
     </script>
 
     <style nonce='<!--#echo var="cspNonce"-->'>
