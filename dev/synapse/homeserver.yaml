@@ -27,6 +27,9 @@ database:
     dbname: synapse
     host: synapse-db
 log_config: '/data/matrix.local.log.config'
+rc_message:
+  per_second: 1000
+  burst_count: 1000
 use_insecure_ssl_client_just_for_testing_do_not_use: true
 media_store_path: /data/media_store
 registration_shared_secret: 'hPsaGR*yFu__Xg0omA4t^nKe_exYAXh0z&:cxGe8&K,aGi2NJ0'

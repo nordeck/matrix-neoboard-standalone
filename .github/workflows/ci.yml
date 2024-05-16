@@ -19,7 +19,6 @@ jobs:
         with:
           repository: nordeck/matrix-neoboard
           path: matrix-neoboard
-          ref: nic/feat/NEO-324_create
           # required for changesets
           fetch-depth: '0'
           # don't persist the credentials so the changesets action doesn't use the
