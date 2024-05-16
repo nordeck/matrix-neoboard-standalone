@@ -23,6 +23,7 @@ const Wrapper = styled('div')(({ theme }) => ({
   height: '100vh',
   paddingLeft: '25px',
   paddingRight: '25px',
+  paddingBottom: '25px',
 }));
 
 const ContentWrapper = styled('div')(() => ({
