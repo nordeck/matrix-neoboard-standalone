@@ -27,6 +27,7 @@ const StyledHeader = styled('nav')(() => ({
   gap: '16px',
   paddingBottom: '34px',
   paddingTop: '34px',
+  height: '10vh',
 }));
 
 const Title = styled('div')(({ theme }) => ({

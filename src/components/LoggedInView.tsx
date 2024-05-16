@@ -170,7 +170,9 @@ export const LoggedInView = () => {
                   <GuidedTourProvider>
                     <SnackbarProvider>
                       <Snackbar />
-                      <WhiteboardApp />
+                      <WhiteboardApp
+                        layoutProps={{ height: 'calc(90vh - 25px)' }}
+                      />
                     </SnackbarProvider>
                   </GuidedTourProvider>
                 </WhiteboardHotkeysProvider>
