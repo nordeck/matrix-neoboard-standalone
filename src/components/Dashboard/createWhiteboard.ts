@@ -33,7 +33,7 @@ import { StandaloneClient } from '../../toolkit/standalone';
 export async function createWhiteboard(
   standaloneClient: StandaloneClient,
   name?: string,
-): Promise<void> {
+): Promise<string> {
   const { room_id: roomId } = await standaloneClient.createRoom({
     name,
     power_level_content_override: {
@@ -83,4 +83,6 @@ export async function createWhiteboard(
       roomId,
     ),
   ]);
+
+  return roomId;
 }

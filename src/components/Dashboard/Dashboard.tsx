@@ -58,8 +58,9 @@ export function Dashboard({ setSelectedRoomId }: DashboardProps) {
   return (
     <TilesContainer>
       <CreateBoardTile
-        onClick={() => {
-          createWhiteboard(standaloneClient, 'Untitled');
+        onClick={async () => {
+          const roomId = await createWhiteboard(standaloneClient, 'Untitled');
+          setSelectedRoomId(roomId);
         }}
       />
       {whiteboards.map((whiteboard, index) => (

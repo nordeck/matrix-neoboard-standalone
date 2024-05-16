@@ -31,6 +31,7 @@ import {
   powerLevelsApi,
   roomNameApi,
   useWhiteboardManager,
+  whiteboardApi,
 } from '@nordeck/matrix-neoboard-react-sdk';
 import { isEqual } from 'lodash';
 import { Suspense, useCallback, useEffect, useMemo, useState } from 'react';
@@ -113,10 +114,6 @@ export const LoggedInView = () => {
     widgetApi.overrideWidgetParameters({
       roomId: selectedRoomId,
     });
-    whiteboardManager.selectActiveWhiteboardInstance(
-      whiteboardEvent.whiteboard,
-      userId,
-    );
 
     // Force refetch room widget related endpoints
     dispatch(
@@ -126,6 +123,11 @@ export const LoggedInView = () => {
     );
     dispatch(
       roomNameApi.endpoints.getRoomName.initiate(undefined, {
+        forceRefetch: true,
+      }),
+    );
+    dispatch(
+      whiteboardApi.endpoints.getWhiteboards.initiate(undefined, {
         forceRefetch: true,
       }),
     );
