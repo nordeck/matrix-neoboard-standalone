@@ -35,7 +35,9 @@ describe('createWhiteboard', () => {
     standaloneClient.createRoom.mockResolvedValue({ room_id: '!room-1' });
     standaloneClient.sendRoomEvent.mockResolvedValueOnce('document-id-1');
 
-    await createWhiteboard(standaloneClient);
+    await expect(createWhiteboard(standaloneClient)).resolves.toEqual(
+      '!room-1',
+    );
 
     expect(standaloneClient.createRoom).toHaveBeenCalled();
 
