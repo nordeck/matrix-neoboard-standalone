@@ -28,16 +28,14 @@ import { Symbols } from 'matrix-widget-api';
 import { bufferTime, filter } from 'rxjs';
 import { RootState, ThunkExtraArgument } from '../store';
 
-const roomNameEventEntityAdapter = createEntityAdapter<
-  StateEvent<RoomNameEvent>
->({
-  selectId: (event) => event.room_id,
+const roomNameEventEntityAdapter = createEntityAdapter({
+  selectId: (event: StateEvent<RoomNameEvent>) => event.room_id,
 });
 
 export const roomNameApi = whiteboardBaseApi.injectEndpoints({
   endpoints: (builder) => ({
     getAllRoomNameEvents: builder.query<
-      EntityState<StateEvent<RoomNameEvent>>,
+      EntityState<StateEvent<RoomNameEvent>, string>,
       void
     >({
       queryFn: async (_, { extra }) => {

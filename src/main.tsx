@@ -18,7 +18,7 @@
 
 import { createWhiteboardManager } from '@nordeck/matrix-neoboard-react-sdk';
 import React, { Suspense } from 'react';
-import ReactDOM from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import { Provider } from 'react-redux';
 import { AppContainer } from './AppContainer';
 import './i18n';
@@ -41,7 +41,9 @@ const whiteboardManager = createWhiteboardManager(
   application.widgetApiPromise,
 );
 
-ReactDOM.render(
+const container = document.getElementById('root');
+const root = createRoot(container!);
+root.render(
   <React.StrictMode>
     <Suspense fallback={<div>Loading</div>}>
       <Provider store={store}>
@@ -52,5 +54,4 @@ ReactDOM.render(
       </Provider>
     </Suspense>
   </React.StrictMode>,
-  document.getElementById('root')!,
 );

@@ -40,14 +40,6 @@ export function createStore({
     reducer: {
       [baseApi.reducerPath]: baseApi.reducer,
     },
-    enhancers: (existingEnhancers) =>
-      existingEnhancers.concat(
-        autoBatchEnhancer(
-          // Disable the auto batching when running tests in JSDOM, as it
-          // conflicts with fake timers.
-          navigator.userAgent.includes('jsdom') ? { type: 'tick' } : undefined,
-        ),
-      ),
     middleware: (getDefaultMiddleware) =>
       getDefaultMiddleware({
         serializableCheck: {
@@ -60,9 +52,15 @@ export function createStore({
             widgetApi,
           } as ThunkExtraArgument,
         },
-      })
-        .concat(loggerMiddleware)
-        .concat(baseApi.middleware),
+      }).concat(loggerMiddleware, baseApi.middleware),
+    enhancers: (getDefaultEnhancers) =>
+      getDefaultEnhancers().concat(
+        autoBatchEnhancer(
+          // Disable the auto batching when running tests in JSDOM, as it
+          // conflicts with fake timers.
+          navigator.userAgent.includes('jsdom') ? { type: 'tick' } : undefined,
+        ),
+      ),
   });
   return store;
 }
