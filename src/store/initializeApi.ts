@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { QueryActionCreatorResult } from '@reduxjs/toolkit/dist/query/core/buildInitiate';
+import { QueryActionCreatorResult } from '@reduxjs/toolkit/query';
 import { roomMemberApi } from './api/roomMemberApi';
 import { roomNameApi } from './api/roomNameApi';
 import { whiteboardApi } from './api/whiteboardApi';
