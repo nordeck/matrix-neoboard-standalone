@@ -16,12 +16,12 @@
 
 import { StateEvent } from '@matrix-widget-toolkit/api';
 import {
-  isValidRoomNameEvent,
   RoomNameEvent,
   STATE_EVENT_ROOM_NAME,
-  baseApi as whiteboardBaseApi,
+  isValidRoomNameEvent,
+  baseApi as neoboardBaseApi,
 } from '@nordeck/matrix-neoboard-react-sdk';
-import { createEntityAdapter, EntityState } from '@reduxjs/toolkit';
+import { EntityState, createEntityAdapter } from '@reduxjs/toolkit';
 import { Symbols } from 'matrix-widget-api';
 import { bufferTime, filter } from 'rxjs';
 import { RootState, ThunkExtraArgument } from '../store';
@@ -30,7 +30,7 @@ const roomNameEventEntityAdapter = createEntityAdapter({
   selectId: (event: StateEvent<RoomNameEvent>) => event.room_id,
 });
 
-export const roomNameApi = whiteboardBaseApi.injectEndpoints({
+export const roomNameApi = neoboardBaseApi.injectEndpoints({
   endpoints: (builder) => ({
     getAllRoomNameEvents: builder.query<
       EntityState<StateEvent<RoomNameEvent>, string>,
