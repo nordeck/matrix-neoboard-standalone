@@ -15,7 +15,12 @@
  */
 
 import { WidgetApi } from '@matrix-widget-toolkit/api';
-import { ClientEvent, MatrixClient, SyncState } from 'matrix-js-sdk';
+import {
+  ClientEvent,
+  MatrixClient,
+  MatrixError,
+  SyncState,
+} from 'matrix-js-sdk';
 import { BehaviorSubject } from 'rxjs';
 import { Credentials, LoggedInState, ObservableBehaviorSubject } from '..';
 import { fetchWhoami } from '../../lib/matrix';
@@ -31,6 +36,10 @@ import {
   StandaloneApiImpl,
   StandaloneClient,
 } from '../../toolkit/standalone';
+import {
+  matrixCredentialsStorageKey,
+  oidcCredentialsStorageKey,
+} from '../Credentials';
 import { createMatrixClient } from './createMatrixClient';
 
 export type LifecycleState =
@@ -163,7 +172,24 @@ export class Application {
       standaloneClient,
     );
 
-    matrixClient.once(ClientEvent.Sync, (state, lastState, data) => {
+    // Send a whoami request before starting the client
+    // to ensure that we can connect to the server with valid credentials.
+    try {
+      await matrixClient.whoami();
+    } catch (error) {
+      const matrixError = error as MatrixError;
+      if (matrixError.name === 'M_UNKNOWN_TOKEN') {
+        // An invalid token is nothing that can be recover from.
+        // Clear the persisted credentials.
+        localStorage.removeItem(oidcCredentialsStorageKey);
+        localStorage.removeItem(matrixCredentialsStorageKey);
+
+        // Re-throw the error, so that the application knows that the.
+        throw error;
+      }
+    }
+
+    matrixClient.once(ClientEvent.Sync, (state) => {
       if (state === SyncState.Prepared) {
         this.resolveStandaloneApi(standaloneApi);
       } else {
