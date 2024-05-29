@@ -28,7 +28,7 @@ import { Observable } from 'rxjs';
 import { StandaloneClient } from './client';
 
 /**
- * API needed to communicate to the matrix server from the standalone app.
+ * API needed to communicate to the homeserver from the standalone app.
  *
  * Similar to WidgetApi from the matrix widget toolkit, but provides only several methods
  * on top of standalone client and with explicit roomId(s) parameter.
@@ -132,7 +132,7 @@ export type StandaloneApi = {
 };
 
 /**
- * WidgetApi of the widget that runs in standalone mode.
+ * Extends WidgetApi for the widget that runs in a standalone mode.
  */
 export type StandaloneWidgetApi = WidgetApi & {
   /**

@@ -19,9 +19,9 @@
 import { compareOriginServerTS, StateEvent } from '@matrix-widget-toolkit/api';
 import {
   isValidWhiteboardStateEvent,
+  baseApi as neoboardBaseApi,
   STATE_EVENT_WHITEBOARD,
   Whiteboard,
-  baseApi as whiteboardBaseApi,
 } from '@nordeck/matrix-neoboard-react-sdk';
 import { createEntityAdapter, EntityState } from '@reduxjs/toolkit';
 import { isEqual, isError } from 'lodash';
@@ -34,7 +34,7 @@ const whiteboardsEntityAdapter = createEntityAdapter({
   sortComparer: compareOriginServerTS,
 });
 
-export const whiteboardApi = whiteboardBaseApi.injectEndpoints({
+export const whiteboardApi = neoboardBaseApi.injectEndpoints({
   endpoints: (builder) => ({
     /** Receive the list of all whiteboards in all the rooms */
     getWhiteboardsAll: builder.query<

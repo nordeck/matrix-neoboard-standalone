@@ -23,10 +23,10 @@ import {
   FontsLoadedContextProvider,
   GuidedTourProvider,
   LayoutStateProvider,
+  App as NeoboardApp,
   PageLoader,
   Snackbar,
   SnackbarProvider,
-  App as WhiteboardApp,
   WhiteboardHotkeysProvider,
   powerLevelsApi,
   roomNameApi,
@@ -170,7 +170,7 @@ export const LoggedInView = () => {
                   <GuidedTourProvider>
                     <SnackbarProvider>
                       <Snackbar />
-                      <WhiteboardApp
+                      <NeoboardApp
                         layoutProps={{ height: 'calc(90vh - 25px)' }}
                       />
                     </SnackbarProvider>

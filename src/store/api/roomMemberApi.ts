@@ -22,7 +22,7 @@ import {
   StateEvent,
   isValidRoomMemberStateEvent,
 } from '@matrix-widget-toolkit/api';
-import { baseApi as whiteboardBaseApi } from '@nordeck/matrix-neoboard-react-sdk';
+import { baseApi as neoboardBaseApi } from '@nordeck/matrix-neoboard-react-sdk';
 import { EntityState, createEntityAdapter } from '@reduxjs/toolkit';
 import { Symbols } from 'matrix-widget-api';
 import { bufferTime, filter } from 'rxjs';
@@ -33,7 +33,7 @@ const roomMemberEventEntityAdapter = createEntityAdapter({
     `${event.room_id}_${event.state_key}`,
 });
 
-export const roomMemberApi = whiteboardBaseApi.injectEndpoints({
+export const roomMemberApi = neoboardBaseApi.injectEndpoints({
   endpoints: (builder) => ({
     getRoomMembersAll: builder.query<
       EntityState<StateEvent<RoomMemberStateEventContent>, string>,
