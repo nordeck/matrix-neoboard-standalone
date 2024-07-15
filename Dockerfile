@@ -8,8 +8,6 @@ ENV REACT_APP_REVISION=${REACT_APP_REVISION}
 ADD build /usr/share/nginx/html/
 ADD LICENSE /usr/share/nginx/html/LICENSE.txt
 
-COPY content-security-policy.conf /etc/nginx/conf.d/headers/
-
 # Allow loading images from all HTTP(s) URLs and blobs
 ENV CSP_IMG_SRC="http: https: blob:"
 
