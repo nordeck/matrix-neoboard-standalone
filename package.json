@@ -29,7 +29,7 @@
     "@matrix-widget-toolkit/api": "^3.2.1",
     "@matrix-widget-toolkit/mui": "^2.0.0",
     "@mui/icons-material": "^5.16.4",
-    "@mui/material": "^5.15.15",
+    "@mui/material": "^5.16.4",
     "@mui/utils": "^5.16.4",
     "@nordeck/matrix-neoboard-react-sdk": "link:../matrix-neoboard/packages/react-sdk",
     "@reduxjs/toolkit": "^2.2.6",
