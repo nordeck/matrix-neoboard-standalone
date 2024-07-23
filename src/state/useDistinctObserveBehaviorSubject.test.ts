@@ -16,7 +16,8 @@
  * along with NeoBoard Standalone. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { act, renderHook } from '@testing-library/react-hooks';
+import { renderHook } from '@testing-library/react';
+import { act } from 'react';
 import { BehaviorSubject } from 'rxjs';
 import { useDistinctObserveBehaviorSubject } from './useDistinctObserveBehaviorSubject';
 
