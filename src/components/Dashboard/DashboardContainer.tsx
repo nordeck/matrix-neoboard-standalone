@@ -14,14 +14,22 @@
  * limitations under the License.
  */
 
-export * from './api/selectors/selectWhiteboards';
-export { selectSortBy, setSortBy } from './dashboard/dashboardSlice';
-export type { SortBy } from './dashboard/dashboardSlice';
-export { useAppDispatch, useAppSelector } from './reduxToolkitHooks';
-export { createStore, initializeStore } from './store';
-export type {
-  AppDispatch,
-  RootState,
-  StoreType,
-  ThunkExtraArgument,
-} from './store';
+import { Box, useTheme } from '@mui/material';
+import React, { PropsWithChildren } from 'react';
+
+export const DashboardContainer: React.FC<PropsWithChildren<{}>> = function ({
+  children,
+}) {
+  const theme = useTheme();
+  return (
+    <Box
+      sx={{
+        backgroundColor: theme.palette.background.paper,
+        borderRadius: '8px',
+        padding: '24px',
+      }}
+    >
+      {children}
+    </Box>
+  );
+};

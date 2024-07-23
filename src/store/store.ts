@@ -18,11 +18,19 @@ import { WidgetApi } from '@matrix-widget-toolkit/api';
 import { baseApi } from '@nordeck/matrix-neoboard-react-sdk';
 import { autoBatchEnhancer, configureStore } from '@reduxjs/toolkit';
 import { StandaloneApi } from '../toolkit/standalone';
+import { dashboardReducer } from './dashboard/dashboardSlice';
+import { saveDashboardState } from './dashboard/persistence';
 import { initializeApi } from './initializeApi';
 import { loggerMiddleware } from './loggerMiddleware';
 
 export function initializeStore(store: StoreType): Promise<void> {
   const { dispatch } = store;
+
+  store.subscribe(() => {
+    // Persist state on any change.
+    // This can be optimised in the future.
+    saveDashboardState(store.getState().dashboardReducer);
+  });
 
   return initializeApi(dispatch);
 }
@@ -37,6 +45,7 @@ export function createStore({
   const store = configureStore({
     reducer: {
       [baseApi.reducerPath]: baseApi.reducer,
+      dashboardReducer,
     },
     middleware: (getDefaultMiddleware) =>
       getDefaultMiddleware({

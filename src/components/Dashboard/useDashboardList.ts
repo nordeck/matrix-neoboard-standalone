@@ -21,6 +21,7 @@ import { useLoggedIn } from '../../state';
 import {
   WhiteboardEntry,
   makeSelectWhiteboards,
+  selectSortBy,
   useAppSelector,
 } from '../../store';
 
@@ -41,9 +42,10 @@ export type DashboardItem = {
  */
 export function useDashboardList(): DashboardItem[] {
   const { userId } = useLoggedIn();
+  const sortBy = useAppSelector((state) => selectSortBy(state));
   const selectWhiteboards = useMemo(
-    () => makeSelectWhiteboards(userId),
-    [userId],
+    () => makeSelectWhiteboards(userId, sortBy),
+    [sortBy, userId],
   );
   const whiteboards = useAppSelector(
     (state) => selectWhiteboards(state),

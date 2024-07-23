@@ -8,6 +8,12 @@
     },
     "createBoardTile": {
       "createBoard": "Create a New Board"
+    },
+    "sortBy": {
+      "alphabetical": "Alphabetical",
+      "button": "Sort by:",
+      "created": "Date created",
+      "recently_viewed": "Recently viewed"
     }
   },
   "header": {
