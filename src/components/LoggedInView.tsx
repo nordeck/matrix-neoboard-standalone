@@ -34,7 +34,7 @@ import {
 import { isEqual } from 'lodash';
 import { Suspense, useCallback, useEffect, useMemo, useState } from 'react';
 import { useLoggedIn } from '../state';
-import { useAppDispatch, useAppSelector } from '../store';
+import { selectSortBy, useAppDispatch, useAppSelector } from '../store';
 import { useGetAllRoomNameEventsQuery } from '../store/api/roomNameApi';
 import { makeSelectWhiteboards } from '../store/api/selectors/selectWhiteboards';
 import {
@@ -61,9 +61,10 @@ export const LoggedInView = () => {
     setSelectedRoomId(undefined);
   }, [setSelectedRoomId]);
 
+  const sortBy = useAppSelector((state) => selectSortBy(state));
   const selectWhiteboards = useMemo(
-    () => makeSelectWhiteboards(userId),
-    [userId],
+    () => makeSelectWhiteboards(userId, sortBy),
+    [sortBy, userId],
   );
   const whiteboardManager = useWhiteboardManager();
 

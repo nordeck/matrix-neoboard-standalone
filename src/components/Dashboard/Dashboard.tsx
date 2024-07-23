@@ -18,6 +18,8 @@ import { BoardTile } from './BoardTile';
 
 import { useLoggedIn } from '../../state';
 import { CreateBoardTile } from './CreateBoardTile';
+import { DashboardContainer } from './DashboardContainer.tsx';
+import { DashboardOptions } from './DashboardOptions.tsx';
 import { TilesContainer } from './TilesContainer';
 import boardPreview1 from './board1.png';
 import boardPreview2 from './board2.png';
@@ -47,24 +49,27 @@ export function Dashboard({ setSelectedRoomId }: DashboardProps) {
   const dashboardItems = useDashboardList();
 
   return (
-    <TilesContainer>
-      <CreateBoardTile
-        onClick={async () => {
-          const roomId = await createWhiteboard(standaloneClient, 'Untitled');
-          setSelectedRoomId(roomId);
-        }}
-      />
-      {dashboardItems.map((dashboardItem, index) => (
-        <BoardTile
-          key={dashboardItem.roomId}
-          dashboardItem={dashboardItem}
-          previewUrl={boardPreviews[index % 5]}
-          onClick={() => {
-            const roomId = dashboardItem.roomId;
+    <DashboardContainer>
+      <DashboardOptions />
+      <TilesContainer>
+        <CreateBoardTile
+          onClick={async () => {
+            const roomId = await createWhiteboard(standaloneClient, 'Untitled');
             setSelectedRoomId(roomId);
           }}
         />
-      ))}
-    </TilesContainer>
+        {dashboardItems.map((dashboardItem, index) => (
+          <BoardTile
+            key={dashboardItem.roomId}
+            dashboardItem={dashboardItem}
+            previewUrl={boardPreviews[index % 5]}
+            onClick={() => {
+              const roomId = dashboardItem.roomId;
+              setSelectedRoomId(roomId);
+            }}
+          />
+        ))}
+      </TilesContainer>
+    </DashboardContainer>
   );
 }

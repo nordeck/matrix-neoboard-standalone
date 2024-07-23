@@ -14,14 +14,16 @@
  * limitations under the License.
  */
 
-export * from './api/selectors/selectWhiteboards';
-export { selectSortBy, setSortBy } from './dashboard/dashboardSlice';
-export type { SortBy } from './dashboard/dashboardSlice';
-export { useAppDispatch, useAppSelector } from './reduxToolkitHooks';
-export { createStore, initializeStore } from './store';
-export type {
-  AppDispatch,
-  RootState,
-  StoreType,
-  ThunkExtraArgument,
-} from './store';
+import { Box } from '@mui/material';
+import React from 'react';
+import { SortByMenu } from './SortByMenu';
+
+export const DashboardOptions: React.FC = function () {
+  return (
+    <Box
+      sx={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '32px' }}
+    >
+      <SortByMenu />
+    </Box>
+  );
+};

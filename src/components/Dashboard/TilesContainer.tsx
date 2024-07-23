@@ -14,20 +14,16 @@
  * limitations under the License.
  */
 
-import { Box, useTheme } from '@mui/material';
+import { Box } from '@mui/material';
 import { PropsWithChildren } from 'react';
 
 export function TilesContainer({ children }: PropsWithChildren<{}>) {
-  const theme = useTheme();
   return (
     <Box
       sx={{
-        backgroundColor: theme.palette.background.paper,
-        borderRadius: '8px',
         display: 'flex',
         flexWrap: 'wrap',
         gap: '32px',
-        padding: '24px',
       }}
     >
       {children}

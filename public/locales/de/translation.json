@@ -7,7 +7,13 @@
       "lastView": "Zuletzt {{lastView}}"
     },
     "createBoardTile": {
-      "createBoard": "Create a New Board"
+      "createBoard": "Neues Board erstellen"
+    },
+    "sortBy": {
+      "alphabetical": "Alphabetisch",
+      "button": "Sortieren nach:",
+      "created": "Erstellungsdatum",
+      "recently_viewed": "Zuletzt angesehen"
     }
   },
   "header": {
