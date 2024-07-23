@@ -12,7 +12,9 @@
 
     <script nonce='<!--#echo var="cspNonce"-->'>
       __webpack_nonce__ = '<!--#echo var="cspNonce"-->';
-      global = window;
+      // Set global for compatibility reason.
+      // globalThis ?? window is required to make with work in  all environments (dev / prod).
+      global = globalThis ?? window;
     </script>
 
     <script nonce='<!--#echo var="cspNonce"-->' type="module">
