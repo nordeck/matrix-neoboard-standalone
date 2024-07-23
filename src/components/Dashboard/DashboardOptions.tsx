@@ -17,18 +17,15 @@
  */
 
 import { Box } from '@mui/material';
-import { PropsWithChildren } from 'react';
+import React from 'react';
+import { SortByMenu } from './SortByMenu';
 
-export function TilesContainer({ children }: PropsWithChildren<{}>) {
+export const DashboardOptions: React.FC = function () {
   return (
     <Box
-      sx={{
-        display: 'flex',
-        flexWrap: 'wrap',
-        gap: '32px',
-      }}
+      sx={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '32px' }}
     >
-      {children}
+      <SortByMenu />
     </Box>
   );
-}
+};

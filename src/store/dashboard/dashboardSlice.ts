@@ -1,0 +1,64 @@
+/*
+ * Copyright 2024 Nordeck IT + Consulting GmbH
+ *
+ * NeoBoard Standalone is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or (at your
+ * option) any later version.
+ *
+ * NeoBoard Standalone is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+ * or FITNESS FOR A PARTICULAR PURPOSE.
+ *
+ * See the GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with NeoBoard Standalone. If not, see <https://www.gnu.org/licenses/>.
+ */
+
+import { PayloadAction, createSlice } from '@reduxjs/toolkit';
+import Joi from 'joi';
+import { RootState } from '../store';
+import { loadDashboardState } from './persistence';
+
+export type SortBy =
+  | 'recently_viewed'
+  | 'name_asc'
+  | 'name_desc'
+  | 'created_asc'
+  | 'created_desc';
+
+export interface DashboardState {
+  sortBy: SortBy;
+}
+
+export const dashboardStateSchema = Joi.object({
+  sortBy: Joi.string()
+    .valid(
+      'recently_viewed',
+      'name_asc',
+      'name_desc',
+      'created_asc',
+      'created_desc',
+    )
+    .required(),
+}).unknown();
+
+export const dashboardSlice = createSlice({
+  name: 'dashboard',
+  initialState: loadDashboardState(),
+  reducers: {
+    setSortBy: (state, action: PayloadAction<SortBy>) => {
+      return {
+        ...state,
+        sortBy: action.payload,
+      };
+    },
+  },
+});
+
+export const { setSortBy } = dashboardSlice.actions;
+
+export const selectSortBy = (state: RootState) => state.dashboardReducer.sortBy;
+
+export const dashboardReducer = dashboardSlice.reducer;

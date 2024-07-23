@@ -16,19 +16,4 @@
  * along with NeoBoard Standalone. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { Box } from '@mui/material';
-import { PropsWithChildren } from 'react';
-
-export function TilesContainer({ children }: PropsWithChildren<{}>) {
-  return (
-    <Box
-      sx={{
-        display: 'flex',
-        flexWrap: 'wrap',
-        gap: '32px',
-      }}
-    >
-      {children}
-    </Box>
-  );
-}
+export * from './SecondaryTextButton';

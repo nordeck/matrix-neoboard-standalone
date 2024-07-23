@@ -16,19 +16,22 @@
  * along with NeoBoard Standalone. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { Box } from '@mui/material';
-import { PropsWithChildren } from 'react';
+import { Box, useTheme } from '@mui/material';
+import React, { PropsWithChildren } from 'react';
 
-export function TilesContainer({ children }: PropsWithChildren<{}>) {
+export const DashboardContainer: React.FC<PropsWithChildren<{}>> = function ({
+  children,
+}) {
+  const theme = useTheme();
   return (
     <Box
       sx={{
-        display: 'flex',
-        flexWrap: 'wrap',
-        gap: '32px',
+        backgroundColor: theme.palette.background.paper,
+        borderRadius: '8px',
+        padding: '24px',
       }}
     >
       {children}
     </Box>
   );
-}
+};

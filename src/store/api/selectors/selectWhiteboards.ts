@@ -20,6 +20,7 @@ import { StateEvent } from '@matrix-widget-toolkit/api';
 import { Whiteboard } from '@nordeck/matrix-neoboard-react-sdk';
 import { createSelector } from '@reduxjs/toolkit';
 import { WhiteboardSessionsEvent } from '../../../model';
+import { SortBy } from '../../dashboard/dashboardSlice';
 import { RootState } from '../../store';
 import { selectAllRoomMemberEventEntities } from '../roomMemberApi';
 import { selectAllRoomNameEventEntities } from '../roomNameApi';
@@ -34,6 +35,7 @@ export type WhiteboardEntry = {
 
 export function makeSelectWhiteboards(
   userId: string,
+  sortBy: SortBy,
 ): (state: RootState) => WhiteboardEntry[] {
   return createSelector(
     selectAllWhiteboards,
@@ -88,7 +90,43 @@ export function makeSelectWhiteboards(
         return [];
       });
 
+      boards.sort(createBoardComparator(sortBy));
+
       return boards;
     },
   );
+}
+
+function createBoardComparator(sortBy: SortBy) {
+  return (a: WhiteboardEntry, b: WhiteboardEntry) => {
+    if (sortBy === 'recently_viewed') {
+      const compareA =
+        a.whiteboardSessions?.origin_server_ts ??
+        // Fall back to create event, if there is no whiteboardSessions event
+        a.whiteboard.origin_server_ts;
+      const compareB =
+        b.whiteboardSessions?.origin_server_ts ??
+        // Fall back to create event, if there is no whiteboardSessions event
+        b.whiteboard.origin_server_ts;
+      return compareB - compareA;
+    }
+
+    if (sortBy === 'name_asc') {
+      return a.roomName.localeCompare(b.roomName);
+    }
+
+    if (sortBy === 'name_desc') {
+      return b.roomName.localeCompare(a.roomName);
+    }
+
+    if (sortBy === 'created_asc') {
+      return a.whiteboard.origin_server_ts - b.whiteboard.origin_server_ts;
+    }
+
+    if (sortBy === 'created_desc') {
+      return b.whiteboard.origin_server_ts - a.whiteboard.origin_server_ts;
+    }
+
+    return 0;
+  };
 }
