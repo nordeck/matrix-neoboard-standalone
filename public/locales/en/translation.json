@@ -4,7 +4,7 @@
   },
   "dashboard": {
     "boardTile": {
-      "lastView": "Last view {{lastView}} hours ago"
+      "lastView": "Last view {{lastView}}"
     },
     "createBoardTile": {
       "createBoard": "Create a New Board"

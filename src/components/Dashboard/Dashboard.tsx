@@ -16,10 +16,6 @@
  * along with NeoBoard Standalone. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { isEqual } from 'lodash';
-import { useMemo } from 'react';
-import { useAppSelector } from '../../store';
-import { makeSelectWhiteboards } from '../../store/api/selectors/selectWhiteboards';
 import { BoardTile } from './BoardTile';
 
 import { useLoggedIn } from '../../state';
@@ -31,7 +27,11 @@ import boardPreview3 from './board3.png';
 import boardPreview4 from './board4.png';
 import boardPreview5 from './board5.png';
 import { createWhiteboard } from './createWhiteboard.ts';
+import { useDashboardList } from './useDashboardList.ts';
 
+/**
+ * Static images. To be replaced when implementing thumbnails.
+ */
 const boardPreviews = [
   boardPreview1,
   boardPreview2,
@@ -45,15 +45,8 @@ type DashboardProps = {
 };
 
 export function Dashboard({ setSelectedRoomId }: DashboardProps) {
-  const { userId, standaloneClient } = useLoggedIn();
-  const selectWhiteboards = useMemo(
-    () => makeSelectWhiteboards(userId),
-    [userId],
-  );
-  const whiteboards = useAppSelector(
-    (state) => selectWhiteboards(state),
-    isEqual,
-  );
+  const { standaloneClient } = useLoggedIn();
+  const dashboardItems = useDashboardList();
 
   return (
     <TilesContainer>
@@ -63,13 +56,13 @@ export function Dashboard({ setSelectedRoomId }: DashboardProps) {
           setSelectedRoomId(roomId);
         }}
       />
-      {whiteboards.map((whiteboard, index) => (
+      {dashboardItems.map((dashboardItem, index) => (
         <BoardTile
-          key={whiteboard.whiteboard.room_id}
-          whiteboard={whiteboard}
+          key={dashboardItem.roomId}
+          dashboardItem={dashboardItem}
           previewUrl={boardPreviews[index % 5]}
           onClick={() => {
-            const roomId = whiteboard.whiteboard.room_id;
+            const roomId = dashboardItem.roomId;
             setSelectedRoomId(roomId);
           }}
         />

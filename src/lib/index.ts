@@ -16,5 +16,6 @@
  * along with NeoBoard Standalone. If not, see <https://www.gnu.org/licenses/>.
  */
 
+export { formatTimeAgo } from './formatTimeAgo';
 export { setLocale } from './locale';
 export { randomString } from './randomString';

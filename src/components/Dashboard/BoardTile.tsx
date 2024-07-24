@@ -27,17 +27,20 @@ import {
   Typography,
 } from '@mui/material';
 import { t } from 'i18next';
-import { MouseEvent, useMemo } from 'react';
-import { WhiteboardEntry } from '../../store/api/selectors/selectWhiteboards';
+import { MouseEvent } from 'react';
+import { DashboardItem } from './useDashboardList';
 
 type BoardTileProps = {
   onClick: () => void;
   previewUrl: string;
-  whiteboard: WhiteboardEntry;
+  dashboardItem: DashboardItem;
 };
 
-export function BoardTile({ onClick, previewUrl, whiteboard }: BoardTileProps) {
-  const lastView = useMemo(() => getRandomInt(12), []);
+export function BoardTile({
+  onClick,
+  previewUrl,
+  dashboardItem,
+}: BoardTileProps) {
   return (
     <Card sx={{ width: '232px' }}>
       <CardActionArea onClick={onClick}>
@@ -53,14 +56,12 @@ export function BoardTile({ onClick, previewUrl, whiteboard }: BoardTileProps) {
               whiteSpace: 'nowrap',
             }}
           >
-            {whiteboard.roomName}
+            {dashboardItem.name}
           </Typography>
           <Typography color="text.secondary">
-            {t(
-              'dashboard.boardTile.lastView',
-              'Last view {{lastView}} hours ago',
-              { lastView },
-            )}
+            {t('dashboard.boardTile.lastView', 'Last view {{lastView}}', {
+              lastView: dashboardItem.lastView,
+            })}
           </Typography>
         </CardContent>
         <CardActions>
@@ -73,11 +74,7 @@ export function BoardTile({ onClick, previewUrl, whiteboard }: BoardTileProps) {
   );
 }
 
-function getRandomInt(max: number) {
-  return 1 + Math.floor(Math.random() * max);
-}
-
-const noop = function (event: MouseEvent) {
+function noop(event: MouseEvent): void {
   event.preventDefault();
   event.stopPropagation();
-};
+}

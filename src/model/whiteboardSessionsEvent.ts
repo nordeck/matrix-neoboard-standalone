@@ -16,12 +16,25 @@
  * along with NeoBoard Standalone. If not, see <https://www.gnu.org/licenses/>.
  */
 
-export * from './api/selectors/selectWhiteboards';
-export { useAppDispatch, useAppSelector } from './reduxToolkitHooks';
-export { createStore, initializeStore } from './store';
-export type {
-  AppDispatch,
-  RootState,
-  StoreType,
-  ThunkExtraArgument,
-} from './store';
+import { StateEvent } from '@matrix-widget-toolkit/api';
+import { isValidEvent } from '@nordeck/matrix-neoboard-react-sdk/src/model/validation';
+import Joi from 'joi';
+
+export const STATE_EVENT_WHITEBOARD_SESSIONS =
+  'net.nordeck.whiteboard.sessions';
+
+export type WhiteboardSessionsEvent = {};
+
+const whiteboardSessionsEventSchema = Joi.object<WhiteboardSessionsEvent, true>(
+  {},
+).unknown();
+
+export function isValidWhiteboardSessionsEvent(
+  event: StateEvent<unknown>,
+): event is StateEvent<WhiteboardSessionsEvent> {
+  return isValidEvent(
+    event,
+    STATE_EVENT_WHITEBOARD_SESSIONS,
+    whiteboardSessionsEventSchema,
+  );
+}
