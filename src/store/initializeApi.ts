@@ -18,6 +18,7 @@ import { QueryActionCreatorResult } from '@reduxjs/toolkit/query';
 import { roomMemberApi } from './api/roomMemberApi';
 import { roomNameApi } from './api/roomNameApi';
 import { whiteboardApi } from './api/whiteboardApi';
+import { whiteboardSessionsApi } from './api/whiteboardSessionsApi';
 import { AppDispatch } from './store';
 
 export async function initializeApi(dispatch: AppDispatch): Promise<void> {
@@ -25,6 +26,11 @@ export async function initializeApi(dispatch: AppDispatch): Promise<void> {
   const actions: QueryActionCreatorResult<any>[] = [];
 
   actions.push(dispatch(roomNameApi.endpoints.getAllRoomNameEvents.initiate()));
+  actions.push(
+    dispatch(
+      whiteboardSessionsApi.endpoints.getAllWhiteboardSessionsEvents.initiate(),
+    ),
+  );
   actions.push(dispatch(whiteboardApi.endpoints.getWhiteboardsAll.initiate()));
   actions.push(dispatch(roomMemberApi.endpoints.getRoomMembersAll.initiate()));
 
