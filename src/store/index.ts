@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+export * from './api/selectors/selectWhiteboards';
 export { useAppDispatch, useAppSelector } from './reduxToolkitHooks';
 export { createStore, initializeStore } from './store';
 export type {
