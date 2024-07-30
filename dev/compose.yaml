@@ -4,6 +4,7 @@ services:
   web:
     build:
       context: ./nginx
+    restart: unless-stopped
     depends_on:
       - synapse
       - mas
@@ -19,6 +20,7 @@ services:
 
   synapse-db:
     image: postgres
+    restart: unless-stopped
     environment:
       - POSTGRES_DB=synapse
       - POSTGRES_PASSWORD=s3cr3t
@@ -28,6 +30,7 @@ services:
 
   synapse:
     image: matrixdotorg/synapse:latest
+    restart: unless-stopped
     depends_on:
       - synapse-db
     environment:
@@ -42,6 +45,7 @@ services:
 
   mas-db:
     image: postgres
+    restart: unless-stopped
     environment:
       - POSTGRES_DB=mas
       - POSTGRES_PASSWORD=s3cr3t
@@ -51,6 +55,7 @@ services:
 
   mas:
     image: ghcr.io/matrix-org/matrix-authentication-service:main
+    restart: unless-stopped
     depends_on:
       - mas-db
     volumes:
