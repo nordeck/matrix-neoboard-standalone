@@ -25,7 +25,31 @@ After checkout, run `yarn install` to download the required dependencies
 
 ### NeoBoard standalone local development environment
 
-#### Synapse and MAS configuration
+#### Clone the repos and install dependencies
+
+Neoboard standalone uses [`@nordeck/matrix-neoboard-react-sdk`][@nordeck/matrix-neoboard-react-sdk], that provides the board components.
+It may often happen, that it is necessary to change both, standalone and the react SDK.
+For a better development experience, Neoboard standalone links [`@nordeck/matrix-neoboard-react-sdk`][@nordeck/matrix-neoboard-react-sdk]
+in it's `package.json`. Because of that it is important to clone both repos next to each other.
+
+Clone Neoboard and install the dependencies:
+
+```sh
+git clone git@github.com:nordeck/matrix-neoboard.git
+cd matrix-neoboard/packages/react-sdk
+yarn install
+cd ..
+```
+
+Clone Neoboard standalone and install the dependencies:
+
+```sh
+git clone git@github.com:nordeck/matrix-neoboard-standalone.git
+cd matrix-neoboard-standalone
+yarn install
+```
+
+#### Set up Synapse with MAS
 
 Synapse with MAS is required to run NeoBoard standalone locally.
 
@@ -42,18 +66,15 @@ It is possible to use the Compose file in `./dev` to create the environment:
   - https://mas.matrix.local
   - https://synapse.matrix.local/_matrix/client/versions
 
-#### Link to matrix-neoboard-widget
+#### Start the development environment
 
-Project currently depends on the branch from the neoboard project: `nordeck/matrix-neoboard#nic/feat/temp_export`.
-This branch exports components and couple of other changes.
+You can now start Neoboard standalone:
 
-Currently after checkout of this project you have to change the directory to `node_modules/@nordeck/matrix-neoboard-widget/`
-and run `yarn install` there.
+```sh
+yarn run dev:https
+```
 
-It is possible to link `matrix-neoboard-widget` to this standalone project with `yarn link` for the development.
-
-Sometimes `yarn` caches the `matrix-neoboard-widget` repository and not downloads a branch for the commit mentioned
-in yarn.lock, then `yarn cache clean` and `yarn install --force` should be executed.
+Then open the printed URL.
 
 #### Running
 
@@ -103,3 +124,5 @@ This project is licensed under [APACHE 2.0](./LICENSE).
 
 The disclaimer for other OSS components can be accessed via the `/NOTICE.txt` endpoint.
 The list of dependencies and their licenses are also available in a machine readable format at `/usr/share/nginx/html/licenses.json` in the container image.
+
+[@nordeck/matrix-neoboard-react-sdk]: https://github.com/nordeck/matrix-neoboard/tree/main/packages/react-sdk
