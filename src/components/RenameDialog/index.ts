@@ -14,6 +14,4 @@
  * limitations under the License.
  */
 
-export { calculateWhiteboardPermissions } from './calculateWhiteboardPermissions';
-export type { WhiteboardPermissions } from './calculateWhiteboardPermissions';
-export { fetchWhoami } from './fetchWhoami';
+export { RenameDialog } from './RenameDialog';
