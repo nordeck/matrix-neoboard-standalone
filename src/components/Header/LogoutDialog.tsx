@@ -54,7 +54,7 @@ export function LogoutDialog({ open, onClose }: ExportDialogProps) {
       </DialogTitle>
       <DialogActions>
         <Button onClick={onClose} variant="outlined">
-          {t('app.cancel', 'cancel')}
+          {t('app.cancel', 'Cancel')}
         </Button>
         <Button
           onClick={handleConfirm}

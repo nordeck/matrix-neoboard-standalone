@@ -15,8 +15,12 @@
  */
 
 import { isEqual } from 'lodash';
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { formatTimeAgo } from '../../lib';
+import {
+  WhiteboardPermissions,
+  calculateWhiteboardPermissions,
+} from '../../lib/matrix';
 import { useLoggedIn } from '../../state';
 import {
   WhiteboardEntry,
@@ -35,6 +39,7 @@ export type DashboardItem = {
    * ID of the room, that contains the whiteboard
    */
   roomId: string;
+  permissions: WhiteboardPermissions;
 };
 
 /**
@@ -53,31 +58,39 @@ export function useDashboardList(): DashboardItem[] {
   );
 
   const [dashboardItems, setDashboardItems] = useState<DashboardItem[]>([]);
+  const mapFn = useCallback(
+    (whiteboard: WhiteboardEntry) => {
+      return mapWhiteboardToDashboardItem(whiteboard, userId);
+    },
+    [userId],
+  );
 
   // Update every 30 seconds and on whiteboard object changes.
   // Keep the dashboard items up to date (e.g. last view).
   useEffect(() => {
-    setDashboardItems(whiteboards.map(mapWhiteboardToDashboardItem));
+    setDashboardItems(whiteboards.map(mapFn));
 
     const intervalId = setInterval(() => {
-      setDashboardItems(whiteboards.map(mapWhiteboardToDashboardItem));
+      setDashboardItems(whiteboards.map(mapFn));
     }, 30_000);
 
     return () => {
       clearInterval(intervalId);
     };
-  }, [whiteboards]);
+  }, [mapFn, whiteboards]);
 
   return dashboardItems;
 }
 
 function mapWhiteboardToDashboardItem(
   whiteboard: WhiteboardEntry,
+  userId: string,
 ): DashboardItem {
   return {
     roomId: whiteboard.whiteboard.room_id,
     name: whiteboard.roomName,
     lastView: formatLastView(whiteboard),
+    permissions: calculateWhiteboardPermissions(whiteboard.powerLevels, userId),
   };
 }
 
