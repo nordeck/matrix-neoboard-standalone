@@ -28,6 +28,7 @@ import {
 } from '@mui/material';
 import { t } from 'i18next';
 import { MouseEvent } from 'react';
+import { TileMenu } from './TileMenu';
 import { DashboardItem } from './useDashboardList';
 
 type BoardTileProps = {
@@ -64,10 +65,13 @@ export function BoardTile({
             })}
           </Typography>
         </CardContent>
-        <CardActions>
+        <CardActions sx={{ justifyContent: 'space-between' }}>
           <IconButton onClick={noop} component="span">
             <PeopleAltIcon />
           </IconButton>
+          {dashboardItem.permissions.canChangeName && (
+            <TileMenu item={dashboardItem} />
+          )}
         </CardActions>
       </CardActionArea>
     </Card>

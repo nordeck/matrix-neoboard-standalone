@@ -16,6 +16,32 @@
  * along with NeoBoard Standalone. If not, see <https://www.gnu.org/licenses/>.
  */
 
-export { calculateWhiteboardPermissions } from './calculateWhiteboardPermissions';
-export type { WhiteboardPermissions } from './calculateWhiteboardPermissions';
-export { fetchWhoami } from './fetchWhoami';
+import {
+  PowerLevelsStateEvent,
+  StateEvent,
+  hasStateEventPower,
+} from '@matrix-widget-toolkit/api';
+import { STATE_EVENT_ROOM_NAME } from '@nordeck/matrix-neoboard-react-sdk';
+
+export type WhiteboardPermissions = {
+  canChangeName: boolean;
+};
+
+export function calculateWhiteboardPermissions(
+  powerLevels: StateEvent<PowerLevelsStateEvent> | undefined,
+  userId: string,
+): WhiteboardPermissions {
+  const result: WhiteboardPermissions = {
+    canChangeName: false,
+  };
+
+  if (powerLevels?.content) {
+    result.canChangeName = hasStateEventPower(
+      powerLevels.content,
+      userId,
+      STATE_EVENT_ROOM_NAME,
+    );
+  }
+
+  return result;
+}

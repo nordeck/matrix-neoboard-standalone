@@ -16,6 +16,4 @@
  * along with NeoBoard Standalone. If not, see <https://www.gnu.org/licenses/>.
  */
 
-export { calculateWhiteboardPermissions } from './calculateWhiteboardPermissions';
-export type { WhiteboardPermissions } from './calculateWhiteboardPermissions';
-export { fetchWhoami } from './fetchWhoami';
+export { RenameDialog } from './RenameDialog';

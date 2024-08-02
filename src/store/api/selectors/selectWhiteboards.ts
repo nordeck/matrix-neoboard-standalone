@@ -16,12 +16,13 @@
  * along with NeoBoard Standalone. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { StateEvent } from '@matrix-widget-toolkit/api';
+import { PowerLevelsStateEvent, StateEvent } from '@matrix-widget-toolkit/api';
 import { Whiteboard } from '@nordeck/matrix-neoboard-react-sdk';
 import { createSelector } from '@reduxjs/toolkit';
 import { WhiteboardSessionsEvent } from '../../../model';
 import { SortBy } from '../../dashboard/dashboardSlice';
 import { RootState } from '../../store';
+import { selectAllPowerLevelsEventEntities } from '../PowerLevelsApi';
 import { selectAllRoomMemberEventEntities } from '../roomMemberApi';
 import { selectAllRoomNameEventEntities } from '../roomNameApi';
 import { selectAllWhiteboards } from '../whiteboardApi';
@@ -31,6 +32,7 @@ export type WhiteboardEntry = {
   roomName: string;
   whiteboard: StateEvent<Whiteboard>;
   whiteboardSessions: StateEvent<WhiteboardSessionsEvent> | undefined;
+  powerLevels: StateEvent<PowerLevelsStateEvent> | undefined;
 };
 
 export function makeSelectWhiteboards(
@@ -42,11 +44,13 @@ export function makeSelectWhiteboards(
     selectAllRoomNameEventEntities,
     selectAllRoomMemberEventEntities,
     selectAllWhiteboardSessionsEventEntities,
+    selectAllPowerLevelsEventEntities,
     (
       whiteboards,
       roomNameEvents,
       roomMemberEvents,
       whiteboardSessionsEvents,
+      powerLevelsEvents,
     ): WhiteboardEntry[] => {
       const boards = whiteboards.flatMap((whiteboard) => {
         const roomName = roomNameEvents[whiteboard.room_id]?.content.name;
@@ -83,6 +87,7 @@ export function makeSelectWhiteboards(
               roomName,
               whiteboard,
               whiteboardSessions: latestOwnWhiteboardSessionsEvent,
+              powerLevels: powerLevelsEvents[whiteboard.room_id],
             },
           ];
         }

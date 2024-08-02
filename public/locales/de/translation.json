@@ -1,10 +1,11 @@
 {
   "app": {
-    "cancel": "abbrechen"
+    "cancel": "Abbrechen"
   },
   "dashboard": {
     "boardTile": {
-      "lastView": "Zuletzt {{lastView}}"
+      "lastView": "Zuletzt {{lastView}}",
+      "rename": "Umbenennen"
     },
     "createBoardTile": {
       "createBoard": "Neues Board erstellen"
@@ -30,6 +31,11 @@
   "logOutDialog": {
     "logOut": "Abmelden",
     "title": "Möchtest Du dich wirklich abmelden?"
+  },
+  "renameDialog": {
+    "name": "Name",
+    "rename": "Umbenennen",
+    "title": "Board umbenennen"
   },
   "userMenu": {
     "logOut": "Abmelden",

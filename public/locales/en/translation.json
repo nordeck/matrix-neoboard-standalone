@@ -1,10 +1,11 @@
 {
   "app": {
-    "cancel": "cancel"
+    "cancel": "Cancel"
   },
   "dashboard": {
     "boardTile": {
-      "lastView": "Last view {{lastView}}"
+      "lastView": "Last view {{lastView}}",
+      "rename": "Rename"
     },
     "createBoardTile": {
       "createBoard": "Create a New Board"
@@ -30,6 +31,11 @@
   "logOutDialog": {
     "logOut": "Log out",
     "title": "Are you sure you want to log out?"
+  },
+  "renameDialog": {
+    "name": "Name",
+    "rename": "Rename",
+    "title": "Rename board"
   },
   "userMenu": {
     "logOut": "Log out",
