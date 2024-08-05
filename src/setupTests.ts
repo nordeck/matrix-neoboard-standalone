@@ -14,9 +14,29 @@
  * limitations under the License.
  */
 
+import '@testing-library/jest-dom';
 import crypto from 'crypto';
 import fetchMock from 'fetch-mock';
 import { TextDecoder, TextEncoder } from 'util';
+import './i18n';
+import { setLocale } from './lib/locale';
+
+// Use a different configuration for i18next during tests
+jest.mock('./i18n', () => {
+  const i18n = require('i18next');
+  const { initReactI18next } = require('react-i18next');
+
+  i18n.use(initReactI18next).init({
+    fallbackLng: 'en',
+    interpolation: {
+      escapeValue: false,
+    },
+    resources: { en: {} },
+  });
+
+  return i18n;
+});
+setLocale('en');
 
 // Set up parts of the crypto API needed for the tests
 Object.defineProperty(global.self, 'crypto', {

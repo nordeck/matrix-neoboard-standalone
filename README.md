@@ -4,6 +4,15 @@
 
 Standalone version of [NeoBoard](https://github.com/nordeck/matrix-neoboard) - A collaborative whiteboard widget for Element, based on Matrix.
 
+## Configuration
+
+Neoboard standalone supports some configuration options.
+They can either be set via an environment variable or the dot-env-file.
+
+| Name                   | Description                                                                                                            | Example      |
+| ---------------------- | ---------------------------------------------------------------------------------------------------------------------- | ------------ |
+| `REACT_APP_HOMESERVER` | If set, there won't be a homeserver input field on the login screen. Instead it uses the homeserver from the variable. | `matrix.org` |
+
 ## Getting Started
 
 Development happens at [GitHub](https://github.com/nordeck/matrix-neoboard-standalone).

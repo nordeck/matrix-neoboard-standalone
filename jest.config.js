@@ -15,7 +15,7 @@
  */
 
 const config = {
-  setupFiles: ['<rootDir>/src/setupTests.ts'],
+  setupFilesAfterEnv: ['<rootDir>/src/setupTests.ts'],
   testEnvironment: 'jsdom',
   transform: {
     '^.+\\.(t|j)sx?$': [
