@@ -26,7 +26,9 @@
       "label": "Homeserver",
       "placeholder": "z.B. matrix.org"
     },
-    "title": "Bei NeoBoard einloggen"
+    "lead": "NeoBoard ist eine Whiteboard-App, die sich für kreative Präsentationen, detaillierte Diagramme und die Durchführung produktiver Meetings eignet.",
+    "subtitle": "Visuelle Zusammenarbeit für Teams",
+    "title": "NeoBoard"
   },
   "logOutDialog": {
     "logOut": "Abmelden",

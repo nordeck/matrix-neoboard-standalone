@@ -28,6 +28,7 @@ import {
   StyledLoginForm,
 } from './styles';
 
+import { getEnvironment } from '@matrix-widget-toolkit/mui';
 import { discoverClientConfig, fetchAuthIssuer } from '../../lib/discovery';
 import { registerOidcClient, startOidcLogin } from '../../lib/oidc';
 
@@ -35,6 +36,8 @@ import { registerOidcClient, startOidcLogin } from '../../lib/oidc';
  * Simple login component demonstrating the login flow.
  */
 export function Login() {
+  const staticServerName = getEnvironment('REACT_APP_HOMESERVER');
+  const hasStaticServerName = staticServerNameSet(staticServerName);
   const [serverName, setServerName] = useState('');
   const [message, setMessage] = useState('');
 
@@ -45,7 +48,9 @@ export function Login() {
 
       try {
         // Find the homeserver's base URL
-        const clientConfig = await discoverClientConfig(serverName);
+        const clientConfig = await discoverClientConfig(
+          hasStaticServerName ? staticServerName : serverName,
+        );
         const rawBaseUrl = clientConfig['m.homeserver'].base_url;
 
         if (rawBaseUrl === undefined || rawBaseUrl === null) {
@@ -66,11 +71,10 @@ export function Login() {
         const clientId = await registerOidcClient(oidcClientConfig);
         startOidcLogin(oidcClientConfig, clientId, baseUrl);
       } catch (error) {
-        console.log('Login failed', error);
         setMessage('Login failed. Check your homeserver name.');
       }
     },
-    [serverName],
+    [hasStaticServerName, serverName, staticServerName],
   );
 
   const handleServerNameChange = useCallback(
@@ -83,23 +87,46 @@ export function Login() {
   return (
     <LoginWrapper>
       <Typography
+        variant="h2"
+        align="center"
+        style={{ fontSize: '3rem', fontWeight: 500 }}
+      >
+        {t('login.title', 'NeoBoard')}
+      </Typography>
+      <Typography
         variant="h3"
         align="center"
         style={{ fontSize: '2rem', fontWeight: 500 }}
       >
-        {t('login.title', 'Log in to NeoBoard')}
+        {t('login.subtitle', 'Visual Collaboration for Teams')}
+      </Typography>
+
+      <Typography
+        variant="h4"
+        align="center"
+        style={{ fontSize: '1.25rem', fontWeight: 200, marginTop: '2rem' }}
+      >
+        {t(
+          'login.lead',
+          'NeoBoard is a whiteboard app suited for creative presentations, detailed diagrams and conducting productive meetings.',
+        )}
       </Typography>
       <StyledLoginForm onSubmit={handleFormSubmit}>
-        <StyledFormLabel>
-          {t('login.homeserver.label', 'Homeserver')}
-        </StyledFormLabel>
-        <StyledFormInput
-          value={serverName}
-          placeholder={t('login.homeserver.placeholder', 'e.g. matrix.org')}
-          onChange={handleServerNameChange}
-          style={{ marginBottom: '0.5rem' }}
-          autoFocus={true}
-        />
+        {hasStaticServerName === false && (
+          <>
+            <StyledFormLabel htmlFor="login-homeserver">
+              {t('login.homeserver.label', 'Homeserver')}
+            </StyledFormLabel>
+            <StyledFormInput
+              id="login-homeserver"
+              value={serverName}
+              placeholder={t('login.homeserver.placeholder', 'e.g. matrix.org')}
+              onChange={handleServerNameChange}
+              style={{ marginBottom: '0.5rem' }}
+              autoFocus={true}
+            />
+          </>
+        )}
         <FullWidthButton type="submit" variant="contained" color="primary">
           {t('login.button', 'Log In')}
         </FullWidthButton>
@@ -116,4 +143,10 @@ export function Login() {
       </StyledLoginForm>
     </LoginWrapper>
   );
+}
+
+function staticServerNameSet(
+  serverName: string | undefined,
+): serverName is string {
+  return serverName !== undefined && serverName.trim() !== '';
 }
