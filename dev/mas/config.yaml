@@ -5,6 +5,9 @@ clients:
 upstream_oauth2:
   providers: []
 
+account:
+  password_registration_enabled: true
+
 policy:
   data:
     client_registration:
