@@ -23,7 +23,7 @@ import { AddIcon } from './AddIcon';
 export const CreateBoardTile = ({ onClick }: { onClick: () => void }) => {
   return (
     <Card
-      sx={{ width: '232px', minHeight: '251px', backgroundColor: '#FCE2CF' }}
+      sx={{ width: '14.5rem', minHeight: '251px', backgroundColor: '#FCE2CF' }}
     >
       <CardActionArea onClick={onClick} sx={{ height: '100%' }}>
         <CardContent sx={{ textAlign: 'center' }}>
