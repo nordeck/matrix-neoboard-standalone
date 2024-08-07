@@ -41,7 +41,7 @@ export function BoardTile({
   dashboardItem,
 }: BoardTileProps) {
   return (
-    <Card sx={{ width: '232px' }}>
+    <Card sx={{ width: '14.5rem' }}>
       <CardActionArea onClick={onClick}>
         <CardMedia component="img" height="120" image={previewUrl} />
         <CardContent>
