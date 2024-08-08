@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
+export * from './client';
 export { StandaloneApiImpl } from './StandaloneApiImpl';
 export { StandaloneWidgetApiImpl } from './StandaloneWidgetApiImpl';
-export * from './client';
 export type { StandaloneApi, StandaloneWidgetApi } from './types';
