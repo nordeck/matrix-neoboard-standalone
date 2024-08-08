@@ -16,7 +16,7 @@
  * along with NeoBoard Standalone. If not, see <https://www.gnu.org/licenses/>.
  */
 
+export * from './client';
 export { StandaloneApiImpl } from './StandaloneApiImpl';
 export { StandaloneWidgetApiImpl } from './StandaloneWidgetApiImpl';
-export * from './client';
 export type { StandaloneApi, StandaloneWidgetApi } from './types';

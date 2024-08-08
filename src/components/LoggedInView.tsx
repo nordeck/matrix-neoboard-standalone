@@ -148,7 +148,7 @@ export const LoggedInView = () => {
   const title =
     selectedRoomId === undefined
       ? 'neoboard'
-      : roomNameState?.entities[selectedRoomId]?.content.name ?? 'neoboard';
+      : (roomNameState?.entities[selectedRoomId]?.content.name ?? 'neoboard');
 
   return (
     <LoggedInLayout onLogoClick={handleLogoClick} title={title}>

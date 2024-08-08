@@ -16,11 +16,11 @@
  * along with NeoBoard Standalone. If not, see <https://www.gnu.org/licenses/>.
  */
 
-export { TokenRefresher } from './TokenRefresher';
 export { completeOidcLogin } from './completeOidcLogin';
 export { createOidcTokenRefresher } from './createOidcTokenRefresher';
 export { maybeCompleteOidcLogin } from './maybeCompleteOidcLogin';
 export { registerOidcClient } from './registerOidcClient';
 export { startOidcLogin } from './startOidcLogin';
+export { TokenRefresher } from './TokenRefresher';
 export { oidcCodeAndStateSchema, oidcCredentialsSchema } from './types';
 export type { OidcCodeAndState, OidcCredentials } from './types';
