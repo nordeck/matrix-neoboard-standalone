@@ -1,3 +1,36 @@
 # Use this file to add configurations for the dev environment and the PR deployments
 
+image:
+  repository: ghcr.io/nordeck/matrix-neoboard-standalone
+  pullPolicy: Always
+  tag: "latest"
+
+imagePullSecrets: 
+ - name: dockerconfigjson-ghcr
+nameOverride: ''
+fullnameOverride: ''
+
+ingress:
+  enabled: true
+  className: 'nginx'
+  annotations:
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+    nginx.ingress.kubernetes.io/auth-type: basic
+    nginx.ingress.kubernetes.io/auth-secret: basic-auth
+    nginx.ingress.kubernetes.io/auth-realm: 'Authentication Required'
+  hosts:
+    - host: neotoolsuite.dev.nordeck.io
+      paths:
+        - path: /
+          pathType: ImplementationSpecific
+  tls: 
+    - secretName: neotoolsuite-tls
+      hosts:
+        - neotoolsuite.dev.nordeck.io
+
+settings:
+  hostname: neotoolsuite.dev.nordeck.io
+
 env:
+  - name: REACT_APP_HOMESERVER 
+    value: "synapse.neotoolsuite.dev.nordeck.io"
