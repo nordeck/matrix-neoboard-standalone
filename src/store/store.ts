@@ -63,9 +63,11 @@ export function createStore({
     enhancers: (getDefaultEnhancers) =>
       getDefaultEnhancers().concat(
         autoBatchEnhancer(
-          // Disable the auto batching when running tests in JSDOM, as it
+          // Disable the auto batching when running tests in HappyDOM, as it
           // conflicts with fake timers.
-          navigator.userAgent.includes('jsdom') ? { type: 'tick' } : undefined,
+          navigator.userAgent.includes('HappyDOM')
+            ? { type: 'tick' }
+            : undefined,
         ),
       ),
   });

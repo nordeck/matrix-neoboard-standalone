@@ -14,11 +14,12 @@
  * limitations under the License.
  */
 
+import { describe, expect, it, vi } from 'vitest';
 import { createOidcTestCredentials } from '../testUtils';
 import { completeOidcLogin } from './completeOidcLogin';
 import { maybeCompleteOidcLogin } from './maybeCompleteOidcLogin';
 
-jest.mock('./completeOidcLogin');
+vi.mock('./completeOidcLogin');
 
 const oidcTestCredentials = createOidcTestCredentials();
 
@@ -42,7 +43,7 @@ describe('maybeCompleteOidcLogin', () => {
     window.location.href =
       'https://example.com/?code=test_code&state=test_state';
 
-    jest.mocked(completeOidcLogin).mockResolvedValue(oidcTestCredentials);
+    vi.mocked(completeOidcLogin).mockResolvedValue(oidcTestCredentials);
 
     expect(await maybeCompleteOidcLogin()).toBe(oidcTestCredentials);
     expect(completeOidcLogin).toHaveBeenCalledWith({

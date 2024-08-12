@@ -14,33 +14,37 @@
  * limitations under the License.
  */
 
-import fetchMock from 'fetch-mock-jest';
+import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { createOidcTestClientConfig } from '../testUtils';
 import { registerOidcClient } from './registerOidcClient';
+
+import type { FetchMock } from 'vitest-fetch-mock';
+const fetch = global.fetch as FetchMock;
 
 const oidcClientConfig = createOidcTestClientConfig();
 
 describe('registerOidcClient', () => {
   beforeEach(() => {
-    fetchMock.get(
-      'https://example.com/.well-known/openid-configuration',
-      oidcClientConfig.metadata,
-    );
+    fetch.mockResponse((req) => {
+      if (req.url === 'https://example.com/.well-known/openid-configuration') {
+        return JSON.stringify(oidcClientConfig.metadata);
+      }
+      return '';
+    });
   });
 
   afterEach(() => {
-    fetchMock.mockReset();
+    fetch.resetMocks();
   });
 
   it('should register an OIDC client', async () => {
-    fetchMock.post(
-      {
-        method: 'POST',
-        url: 'https://auth.exmple.com/register',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: {
+    fetch.mockResponse((req) => {
+      if (
+        req.url === 'https://auth.exmple.com/register' &&
+        req.method === 'POST' &&
+        req.headers.get('Content-Type') === 'application/json'
+      ) {
+        const expectedBody = {
           client_name: 'NeoBoard',
           client_uri: 'http://example.com/',
           response_types: ['code'],
@@ -52,14 +56,18 @@ describe('registerOidcClient', () => {
           contacts: ['noreply@example.com'],
           policy_uri: 'http://example.com/',
           tos_uri: 'http://example.com/',
-        },
-      },
-      {
-        body: {
-          client_id: 'test_client_id',
-        },
-      },
-    );
+        };
+        // Arrays in the parsed body are behaving weirdly, so we need to compare the stringified body
+        if (req.body?.toString() === JSON.stringify(expectedBody)) {
+          return {
+            body: JSON.stringify({
+              client_id: 'test_client_id',
+            }),
+          };
+        }
+      }
+      return '';
+    });
 
     expect(await registerOidcClient(oidcClientConfig)).toBe('test_client_id');
   });

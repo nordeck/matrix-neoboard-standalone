@@ -18,10 +18,11 @@ import {
   ROOM_EVENT_DOCUMENT_CREATE,
   STATE_EVENT_WHITEBOARD,
 } from '@nordeck/matrix-neoboard-react-sdk';
+import { beforeEach, describe, expect, it } from 'vitest';
 import {
   MockedStandaloneClient,
   mockStandaloneClient,
-} from '../../toolkit/standalone';
+} from '../../toolkit/standalone/client/mockStandaloneClient';
 import { createWhiteboard } from './createWhiteboard.ts';
 
 describe('createWhiteboard', () => {

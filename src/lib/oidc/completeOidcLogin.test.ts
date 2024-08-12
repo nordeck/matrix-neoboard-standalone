@@ -15,13 +15,14 @@
  */
 
 import { completeAuthorizationCodeGrant } from 'matrix-js-sdk';
+import { describe, expect, it, vi } from 'vitest';
 import { createOidcTestCredentials } from '../testUtils';
 import { completeOidcLogin } from './completeOidcLogin';
 import { OidcCodeAndState } from './types';
 
-jest.mock('matrix-js-sdk', () => ({
-  ...jest.requireActual('matrix-js-sdk'),
-  completeAuthorizationCodeGrant: jest.fn(),
+vi.mock('matrix-js-sdk', async () => ({
+  ...(await vi.importActual('matrix-js-sdk')),
+  completeAuthorizationCodeGrant: vi.fn(),
 }));
 
 const oidcTestCredentials = createOidcTestCredentials();
@@ -33,7 +34,7 @@ describe('completeOidcLogin', () => {
       code: 'oidc_test_code',
     };
 
-    jest.mocked(completeAuthorizationCodeGrant).mockResolvedValue({
+    vi.mocked(completeAuthorizationCodeGrant).mockResolvedValue({
       homeserverUrl: oidcTestCredentials.homeserverUrl,
       idTokenClaims: oidcTestCredentials.idTokenClaims,
       oidcClientSettings: {

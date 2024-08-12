@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import fetchMock from 'fetch-mock-jest';
 import { AccessTokens } from 'matrix-js-sdk';
+import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { Credentials } from '../../state';
 import {
   createMatrixTestCredentials,
@@ -24,38 +24,53 @@ import {
 } from '../testUtils';
 import { TokenRefresher } from './TokenRefresher';
 
+import type { FetchMock } from 'vitest-fetch-mock';
+import { createOidcTokenRefresher } from './createOidcTokenRefresher';
+const fetch = global.fetch as FetchMock;
+
 const oidcClientConfig = createOidcTestClientConfig();
 
 describe('TokenRefresher', () => {
   let credentials: Credentials;
   let tokenRefresher: TokenRefresher;
 
-  beforeEach(() => {
+  afterEach(() => {
+    fetch.resetMocks();
+  });
+
+  beforeEach(async () => {
+    fetch.mockResponse((req) => {
+      if (req.url === 'https://example.com/.well-known/openid-configuration') {
+        return {
+          status: 200,
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(oidcClientConfig.metadata),
+        };
+      } else if (req.url === oidcClientConfig.metadata.jwks_uri!) {
+        return {
+          status: 200,
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ keys: [] }),
+        };
+      }
+      return '';
+    });
+
     credentials = new Credentials();
     const oidcCredentials = createOidcTestCredentials();
     credentials.setOidcCredentials(oidcCredentials);
     const matrixCredentials = createMatrixTestCredentials();
     credentials.setMatrixCredentials(matrixCredentials);
-    fetchMock.get(
-      'https://example.com/.well-known/openid-configuration',
-      oidcClientConfig.metadata,
-    );
-    fetchMock.get(oidcClientConfig.metadata.jwks_uri!, {
-      status: 200,
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      keys: [],
-    });
-    tokenRefresher = new TokenRefresher(
+
+    tokenRefresher = await createOidcTokenRefresher(
+      credentials,
       oidcCredentials,
       matrixCredentials.deviceId,
-      credentials,
     );
-  });
-
-  afterEach(() => {
-    fetchMock.mockReset();
   });
 
   it('persistTokens should update the access tokens on the credentials', () => {
