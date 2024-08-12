@@ -24,13 +24,14 @@ export function createOidcTestClientConfig(): OidcClientConfig {
     metadata: {
       authorization_endpoint: 'https://auth.example.com/auth',
       code_challenge_methods_supported: ['S256'],
-      grant_types_supported: ['authorization_code'],
+      grant_types_supported: ['authorization_code', 'refresh_token'],
       issuer: 'https://example.com',
       registration_endpoint: 'https://auth.example.com/register',
       response_types_supported: ['code'],
       revocation_endpoint: 'https://auth.example.com/revoke',
       token_endpoint: 'https://auth.example.com/token',
       jwks_uri: 'https://auth.example.com/jwks',
+      device_authorization_endpoint: 'https://auth.example.com/device',
     },
   };
 }
