@@ -16,13 +16,16 @@
  * along with NeoBoard Standalone. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import fetchMock from 'fetch-mock-jest';
 import Joi from 'joi';
+import { afterEach, describe, expect, it } from 'vitest';
 import { fetchAuthIssuer } from './fetchAuthIssuer';
+
+import type { FetchMock } from 'vitest-fetch-mock';
+const fetch = global.fetch as FetchMock;
 
 describe('fetchAuthIssuer', () => {
   afterEach(() => {
-    fetchMock.mockReset();
+    fetch.resetMocks();
   });
 
   it('should fetch and return an auth issuer from the API', async () => {
@@ -30,19 +33,29 @@ describe('fetchAuthIssuer', () => {
       issuer: 'https://id.example.com',
     };
 
-    fetchMock.get(
-      'https://example.com/_matrix/client/unstable/org.matrix.msc2965/auth_issuer',
-      issuerData,
-    );
+    fetch.mockResponse((req) => {
+      if (
+        req.url ===
+        'https://example.com/_matrix/client/unstable/org.matrix.msc2965/auth_issuer'
+      ) {
+        return JSON.stringify(issuerData);
+      }
+      return '';
+    });
 
     expect(await fetchAuthIssuer('https://example.com')).toEqual(issuerData);
   });
 
   it('should re-throw request errors', async () => {
-    fetchMock.get(
-      'https://example.com/_matrix/client/unstable/org.matrix.msc2965/auth_issuer',
-      { throws: new Error('request error') },
-    );
+    fetch.mockReject((req) => {
+      if (
+        req ===
+        'https://example.com/_matrix/client/unstable/org.matrix.msc2965/auth_issuer'
+      ) {
+        return Promise.reject(new Error('request error'));
+      }
+      return Promise.resolve();
+    });
 
     await expect(fetchAuthIssuer('https://example.com')).rejects.toThrow(
       new Error('auth_issuer request failed', {
@@ -52,10 +65,15 @@ describe('fetchAuthIssuer', () => {
   });
 
   it('should throw response errors', async () => {
-    fetchMock.get(
-      'https://example.com/_matrix/client/unstable/org.matrix.msc2965/auth_issuer',
-      { status: 500, body: 'server error' },
-    );
+    fetch.mockResponse((req) => {
+      if (
+        req.url ===
+        'https://example.com/_matrix/client/unstable/org.matrix.msc2965/auth_issuer'
+      ) {
+        return { status: 500, body: 'server error' };
+      }
+      return '';
+    });
 
     await expect(fetchAuthIssuer('https://example.com')).rejects.toThrow(
       new Error('auth_issuer response not okay', {
@@ -65,10 +83,19 @@ describe('fetchAuthIssuer', () => {
   });
 
   it('should re-throw JSON parsing errors', async () => {
-    fetchMock.get(
-      'https://example.com/_matrix/client/unstable/org.matrix.msc2965/auth_issuer',
-      '{',
-    );
+    fetch.mockResponse((req) => {
+      if (
+        req.url ===
+        'https://example.com/_matrix/client/unstable/org.matrix.msc2965/auth_issuer'
+      ) {
+        return {
+          body: '{',
+          status: 200,
+        };
+      }
+
+      return '';
+    });
 
     await expect(fetchAuthIssuer('https://example.com')).rejects.toThrow(
       'failed to parse auth_issuer response',
@@ -76,10 +103,19 @@ describe('fetchAuthIssuer', () => {
   });
 
   it('should throw an error if the response is invalid', async () => {
-    fetchMock.get(
-      'https://example.com/_matrix/client/unstable/org.matrix.msc2965/auth_issuer',
-      '{}',
-    );
+    fetch.mockResponse((req) => {
+      if (
+        req.url ===
+        'https://example.com/_matrix/client/unstable/org.matrix.msc2965/auth_issuer'
+      ) {
+        return {
+          body: '{}',
+          status: 200,
+        };
+      }
+
+      return '';
+    });
 
     await expect(fetchAuthIssuer('https://example.com')).rejects.toThrow(
       new Error('invalid auth_issuer response', {

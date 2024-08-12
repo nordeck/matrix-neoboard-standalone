@@ -16,7 +16,7 @@
  * along with NeoBoard Standalone. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import fetchMock from 'fetch-mock-jest';
+import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { Credentials } from '../../state';
 import {
   createMatrixTestCredentials,
@@ -25,6 +25,9 @@ import {
 } from '../testUtils';
 import { TokenRefresher } from './TokenRefresher';
 import { createOidcTokenRefresher } from './createOidcTokenRefresher';
+
+import type { FetchMock } from 'vitest-fetch-mock';
+const fetch = global.fetch as FetchMock;
 
 describe('createOidcTokenRefresher', () => {
   const oidcClientConfig = createOidcTestClientConfig();
@@ -35,21 +38,30 @@ describe('createOidcTokenRefresher', () => {
   credentials.setOidcCredentials(oidcCredentials);
 
   beforeEach(() => {
-    fetchMock.get(
-      'https://example.com/.well-known/openid-configuration',
-      oidcClientConfig.metadata,
-    );
-    fetchMock.get(oidcClientConfig.metadata.jwks_uri!, {
-      status: 200,
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      keys: [],
+    fetch.mockResponse((req) => {
+      if (req.url === 'https://example.com/.well-known/openid-configuration') {
+        return {
+          status: 200,
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(oidcClientConfig.metadata),
+        };
+      } else if (req.url === oidcClientConfig.metadata.jwks_uri!) {
+        return {
+          status: 200,
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ keys: [] }),
+        };
+      }
+      return '';
     });
   });
 
   afterEach(() => {
-    fetchMock.mockReset();
+    fetch.resetMocks();
   });
 
   it('should create a TokenRefresher', async () => {

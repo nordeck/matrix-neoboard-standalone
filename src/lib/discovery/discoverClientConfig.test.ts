@@ -16,13 +16,15 @@
  * along with NeoBoard Standalone. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import fetchMock from 'fetch-mock-jest';
 import { AutoDiscovery } from 'matrix-js-sdk';
+import { afterEach, describe, expect, it } from 'vitest';
+import type { FetchMock } from 'vitest-fetch-mock';
 import { discoverClientConfig } from './discoverClientConfig';
+const fetch = global.fetch as FetchMock;
 
 describe('discoverClientConfig', () => {
   afterEach(() => {
-    fetchMock.mockReset();
+    fetch.resetMocks();
   });
 
   it('should return a URL as it is without issuing a request', async () => {
@@ -36,15 +38,21 @@ describe('discoverClientConfig', () => {
       },
     });
 
-    expect(fetchMock).not.toHaveFetched();
+    expect(fetch.requests().length).toEqual(0);
   });
 
   it('should discover the homeserver base URL', async () => {
-    fetchMock.get('https://example.com/.well-known/matrix/client', {
-      'm.homeserver': { base_url: 'https://matrix.example.com' },
-    });
-    fetchMock.get('https://matrix.example.com/_matrix/client/versions', {
-      versions: ['v1.5'],
+    fetch.mockResponse((req) => {
+      if (req.url === 'https://example.com/.well-known/matrix/client') {
+        return JSON.stringify({
+          'm.homeserver': { base_url: 'https://matrix.example.com' },
+        });
+      } else if (
+        req.url === 'https://matrix.example.com/_matrix/client/versions'
+      ) {
+        return JSON.stringify({ versions: ['v1.5'] });
+      }
+      return '';
     });
 
     expect(await discoverClientConfig('example.com')).toEqual({

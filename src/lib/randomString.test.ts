@@ -16,6 +16,7 @@
  * along with NeoBoard Standalone. If not, see <https://www.gnu.org/licenses/>.
  */
 
+import { describe, expect, it } from 'vitest';
 import { randomString } from './randomString';
 
 describe('randomString', () => {

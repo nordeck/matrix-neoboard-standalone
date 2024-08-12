@@ -17,24 +17,27 @@
  */
 
 import { Observable } from 'rxjs';
+import { Mocked, vi } from 'vitest';
 import { StandaloneClient } from './types';
 
-export type MockedStandaloneClient = jest.Mocked<StandaloneClient>;
+export type MockedStandaloneClient = Mocked<StandaloneClient>;
 
 export function mockStandaloneClient(): MockedStandaloneClient {
   return {
-    createRoom: jest.fn(),
-    eventsObservable: jest.fn().mockReturnValue(new Observable()),
-    toDeviceMessagesObservable: jest.fn().mockReturnValue(new Observable()),
-    receiveStateEvents: jest.fn(),
-    sendStateEvent: jest.fn(),
-    receiveRoomEvents: jest.fn(),
-    sendRoomEvent: jest.fn(),
-    readEventRelations: jest.fn(),
-    observeTurnServers: jest.fn(),
-    searchUserDirectory: jest.fn(),
-    getMediaConfig: jest.fn(),
-    uploadFile: jest.fn(),
-    sendToDeviceMessage: jest.fn(),
+    createRoom: vi.fn(),
+    eventsObservable: vi.fn().mockReturnValue(new Observable()),
+    toDeviceMessagesObservable: vi.fn().mockReturnValue(new Observable()),
+    // @ts-ignore - T doesn't matter here
+    receiveStateEvents: vi.fn(),
+    sendStateEvent: vi.fn(),
+    // @ts-ignore - T doesn't matter here
+    receiveRoomEvents: vi.fn(),
+    sendRoomEvent: vi.fn(),
+    readEventRelations: vi.fn(),
+    observeTurnServers: vi.fn(),
+    searchUserDirectory: vi.fn(),
+    getMediaConfig: vi.fn(),
+    uploadFile: vi.fn(),
+    sendToDeviceMessage: vi.fn(),
   };
 }

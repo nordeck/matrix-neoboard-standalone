@@ -18,11 +18,12 @@
 
 import { getEnvironment } from '@matrix-widget-toolkit/mui';
 import { render, screen } from '@testing-library/react';
+import { describe, expect, it, vi } from 'vitest';
 import { Login } from './Login';
 
-jest.mock('@matrix-widget-toolkit/mui', () => ({
-  ...jest.requireActual('@matrix-widget-toolkit/mui'),
-  getEnvironment: jest.fn(),
+vi.mock('@matrix-widget-toolkit/mui', async () => ({
+  ...(await vi.importActual('@matrix-widget-toolkit/mui')),
+  getEnvironment: vi.fn(),
 }));
 
 describe('<Login />', () => {
@@ -35,7 +36,7 @@ describe('<Login />', () => {
   });
 
   it('should not show the servername field, if there is a homeserver configured', () => {
-    jest.mocked(getEnvironment).mockImplementation((name) => {
+    vi.mocked(getEnvironment).mockImplementation((name) => {
       return name === 'REACT_APP_HOMESERVER' ? 'example.com' : '';
     });
 

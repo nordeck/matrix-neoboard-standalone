@@ -17,6 +17,7 @@
  */
 
 import { MatrixClient } from 'matrix-js-sdk';
+import { describe, expect, it, vi } from 'vitest';
 import { TokenRefresher } from '../../lib/oidc';
 import {
   createMatrixTestCredentials,
@@ -24,9 +25,9 @@ import {
 } from '../../lib/testUtils';
 import { createMatrixClient } from './createMatrixClient';
 
-jest.mock('matrix-js-sdk', () => ({
-  ...jest.requireActual('matrix-js-sdk'),
-  MatrixClient: jest.fn(),
+vi.mock('matrix-js-sdk', async () => ({
+  ...(await vi.importActual('matrix-js-sdk')),
+  MatrixClient: vi.fn(),
 }));
 
 const matrixTestCredentials = createMatrixTestCredentials();
@@ -38,9 +39,9 @@ describe('createMatrixClient', () => {
       doRefreshAccessToken: () => {},
     } as unknown as TokenRefresher;
     const clientStub = {
-      startClient: jest.fn(),
+      startClient: vi.fn(),
     } as unknown as MatrixClient;
-    jest.mocked(MatrixClient).mockReturnValue(clientStub);
+    vi.mocked(MatrixClient).mockReturnValue(clientStub);
 
     await createMatrixClient(
       oidcTestCredentials,

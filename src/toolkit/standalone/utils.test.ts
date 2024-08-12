@@ -18,6 +18,7 @@
 
 import { RoomEvent, StateEvent } from '@matrix-widget-toolkit/api';
 import { Symbols } from 'matrix-widget-api';
+import { beforeEach, describe, expect, it } from 'vitest';
 import { isDefined, isInRoom } from './utils';
 
 describe('isDefined', () => {

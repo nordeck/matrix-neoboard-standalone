@@ -16,6 +16,7 @@
  * along with NeoBoard Standalone. If not, see <https://www.gnu.org/licenses/>.
  */
 
+import { beforeEach, describe, expect, it } from 'vitest';
 import {
   createMatrixTestCredentials,
   createOidcTestCredentials,

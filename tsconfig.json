@@ -6,7 +6,12 @@
     "allowJs": true,
     "module": "ESNext",
     "skipLibCheck": true,
-    "types": ["jest", "vite/client"],
+    "types": [
+      /* Still required due to the matrix-neoboard pulling in jest types */
+      "jest",
+      "vitest-fetch-mock",
+      "vite/client"
+    ],
     /* Bundler mode */
     "moduleResolution": "bundler",
     "allowImportingTsExtensions": true,

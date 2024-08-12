@@ -16,14 +16,22 @@
  * along with NeoBoard Standalone. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import fetchMock from 'fetch-mock-jest';
 import {
   ClientEvent,
   ClientEventHandlerMap,
+  completeAuthorizationCodeGrant,
   MatrixClient,
   SyncState,
-  completeAuthorizationCodeGrant,
 } from 'matrix-js-sdk';
+import {
+  afterEach,
+  beforeEach,
+  describe,
+  expect,
+  it,
+  MockInstance,
+  vi,
+} from 'vitest';
 import {
   createMatrixTestCredentials,
   createOidcTestClientConfig,
@@ -35,12 +43,15 @@ import {
 } from '../Credentials';
 import { Application } from './Application';
 
-jest.mock('matrix-js-sdk', () => ({
-  ...jest.requireActual('matrix-js-sdk'),
+import type { FetchMock } from 'vitest-fetch-mock';
+const fetch = global.fetch as FetchMock;
+
+vi.mock('matrix-js-sdk', async () => ({
+  ...(await vi.importActual('matrix-js-sdk')),
   // Mock MatrixClient to prevent mocking of a lot of Matrix requests
-  MatrixClient: jest.fn(),
+  MatrixClient: vi.fn(),
   // Mock completeAuthorizationCodeGrant to prevent mocking of a lot of OIDC stuff
-  completeAuthorizationCodeGrant: jest.fn(),
+  completeAuthorizationCodeGrant: vi.fn(),
 }));
 
 const oidcClientConfig = createOidcTestClientConfig();
@@ -50,35 +61,44 @@ const matrixTestCredentials = createMatrixTestCredentials();
 describe('Application', () => {
   let application: Application;
   let clientMock: MatrixClient;
-  let consoleWarningSpy: jest.SpyInstance;
+  let consoleWarningSpy: MockInstance;
 
   beforeEach(() => {
-    consoleWarningSpy = jest.spyOn(console, 'warn');
+    consoleWarningSpy = vi.spyOn(console, 'warn');
 
     // Mock common OIDC requests
-    fetchMock.get(
-      'https://example.com/.well-known/openid-configuration',
-      oidcClientConfig.metadata,
-    );
-    fetchMock.get(oidcClientConfig.metadata.jwks_uri!, {
-      status: 200,
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      keys: [],
+    fetch.mockResponse((req) => {
+      if (req.url === 'https://example.com/.well-known/openid-configuration') {
+        return {
+          status: 200,
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(oidcClientConfig.metadata),
+        };
+      } else if (req.url === oidcClientConfig.metadata.jwks_uri!) {
+        return {
+          status: 200,
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ keys: [] }),
+        };
+      }
+      return '';
     });
 
     // Stub a MatrixClient with the minimum functions mocked,
     // that are required for the tests here
     clientMock = {
-      startClient: jest.fn(),
-      stopClient: jest.fn(),
-      whoami: jest.fn(),
-      addEventListener: jest.fn(),
-      removeEventListener: jest.fn(),
-      once: jest.fn(),
+      startClient: vi.fn(),
+      stopClient: vi.fn(),
+      whoami: vi.fn(),
+      addEventListener: vi.fn(),
+      removeEventListener: vi.fn(),
+      once: vi.fn(),
     } as unknown as MatrixClient;
-    jest.mocked(MatrixClient).mockReturnValue(clientMock);
+    vi.mocked(MatrixClient).mockReturnValue(clientMock);
 
     application = new Application();
   });
@@ -86,7 +106,7 @@ describe('Application', () => {
   afterEach(() => {
     consoleWarningSpy.mockRestore();
     application.destroy();
-    fetchMock.mockReset();
+    fetch.resetMocks();
     localStorage.clear();
   });
 
@@ -109,7 +129,7 @@ describe('Application', () => {
     );
 
     // Mock sync prepared
-    jest.mocked(clientMock).once.mockImplementationOnce((event, listener) => {
+    vi.mocked(clientMock).once.mockImplementationOnce((event, listener) => {
       if (event === ClientEvent.Sync) {
         (listener as ClientEventHandlerMap[ClientEvent.Sync])(
           SyncState.Prepared,
@@ -128,7 +148,7 @@ describe('Application', () => {
     if (state.lifecycleState !== 'loggedIn') return;
 
     // Ensure that the MatrixClient has been created with the stored credentials
-    expect(jest.mocked(MatrixClient)).toHaveBeenCalledWith(
+    expect(vi.mocked(MatrixClient)).toHaveBeenCalledWith(
       expect.objectContaining({
         accessToken: 'test_access_token',
         baseUrl: 'https://matrix.example.com/',
@@ -144,7 +164,7 @@ describe('Application', () => {
 
   it('should log and not explode when resuming a session errors', async () => {
     // Mute console.warn for this test
-    jest.mocked(console.warn).mockImplementation(() => {});
+    vi.mocked(console.warn).mockImplementation(() => {});
 
     // Set up credentials in localStorage, so that it is tried to resume a session from there
     localStorage.setItem(
@@ -156,7 +176,7 @@ describe('Application', () => {
       JSON.stringify(matrixTestCredentials),
     );
     const matrixClientError = new Error('test_error');
-    jest.mocked(clientMock.startClient).mockRejectedValue(matrixClientError);
+    vi.mocked(clientMock.startClient).mockRejectedValue(matrixClientError);
 
     await application.start();
 
@@ -175,7 +195,7 @@ describe('Application', () => {
       'https://example.com/?code=test_code&state=test_state';
 
     // Mock OIDC related function to prevent mocking a lot of OIDC stuff
-    jest.mocked(completeAuthorizationCodeGrant).mockResolvedValue({
+    vi.mocked(completeAuthorizationCodeGrant).mockResolvedValue({
       homeserverUrl: oidcTestCredentials.homeserverUrl,
       idTokenClaims: oidcTestCredentials.idTokenClaims,
       oidcClientSettings: {
@@ -191,13 +211,13 @@ describe('Application', () => {
     });
 
     // Mock the whoami response
-    jest.mocked(clientMock.whoami).mockResolvedValue({
+    vi.mocked(clientMock.whoami).mockResolvedValue({
       user_id: '@test:example.com',
       device_id: 'test_device_id',
     });
 
     // Mock sync prepared
-    jest.mocked(clientMock).once.mockImplementationOnce((event, listener) => {
+    vi.mocked(clientMock).once.mockImplementationOnce((event, listener) => {
       if (event === ClientEvent.Sync) {
         (listener as ClientEventHandlerMap[ClientEvent.Sync])(
           SyncState.Prepared,
@@ -216,7 +236,7 @@ describe('Application', () => {
     if (state.lifecycleState !== 'loggedIn') return;
 
     // Ensure that the MatrixClient has been created with the credentials delivered by OIDC
-    expect(jest.mocked(MatrixClient)).toHaveBeenNthCalledWith(
+    expect(vi.mocked(MatrixClient)).toHaveBeenNthCalledWith(
       2,
       expect.objectContaining({
         accessToken: 'test_access_token',
@@ -233,7 +253,7 @@ describe('Application', () => {
 
   it('should log and not explode when completing an OIDC login errors', async () => {
     // Mute console.warn for this test
-    jest.mocked(console.warn).mockImplementation(() => {});
+    vi.mocked(console.warn).mockImplementation(() => {});
 
     // Only provide code and state params; it should then explode somewhere during the OIDC process
     window.location.href =

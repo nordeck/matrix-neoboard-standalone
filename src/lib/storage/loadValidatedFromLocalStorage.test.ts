@@ -18,6 +18,15 @@
 
 import Joi from 'joi';
 import {
+  afterEach,
+  beforeEach,
+  describe,
+  expect,
+  it,
+  MockInstance,
+  vi,
+} from 'vitest';
+import {
   loadValidatedFromLocalStorage,
   tryLoadValidatedFromLocalStorage,
 } from './loadValidatedFromLocalStorage';
@@ -55,10 +64,10 @@ describe('loadValidatedFromLocalStorage', () => {
 });
 
 describe('tryLoadValidatedFromLocalStorage', () => {
-  let consoleWarnSpy: jest.SpyInstance;
+  let consoleWarnSpy: MockInstance;
 
   beforeEach(() => {
-    consoleWarnSpy = jest.spyOn(console, 'warn');
+    consoleWarnSpy = vi.spyOn(console, 'warn');
   });
 
   afterEach(() => {
@@ -67,7 +76,7 @@ describe('tryLoadValidatedFromLocalStorage', () => {
 
   it('should return null and log a warning if the value fails the validation', () => {
     // mute logging for tests
-    jest.mocked(console.warn).mockImplementation(() => {});
+    vi.mocked(console.warn).mockImplementation(() => {});
 
     window.localStorage.setItem('test_key', '"test_value"');
 
@@ -82,7 +91,7 @@ describe('tryLoadValidatedFromLocalStorage', () => {
 
   it('should return null and log a warning if the value is not valid JSON', () => {
     // mute logging for tests
-    jest.mocked(console.warn).mockImplementation(() => {});
+    vi.mocked(console.warn).mockImplementation(() => {});
 
     window.localStorage.setItem('test_key', '{');
 

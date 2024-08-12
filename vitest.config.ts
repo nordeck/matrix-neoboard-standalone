@@ -15,32 +15,13 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with NeoBoard Standalone. If not, see <https://www.gnu.org/licenses/>.
  */
+/// <reference types="vitest" />
 
-const config = {
-  setupFilesAfterEnv: ['<rootDir>/src/setupTests.ts'],
-  testEnvironment: 'jsdom',
-  transform: {
-    '^.+\\.(t|j)sx?$': [
-      '@swc/jest',
-      {
-        jsc: {
-          transform: {
-            react: {
-              runtime: 'automatic',
-            },
-          },
-        },
-      },
-    ],
-  },
-  moduleNameMapper: {
-    // Allow imports from other packages in this repository.
-    '@nordeck/matrix-neoboard-(.*)':
-      '<rootDir>/../matrix-neoboard/packages/$1/src/index.ts',
-    '\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$':
-      '<rootDir>/__mocks__/fileMock.js',
-    '\\.(css|less)$': 'identity-obj-proxy',
-  },
-};
+import { defineConfig } from 'vite';
 
-export default config;
+export default defineConfig({
+  test: {
+    environment: 'happy-dom',
+    setupFiles: ['./src/setupTests.ts'],
+  },
+});
