@@ -48,6 +48,7 @@ describe('completeOidcLogin', () => {
         refresh_token: oidcTestCredentials.refreshToken,
         token_type: 'Bearer',
         scope: 'oidc',
+        id_token: 'oidc_test_id_token',
       },
     });
 
