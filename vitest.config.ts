@@ -13,12 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+/// <reference types="vitest" />
 
-// Babel is only used for ESLint
+import { defineConfig } from 'vite';
 
-module.exports = {
-  presets: [
-    ['@babel/preset-env', { targets: { node: 'current' } }],
-    '@babel/preset-typescript',
-  ],
-};
+export default defineConfig({
+  test: {
+    environment: 'happy-dom',
+    setupFiles: ['./src/setupTests.ts'],
+  },
+});

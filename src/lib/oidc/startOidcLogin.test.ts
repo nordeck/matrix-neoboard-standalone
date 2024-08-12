@@ -14,22 +14,33 @@
  * limitations under the License.
  */
 
-import fetchMock from 'fetch-mock-jest';
+import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import { createOidcTestClientConfig } from '../testUtils';
 import { startOidcLogin } from './startOidcLogin';
+
+import type { FetchMock } from 'vitest-fetch-mock';
+const fetch = global.fetch as FetchMock;
 
 const oidcClientConfig = createOidcTestClientConfig();
 
 describe('startOidcLogin', () => {
   beforeAll(() => {
-    fetchMock.get(
-      'https://example.com/.well-known/openid-configuration',
-      oidcClientConfig.metadata,
-    );
+    fetch.mockResponse((req) => {
+      if (req.url === 'https://example.com/.well-known/openid-configuration') {
+        return {
+          status: 200,
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(oidcClientConfig.metadata),
+        };
+      }
+      return '';
+    });
   });
 
   afterAll(() => {
-    fetchMock.mockReset();
+    fetch.resetMocks();
   });
 
   it('should redirect to the authorisation URL', async () => {

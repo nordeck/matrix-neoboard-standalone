@@ -14,15 +14,17 @@
  * limitations under the License.
  */
 
-import '@testing-library/jest-dom';
+import '@testing-library/jest-dom/vitest';
+import { cleanup } from '@testing-library/react';
 import crypto from 'crypto';
-import fetchMock from 'fetch-mock';
 import { TextDecoder, TextEncoder } from 'util';
+import { afterEach, vi } from 'vitest';
+import createFetchMock from 'vitest-fetch-mock';
 import './i18n';
 import { setLocale } from './lib/locale';
 
 // Use a different configuration for i18next during tests
-jest.mock('./i18n', () => {
+vi.mock('./i18n', () => {
   const i18n = require('i18next');
   const { initReactI18next } = require('react-i18next');
 
@@ -37,6 +39,12 @@ jest.mock('./i18n', () => {
   return i18n;
 });
 setLocale('en');
+
+// Mock i18next's t to fix loading of translations
+vi.mock('i18next', async () => ({
+  ...(await vi.importActual('i18next')),
+  t: (key: string, fallback: string) => fallback,
+}));
 
 // Set up parts of the crypto API needed for the tests
 Object.defineProperty(global.self, 'crypto', {
@@ -56,6 +64,9 @@ Object.defineProperty(window, 'location', {
 });
 
 // Mock the fetch API
-Object.assign(global, {
-  fetch: fetchMock.sandbox(),
+const fetchMocker = createFetchMock(vi);
+fetchMocker.enableMocks();
+
+afterEach(() => {
+  cleanup();
 });

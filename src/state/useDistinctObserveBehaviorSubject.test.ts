@@ -17,6 +17,7 @@
 import { renderHook } from '@testing-library/react';
 import { act } from 'react';
 import { BehaviorSubject } from 'rxjs';
+import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { useDistinctObserveBehaviorSubject } from './useDistinctObserveBehaviorSubject';
 
 describe('useDistinctObserveBehaviorSubject', () => {

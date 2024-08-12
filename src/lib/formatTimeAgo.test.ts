@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { formatTimeAgo } from './formatTimeAgo';
 
 const testDate = new Date('2024-07-24 9:00');
@@ -27,12 +28,12 @@ describe('formatTimeAgo', () => {
   const originalLang = document.documentElement.lang;
 
   beforeEach(() => {
-    jest.useFakeTimers().setSystemTime(new Date('2024-07-24 9:00'));
+    vi.useFakeTimers().setSystemTime(new Date('2024-07-24 9:00'));
     document.documentElement.lang = 'en';
   });
 
   afterEach(() => {
-    jest.useRealTimers();
+    vi.useRealTimers();
     document.documentElement.lang = originalLang;
   });
 

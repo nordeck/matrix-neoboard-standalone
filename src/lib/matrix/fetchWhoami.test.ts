@@ -14,27 +14,31 @@
  * limitations under the License.
  */
 
-import fetchMock from 'fetch-mock-jest';
+import { afterEach, describe, expect, it } from 'vitest';
 import { fetchWhoami } from './fetchWhoami';
+
+import type { FetchMock } from 'vitest-fetch-mock';
+const fetch = global.fetch as FetchMock;
 
 describe('fetchWhoami', () => {
   afterEach(() => {
-    fetchMock.mockReset();
+    fetch.resetMocks();
   });
 
   it('should issue a who-am-I-request with a temporary MatrixClient', async () => {
-    fetchMock.get(
-      {
-        url: 'https://matrix.example.com/_matrix/client/v3/account/whoami',
-        headers: {
-          Authorization: 'Bearer test_access_token',
-        },
-      },
-      {
-        user_id: 'test_user_id',
-        device_id: 'test_device_id',
-      },
-    );
+    fetch.mockResponse((req) => {
+      if (
+        req.url ===
+          'https://matrix.example.com/_matrix/client/v3/account/whoami' &&
+        req.headers.get('Authorization') === 'Bearer test_access_token'
+      ) {
+        return JSON.stringify({
+          user_id: 'test_user_id',
+          device_id: 'test_device_id',
+        });
+      }
+      return '';
+    });
 
     expect(
       await fetchWhoami('https://matrix.example.com', 'test_access_token'),

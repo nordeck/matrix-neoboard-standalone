@@ -21,8 +21,12 @@ import {
 } from '@matrix-widget-toolkit/api';
 import { Symbols } from 'matrix-widget-api';
 import { firstValueFrom, of, take, toArray } from 'rxjs';
+import { beforeEach, describe, expect, it } from 'vitest';
 import { StandaloneApiImpl } from './StandaloneApiImpl';
-import { MockedStandaloneClient, mockStandaloneClient } from './client';
+import {
+  MockedStandaloneClient,
+  mockStandaloneClient,
+} from './client/mockStandaloneClient';
 import { StandaloneApi } from './types';
 
 describe('StandaloneApiImpl', () => {

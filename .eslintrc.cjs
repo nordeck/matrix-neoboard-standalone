@@ -18,7 +18,6 @@ module.exports = {
   plugins: ['promise', 'notice'],
   extends: [
     'react-app',
-    'react-app/jest',
     'plugin:promise/recommended',
     'eslint:recommended',
     'prettier',
