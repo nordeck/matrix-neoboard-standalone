@@ -44,7 +44,7 @@ export function BoardTile({
 }: BoardTileProps) {
   return (
     <Card sx={{ width: '14.5rem' }}>
-      <CardActionArea onClick={onClick}>
+      <CardActionArea component="div" onClick={onClick}>
         <CardMedia component="img" height="120" image={previewUrl} />
         <CardContent>
           <Typography
