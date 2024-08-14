@@ -9,7 +9,7 @@
 # For more information on how to configure Synapse, including a complete accounting of
 # each option, go to docs/usage/configuration/config_documentation.md or
 # https://element-hq.github.io/synapse/latest/usage/configuration/config_documentation.html
-server_name: 'matrix.local'
+server_name: 'matrix.internal'
 pid_file: /data/homeserver.pid
 listeners:
   - port: 8008
@@ -26,7 +26,7 @@ database:
     password: s3cr3t
     dbname: synapse
     host: synapse-db
-log_config: '/data/matrix.local.log.config'
+log_config: '/data/matrix.internal.log.config'
 rc_message:
   per_second: 1000
   burst_count: 1000
@@ -37,7 +37,7 @@ report_stats: false
 macaroon_secret_key: '5fnB8:DR^Kjsf8P1^5+#W7iD&0T~QjlWUQ1Qq31r:E;5WB~#TF'
 form_secret: 'Q@5OcThB28ci9M+iOl,CR@sBg~WH3#MN;wsqQf2w1IIU8YuYk-'
 signing_key_path:
-  '/data/matrix.local.signing.key'
+  '/data/matrix.internal.signing.key'
   #enable_registration: true
   #enable_registration_without_verification: true
 trusted_key_servers:
@@ -48,7 +48,7 @@ experimental_features:
     enabled: true
 
     # Synapse will call `{issuer}/.well-known/openid-configuration` to get the OIDC configuration
-    issuer: https://matrix.local
+    issuer: https://matrix.internal
 
     # Matches the `client_id` in the auth service config
     client_id: 0000000000000000000SYNAPSE
@@ -61,4 +61,4 @@ experimental_features:
     admin_token: 'o0athzVosHioRx7JDO5DOxi8qH5ToX5s'
 
     # URL to advertise to clients where users can self-manage their account
-    account_management_url: 'https://mas.matrix.local/account'
+    account_management_url: 'https://mas.matrix.internal/account'
