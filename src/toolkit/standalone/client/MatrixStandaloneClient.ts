@@ -215,7 +215,7 @@ export class MatrixStandaloneClient implements StandaloneClient {
 
   async uploadFile(
     // eslint complains about lib dom types
-    // eslint-disable-next-line
+
     file: XMLHttpRequestBodyInit,
   ): Promise<IUploadFileActionFromWidgetResponseData> {
     const uploadResult = await this.matrixClient.uploadContent(file);
@@ -299,7 +299,6 @@ export class MatrixStandaloneClient implements StandaloneClient {
       // Repeatedly listen for new TURN servers until an error occurs or
       // the caller stops this generator
       while (true) {
-        // eslint-disable-next-line
         yield await new Promise<ITurnServer>((resolve, reject) => {
           setTurnServer = resolve;
           setError = reject;

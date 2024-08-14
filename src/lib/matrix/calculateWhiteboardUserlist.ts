@@ -18,6 +18,9 @@
 
 import { PowerLevelsStateEvent, StateEvent } from '@matrix-widget-toolkit/api';
 
+/**
+ * @returns list of user IDs or null if impossible to determine.
+ */
 export function calculateWhiteboardUserlist(
   powerLevels: StateEvent<PowerLevelsStateEvent> | undefined,
 ): string[] | null {

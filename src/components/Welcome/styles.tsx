@@ -20,15 +20,15 @@ import { Grid, Typography, styled } from '@mui/material';
 
 import WelcomeBackground from './welcome-background.svg';
 
-export const WelcomeWrapper = styled('div')(({ theme }) => ({
+export const WelcomeWrapper = styled('div')({
   flexGrow: 1,
   height: '100vh',
-}));
+});
 
-export const WelcomeGrid = styled(Grid)(({ theme }) => ({
+export const WelcomeGrid = styled(Grid)({
   height: '100%',
   gridGap: 0,
-}));
+});
 
 export const WelcomeGridLeftPane = styled(Grid)(({ theme }) => ({
   backgroundColor: theme.palette.primary.main,
@@ -65,9 +65,9 @@ export const WelcomeGridSymbols = styled(Grid)(({ theme }) => ({
   },
 }));
 
-export const WelcomeText = styled(Typography)(({ theme }) => ({
+export const WelcomeText = styled(Typography)({
   fontSize: 40,
   fontWeight: 700,
   textTransform: 'uppercase',
   alignContent: 'center',
-}));
+});

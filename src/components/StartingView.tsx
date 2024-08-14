@@ -20,13 +20,13 @@ import { CircularProgress, Typography, styled } from '@mui/material';
 import { t } from 'i18next';
 import React from 'react';
 
-const StyledStartingView = styled('div')(({ theme }) => ({
+const StyledStartingView = styled('div')({
   display: 'flex',
   flexDirection: 'column',
   justifyContent: 'center',
   alignItems: 'center',
   height: '100vh',
-}));
+});
 
 export const StartingView: React.FC = () => {
   return (

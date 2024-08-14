@@ -77,17 +77,13 @@ export class Application {
   private readonly credentials = new Credentials();
 
   constructor() {
-    let resolveStandaloneApi: (standaloneApi: StandaloneApi) => void = (
-      standaloneApi: StandaloneApi,
-    ) => {};
+    let resolveStandaloneApi: (standaloneApi: StandaloneApi) => void = () => {};
     this.standaloneApiPromise = new Promise<StandaloneApi>((resolve) => {
       resolveStandaloneApi = resolve;
     });
     this.resolveStandaloneApi = resolveStandaloneApi;
 
-    let resolveWidgetApi: (widgetApi: WidgetApi) => void = (
-      widgetApi: WidgetApi,
-    ) => {};
+    let resolveWidgetApi: (widgetApi: WidgetApi) => void = () => {};
     this.widgetApiPromise = new Promise<WidgetApi>((resolve) => {
       resolveWidgetApi = resolve;
     });

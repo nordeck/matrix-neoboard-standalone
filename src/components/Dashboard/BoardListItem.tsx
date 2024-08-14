@@ -72,7 +72,7 @@ export function BoardListItem({
         <Stack direction="row" alignItems="center" gap={1}>
           <Stack direction="column">
             {dashboardItem.users?.map((user) => (
-              <UserChip user={user} onClick={noop} />
+              <UserChip key={user} user={user} onClick={noop} />
             ))}
           </Stack>
           <IconButton onClick={noop} component="span">

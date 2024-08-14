@@ -27,10 +27,10 @@ export function mockStandaloneClient(): MockedStandaloneClient {
     createRoom: vi.fn(),
     eventsObservable: vi.fn().mockReturnValue(new Observable()),
     toDeviceMessagesObservable: vi.fn().mockReturnValue(new Observable()),
-    // @ts-ignore - T doesn't matter here
+    // @ts-expect-error - T doesn't matter here
     receiveStateEvents: vi.fn(),
     sendStateEvent: vi.fn(),
-    // @ts-ignore - T doesn't matter here
+    // @ts-expect-error - T doesn't matter here
     receiveRoomEvents: vi.fn(),
     sendRoomEvent: vi.fn(),
     readEventRelations: vi.fn(),

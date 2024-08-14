@@ -52,7 +52,7 @@ export class StandaloneWidgetApiImpl implements StandaloneWidgetApi {
   ) {}
 
   overrideWidgetParameters(widgetParameters: Partial<WidgetParameters>): void {
-    // @ts-ignore should have an option to override params when room changes
+    // @ts-expect-error should have an option to override params when room changes
     this.widgetParameters = { ...this.widgetParameters, ...widgetParameters };
   }
 
@@ -71,12 +71,12 @@ export class StandaloneWidgetApiImpl implements StandaloneWidgetApi {
   }
 
   requestCapabilities(
-    capabilities: (string | WidgetEventCapability)[],
+    _capabilities: (string | WidgetEventCapability)[],
   ): Promise<void> {
     return Promise.resolve();
   }
 
-  hasCapabilities(capabilities: (string | WidgetEventCapability)[]): boolean {
+  hasCapabilities(_capabilities: (string | WidgetEventCapability)[]): boolean {
     return true;
   }
 
@@ -239,7 +239,7 @@ export class StandaloneWidgetApiImpl implements StandaloneWidgetApi {
   /** {@inheritdoc WidgetApi.uploadFile}  */
   async uploadFile(
     // eslint complains about lib dom types
-    // eslint-disable-next-line
+
     file: XMLHttpRequestBodyInit,
   ): Promise<IUploadFileActionFromWidgetResponseData> {
     return await this.standaloneApi.client.uploadFile(file);
@@ -270,9 +270,9 @@ export class StandaloneWidgetApiImpl implements StandaloneWidgetApi {
     T extends Record<string, unknown> = Record<string, unknown>,
     U extends IModalWidgetCreateData = IModalWidgetCreateData,
   >(
-    pathName: string,
-    name: string,
-    options?: {
+    _pathName: string,
+    _name: string,
+    _options?: {
       buttons?: IModalWidgetOpenRequestDataButton[];
       data?: U;
     },
@@ -282,8 +282,8 @@ export class StandaloneWidgetApiImpl implements StandaloneWidgetApi {
 
   /** {@inheritDoc WidgetApi.setModalButtonEnabled} */
   async setModalButtonEnabled(
-    buttonId: ModalButtonID,
-    isEnabled: boolean,
+    _buttonId: ModalButtonID,
+    _isEnabled: boolean,
   ): Promise<void> {
     throw new Error('setModalButtonEnabled not implemented');
   }
@@ -294,12 +294,12 @@ export class StandaloneWidgetApiImpl implements StandaloneWidgetApi {
   }
 
   /** {@inheritDoc WidgetApi.closeModal} */
-  async closeModal<T extends IModalWidgetReturnData>(data?: T): Promise<void> {
+  async closeModal<T extends IModalWidgetReturnData>(_data?: T): Promise<void> {
     throw new Error('closeModal not implemented');
   }
 
   /** {@inheritdoc WidgetApi.navigateTo} */
-  async navigateTo(uri: string): Promise<void> {
+  async navigateTo(_uri: string): Promise<void> {
     throw new Error('navigateTo not implemented');
   }
 
