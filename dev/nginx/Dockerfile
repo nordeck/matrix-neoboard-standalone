@@ -4,7 +4,7 @@ RUN openssl req \
   -x509 \
   -nodes \
   -days 3600 \
-  -subj "/C=DE/ST=DE/O=Nordeck/CN=matrix.local" \
+  -subj "/C=DE/ST=DE/O=Nordeck/CN=matrix.internal" \
   -newkey rsa:2048 \
   -keyout /etc/ssl/private/selfsigned.key \
   -out /etc/ssl/certs/selfsigned.crt

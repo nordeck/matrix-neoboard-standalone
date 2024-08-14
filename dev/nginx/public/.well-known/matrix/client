@@ -1,5 +1,5 @@
 {
   "m.homeserver": {
-    "base_url": "https://synapse.matrix.local/"
+    "base_url": "https://synapse.matrix.internal/"
   }
 }

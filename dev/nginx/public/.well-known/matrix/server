@@ -1,3 +1,3 @@
 {
-    "m.server": "synapse.matrix.local:8448"
+    "m.server": "synapse.matrix.internal:8448"
 }
