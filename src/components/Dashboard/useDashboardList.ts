@@ -45,6 +45,9 @@ export type DashboardItem = {
    */
   roomId: string;
   permissions: WhiteboardPermissions;
+  /**
+   * List of user IDs or null if unavailable.
+   */
   users: string[] | null;
 };
 

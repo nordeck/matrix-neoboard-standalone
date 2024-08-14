@@ -71,6 +71,7 @@ export function Login() {
         const clientId = await registerOidcClient(oidcClientConfig);
         startOidcLogin(oidcClientConfig, clientId, baseUrl);
       } catch (error) {
+        console.error('Login failed', error);
         setMessage('Login failed. Check your homeserver name.');
       }
     },
