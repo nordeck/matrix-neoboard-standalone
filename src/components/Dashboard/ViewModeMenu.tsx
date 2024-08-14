@@ -51,7 +51,7 @@ export const ViewModeMenu: React.FC = function () {
   const dispatch = useAppDispatch();
   const viewMode = useAppSelector((state) => selectViewMode(state));
   const handleItemClick = (
-    event: React.MouseEvent<HTMLElement>,
+    _event: React.MouseEvent<HTMLElement>,
     viewMode: ViewMode | null,
   ) => {
     if (viewMode !== null) {
@@ -69,7 +69,7 @@ export const ViewModeMenu: React.FC = function () {
         aria-label="text alignment"
       >
         {options.map((option) => (
-          <Tooltip title={option.label}>
+          <Tooltip key={option.id} title={option.label}>
             <ToggleButton value={option.id}>{option.icon}</ToggleButton>
           </Tooltip>
         ))}

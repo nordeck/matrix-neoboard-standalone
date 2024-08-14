@@ -24,10 +24,11 @@ import './i18n';
 import { setLocale } from './lib/locale';
 
 // Use a different configuration for i18next during tests
-vi.mock('./i18n', () => {
-  const i18n = require('i18next');
-  const { initReactI18next } = require('react-i18next');
+vi.mock('./i18n', async () => {
+  const i18n = await vi.importActual('i18next');
+  const { initReactI18next } = await vi.importActual('react-i18next');
 
+  // @ts-expect-error ignore for tests
   i18n.use(initReactI18next).init({
     fallbackLng: 'en',
     interpolation: {
@@ -43,7 +44,7 @@ setLocale('en');
 // Mock i18next's t to fix loading of translations
 vi.mock('i18next', async () => ({
   ...(await vi.importActual('i18next')),
-  t: (key: string, fallback: string) => fallback,
+  t: (_key: string, fallback: string) => fallback,
 }));
 
 // Set up parts of the crypto API needed for the tests
