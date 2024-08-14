@@ -14,9 +14,9 @@ services:
     networks:
       default:
         aliases:
-          - matrix.local
-          - mas.matrix.local
-          - synapse.matrix.local
+          - matrix.internal
+          - mas.matrix.internal
+          - synapse.matrix.internal
 
   synapse-db:
     image: postgres
@@ -40,8 +40,8 @@ services:
     volumes:
       - synapse:/data
       - ./synapse/homeserver.yaml:/data/homeserver.yaml:ro
-      - ./synapse/matrix.local.log.config:/data/matrix.local.log.config:ro
-      - ./synapse/matrix.local.signing.key:/data/matrix.local.signing.key:ro
+      - ./synapse/matrix.internal.log.config:/data/matrix.internal.log.config:ro
+      - ./synapse/matrix.internal.signing.key:/data/matrix.internal.signing.key:ro
 
   mas-db:
     image: postgres

@@ -29,8 +29,8 @@ http:
       binds:
         - address: '[::]:8081'
       proxy_protocol: false
-  public_base: https://mas.matrix.local/
-  issuer: https://matrix.local/
+  public_base: https://mas.matrix.internal/
+  issuer: https://matrix.internal/
 database:
   uri: postgres://postgres:s3cr3t@mas-db:5432/mas
 secrets:
@@ -88,6 +88,6 @@ secrets:
         oUsLpPuWtCbLZCvk/AoMKf3AnMlffQ==
         -----END EC PRIVATE KEY-----
 matrix:
-  homeserver: matrix.local
+  homeserver: matrix.internal
   secret: 'o0athzVosHioRx7JDO5DOxi8qH5ToX5s'
   endpoint: http://synapse:8008/
