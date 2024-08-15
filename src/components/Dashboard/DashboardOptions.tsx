@@ -14,16 +14,24 @@
  * limitations under the License.
  */
 
-import { Box } from '@mui/material';
-import React from 'react';
+import { Box, SxProps, Theme } from '@mui/material';
 import { SortByMenu } from './SortByMenu';
+import { ViewModeMenu } from './ViewModeMenu.tsx';
 
-export const DashboardOptions: React.FC = function () {
+export function DashboardOptions({ sx }: { sx?: SxProps<Theme> }) {
   return (
     <Box
-      sx={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '32px' }}
+      sx={{
+        display: 'flex',
+        justifyContent: 'flex-end',
+        alignContent: 'center',
+        marginBottom: '32px',
+        gap: '8px',
+        ...sx,
+      }}
     >
       <SortByMenu />
+      <ViewModeMenu />
     </Box>
   );
-};
+}

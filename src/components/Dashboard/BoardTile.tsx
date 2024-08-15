@@ -27,19 +27,13 @@ import {
 import { t } from 'i18next';
 import { MouseEvent } from 'react';
 import { TileMenu } from './TileMenu';
-import { DashboardItem } from './useDashboardList';
-
-type BoardTileProps = {
-  onClick: () => void;
-  previewUrl: string;
-  dashboardItem: DashboardItem;
-};
+import { BoardItemProps } from './useDashboardView.tsx';
 
 export function BoardTile({
   onClick,
   previewUrl,
   dashboardItem,
-}: BoardTileProps) {
+}: BoardItemProps) {
   return (
     <Card sx={{ width: '14.5rem' }}>
       <CardActionArea component="div" onClick={onClick}>

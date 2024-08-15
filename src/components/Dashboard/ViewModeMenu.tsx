@@ -1,0 +1,79 @@
+/*
+ * Copyright 2024 Nordeck IT + Consulting GmbH
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+import { GridView, List } from '@mui/icons-material';
+import { ToggleButton, ToggleButtonGroup, Tooltip } from '@mui/material';
+import React from 'react';
+import i18n from '../../i18n.ts';
+import {
+  ViewMode,
+  selectViewMode,
+  setViewMode,
+  useAppDispatch,
+  useAppSelector,
+} from '../../store';
+
+const options: {
+  id: ViewMode;
+  label: string;
+  icon: string | React.ReactElement;
+}[] = [
+  {
+    id: 'tile',
+    label: i18n.t('dashboard.viewMode.tile', 'Grid view'),
+    icon: <GridView sx={{ fontSize: '1rem' }} />,
+  },
+  {
+    id: 'list',
+    label: i18n.t('dashboard.viewMode.list', 'List view'),
+    icon: <List sx={{ fontSize: '1rem' }} />,
+  },
+];
+
+/**
+ * Allows switching between tile and list view mode
+ * Uses the dashboard slice of the application's store.
+ */
+export const ViewModeMenu: React.FC = function () {
+  const dispatch = useAppDispatch();
+  const viewMode = useAppSelector((state) => selectViewMode(state));
+  const handleItemClick = (
+    event: React.MouseEvent<HTMLElement>,
+    viewMode: ViewMode | null,
+  ) => {
+    if (viewMode !== null) {
+      dispatch(setViewMode(viewMode));
+    }
+  };
+
+  return (
+    <>
+      <ToggleButtonGroup
+        size="small"
+        value={viewMode}
+        exclusive
+        onChange={handleItemClick}
+        aria-label="text alignment"
+      >
+        {options.map((option) => (
+          <Tooltip title={option.label}>
+            <ToggleButton value={option.id}>{option.icon}</ToggleButton>
+          </Tooltip>
+        ))}
+      </ToggleButtonGroup>
+    </>
+  );
+};

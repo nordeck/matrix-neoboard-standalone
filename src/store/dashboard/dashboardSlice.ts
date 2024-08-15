@@ -26,8 +26,11 @@ export type SortBy =
   | 'created_asc'
   | 'created_desc';
 
+export type ViewMode = 'tile' | 'list';
+
 export interface DashboardState {
   sortBy: SortBy;
+  viewMode: ViewMode;
 }
 
 export const dashboardStateSchema = Joi.object({
@@ -40,6 +43,7 @@ export const dashboardStateSchema = Joi.object({
       'created_desc',
     )
     .required(),
+  viewMode: Joi.string().valid('tile', 'list'),
 }).unknown();
 
 export const dashboardSlice = createSlice({
@@ -52,11 +56,19 @@ export const dashboardSlice = createSlice({
         sortBy: action.payload,
       };
     },
+    setViewMode: (state, action: PayloadAction<ViewMode>) => {
+      return {
+        ...state,
+        viewMode: action.payload,
+      };
+    },
   },
 });
 
-export const { setSortBy } = dashboardSlice.actions;
+export const { setSortBy, setViewMode } = dashboardSlice.actions;
 
 export const selectSortBy = (state: RootState) => state.dashboardReducer.sortBy;
+export const selectViewMode = (state: RootState) =>
+  state.dashboardReducer.viewMode;
 
 export const dashboardReducer = dashboardSlice.reducer;
