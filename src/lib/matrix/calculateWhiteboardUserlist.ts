@@ -14,11 +14,14 @@
  * limitations under the License.
  */
 
-import '@mui/material/styles';
+import { PowerLevelsStateEvent, StateEvent } from '@matrix-widget-toolkit/api';
 
-declare module '@mui/material/styles' {
-  interface TypeBackground {
-    chrome: string;
-    card: string;
+export function calculateWhiteboardUserlist(
+  powerLevels: StateEvent<PowerLevelsStateEvent> | undefined,
+): string[] | null {
+  if (powerLevels?.content?.users) {
+    return Object.keys(powerLevels.content.users);
   }
+
+  return null;
 }

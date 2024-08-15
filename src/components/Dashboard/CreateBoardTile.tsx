@@ -14,15 +14,26 @@
  * limitations under the License.
  */
 
-import { Card, CardActionArea, CardContent, Typography } from '@mui/material';
+import {
+  Card,
+  CardActionArea,
+  CardContent,
+  styled,
+  Typography,
+} from '@mui/material';
 import { t } from 'i18next';
 import { AddIcon } from './AddIcon';
+import { CreateBoardItemProps } from './useDashboardView.tsx';
 
-export const CreateBoardTile = ({ onClick }: { onClick: () => void }) => {
+const StyledCard = styled(Card)(({ theme }) => ({
+  width: '14.5rem',
+  minHeight: '251px',
+  backgroundColor: theme.palette.background.card,
+}));
+
+export const CreateBoardTile = ({ onClick }: CreateBoardItemProps) => {
   return (
-    <Card
-      sx={{ width: '14.5rem', minHeight: '251px', backgroundColor: '#FCE2CF' }}
-    >
+    <StyledCard>
       <CardActionArea onClick={onClick} sx={{ height: '100%' }}>
         <CardContent sx={{ textAlign: 'center' }}>
           <AddIcon sx={{ fontSize: 30 }} />
@@ -36,10 +47,10 @@ export const CreateBoardTile = ({ onClick }: { onClick: () => void }) => {
             }}
             mt={1}
           >
-            {t('dashboard.createBoardTile.createBoard', 'Create a New Board')}
+            {t('dashboard.createBoardTile.createBoard', 'Create a new board')}
           </Typography>
         </CardContent>
       </CardActionArea>
-    </Card>
+    </StyledCard>
   );
 };

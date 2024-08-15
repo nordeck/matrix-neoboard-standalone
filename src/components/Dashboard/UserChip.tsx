@@ -14,11 +14,18 @@
  * limitations under the License.
  */
 
-import '@mui/material/styles';
+import { Avatar, Chip, ChipProps } from '@mui/material';
 
-declare module '@mui/material/styles' {
-  interface TypeBackground {
-    chrome: string;
-    card: string;
-  }
+export function UserChip({
+  user,
+  onClick,
+}: {
+  user: string;
+  onClick?: ChipProps['onClick'];
+}) {
+  const initial = user.charAt(1).toUpperCase();
+
+  return (
+    <Chip avatar={<Avatar>{initial}</Avatar>} label={user} onClick={onClick} />
+  );
 }
