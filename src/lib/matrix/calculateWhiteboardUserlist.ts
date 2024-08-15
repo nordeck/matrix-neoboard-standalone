@@ -16,24 +16,14 @@
  * along with NeoBoard Standalone. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { Box, SxProps, Theme } from '@mui/material';
-import { SortByMenu } from './SortByMenu';
-import { ViewModeMenu } from './ViewModeMenu.tsx';
+import { PowerLevelsStateEvent, StateEvent } from '@matrix-widget-toolkit/api';
 
-export function DashboardOptions({ sx }: { sx?: SxProps<Theme> }) {
-  return (
-    <Box
-      sx={{
-        display: 'flex',
-        justifyContent: 'flex-end',
-        alignContent: 'center',
-        marginBottom: '32px',
-        gap: '8px',
-        ...sx,
-      }}
-    >
-      <SortByMenu />
-      <ViewModeMenu />
-    </Box>
-  );
+export function calculateWhiteboardUserlist(
+  powerLevels: StateEvent<PowerLevelsStateEvent> | undefined,
+): string[] | null {
+  if (powerLevels?.content?.users) {
+    return Object.keys(powerLevels.content.users);
+  }
+
+  return null;
 }

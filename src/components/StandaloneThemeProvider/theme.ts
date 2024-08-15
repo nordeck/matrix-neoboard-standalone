@@ -41,6 +41,7 @@ export const standaloneLightTheme: ThemeOptions = {
       dark: '#b52e00',
     },
     background: {
+      card: '#FCE2CF',
       chrome: '#fcf9f3',
       paper: '#fff',
     },

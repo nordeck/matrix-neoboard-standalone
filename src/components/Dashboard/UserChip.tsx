@@ -16,24 +16,18 @@
  * along with NeoBoard Standalone. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { Box, SxProps, Theme } from '@mui/material';
-import { SortByMenu } from './SortByMenu';
-import { ViewModeMenu } from './ViewModeMenu.tsx';
+import { Avatar, Chip, ChipProps } from '@mui/material';
 
-export function DashboardOptions({ sx }: { sx?: SxProps<Theme> }) {
+export function UserChip({
+  user,
+  onClick,
+}: {
+  user: string;
+  onClick?: ChipProps['onClick'];
+}) {
+  const initial = user.charAt(1).toUpperCase();
+
   return (
-    <Box
-      sx={{
-        display: 'flex',
-        justifyContent: 'flex-end',
-        alignContent: 'center',
-        marginBottom: '32px',
-        gap: '8px',
-        ...sx,
-      }}
-    >
-      <SortByMenu />
-      <ViewModeMenu />
-    </Box>
+    <Chip avatar={<Avatar>{initial}</Avatar>} label={user} onClick={onClick} />
   );
 }

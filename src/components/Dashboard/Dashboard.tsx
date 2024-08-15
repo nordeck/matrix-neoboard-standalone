@@ -16,31 +16,11 @@
  * along with NeoBoard Standalone. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { BoardTile } from './BoardTile';
-
 import { useLoggedIn } from '../../state';
-import { CreateBoardTile } from './CreateBoardTile';
 import { DashboardContainer } from './DashboardContainer.tsx';
-import { DashboardOptions } from './DashboardOptions.tsx';
-import { TilesContainer } from './TilesContainer';
-import boardPreview1 from './board1.png';
-import boardPreview2 from './board2.png';
-import boardPreview3 from './board3.png';
-import boardPreview4 from './board4.png';
-import boardPreview5 from './board5.png';
 import { createWhiteboard } from './createWhiteboard.ts';
-import { useDashboardList } from './useDashboardList.ts';
-
-/**
- * Static images. To be replaced when implementing thumbnails.
- */
-const boardPreviews = [
-  boardPreview1,
-  boardPreview2,
-  boardPreview3,
-  boardPreview4,
-  boardPreview5,
-];
+import { DashboardItem, useDashboardList } from './useDashboardList.ts';
+import { useDashboardView } from './useDashboardView.tsx';
 
 type DashboardProps = {
   setSelectedRoomId: (roomId: string) => void;
@@ -49,29 +29,21 @@ type DashboardProps = {
 export function Dashboard({ setSelectedRoomId }: DashboardProps) {
   const { standaloneClient } = useLoggedIn();
   const dashboardItems = useDashboardList();
+  const DashboardView = useDashboardView();
 
   return (
     <DashboardContainer>
-      <DashboardOptions />
-      <TilesContainer>
-        <CreateBoardTile
-          onClick={async () => {
-            const roomId = await createWhiteboard(standaloneClient, 'Untitled');
-            setSelectedRoomId(roomId);
-          }}
-        />
-        {dashboardItems.map((dashboardItem, index) => (
-          <BoardTile
-            key={dashboardItem.roomId}
-            dashboardItem={dashboardItem}
-            previewUrl={boardPreviews[index % 5]}
-            onClick={() => {
-              const roomId = dashboardItem.roomId;
-              setSelectedRoomId(roomId);
-            }}
-          />
-        ))}
-      </TilesContainer>
+      <DashboardView
+        items={dashboardItems}
+        onCreate={async () => {
+          const roomId = await createWhiteboard(standaloneClient, 'Untitled');
+          setSelectedRoomId(roomId);
+        }}
+        onSelect={(dashboardItem: DashboardItem) => {
+          const roomId = dashboardItem.roomId;
+          setSelectedRoomId(roomId);
+        }}
+      />
     </DashboardContainer>
   );
 }

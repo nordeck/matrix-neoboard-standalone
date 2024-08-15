@@ -3,7 +3,14 @@
     "cancel": "Abbrechen"
   },
   "dashboard": {
+    "boardList": {
+      "created": "Erstellungsdatum",
+      "lastView": "Zuletzt angesehen",
+      "name": "Name",
+      "users": "Benutzer"
+    },
     "boardTile": {
+      "created": "Erstellt {{created}}",
       "lastView": "Zuletzt {{lastView}}",
       "rename": "Umbenennen"
     },
@@ -15,6 +22,10 @@
       "button": "Sortieren nach:",
       "created": "Erstellungsdatum",
       "recently_viewed": "Zuletzt angesehen"
+    },
+    "viewMode": {
+      "list": "Listenansicht",
+      "tile": "Rasteransicht"
     }
   },
   "header": {

@@ -23,6 +23,7 @@ import {
   WhiteboardPermissions,
   calculateWhiteboardPermissions,
 } from '../../lib/matrix';
+import { calculateWhiteboardUserlist } from '../../lib/matrix/calculateWhiteboardUserlist.ts';
 import { useLoggedIn } from '../../state';
 import {
   WhiteboardEntry,
@@ -38,10 +39,15 @@ export type DashboardItem = {
    */
   lastView: string;
   /**
+   * Readable created at string, e.g. "3 hours ago"
+   */
+  created: string;
+  /**
    * ID of the room, that contains the whiteboard
    */
   roomId: string;
   permissions: WhiteboardPermissions;
+  users: string[] | null;
 };
 
 /**
@@ -92,7 +98,9 @@ function mapWhiteboardToDashboardItem(
     roomId: whiteboard.whiteboard.room_id,
     name: whiteboard.roomName,
     lastView: formatLastView(whiteboard),
+    created: formatCreated(whiteboard),
     permissions: calculateWhiteboardPermissions(whiteboard.powerLevels, userId),
+    users: calculateWhiteboardUserlist(whiteboard.powerLevels),
   };
 }
 
@@ -100,4 +108,8 @@ function formatLastView(whiteboard: WhiteboardEntry): string {
   return whiteboard.whiteboardSessions?.origin_server_ts === undefined
     ? '-'
     : formatTimeAgo(whiteboard.whiteboardSessions.origin_server_ts);
+}
+
+function formatCreated(whiteboard: WhiteboardEntry): string {
+  return formatTimeAgo(whiteboard.whiteboard.origin_server_ts);
 }

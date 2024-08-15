@@ -16,43 +16,29 @@
  * along with NeoBoard Standalone. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {
-  Card,
-  CardActionArea,
-  CardContent,
-  styled,
-  Typography,
-} from '@mui/material';
+import { Button, styled } from '@mui/material';
 import { t } from 'i18next';
 import { AddIcon } from './AddIcon';
 import { CreateBoardItemProps } from './useDashboardView.tsx';
 
-const StyledCard = styled(Card)(({ theme }) => ({
-  width: '14.5rem',
-  minHeight: '251px',
+const StyledButton = styled(Button)(({ theme }) => ({
   backgroundColor: theme.palette.background.card,
+  color: theme.palette.text.primary,
+  fontWeight: 'bold',
+  overflow: 'hidden',
+  textOverflow: 'ellipsis',
+  whiteSpace: 'nowrap',
+  fontSize: '1rem',
+  '.MuiButton-startIcon > :nth-of-type(1)': {
+    fontSize: 30,
+    margin: theme.spacing(0, 1),
+  },
 }));
 
-export const CreateBoardTile = ({ onClick }: CreateBoardItemProps) => {
+export const CreateBoardButton = ({ onClick }: CreateBoardItemProps) => {
   return (
-    <StyledCard>
-      <CardActionArea onClick={onClick} sx={{ height: '100%' }}>
-        <CardContent sx={{ textAlign: 'center' }}>
-          <AddIcon sx={{ fontSize: 30 }} />
-          <Typography
-            variant="h6"
-            sx={{
-              fontWeight: 'bold',
-              overflow: 'hidden',
-              textOverflow: 'ellipsis',
-              whiteSpace: 'nowrap',
-            }}
-            mt={1}
-          >
-            {t('dashboard.createBoardTile.createBoard', 'Create a new board')}
-          </Typography>
-        </CardContent>
-      </CardActionArea>
-    </StyledCard>
+    <StyledButton size="large" onClick={onClick} startIcon={<AddIcon />}>
+      {t('dashboard.createBoardTile.createBoard', 'Create a new board')}
+    </StyledButton>
   );
 };

@@ -29,12 +29,12 @@ const localStorageKey = 'neoboard-store-dashboard';
  * If it fails, return the default state.
  */
 export function loadDashboardState(): DashboardState {
-  return (
-    loadValidatedFromLocalStorage(localStorageKey, dashboardStateSchema) ?? {
-      // Fall back to default value
-      sortBy: 'recently_viewed',
-    }
-  );
+  return {
+    // Fall back to default values if an entry is missing from the store
+    sortBy: 'recently_viewed',
+    viewMode: 'tile',
+    ...loadValidatedFromLocalStorage(localStorageKey, dashboardStateSchema),
+  };
 }
 
 /**

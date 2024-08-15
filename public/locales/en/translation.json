@@ -3,18 +3,29 @@
     "cancel": "Cancel"
   },
   "dashboard": {
+    "boardList": {
+      "created": "Created",
+      "lastView": "Recently viewed",
+      "name": "Name",
+      "users": "Users in board"
+    },
     "boardTile": {
+      "created": "Created {{created}}",
       "lastView": "Last view {{lastView}}",
       "rename": "Rename"
     },
     "createBoardTile": {
-      "createBoard": "Create a New Board"
+      "createBoard": "Create a new board"
     },
     "sortBy": {
       "alphabetical": "Alphabetical",
       "button": "Sort by:",
       "created": "Date created",
       "recently_viewed": "Recently viewed"
+    },
+    "viewMode": {
+      "list": "List view",
+      "tile": "Grid view"
     }
   },
   "header": {
