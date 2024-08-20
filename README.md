@@ -9,9 +9,9 @@ Standalone version of [NeoBoard](https://github.com/nordeck/matrix-neoboard) - A
 Neoboard standalone supports some configuration options.
 They can either be set via an environment variable or the dot-env-file.
 
-| Name                   | Description                                                                                                            | Example      |
-| ---------------------- | ---------------------------------------------------------------------------------------------------------------------- | ------------ |
-| `REACT_APP_HOMESERVER` | If set, there won't be a homeserver input field on the login screen. Instead it uses the homeserver from the variable. | `matrix.org` |
+| Name                   | Description                                                                                                   | Example       |
+| ---------------------- | ------------------------------------------------------------------------------------------------------------- | ------------- |
+| `REACT_APP_HOMESERVER` | If set, it uses this homeserver instead of showing an input field on the login screen. Do not use `https://`. | `example.com` |
 
 ## Getting Started
 
