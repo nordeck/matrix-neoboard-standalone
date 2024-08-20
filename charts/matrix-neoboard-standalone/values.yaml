@@ -91,4 +91,4 @@ settings:
 # Extra env variables to pass to the container
 env: []
   #- name: REACT_APP_HOMESERVER 
-  #  value: "synapse.example.com"
+  #  value: "example.com"
