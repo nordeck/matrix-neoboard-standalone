@@ -15,7 +15,7 @@
  */
 
 import { styled } from '@mui/material';
-import { t } from 'i18next';
+import { useTranslation } from 'react-i18next';
 import { NeoBoardIcon } from './NeoBoardIcon';
 import { UserMenu } from './UserMenu';
 
@@ -45,6 +45,7 @@ type HeaderProps = {
 };
 
 export function Header({ onLogoClick, title }: HeaderProps) {
+  const { t } = useTranslation();
   return (
     <StyledHeader>
       <div
