@@ -54,6 +54,7 @@ import {
 } from '../toolkit/standalone';
 import { Dashboard } from './Dashboard';
 import { LoggedInLayout } from './LoggedInLayout';
+import { useFullscreenMode } from '@nordeck/matrix-neoboard-react-sdk/src/components/Layout/useFullscreenMode';
 
 export const LoggedInView = () => {
   const { i18n } = useTranslation();
@@ -179,16 +180,7 @@ export const LoggedInView = () => {
             >
               <FontsLoadedContextProvider>
                 <LayoutStateProvider container={widgetContainerRef}>
-                  <WhiteboardHotkeysProvider>
-                    <GuidedTourProvider>
-                      <SnackbarProvider>
-                        <Snackbar />
-                        <NeoboardApp
-                          layoutProps={{ height: 'calc(90vh - 25px)' }}
-                        />
-                      </SnackbarProvider>
-                    </GuidedTourProvider>
-                  </WhiteboardHotkeysProvider>
+                  <InnerWidget />
                 </LayoutStateProvider>
               </FontsLoadedContextProvider>
             </MuiWidgetApiProvider>
@@ -198,3 +190,19 @@ export const LoggedInView = () => {
     </LoggedInLayout>
   );
 };
+
+const InnerWidget = () => {
+  const { isFullscreenMode } = useFullscreenMode();
+  return (
+    <WhiteboardHotkeysProvider>
+      <GuidedTourProvider>
+        <SnackbarProvider>
+          <Snackbar />
+          <NeoboardApp
+            layoutProps={{ height: !isFullscreenMode ? 'calc(90vh - 25px)' : '100vh' }}
+          />
+        </SnackbarProvider>
+      </GuidedTourProvider>
+    </WhiteboardHotkeysProvider>
+  )
+}
