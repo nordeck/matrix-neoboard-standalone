@@ -16,18 +16,37 @@
  * along with NeoBoard Standalone. If not, see <https://www.gnu.org/licenses/>.
  */
 
+import { WhiteboardReactI18nBackend } from '@nordeck/matrix-neoboard-react-sdk';
 import i18n from 'i18next';
+import LanguageDetector from 'i18next-browser-languagedetector';
 import ChainedBackend from 'i18next-chained-backend';
 import HttpBackend from 'i18next-http-backend';
+import resourcesToBackend from 'i18next-resources-to-backend';
 import { initReactI18next } from 'react-i18next';
 import { setLocale } from './lib';
 
+// Vite seems to handle imports relative to `node_modules/.vite` for dependencies
+// This causes the import to fail in the browser
+export const WidgetToolkitI18nBackend = resourcesToBackend((lng, ns, clb) => {
+  import(
+    /* @vite-ignore */ `@matrix-widget-toolkit/mui/locales/${lng}/${ns}.json`
+  )
+    .then((resources) => clb(null, resources))
+    .catch((err) => clb(err, undefined));
+});
+
 i18n
-  .use(ChainedBackend)
   .use(initReactI18next)
+  .use(LanguageDetector)
+  .use(ChainedBackend)
   .init({
+    ns: ['translation', 'widget-toolkit', 'neoboard'],
     backend: {
-      backends: [HttpBackend],
+      backends: [
+        HttpBackend,
+        WhiteboardReactI18nBackend,
+        WidgetToolkitI18nBackend,
+      ],
       backendOptions: [{ loadPath: `/locales/{{lng}}/{{ns}}.json` }],
     },
     debug: import.meta.env.NODE_ENV === 'development',

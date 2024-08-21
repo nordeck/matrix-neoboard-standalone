@@ -16,7 +16,6 @@
  * along with NeoBoard Standalone. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { t } from 'i18next';
 import { discoverAndValidateOIDCIssuerWellKnown } from 'matrix-js-sdk';
 import { ensureNoTrailingSlash } from 'matrix-js-sdk/lib/utils';
 import { ChangeEvent, FormEvent, useCallback, useState } from 'react';
@@ -31,6 +30,7 @@ import {
 } from './styles';
 
 import { getEnvironment } from '@matrix-widget-toolkit/mui';
+import { useTranslation } from 'react-i18next';
 import { discoverClientConfig, fetchAuthIssuer } from '../../lib/discovery';
 import { registerOidcClient, startOidcLogin } from '../../lib/oidc';
 
@@ -38,6 +38,7 @@ import { registerOidcClient, startOidcLogin } from '../../lib/oidc';
  * Simple login component demonstrating the login flow.
  */
 export function Login() {
+  const { t } = useTranslation();
   const staticServerName = getEnvironment('REACT_APP_HOMESERVER');
   const hasStaticServerName = staticServerNameSet(staticServerName);
   const [serverName, setServerName] = useState('');

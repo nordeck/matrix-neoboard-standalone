@@ -17,9 +17,11 @@
  */
 
 import { Typography } from '@mui/material';
-import { t } from 'i18next';
+import { useTranslation } from 'react-i18next';
 
 export function DashboardListHeader() {
+  const { t } = useTranslation();
+
   return (
     <tr>
       <Typography

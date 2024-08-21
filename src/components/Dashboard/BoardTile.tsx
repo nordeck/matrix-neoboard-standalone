@@ -26,8 +26,8 @@ import {
   IconButton,
   Typography,
 } from '@mui/material';
-import { t } from 'i18next';
 import { MouseEvent } from 'react';
+import { useTranslation } from 'react-i18next';
 import { TileMenu } from './TileMenu';
 import { BoardItemProps } from './useDashboardView.tsx';
 
@@ -36,6 +36,8 @@ export function BoardTile({
   previewUrl,
   dashboardItem,
 }: BoardItemProps) {
+  const { t } = useTranslation();
+
   return (
     <Card sx={{ width: '14.5rem' }}>
       <CardActionArea component="div" onClick={onClick}>

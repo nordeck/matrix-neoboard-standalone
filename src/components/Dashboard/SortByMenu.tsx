@@ -21,9 +21,9 @@ import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import NorthIcon from '@mui/icons-material/North';
 import SouthIcon from '@mui/icons-material/South';
 import { ListItemIcon, ListItemText, Menu, MenuItem } from '@mui/material';
-import { t } from 'i18next';
+import { TFunction } from 'i18next';
 import React, { useCallback, useMemo } from 'react';
-import i18n from '../../i18n';
+import { useTranslation } from 'react-i18next';
 import {
   SortBy,
   selectSortBy,
@@ -33,34 +33,36 @@ import {
 } from '../../store';
 import { SecondaryTextButton } from '../lib';
 
-const sortByOptions: {
+const sortByOptions = (
+  t: TFunction,
+): {
   id: SortBy;
   label: string;
   icon: string | React.ReactElement;
-}[] = [
+}[] => [
   {
     id: 'recently_viewed',
-    label: i18n.t('dashboard.sortBy.recently_viewed', 'Recently viewed'),
+    label: t('dashboard.sortBy.recently_viewed', 'Recently viewed'),
     icon: '',
   },
   {
     id: 'name_asc',
-    label: i18n.t('dashboard.sortBy.alphabetical', 'Alphabetical'),
+    label: t('dashboard.sortBy.alphabetical', 'Alphabetical'),
     icon: 'A-Z',
   },
   {
     id: 'name_desc',
-    label: i18n.t('dashboard.sortBy.alphabetical', 'Alphabetical'),
+    label: t('dashboard.sortBy.alphabetical', 'Alphabetical'),
     icon: 'Z-A',
   },
   {
     id: 'created_asc',
-    label: i18n.t('dashboard.sortBy.created', 'Date created'),
+    label: t('dashboard.sortBy.created', 'Date created'),
     icon: <NorthIcon fontSize="small" />,
   },
   {
     id: 'created_desc',
-    label: i18n.t('dashboard.sortBy.created', 'Date created'),
+    label: t('dashboard.sortBy.created', 'Date created'),
     icon: <SouthIcon fontSize="small" />,
   },
 ];
@@ -73,10 +75,11 @@ export const SortByMenu: React.FC = function () {
   const dispatch = useAppDispatch();
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
+  const { t } = useTranslation();
 
   const sortBy = useAppSelector((state) => selectSortBy(state));
   const sortByItems = useMemo(() => {
-    return sortByOptions.map((sortByOption) => {
+    return sortByOptions(t).map((sortByOption) => {
       const handleMenuItemClick = () => {
         setAnchorEl(null);
         dispatch(setSortBy(sortByOption.id));

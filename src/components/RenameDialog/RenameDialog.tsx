@@ -26,7 +26,6 @@ import {
 } from '@mui/material';
 import { unstable_useId as useId } from '@mui/utils';
 import { STATE_EVENT_ROOM_NAME } from '@nordeck/matrix-neoboard-react-sdk';
-import { t } from 'i18next';
 import React, {
   FocusEvent,
   FormEvent,
@@ -34,6 +33,7 @@ import React, {
   useCallback,
   useState,
 } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useLoggedIn } from '../../state';
 import { DashboardItem } from '../Dashboard/useDashboardList';
 
@@ -48,6 +48,7 @@ export const RenameDialog: React.FC<RenameDialogProps> = function ({
   onClose,
   open,
 }) {
+  const { t } = useTranslation();
   const [formName, setFormName] = useState(item.name);
   const { standaloneClient } = useLoggedIn();
   const dialogTitleId = useId();

@@ -28,13 +28,14 @@ import {
   Menu,
   MenuItem,
 } from '@mui/material';
-import { t } from 'i18next';
 import React, { useCallback, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useLoggedIn } from '../../state';
 import { LogoutDialog } from './LogoutDialog';
 import dummyAvatar from './dummy-avatar.png';
 
 export function UserMenu() {
+  const { t } = useTranslation();
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {

@@ -18,8 +18,9 @@
 
 import { GridView, List } from '@mui/icons-material';
 import { ToggleButton, ToggleButtonGroup, Tooltip } from '@mui/material';
+import { TFunction } from 'i18next';
 import React from 'react';
-import i18n from '../../i18n.ts';
+import { useTranslation } from 'react-i18next';
 import {
   ViewMode,
   selectViewMode,
@@ -28,19 +29,21 @@ import {
   useAppSelector,
 } from '../../store';
 
-const options: {
+const options = (
+  t: TFunction,
+): {
   id: ViewMode;
   label: string;
   icon: string | React.ReactElement;
-}[] = [
+}[] => [
   {
     id: 'tile',
-    label: i18n.t('dashboard.viewMode.tile', 'Grid view'),
+    label: t('dashboard.viewMode.tile', 'Grid view'),
     icon: <GridView sx={{ fontSize: '1rem' }} />,
   },
   {
     id: 'list',
-    label: i18n.t('dashboard.viewMode.list', 'List view'),
+    label: t('dashboard.viewMode.list', 'List view'),
     icon: <List sx={{ fontSize: '1rem' }} />,
   },
 ];
@@ -52,6 +55,8 @@ const options: {
 export const ViewModeMenu: React.FC = function () {
   const dispatch = useAppDispatch();
   const viewMode = useAppSelector((state) => selectViewMode(state));
+  const { t } = useTranslation();
+
   const handleItemClick = (
     _event: React.MouseEvent<HTMLElement>,
     viewMode: ViewMode | null,
@@ -70,7 +75,7 @@ export const ViewModeMenu: React.FC = function () {
         onChange={handleItemClick}
         aria-label="text alignment"
       >
-        {options.map((option) => (
+        {options(t).map((option) => (
           <Tooltip key={option.id} title={option.label}>
             <ToggleButton value={option.id}>{option.icon}</ToggleButton>
           </Tooltip>

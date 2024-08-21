@@ -17,8 +17,8 @@
  */
 
 import { CircularProgress, Typography, styled } from '@mui/material';
-import { t } from 'i18next';
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 
 const StyledStartingView = styled('div')({
   display: 'flex',
@@ -29,6 +29,7 @@ const StyledStartingView = styled('div')({
 });
 
 export const StartingView: React.FC = () => {
+  const { t } = useTranslation();
   return (
     <StyledStartingView>
       <CircularProgress />

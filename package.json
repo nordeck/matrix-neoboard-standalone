@@ -35,8 +35,10 @@
     "@nordeck/matrix-neoboard-react-sdk": "link:../matrix-neoboard/packages/react-sdk",
     "@reduxjs/toolkit": "^2.2.7",
     "i18next": "^23.12.1",
+    "i18next-browser-languagedetector": "^8.0.0",
     "i18next-chained-backend": "^4.6.2",
     "i18next-http-backend": "^2.5.2",
+    "i18next-resources-to-backend": "^1.2.1",
     "joi": "^17.13.3",
     "lodash": "^4.17.21",
     "loglevel": "^1.9.1",
@@ -121,5 +123,6 @@
   },
   "bugs": {
     "url": "https://github.com/nordeck/matrix-neoboard/issues"
-  }
+  },
+  "packageManager": "yarn@1.22.22+sha1.ac34549e6aa8e7ead463a7407e1c7390f61a6610"
 }

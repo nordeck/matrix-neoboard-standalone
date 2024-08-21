@@ -35,6 +35,7 @@ import {
 } from '@nordeck/matrix-neoboard-react-sdk';
 import { isEqual } from 'lodash';
 import { Suspense, useCallback, useEffect, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useLoggedIn } from '../state';
 import { selectSortBy, useAppDispatch, useAppSelector } from '../store';
 import { useGetAllRoomNameEventsQuery } from '../store/api/roomNameApi';
@@ -48,6 +49,8 @@ import { Dashboard } from './Dashboard';
 import { LoggedInLayout } from './LoggedInLayout';
 
 export const LoggedInView = () => {
+  const { i18n } = useTranslation();
+
   const {
     homeserverUrl,
     resolveWidgetApi,
@@ -88,7 +91,7 @@ export const LoggedInView = () => {
         roomId: selectedRoomId,
         theme: 'light',
         clientId: 'net.nordeck.matrix_neoboard_standalone',
-        clientLanguage: 'EN',
+        clientLanguage: i18n.language,
         baseUrl: homeserverUrl,
         isOpenedByClient: false,
       };

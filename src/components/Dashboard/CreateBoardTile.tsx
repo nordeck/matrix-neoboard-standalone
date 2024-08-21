@@ -23,7 +23,7 @@ import {
   styled,
   Typography,
 } from '@mui/material';
-import { t } from 'i18next';
+import { useTranslation } from 'react-i18next';
 import { AddIcon } from './AddIcon';
 import { CreateBoardItemProps } from './useDashboardView.tsx';
 
@@ -34,6 +34,8 @@ const StyledCard = styled(Card)(({ theme }) => ({
 }));
 
 export const CreateBoardTile = ({ onClick }: CreateBoardItemProps) => {
+  const { t } = useTranslation();
+
   return (
     <StyledCard>
       <CardActionArea onClick={onClick} sx={{ height: '100%' }}>
