@@ -34,7 +34,14 @@ import {
   whiteboardApi,
 } from '@nordeck/matrix-neoboard-react-sdk';
 import { isEqual } from 'lodash';
-import { Suspense, useCallback, useEffect, useMemo, useState } from 'react';
+import {
+  Suspense,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLoggedIn } from '../state';
 import { selectSortBy, useAppDispatch, useAppSelector } from '../store';
@@ -50,6 +57,7 @@ import { LoggedInLayout } from './LoggedInLayout';
 
 export const LoggedInView = () => {
   const { i18n } = useTranslation();
+  const widgetContainerRef = useRef<HTMLDivElement>(null);
 
   const {
     homeserverUrl,
@@ -160,29 +168,31 @@ export const LoggedInView = () => {
         <Dashboard setSelectedRoomId={setSelectedRoomId} />
       ) : (
         <Suspense fallback={<PageLoader />}>
-          <MuiWidgetApiProvider
-            widgetApiPromise={widgetApiPromise}
-            widgetRegistration={{
-              name: 'NeoBoard',
-              // "pad" suffix to get a custom icon
-              type: 'net.nordeck.whiteboard:pad',
-            }}
-          >
-            <FontsLoadedContextProvider>
-              <LayoutStateProvider>
-                <WhiteboardHotkeysProvider>
-                  <GuidedTourProvider>
-                    <SnackbarProvider>
-                      <Snackbar />
-                      <NeoboardApp
-                        layoutProps={{ height: 'calc(90vh - 25px)' }}
-                      />
-                    </SnackbarProvider>
-                  </GuidedTourProvider>
-                </WhiteboardHotkeysProvider>
-              </LayoutStateProvider>
-            </FontsLoadedContextProvider>
-          </MuiWidgetApiProvider>
+          <div ref={widgetContainerRef}>
+            <MuiWidgetApiProvider
+              widgetApiPromise={widgetApiPromise}
+              widgetRegistration={{
+                name: 'NeoBoard',
+                // "pad" suffix to get a custom icon
+                type: 'net.nordeck.whiteboard:pad',
+              }}
+            >
+              <FontsLoadedContextProvider>
+                <LayoutStateProvider container={widgetContainerRef}>
+                  <WhiteboardHotkeysProvider>
+                    <GuidedTourProvider>
+                      <SnackbarProvider>
+                        <Snackbar />
+                        <NeoboardApp
+                          layoutProps={{ height: 'calc(90vh - 25px)' }}
+                        />
+                      </SnackbarProvider>
+                    </GuidedTourProvider>
+                  </WhiteboardHotkeysProvider>
+                </LayoutStateProvider>
+              </FontsLoadedContextProvider>
+            </MuiWidgetApiProvider>
+          </div>
         </Suspense>
       )}
     </LoggedInLayout>
