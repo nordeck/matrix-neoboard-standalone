@@ -33,6 +33,7 @@ import {
   useWhiteboardManager,
   whiteboardApi,
 } from '@nordeck/matrix-neoboard-react-sdk';
+import { useFullscreenMode } from '@nordeck/matrix-neoboard-react-sdk/src/components/Layout/useFullscreenMode';
 import { isEqual } from 'lodash';
 import {
   Suspense,
@@ -54,7 +55,6 @@ import {
 } from '../toolkit/standalone';
 import { Dashboard } from './Dashboard';
 import { LoggedInLayout } from './LoggedInLayout';
-import { useFullscreenMode } from '@nordeck/matrix-neoboard-react-sdk/src/components/Layout/useFullscreenMode';
 
 export const LoggedInView = () => {
   const { i18n } = useTranslation();
@@ -199,10 +199,12 @@ const InnerWidget = () => {
         <SnackbarProvider>
           <Snackbar />
           <NeoboardApp
-            layoutProps={{ height: !isFullscreenMode ? 'calc(90vh - 25px)' : '100vh' }}
+            layoutProps={{
+              height: !isFullscreenMode ? 'calc(90vh - 25px)' : '100vh',
+            }}
           />
         </SnackbarProvider>
       </GuidedTourProvider>
     </WhiteboardHotkeysProvider>
-  )
-}
+  );
+};
