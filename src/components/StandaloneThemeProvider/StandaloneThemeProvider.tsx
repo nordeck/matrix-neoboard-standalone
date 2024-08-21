@@ -15,9 +15,10 @@
  */
 
 import { MuiThemeProvider } from '@matrix-widget-toolkit/mui';
+import { useThemeSelection } from '@matrix-widget-toolkit/react';
 import { ThemeProvider, useTheme } from '@mui/material';
 import { deepmerge } from '@mui/utils';
-import { PropsWithChildren, useMemo } from 'react';
+import { PropsWithChildren, useEffect, useMemo } from 'react';
 import { standaloneLightTheme } from './theme';
 
 /**
@@ -34,6 +35,14 @@ export function StandaloneThemeProvider({ children }: PropsWithChildren<{}>) {
 
 function ApplyStandaloneThemeProvider({ children }: PropsWithChildren<{}>) {
   const theme = useTheme();
+  const { setTheme, theme: selectedTheme } = useThemeSelection();
+
+  // Select light theme until a dark theme has has been properly implemented
+  useEffect(() => {
+    if (selectedTheme !== 'light') {
+      setTheme('light');
+    }
+  }, [selectedTheme]);
 
   const standaloneTheme = useMemo(() => {
     return deepmerge(theme, standaloneLightTheme);
