@@ -15,7 +15,7 @@
  */
 
 import { Button, styled } from '@mui/material';
-import { t } from 'i18next';
+import { useTranslation } from 'react-i18next';
 import { AddIcon } from './AddIcon';
 import { CreateBoardItemProps } from './useDashboardView.tsx';
 
@@ -34,6 +34,7 @@ const StyledButton = styled(Button)(({ theme }) => ({
 }));
 
 export const CreateBoardButton = ({ onClick }: CreateBoardItemProps) => {
+  const { t } = useTranslation();
   return (
     <StyledButton size="large" onClick={onClick} startIcon={<AddIcon />}>
       {t('dashboard.createBoardTile.createBoard', 'Create a new board')}

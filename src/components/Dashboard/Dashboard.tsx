@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import { useTranslation } from 'react-i18next';
 import { useLoggedIn } from '../../state';
 import { DashboardContainer } from './DashboardContainer.tsx';
 import { createWhiteboard } from './createWhiteboard.ts';
@@ -25,6 +26,7 @@ type DashboardProps = {
 };
 
 export function Dashboard({ setSelectedRoomId }: DashboardProps) {
+  const { t } = useTranslation();
   const { standaloneClient } = useLoggedIn();
   const dashboardItems = useDashboardList();
   const DashboardView = useDashboardView();
@@ -34,7 +36,10 @@ export function Dashboard({ setSelectedRoomId }: DashboardProps) {
       <DashboardView
         items={dashboardItems}
         onCreate={async () => {
-          const roomId = await createWhiteboard(standaloneClient, 'Untitled');
+          const roomId = await createWhiteboard(
+            standaloneClient,
+            t('dashboard.untitled', 'Untitled'),
+          );
           setSelectedRoomId(roomId);
         }}
         onSelect={(dashboardItem: DashboardItem) => {

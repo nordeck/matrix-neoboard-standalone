@@ -24,8 +24,8 @@ import {
   MenuItem,
   MenuList,
 } from '@mui/material';
-import { t } from 'i18next';
 import React, { ComponentProps, useCallback, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { RenameDialog } from '../RenameDialog';
 import { DashboardItem } from './useDashboardList';
 
@@ -37,6 +37,7 @@ export const TileMenu: React.FC<TileMenuProps> = function ({ item }) {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
   const [renameDialogOpen, setRenameDialogOpen] = useState(false);
+  const { t } = useTranslation();
 
   /**
    * Toggle the menu

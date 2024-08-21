@@ -16,8 +16,8 @@
 
 import { Button, Dialog, DialogActions, DialogTitle } from '@mui/material';
 import { unstable_useId as useId } from '@mui/utils';
-import { t } from 'i18next';
 import { useCallback } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   matrixCredentialsStorageKey,
   oidcCredentialsStorageKey,
@@ -32,6 +32,7 @@ type ExportDialogProps = {
 export function LogoutDialog({ open, onClose }: ExportDialogProps) {
   const application = useApplication();
   const dialogTitleId = useId();
+  const { t } = useTranslation();
 
   const handleConfirm = useCallback(() => {
     // This should be replaced by proper lifecycle functions or something similar

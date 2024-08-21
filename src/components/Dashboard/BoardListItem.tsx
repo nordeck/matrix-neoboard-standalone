@@ -16,8 +16,8 @@
 
 import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
 import { alpha, IconButton, Stack, styled, Typography } from '@mui/material';
-import { t } from 'i18next';
 import { MouseEvent } from 'react';
+import { useTranslation } from 'react-i18next';
 import { TileMenu } from './TileMenu';
 import { BoardItemProps } from './useDashboardView.tsx';
 import { UserChip } from './UserChip.tsx';
@@ -51,6 +51,8 @@ export function BoardListItem({
   previewUrl,
   dashboardItem,
 }: BoardItemProps) {
+  const { t } = useTranslation();
+
   return (
     <ClickableRow tabIndex={0} role="button" onClick={onClick}>
       <td style={{ width: 0 }}>

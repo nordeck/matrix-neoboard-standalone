@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { t } from 'i18next';
+import { useTranslation } from 'react-i18next';
 import { Login } from '../Login/Login';
 import { WelcomeLogo } from './WelcomeLogo';
 import WelcomeSymbols from './WelcomeSymbols';
@@ -29,6 +29,8 @@ import {
 } from './styles';
 
 export const WelcomePane = () => {
+  const { t } = useTranslation();
+
   return (
     <WelcomeWrapper>
       <WelcomeGrid container>
