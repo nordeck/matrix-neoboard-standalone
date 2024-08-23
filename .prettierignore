@@ -6,3 +6,4 @@ coverage/
 
 # Ignore the helm chart
 charts/
+.github/
