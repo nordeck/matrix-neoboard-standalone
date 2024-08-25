@@ -59,6 +59,15 @@ import { LoggedInLayout } from './LoggedInLayout';
 export const LoggedInView = () => {
   const { i18n } = useTranslation();
   const widgetContainerRef = useRef<HTMLDivElement>(null);
+  const { setContainer, isFullscreenMode } = useFullscreenMode();
+
+  // Set the container for fullscreen mode
+  useEffect(() => {
+    if (widgetContainerRef.current === null) {
+      return;
+    }
+    setContainer(widgetContainerRef.current);
+  }, [setContainer, widgetContainerRef]);
 
   const {
     homeserverUrl,
@@ -179,8 +188,21 @@ export const LoggedInView = () => {
               }}
             >
               <FontsLoadedContextProvider>
-                <LayoutStateProvider container={widgetContainerRef}>
-                  <InnerWidget />
+                <LayoutStateProvider>
+                  <WhiteboardHotkeysProvider>
+                    <GuidedTourProvider>
+                      <SnackbarProvider>
+                        <Snackbar />
+                        <NeoboardApp
+                          layoutProps={{
+                            height: !isFullscreenMode
+                              ? 'calc(90vh - 25px)'
+                              : '100vh',
+                          }}
+                        />
+                      </SnackbarProvider>
+                    </GuidedTourProvider>
+                  </WhiteboardHotkeysProvider>
                 </LayoutStateProvider>
               </FontsLoadedContextProvider>
             </MuiWidgetApiProvider>
@@ -188,23 +210,5 @@ export const LoggedInView = () => {
         </Suspense>
       )}
     </LoggedInLayout>
-  );
-};
-
-const InnerWidget = () => {
-  const { isFullscreenMode } = useFullscreenMode();
-  return (
-    <WhiteboardHotkeysProvider>
-      <GuidedTourProvider>
-        <SnackbarProvider>
-          <Snackbar />
-          <NeoboardApp
-            layoutProps={{
-              height: !isFullscreenMode ? 'calc(90vh - 25px)' : '100vh',
-            }}
-          />
-        </SnackbarProvider>
-      </GuidedTourProvider>
-    </WhiteboardHotkeysProvider>
   );
 };
