@@ -14,11 +14,13 @@
  * limitations under the License.
  */
 
+import { fixupPluginRules } from '@eslint/compat';
 import js from '@eslint/js';
 import eslintConfigPrettier from 'eslint-config-prettier';
 import notice from 'eslint-plugin-notice';
 import pluginPromise from 'eslint-plugin-promise';
 import react from 'eslint-plugin-react';
+import testingLibrary from 'eslint-plugin-testing-library';
 import vitest from 'eslint-plugin-vitest';
 import path from 'path';
 import ts from 'typescript-eslint';
@@ -100,8 +102,14 @@ export default ts.config(
     files: ['**/*.test.*'],
     plugins: {
       vitest,
+      // See https://github.com/testing-library/eslint-plugin-testing-library/issues/899#issuecomment-2121272355 and
+      // https://github.com/testing-library/eslint-plugin-testing-library/issues/924
+      'testing-library': fixupPluginRules({
+        rules: testingLibrary.rules,
+      }),
     },
     rules: {
+      ...testingLibrary.configs['flat/react'].rules,
       ...vitest.configs.recommended.rules,
       '@typescript-eslint/ban-ts-comment': 'off',
       '@typescript-eslint/no-empty-object-type': 'off',
