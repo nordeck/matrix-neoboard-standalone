@@ -14,12 +14,9 @@
  * limitations under the License.
  */
 
-import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import LogoutIcon from '@mui/icons-material/Logout';
-import PeopleIcon from '@mui/icons-material/People';
 import {
   Avatar,
-  Divider,
   IconButton,
   ListItemIcon,
   ListItemText,
@@ -76,22 +73,6 @@ export function UserMenu() {
           <ListItemIcon />
           <ListItemText>{username}</ListItemText>
         </MenuItem>
-        <MenuItem onClick={handleClose}>
-          <ListItemIcon>
-            <AccountCircleIcon fontSize="small" />
-          </ListItemIcon>
-          <ListItemText>{t('userMenu.profile', 'Profile')}</ListItemText>
-        </MenuItem>
-        <Divider />
-        <MenuItem onClick={handleClose}>
-          <ListItemIcon>
-            <PeopleIcon fontSize="small" />
-          </ListItemIcon>
-          <ListItemText>
-            {t('userMenu.userManagement', 'User Management')}
-          </ListItemText>
-        </MenuItem>
-        <Divider />
         <MenuItem onClick={handleLogoutClick}>
           <ListItemIcon>
             <LogoutIcon fontSize="small" />
