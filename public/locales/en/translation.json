@@ -11,6 +11,7 @@
     },
     "boardTile": {
       "created": "Created {{created}}",
+      "delete": "Delete",
       "lastView": "Last view {{lastView}}",
       "rename": "Rename"
     },
@@ -28,6 +29,11 @@
       "list": "List view",
       "tile": "Grid view"
     }
+  },
+  "deleteDialog": {
+    "delete": "Delete Board",
+    "text": "Do you really want to delete the board? This cannot be undone.",
+    "title": "Delete NeoBoard"
   },
   "header": {
     "dashboard": "Go back to the dashboard"

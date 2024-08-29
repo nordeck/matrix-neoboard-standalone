@@ -36,6 +36,10 @@ export function BoardTile({
 }: BoardItemProps) {
   const { t } = useTranslation();
 
+  const hasTileMenu =
+    dashboardItem.permissions.canChangeName ||
+    dashboardItem.permissions.canSendTombstone;
+
   return (
     <Card sx={{ width: '14.5rem' }}>
       <CardActionArea component="div" onClick={onClick}>
@@ -63,9 +67,7 @@ export function BoardTile({
           <IconButton onClick={noop} component="span">
             <PeopleAltIcon />
           </IconButton>
-          {dashboardItem.permissions.canChangeName && (
-            <TileMenu item={dashboardItem} />
-          )}
+          {hasTileMenu && <TileMenu item={dashboardItem} />}
         </CardActions>
       </CardActionArea>
     </Card>

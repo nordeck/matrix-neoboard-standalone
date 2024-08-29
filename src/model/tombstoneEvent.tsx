@@ -14,25 +14,4 @@
  * limitations under the License.
  */
 
-import { StateEvent } from '@matrix-widget-toolkit/api';
-import Joi from 'joi';
-import { isValidEvent } from './validation';
-
-export const STATE_EVENT_WHITEBOARD_SESSIONS =
-  'net.nordeck.whiteboard.sessions';
-
-export type WhiteboardSessionsEvent = {};
-
-const whiteboardSessionsEventSchema = Joi.object<WhiteboardSessionsEvent, true>(
-  {},
-).unknown();
-
-export function isValidWhiteboardSessionsEvent(
-  event: StateEvent<unknown>,
-): event is StateEvent<WhiteboardSessionsEvent> {
-  return isValidEvent(
-    event,
-    STATE_EVENT_WHITEBOARD_SESSIONS,
-    whiteboardSessionsEventSchema,
-  );
-}
+export const STATE_EVENT_TOMBSTONE = 'm.room.tombstone';

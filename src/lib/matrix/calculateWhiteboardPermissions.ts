@@ -20,9 +20,11 @@ import {
   hasStateEventPower,
 } from '@matrix-widget-toolkit/api';
 import { STATE_EVENT_ROOM_NAME } from '@nordeck/matrix-neoboard-react-sdk';
+import { STATE_EVENT_TOMBSTONE } from '../../model';
 
 export type WhiteboardPermissions = {
   canChangeName: boolean;
+  canSendTombstone: boolean;
 };
 
 export function calculateWhiteboardPermissions(
@@ -31,6 +33,7 @@ export function calculateWhiteboardPermissions(
 ): WhiteboardPermissions {
   const result: WhiteboardPermissions = {
     canChangeName: false,
+    canSendTombstone: false,
   };
 
   if (powerLevels?.content) {
@@ -38,6 +41,11 @@ export function calculateWhiteboardPermissions(
       powerLevels.content,
       userId,
       STATE_EVENT_ROOM_NAME,
+    );
+    result.canSendTombstone = hasStateEventPower(
+      powerLevels.content,
+      userId,
+      STATE_EVENT_TOMBSTONE,
     );
   }
 
