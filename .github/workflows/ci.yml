@@ -159,11 +159,9 @@ jobs:
           echo "KUBECONFIG=/tmp/config" >> $GITHUB_ENV
 
       - name: Deploy k8s to cluster
-        with:
-          args: |
-            helm upgrade --install matrix-neoboard-standalone ./charts/matrix-neoboard-standalone -f ./valhalla/cluster/neotoolsuite-dev/matrix-neoboard-standalone/values.dev.yaml  -n matrix
+        run: |
+          helm upgrade --install matrix-neoboard-standalone ./charts/matrix-neoboard-standalone -f ./valhalla/cluster/neotoolsuite-dev/matrix-neoboard-standalone/values.dev.yaml  -n matrix
 
       - name: restart rollout
-        with:
-          args: |
-            kubectl rollout restart deployment matrix-neoboard-standalone -n matrix
+        run: |
+          kubectl rollout restart deployment matrix-neoboard-standalone -n matrix
