@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-import { Button, Dialog, DialogActions, DialogTitle } from '@mui/material';
-import { unstable_useId as useId } from '@mui/utils';
 import { useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
@@ -23,6 +21,7 @@ import {
   oidcCredentialsStorageKey,
 } from '../../state/Credentials';
 import { useApplication } from '../../state/useApplication';
+import { ConfirmDialog } from '../ConfirmDialog';
 
 type ExportDialogProps = {
   open: boolean;
@@ -31,7 +30,6 @@ type ExportDialogProps = {
 
 export function LogoutDialog({ open, onClose }: ExportDialogProps) {
   const application = useApplication();
-  const dialogTitleId = useId();
   const { t } = useTranslation();
 
   const handleConfirm = useCallback(() => {
@@ -43,29 +41,12 @@ export function LogoutDialog({ open, onClose }: ExportDialogProps) {
   }, [application]);
 
   return (
-    <Dialog
-      aria-labelledby={dialogTitleId}
-      open={open}
+    <ConfirmDialog
+      confirmActionLabel={t('logOutDialog.logOut', 'Log out')}
       onClose={onClose}
-      maxWidth="sm"
-      fullWidth
-    >
-      <DialogTitle id={dialogTitleId}>
-        {t('logOutDialog.title', 'Are you sure you want to log out?')}
-      </DialogTitle>
-      <DialogActions>
-        <Button onClick={onClose} variant="outlined">
-          {t('app.cancel', 'Cancel')}
-        </Button>
-        <Button
-          onClick={handleConfirm}
-          variant="contained"
-          color="error"
-          autoFocus
-        >
-          {t('logOutDialog.logOut', 'Log out')}
-        </Button>
-      </DialogActions>
-    </Dialog>
+      onConfirm={handleConfirm}
+      open={open}
+      title={t('logOutDialog.title', 'Are you sure you want to log out?')}
+    />
   );
 }

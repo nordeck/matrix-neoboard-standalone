@@ -173,4 +173,11 @@ export type StandaloneClient = Pick<
     chunk: Array<RoomEvent | StateEvent>;
     nextToken?: string;
   }>;
+
+  /**
+   * Close a room: Send a tombstone event and kick all members.
+   *
+   * @param roomId - ID of the room to close
+   */
+  closeRoom(roomId: string): Promise<void>;
 };

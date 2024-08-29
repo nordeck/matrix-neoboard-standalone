@@ -23,6 +23,7 @@ export type MockedStandaloneClient = Mocked<StandaloneClient>;
 export function mockStandaloneClient(): MockedStandaloneClient {
   return {
     createRoom: vi.fn(),
+    closeRoom: vi.fn(),
     eventsObservable: vi.fn().mockReturnValue(new Observable()),
     toDeviceMessagesObservable: vi.fn().mockReturnValue(new Observable()),
     // @ts-expect-error - T doesn't matter here
