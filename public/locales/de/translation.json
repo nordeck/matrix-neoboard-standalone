@@ -11,6 +11,7 @@
     },
     "boardTile": {
       "created": "Erstellt {{created}}",
+      "delete": "Löschen",
       "lastView": "Zuletzt {{lastView}}",
       "rename": "Umbenennen"
     },
@@ -28,6 +29,11 @@
       "list": "Listenansicht",
       "tile": "Rasteransicht"
     }
+  },
+  "deleteDialog": {
+    "delete": "Board löschen",
+    "text": "Möchtest Du das Board wirklich löschen? Das kann nicht rückgängig gemacht werden.",
+    "title": "NeoBoard löschen"
   },
   "header": {
     "dashboard": "Zurück zum Dashboard"

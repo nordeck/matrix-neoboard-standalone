@@ -16,25 +16,44 @@
  * along with NeoBoard Standalone. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { StateEvent } from '@matrix-widget-toolkit/api';
+/**
+ * @todo implement in widget toolkit
+ */
+
+import {
+  RoomEvent,
+  StateEvent,
+  ToDeviceMessageEvent,
+} from '@matrix-widget-toolkit/api';
 import Joi from 'joi';
-import { isValidEvent } from './validation';
+import loglevel from 'loglevel';
 
-export const STATE_EVENT_WHITEBOARD_SESSIONS =
-  'net.nordeck.whiteboard.sessions';
+export function isValidEvent(
+  event:
+    | RoomEvent<unknown>
+    | StateEvent<unknown>
+    | ToDeviceMessageEvent<unknown>,
+  eventType: string,
+  schema: Joi.AnySchema,
+): boolean {
+  if (event.type !== eventType) {
+    return false;
+  }
 
-export type WhiteboardSessionsEvent = {};
+  if (
+    !event.content ||
+    typeof event.content !== 'object' ||
+    Object.keys(event.content).length === 0
+  ) {
+    return false;
+  }
 
-const whiteboardSessionsEventSchema = Joi.object<WhiteboardSessionsEvent, true>(
-  {},
-).unknown();
+  const { error } = schema.validate(event.content);
 
-export function isValidWhiteboardSessionsEvent(
-  event: StateEvent<unknown>,
-): event is StateEvent<WhiteboardSessionsEvent> {
-  return isValidEvent(
-    event,
-    STATE_EVENT_WHITEBOARD_SESSIONS,
-    whiteboardSessionsEventSchema,
-  );
+  if (error) {
+    loglevel.error('Event validation failed:', error.message, event);
+    return false;
+  }
+
+  return true;
 }

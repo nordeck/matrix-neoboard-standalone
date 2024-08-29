@@ -16,9 +16,11 @@
  * along with NeoBoard Standalone. If not, see <https://www.gnu.org/licenses/>.
  */
 
+import DeleteIcon from '@mui/icons-material/Delete';
 import DriveFileRenameOutlineIcon from '@mui/icons-material/DriveFileRenameOutline';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import {
+  Divider,
   IconButton,
   ListItemIcon,
   ListItemText,
@@ -28,6 +30,7 @@ import {
 } from '@mui/material';
 import React, { ComponentProps, useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useDeleteDialog } from '../DeleteDialog';
 import { RenameDialog } from '../RenameDialog';
 import { DashboardItem } from './useDashboardList';
 
@@ -36,10 +39,12 @@ type TileMenuProps = {
 };
 
 export const TileMenu: React.FC<TileMenuProps> = function ({ item }) {
+  const roomId = item.roomId;
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
   const [renameDialogOpen, setRenameDialogOpen] = useState(false);
   const { t } = useTranslation();
+  const { deleteDialog, setDeleteDialogOpen } = useDeleteDialog(roomId);
 
   /**
    * Toggle the menu
@@ -71,14 +76,25 @@ export const TileMenu: React.FC<TileMenuProps> = function ({ item }) {
     [],
   );
 
+  const handleDeleteClick = useCallback(
+    (event: React.MouseEvent<HTMLElement>) => {
+      event.preventDefault();
+      event.stopPropagation();
+
+      // Close menu
+      setAnchorEl(null);
+      setDeleteDialogOpen(true);
+    },
+    [setDeleteDialogOpen],
+  );
+
   const handleCloseRenameDialog = useCallback(() => {
     setRenameDialogOpen(false);
   }, []);
 
-  const roomId = item.roomId;
-
   return (
     <>
+      {deleteDialog}
       <RenameDialog
         onClose={handleCloseRenameDialog}
         open={renameDialogOpen}
@@ -101,14 +117,29 @@ export const TileMenu: React.FC<TileMenuProps> = function ({ item }) {
         }}
       >
         <MenuList>
-          <MenuItem onClick={handleRenameClick}>
-            <ListItemIcon>
-              <DriveFileRenameOutlineIcon fontSize="small" />
-            </ListItemIcon>
-            <ListItemText>
-              {t('dashboard.boardTile.rename', 'Rename')}
-            </ListItemText>
-          </MenuItem>
+          {item.permissions.canChangeName && (
+            <>
+              <MenuItem onClick={handleRenameClick}>
+                <ListItemIcon>
+                  <DriveFileRenameOutlineIcon fontSize="small" />
+                </ListItemIcon>
+                <ListItemText>
+                  {t('dashboard.boardTile.rename', 'Rename')}
+                </ListItemText>
+              </MenuItem>
+              <Divider />
+            </>
+          )}
+          {item.permissions.canSendTombstone && (
+            <MenuItem onClick={handleDeleteClick}>
+              <ListItemIcon>
+                <DeleteIcon fontSize="small" />
+              </ListItemIcon>
+              <ListItemText>
+                {t('dashboard.boardTile.delete', 'Delete')}
+              </ListItemText>
+            </MenuItem>
+          )}
         </MenuList>
       </Menu>
     </>

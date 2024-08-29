@@ -16,5 +16,31 @@
  * along with NeoBoard Standalone. If not, see <https://www.gnu.org/licenses/>.
  */
 
-export * from './tombstoneEvent';
-export * from './whiteboardSessionsEvent';
+import { RoomMemberStateEventContent } from '@matrix-widget-toolkit/api';
+import { EventType, IStateEventWithRoomId } from 'matrix-js-sdk';
+
+let membershipEventId = 1;
+
+type CreateMembershipEventArgs = {
+  membership?: RoomMemberStateEventContent['membership'];
+  roomId?: string;
+  userId?: string;
+};
+
+export function createMembershipEvent({
+  membership = 'join',
+  roomId = '!room:example.com',
+  userId = '@user:example.com',
+}: CreateMembershipEventArgs): IStateEventWithRoomId {
+  return {
+    event_id: `membership-${membershipEventId++}`,
+    room_id: roomId,
+    sender: userId,
+    state_key: userId,
+    origin_server_ts: Date.now(),
+    type: EventType.RoomMember,
+    content: {
+      membership,
+    },
+  };
+}

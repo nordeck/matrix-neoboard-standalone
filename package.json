@@ -32,6 +32,7 @@
     "@matrix-widget-toolkit/react": "^2.0.0",
     "@mui/icons-material": "^5.16.7",
     "@mui/material": "^5.16.7",
+    "@mui/lab": "^5.0.0-alpha.173",
     "@mui/utils": "^5.16.4",
     "@nordeck/matrix-neoboard-react-sdk": "link:../matrix-neoboard/packages/react-sdk",
     "@reduxjs/toolkit": "^2.2.7",

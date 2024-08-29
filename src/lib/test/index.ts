@@ -16,5 +16,5 @@
  * along with NeoBoard Standalone. If not, see <https://www.gnu.org/licenses/>.
  */
 
-export * from './tombstoneEvent';
-export * from './whiteboardSessionsEvent';
+export * from './client';
+export * from './event';

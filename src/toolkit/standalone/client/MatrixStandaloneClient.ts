@@ -43,6 +43,7 @@ import {
   Symbols,
 } from 'matrix-widget-api';
 import { Observable, from, fromEvent, map } from 'rxjs';
+import { STATE_EVENT_TOMBSTONE } from '../../../model';
 import { StandaloneClient } from './types';
 
 /**
@@ -254,6 +255,37 @@ export class MatrixStandaloneClient implements StandaloneClient {
         credential: password,
       })),
     );
+  }
+
+  public async closeRoom(roomId: string): Promise<void> {
+    // First tombstone the room
+    await this.sendStateEvent(
+      STATE_EVENT_TOMBSTONE,
+      '',
+      {
+        body: 'This room has been closed',
+        replacement_room: '',
+      },
+      roomId,
+    );
+
+    // Then remove all members
+    const memberships = await this.matrixClient.members(roomId);
+    const promises = [];
+
+    for (const membership of memberships.chunk) {
+      if (
+        ['join', 'invite', 'knock'].includes(
+          membership.content.membership ?? '',
+        )
+      ) {
+        promises.push(
+          this.matrixClient.kick(roomId, membership.state_key, 'Room closed'),
+        );
+      }
+    }
+
+    await Promise.allSettled(promises);
   }
 
   private pickRooms(roomIds: string[] | Symbols.AnyRoom): Room[] {
