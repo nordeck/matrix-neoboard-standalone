@@ -24,8 +24,23 @@ import {
   defineConfig,
   searchForWorkspaceRoot,
 } from 'vite';
+import { viteStaticCopy } from 'vite-plugin-static-copy';
 
-const plugins: [Plugin | PluginOption] = [react()];
+const plugins: (Plugin | PluginOption)[] = [
+  react(),
+  viteStaticCopy({
+    targets: [
+      {
+        src: './node_modules/@matrix-widget-toolkit/mui/build/locales/',
+        dest: '.',
+      },
+      {
+        src: './node_modules/@nordeck/matrix-neoboard-react-sdk/src/locales/',
+        dest: '.',
+      },
+    ],
+  }),
+];
 
 if (process.env.VITE_DEV_SSL === 'true') {
   plugins.push(basicSsl());

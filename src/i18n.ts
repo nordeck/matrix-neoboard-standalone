@@ -28,9 +28,7 @@ import { setLocale } from './lib';
 // Vite seems to handle imports relative to `node_modules/.vite` for dependencies
 // This causes the import to fail in the browser
 export const WidgetToolkitI18nBackend = resourcesToBackend((lng, ns, clb) => {
-  import(
-    /* @vite-ignore */ `@matrix-widget-toolkit/mui/locales/${lng}/${ns}.json`
-  )
+  import(`../node_modules/@matrix-widget-toolkit/mui/locales/${lng}/${ns}.json`)
     .then((resources) => clb(null, resources))
     .catch((err) => clb(err, undefined));
 });
