@@ -16,30 +16,13 @@
  * along with NeoBoard Standalone. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { BoardTile } from './BoardTile.tsx';
-import { CreateBoardTile } from './CreateBoardTile.tsx';
-import { DashboardOptions } from './DashboardOptions.tsx';
-import { TilesContainer } from './TilesContainer.tsx';
-import type { DashboardViewProps } from './useDashboardView.tsx';
+import { styled } from '@mui/material';
 
-export function DashboardTileView({
-  items,
-  onCreate,
-  onSelect,
-}: DashboardViewProps) {
-  return (
-    <>
-      <DashboardOptions />
-      <TilesContainer>
-        <CreateBoardTile onClick={onCreate} />
-        {items.map((dashboardItem) => (
-          <BoardTile
-            key={dashboardItem.roomId}
-            dashboardItem={dashboardItem}
-            onClick={() => onSelect(dashboardItem)}
-          />
-        ))}
-      </TilesContainer>
-    </>
-  );
-}
+export const Thumbnail = styled('div')<{ divider?: boolean }>(
+  ({ theme, divider = true }) => ({
+    aspectRatio: 16 / 9,
+    backgroundColor: theme.palette.background.paper,
+    borderBottom: divider ? `1px solid ${theme.palette.divider}` : 'none',
+    width: '100%',
+  }),
+);

@@ -16,30 +16,25 @@
  * along with NeoBoard Standalone. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { BoardTile } from './BoardTile.tsx';
-import { CreateBoardTile } from './CreateBoardTile.tsx';
-import { DashboardOptions } from './DashboardOptions.tsx';
-import { TilesContainer } from './TilesContainer.tsx';
-import type { DashboardViewProps } from './useDashboardView.tsx';
+import React, { useEffect } from 'react';
+import { NoBoardPreview } from './NoBoardPreview';
 
-export function DashboardTileView({
-  items,
-  onCreate,
-  onSelect,
-}: DashboardViewProps) {
-  return (
-    <>
-      <DashboardOptions />
-      <TilesContainer>
-        <CreateBoardTile onClick={onCreate} />
-        {items.map((dashboardItem) => (
-          <BoardTile
-            key={dashboardItem.roomId}
-            dashboardItem={dashboardItem}
-            onClick={() => onSelect(dashboardItem)}
-          />
-        ))}
-      </TilesContainer>
-    </>
-  );
+interface BoardPreviewProps {
+  preview: string | undefined;
 }
+
+export const BoardPreview: React.FC<BoardPreviewProps> = ({ preview }) => {
+  const hasPreview = preview && preview.length > 0;
+
+  useEffect(() => {
+    if (hasPreview) {
+      throw new Error('Not implemented yet');
+    }
+  }, [preview, hasPreview]);
+
+  if (hasPreview) {
+    return <></>;
+  }
+
+  return <NoBoardPreview />;
+};

@@ -16,30 +16,22 @@
  * along with NeoBoard Standalone. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { BoardTile } from './BoardTile.tsx';
-import { CreateBoardTile } from './CreateBoardTile.tsx';
-import { DashboardOptions } from './DashboardOptions.tsx';
-import { TilesContainer } from './TilesContainer.tsx';
-import type { DashboardViewProps } from './useDashboardView.tsx';
+import { CardMedia, useTheme } from '@mui/material';
+import NoBoardPreviewImage from './NoBoardPreviewImage.svg';
 
-export function DashboardTileView({
-  items,
-  onCreate,
-  onSelect,
-}: DashboardViewProps) {
+export function NoBoardPreview() {
+  const theme = useTheme();
+
   return (
-    <>
-      <DashboardOptions />
-      <TilesContainer>
-        <CreateBoardTile onClick={onCreate} />
-        {items.map((dashboardItem) => (
-          <BoardTile
-            key={dashboardItem.roomId}
-            dashboardItem={dashboardItem}
-            onClick={() => onSelect(dashboardItem)}
-          />
-        ))}
-      </TilesContainer>
-    </>
+    <CardMedia
+      component="img"
+      height="100%"
+      image={NoBoardPreviewImage}
+      sx={{
+        backgroundColor: theme.palette.primary.main,
+        padding: '10%',
+        objectFit: 'contain',
+      }}
+    />
   );
 }

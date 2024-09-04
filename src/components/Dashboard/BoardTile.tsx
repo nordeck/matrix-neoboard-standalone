@@ -28,14 +28,17 @@ import {
 } from '@mui/material';
 import { MouseEvent } from 'react';
 import { useTranslation } from 'react-i18next';
+import { BoardPreview } from './BoardPreview';
+import { Thumbnail } from './Thumbnail';
 import { TileMenu } from './TileMenu';
-import { BoardItemProps } from './useDashboardView.tsx';
+import { DashboardItem } from './useDashboardList';
 
-export function BoardTile({
-  onClick,
-  previewUrl,
-  dashboardItem,
-}: BoardItemProps) {
+type BoardTileProps = {
+  onClick: () => void;
+  dashboardItem: DashboardItem;
+};
+
+export function BoardTile({ onClick, dashboardItem }: BoardTileProps) {
   const { t } = useTranslation();
 
   const hasTileMenu =
@@ -45,7 +48,11 @@ export function BoardTile({
   return (
     <Card sx={{ width: '14.5rem' }}>
       <CardActionArea component="div" onClick={onClick}>
-        <CardMedia component="img" height="120" image={previewUrl} />
+        <CardMedia component="div">
+          <Thumbnail aria-hidden="true">
+            <BoardPreview preview={dashboardItem.preview} />
+          </Thumbnail>
+        </CardMedia>
         <CardContent>
           <Typography
             variant="h5"

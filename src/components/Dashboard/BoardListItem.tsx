@@ -20,13 +20,11 @@ import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
 import { alpha, IconButton, Stack, styled, Typography } from '@mui/material';
 import { MouseEvent } from 'react';
 import { useTranslation } from 'react-i18next';
+import { BoardPreview } from './BoardPreview.tsx';
+import { Thumbnail } from './Thumbnail.tsx';
 import { TileMenu } from './TileMenu';
 import { BoardItemProps } from './useDashboardView.tsx';
 import { UserChip } from './UserChip.tsx';
-
-const Thumbnail = styled('img')(() => ({
-  width: 120,
-}));
 
 const BoardTitle = styled(Typography)(() => ({
   fontWeight: 'bold',
@@ -48,17 +46,15 @@ const ClickableRow = styled('tr')(({ theme }) => ({
   },
 }));
 
-export function BoardListItem({
-  onClick,
-  previewUrl,
-  dashboardItem,
-}: BoardItemProps) {
+export function BoardListItem({ onClick, dashboardItem }: BoardItemProps) {
   const { t } = useTranslation();
 
   return (
     <ClickableRow tabIndex={0} role="button" onClick={onClick}>
       <td style={{ width: 0 }}>
-        <Thumbnail src={previewUrl} aria-hidden="true" onClick={onClick} />
+        <Thumbnail aria-hidden="true" divider={false}>
+          <BoardPreview preview={dashboardItem.preview} />
+        </Thumbnail>
       </td>
       <td>
         <Stack direction="row" alignItems="center" gap={1}>
