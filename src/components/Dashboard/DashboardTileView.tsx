@@ -18,23 +18,7 @@ import { BoardTile } from './BoardTile.tsx';
 import { CreateBoardTile } from './CreateBoardTile.tsx';
 import { DashboardOptions } from './DashboardOptions.tsx';
 import { TilesContainer } from './TilesContainer.tsx';
-import boardPreview1 from './board1.png';
-import boardPreview2 from './board2.png';
-import boardPreview3 from './board3.png';
-import boardPreview4 from './board4.png';
-import boardPreview5 from './board5.png';
 import type { DashboardViewProps } from './useDashboardView.tsx';
-
-/**
- * Static images. To be replaced when implementing thumbnails.
- */
-const boardPreviews = [
-  boardPreview1,
-  boardPreview2,
-  boardPreview3,
-  boardPreview4,
-  boardPreview5,
-];
 
 export function DashboardTileView({
   items,
@@ -46,11 +30,10 @@ export function DashboardTileView({
       <DashboardOptions />
       <TilesContainer>
         <CreateBoardTile onClick={onCreate} />
-        {items.map((dashboardItem, index) => (
+        {items.map((dashboardItem) => (
           <BoardTile
             key={dashboardItem.roomId}
             dashboardItem={dashboardItem}
-            previewUrl={boardPreviews[index % 5]}
             onClick={() => onSelect(dashboardItem)}
           />
         ))}

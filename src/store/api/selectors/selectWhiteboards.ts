@@ -31,6 +31,7 @@ export type WhiteboardEntry = {
   whiteboard: StateEvent<Whiteboard>;
   whiteboardSessions: StateEvent<WhiteboardSessionsEvent> | undefined;
   powerLevels: StateEvent<PowerLevelsStateEvent> | undefined;
+  preview: string | undefined;
 };
 
 export function makeSelectWhiteboards(
@@ -86,6 +87,7 @@ export function makeSelectWhiteboards(
               whiteboard,
               whiteboardSessions: latestOwnWhiteboardSessionsEvent,
               powerLevels: powerLevelsEvents[whiteboard.room_id],
+              preview: undefined,
             },
           ];
         }

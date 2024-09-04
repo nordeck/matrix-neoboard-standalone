@@ -19,23 +19,7 @@ import { BoardListItem } from './BoardListItem.tsx';
 import { CreateBoardButton } from './CreateBoardButton.tsx';
 import { DashboardListHeader } from './DashboardListHeader.tsx';
 import { DashboardOptions } from './DashboardOptions.tsx';
-import boardPreview1 from './board1.png';
-import boardPreview2 from './board2.png';
-import boardPreview3 from './board3.png';
-import boardPreview4 from './board4.png';
-import boardPreview5 from './board5.png';
 import type { DashboardViewProps } from './useDashboardView.tsx';
-
-/**
- * Static images. To be replaced when implementing thumbnails.
- */
-const boardPreviews = [
-  boardPreview1,
-  boardPreview2,
-  boardPreview3,
-  boardPreview4,
-  boardPreview5,
-];
 
 const StyledTable = styled('table')(({ theme }) => ({
   width: '100%',
@@ -68,11 +52,10 @@ export function DashboardListView({
           <DashboardListHeader />
         </thead>
         <tbody>
-          {items.map((dashboardItem, index) => (
+          {items.map((dashboardItem) => (
             <BoardListItem
               key={dashboardItem.roomId}
               dashboardItem={dashboardItem}
-              previewUrl={boardPreviews[index % 5]}
               onClick={() => onSelect(dashboardItem)}
             />
           ))}
