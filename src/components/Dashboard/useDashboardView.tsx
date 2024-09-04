@@ -26,7 +26,6 @@ export type CreateBoardItemProps = {
 
 export type BoardItemProps = {
   onClick: () => void;
-  previewUrl: string;
   dashboardItem: DashboardItem;
 };
 

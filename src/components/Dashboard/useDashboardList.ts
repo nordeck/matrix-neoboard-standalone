@@ -46,6 +46,10 @@ export type DashboardItem = {
   roomId: string;
   permissions: WhiteboardPermissions;
   /**
+   * SVG data of the board's first slide
+   */
+  preview: string;
+  /**
    * List of user IDs or null if unavailable.
    */
   users: string[] | null;
@@ -101,6 +105,7 @@ function mapWhiteboardToDashboardItem(
     lastView: formatLastView(whiteboard),
     created: formatCreated(whiteboard),
     permissions: calculateWhiteboardPermissions(whiteboard.powerLevels, userId),
+    preview: whiteboard.preview ?? '',
     users: calculateWhiteboardUserlist(whiteboard.powerLevels),
   };
 }
