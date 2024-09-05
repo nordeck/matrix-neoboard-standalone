@@ -49,4 +49,25 @@ export const standaloneLightTheme: ThemeOptions = {
   typography: {
     fontFamily,
   },
+  components: {
+    // Tooltips are fullscreen-aware
+    MuiMenu: {
+      defaultProps: {
+        container: document.getElementById('widget-root') ?? document.body,
+      },
+    },
+    // Tooltips are fullscreen-aware
+    MuiTooltip: {
+      defaultProps: {
+        PopperProps: {
+          container: document.getElementById('widget-root') ?? document.body,
+        },
+      },
+    },
+    MuiPopover: {
+      defaultProps: {
+        container: document.getElementById('widget-root') ?? document.body,
+      },
+    },
+  },
 };
