@@ -9,8 +9,8 @@ services:
       - synapse
       - mas
     ports:
-      - '443:443'
-      - '8448:8448'
+      - '127.0.0.1:443:443'
+      - '127.0.0.1:8448:8448'
     networks:
       default:
         aliases:
