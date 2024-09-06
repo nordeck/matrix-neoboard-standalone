@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import { getEnvironment } from '@matrix-widget-toolkit/mui';
 import {
   ROOM_EVENT_DOCUMENT_CREATE,
   STATE_EVENT_WHITEBOARD,
@@ -56,31 +57,40 @@ export async function createWhiteboard(
     roomId,
   );
 
-  // setup widget and layout
-  await Promise.all([
-    standaloneClient.sendStateEvent(
-      'im.vector.modular.widgets',
-      'neoboard',
-      {
-        type: 'net.nordeck.whiteboard',
-        url: 'https://matrix-neoboard-widget.dev.nordeck.io/#/?theme=$org.matrix.msc2873.client_theme&matrix_user_id=$matrix_user_id&matrix_display_name=$matrix_display_name&matrix_avatar_url=$matrix_avatar_url&matrix_room_id=$matrix_room_id&matrix_client_id=$org.matrix.msc2873.client_id&matrix_client_language=$org.matrix.msc2873.client_language&matrix_base_url=$org.matrix.msc4039.matrix_base_url',
-        name: 'NeoBoard',
-      },
-      roomId,
-    ),
-    standaloneClient.sendStateEvent(
-      'io.element.widgets.layout',
-      '',
-      {
-        widgets: {
-          neoboard: {
-            container: 'center',
+  const widgetBaseUrl = getEnvironment('REACT_APP_WIDGET_BASE');
+
+  if (widgetBaseUrl) {
+    const widgetUrl = new URL(
+      '/#/?theme=$org.matrix.msc2873.client_theme&matrix_user_id=$matrix_user_id&matrix_display_name=$matrix_display_name&matrix_avatar_url=$matrix_avatar_url&matrix_room_id=$matrix_room_id&matrix_client_id=$org.matrix.msc2873.client_id&matrix_client_language=$org.matrix.msc2873.client_language&matrix_base_url=$org.matrix.msc4039.matrix_base_url',
+      widgetBaseUrl,
+    );
+
+    // setup widget and layout
+    await Promise.all([
+      standaloneClient.sendStateEvent(
+        'im.vector.modular.widgets',
+        'neoboard',
+        {
+          type: 'net.nordeck.whiteboard',
+          url: widgetUrl.toString(),
+          name: 'NeoBoard',
+        },
+        roomId,
+      ),
+      standaloneClient.sendStateEvent(
+        'io.element.widgets.layout',
+        '',
+        {
+          widgets: {
+            neoboard: {
+              container: 'center',
+            },
           },
         },
-      },
-      roomId,
-    ),
-  ]);
+        roomId,
+      ),
+    ]);
+  }
 
   return roomId;
 }

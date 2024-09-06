@@ -9,9 +9,10 @@ Standalone version of [NeoBoard](https://github.com/nordeck/matrix-neoboard) - A
 NeoBoard standalone supports some configuration options.
 They can either be set via an environment variable or the dot-env-file.
 
-| Name                   | Description                                                                                                   | Example       |
-| ---------------------- | ------------------------------------------------------------------------------------------------------------- | ------------- |
-| `REACT_APP_HOMESERVER` | If set, it uses this homeserver instead of showing an input field on the login screen. Do not use `https://`. | `example.com` |
+| Name                    | Description                                                                                                                                                                                    | Example                        |
+| ----------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------ |
+| `REACT_APP_WIDGET_BASE` | This sets the widget url for when the room is viewed using element-web or other widget-supporting clients. The schema (i.e.: `https://`) is required. If not set, a widget won't be available. | `https://neoboard.example.com` |
+| `REACT_APP_HOMESERVER`  | If set, it uses this homeserver instead of showing an input field on the login screen. Do not use `https://`.                                                                                  | `example.com`                  |
 
 ## Getting Started
 
@@ -47,7 +48,7 @@ Clone NeoBoard and install the dependencies:
 git clone git@github.com:nordeck/matrix-neoboard.git
 cd matrix-neoboard/packages/react-sdk
 yarn install
-cd ..
+cd ../../..
 ```
 
 Clone NeoBoard standalone and install the dependencies:
@@ -71,9 +72,9 @@ It is possible to use the Compose file in `./dev` to create the environment:
   - `podman compose --podman-run-args="--no-hosts" up`
   - `docker compose up`
 - Visit the following URLs and accept the certificate
-  - https://matrix.internal
-  - https://mas.matrix.internal
-  - https://synapse.matrix.internal/_matrix/client/versions
+  - <https://matrix.internal>
+  - <https://mas.matrix.internal>
+  - <https://synapse.matrix.internal/_matrix/client/versions>
 
 #### Start the development environment
 
