@@ -6,7 +6,7 @@ Standalone version of [NeoBoard](https://github.com/nordeck/matrix-neoboard) - A
 
 ## Configuration
 
-Neoboard standalone supports some configuration options.
+NeoBoard standalone supports some configuration options.
 They can either be set via an environment variable or the dot-env-file.
 
 | Name                   | Description                                                                                                   | Example       |
@@ -36,12 +36,12 @@ After checkout, run `yarn install` to download the required dependencies
 
 #### Clone the repos and install dependencies
 
-Neoboard standalone uses [`@nordeck/matrix-neoboard-react-sdk`][@nordeck/matrix-neoboard-react-sdk], that provides the board components.
+NeoBoard standalone uses [`@nordeck/matrix-neoboard-react-sdk`][@nordeck/matrix-neoboard-react-sdk], that provides the board components.
 It may often happen, that it is necessary to change both, standalone and the react SDK.
-For a better development experience, Neoboard standalone links [`@nordeck/matrix-neoboard-react-sdk`][@nordeck/matrix-neoboard-react-sdk]
+For a better development experience, NeoBoard standalone links [`@nordeck/matrix-neoboard-react-sdk`][@nordeck/matrix-neoboard-react-sdk]
 in it's `package.json`. Because of that it is important to clone both repos next to each other.
 
-Clone Neoboard and install the dependencies:
+Clone NeoBoard and install the dependencies:
 
 ```sh
 git clone git@github.com:nordeck/matrix-neoboard.git
@@ -50,7 +50,7 @@ yarn install
 cd ..
 ```
 
-Clone Neoboard standalone and install the dependencies:
+Clone NeoBoard standalone and install the dependencies:
 
 ```sh
 git clone git@github.com:nordeck/matrix-neoboard-standalone.git
@@ -77,7 +77,7 @@ It is possible to use the Compose file in `./dev` to create the environment:
 
 #### Start the development environment
 
-You can now start Neoboard standalone:
+You can now start NeoBoard standalone:
 
 ```sh
 yarn run dev:https
