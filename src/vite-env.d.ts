@@ -17,3 +17,11 @@
  */
 
 /// <reference types="vite/client" />
+interface ImportMetaEnv {
+  // The base url used for the widget instance in the room
+  readonly REACT_APP_WIDGET_BASE: string;
+}
+
+interface ImportMeta {
+  readonly env: ImportMetaEnv;
+}
