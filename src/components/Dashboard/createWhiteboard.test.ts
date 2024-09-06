@@ -14,22 +14,33 @@
  * limitations under the License.
  */
 
+import { getEnvironment } from '@matrix-widget-toolkit/mui';
 import {
   ROOM_EVENT_DOCUMENT_CREATE,
   STATE_EVENT_WHITEBOARD,
 } from '@nordeck/matrix-neoboard-react-sdk';
-import { beforeEach, describe, expect, it } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import {
   MockedStandaloneClient,
   mockStandaloneClient,
 } from '../../toolkit/standalone/client/mockStandaloneClient';
 import { createWhiteboard } from './createWhiteboard.ts';
 
+vi.mock('@matrix-widget-toolkit/mui', async () => ({
+  ...(await vi.importActual('@matrix-widget-toolkit/mui')),
+  getEnvironment: vi.fn(),
+}));
+
 describe('createWhiteboard', () => {
   let standaloneClient: MockedStandaloneClient;
 
   beforeEach(() => {
     standaloneClient = mockStandaloneClient();
+    vi.mocked(getEnvironment).mockImplementation((name) => {
+      return name === 'REACT_APP_WIDGET_BASE'
+        ? 'https://widget.example.com'
+        : '';
+    });
   });
 
   it('create a whiteboard', async () => {
