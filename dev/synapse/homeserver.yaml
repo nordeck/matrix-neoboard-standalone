@@ -62,3 +62,5 @@ experimental_features:
 
     # URL to advertise to clients where users can self-manage their account
     account_management_url: 'https://mas.matrix.internal/account'
+
+enable_authenticated_media: true

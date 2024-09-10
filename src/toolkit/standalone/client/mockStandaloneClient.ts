@@ -39,6 +39,7 @@ export function mockStandaloneClient(): MockedStandaloneClient {
     searchUserDirectory: vi.fn(),
     getMediaConfig: vi.fn(),
     uploadFile: vi.fn(),
+    downloadFile: vi.fn(),
     sendToDeviceMessage: vi.fn(),
   };
 }
