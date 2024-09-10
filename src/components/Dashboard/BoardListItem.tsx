@@ -52,7 +52,11 @@ export function BoardListItem({ onClick, dashboardItem }: BoardItemProps) {
   return (
     <ClickableRow tabIndex={0} role="button" onClick={onClick}>
       <td style={{ width: 0 }}>
-        <Thumbnail aria-hidden="true" divider={false}>
+        <Thumbnail
+          aria-hidden="true"
+          divider={false}
+          style={{ width: '10rem' }}
+        >
           <BoardPreview preview={dashboardItem.preview} />
         </Thumbnail>
       </td>
