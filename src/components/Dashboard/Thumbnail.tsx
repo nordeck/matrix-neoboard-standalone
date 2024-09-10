@@ -22,5 +22,7 @@ export const Thumbnail = styled('div')<{ divider?: boolean }>(
     backgroundColor: theme.palette.background.paper,
     borderBottom: divider ? `1px solid ${theme.palette.divider}` : 'none',
     width: '100%',
+    margin: '0 auto',
+    display: 'block',
   }),
 );
