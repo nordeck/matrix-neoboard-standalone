@@ -34,6 +34,7 @@ import {
   TimelineEvents,
 } from 'matrix-js-sdk';
 import {
+  IDownloadFileActionFromWidgetResponseData,
   IGetMediaConfigActionFromWidgetResponseData,
   IRoomEvent,
   ITurnServer,
@@ -42,6 +43,7 @@ import {
 } from 'matrix-widget-api';
 import { Observable, from, fromEvent, map } from 'rxjs';
 import { STATE_EVENT_TOMBSTONE } from '../../../model';
+import { MediaAsset } from './MediaAsset';
 import { StandaloneClient } from './types';
 
 /**
@@ -219,6 +221,15 @@ export class MatrixStandaloneClient implements StandaloneClient {
   ): Promise<IUploadFileActionFromWidgetResponseData> {
     const uploadResult = await this.matrixClient.uploadContent(file);
     return { content_uri: uploadResult.content_uri };
+  }
+
+  async downloadFile(
+    contentUrl: string,
+  ): Promise<IDownloadFileActionFromWidgetResponseData> {
+    const media = new MediaAsset({ mxc: contentUrl }, this.matrixClient);
+    const response = await media.downloadSource();
+    const blob = await response.blob();
+    return { file: blob };
   }
 
   async sendToDeviceMessage<T>(

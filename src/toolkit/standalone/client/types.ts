@@ -41,6 +41,7 @@ export type StandaloneClient = Pick<
   | 'searchUserDirectory'
   | 'getMediaConfig'
   | 'uploadFile'
+  | 'downloadFile'
   | 'sendToDeviceMessage'
 > & {
   /**
