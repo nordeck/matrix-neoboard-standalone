@@ -23,6 +23,7 @@ import {
   WidgetParameters,
 } from '@matrix-widget-toolkit/api';
 import {
+  IDownloadFileActionFromWidgetResponseData,
   IGetMediaConfigActionFromWidgetResponseData,
   IModalWidgetCreateData,
   IModalWidgetOpenRequestDataButton,
@@ -236,11 +237,16 @@ export class StandaloneWidgetApiImpl implements StandaloneWidgetApi {
 
   /** {@inheritdoc WidgetApi.uploadFile}  */
   async uploadFile(
-    // eslint complains about lib dom types
-
     file: XMLHttpRequestBodyInit,
   ): Promise<IUploadFileActionFromWidgetResponseData> {
     return await this.standaloneApi.client.uploadFile(file);
+  }
+
+  /** {@inheritdoc WidgetApi.downloadFile}  */
+  async downloadFile(
+    contentUrl: string,
+  ): Promise<IDownloadFileActionFromWidgetResponseData> {
+    return await this.standaloneApi.client.downloadFile(contentUrl);
   }
 
   /** {@inheritDoc WidgetApi.sendToDeviceMessage} */
