@@ -17,12 +17,16 @@
  */
 
 import { PowerLevelsStateEvent, StateEvent } from '@matrix-widget-toolkit/api';
-import { Whiteboard } from '@nordeck/matrix-neoboard-react-sdk';
+import {
+  DocumentPreviewEvent,
+  Whiteboard,
+} from '@nordeck/matrix-neoboard-react-sdk';
 import { createSelector } from '@reduxjs/toolkit';
 import { WhiteboardSessionsEvent } from '../../../model';
 import { SortBy } from '../../dashboard/dashboardSlice';
 import { RootState } from '../../store';
 import { selectAllPowerLevelsEventEntities } from '../PowerLevelsApi';
+import { selectAllDocumentPreviewEventEntities } from '../documentPreviewApi';
 import { selectAllRoomMemberEventEntities } from '../roomMemberApi';
 import { selectAllRoomNameEventEntities } from '../roomNameApi';
 import { selectAllWhiteboards } from '../whiteboardApi';
@@ -33,7 +37,7 @@ export type WhiteboardEntry = {
   whiteboard: StateEvent<Whiteboard>;
   whiteboardSessions: StateEvent<WhiteboardSessionsEvent> | undefined;
   powerLevels: StateEvent<PowerLevelsStateEvent> | undefined;
-  preview: string | undefined;
+  preview: StateEvent<DocumentPreviewEvent> | undefined;
 };
 
 export function makeSelectWhiteboards(
@@ -46,12 +50,14 @@ export function makeSelectWhiteboards(
     selectAllRoomMemberEventEntities,
     selectAllWhiteboardSessionsEventEntities,
     selectAllPowerLevelsEventEntities,
+    selectAllDocumentPreviewEventEntities,
     (
       whiteboards,
       roomNameEvents,
       roomMemberEvents,
       whiteboardSessionsEvents,
       powerLevelsEvents,
+      documentPreviewEvents,
     ): WhiteboardEntry[] => {
       const boards = whiteboards.flatMap((whiteboard) => {
         const roomName = roomNameEvents[whiteboard.room_id]?.content.name;
@@ -89,7 +95,7 @@ export function makeSelectWhiteboards(
               whiteboard,
               whiteboardSessions: latestOwnWhiteboardSessionsEvent,
               powerLevels: powerLevelsEvents[whiteboard.room_id],
-              preview: undefined,
+              preview: documentPreviewEvents[whiteboard.room_id],
             },
           ];
         }

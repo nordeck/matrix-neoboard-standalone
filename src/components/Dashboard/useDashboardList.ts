@@ -107,7 +107,7 @@ function mapWhiteboardToDashboardItem(
     lastView: formatLastView(whiteboard),
     created: formatCreated(whiteboard),
     permissions: calculateWhiteboardPermissions(whiteboard.powerLevels, userId),
-    preview: whiteboard.preview ?? '',
+    preview: whiteboard.preview?.content.preview ?? '',
     users: calculateWhiteboardUserlist(whiteboard.powerLevels),
   };
 }
