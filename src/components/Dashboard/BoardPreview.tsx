@@ -26,7 +26,9 @@ interface BoardPreviewProps {
 }
 
 export const BoardPreview: React.FC<BoardPreviewProps> = ({ preview }) => {
-  const hasPreview = preview && preview.length > 0;
+  // MARK: removed until we have a fix for [NEO-834](https://nordeck.atlassian.net/browse/NEO-834)]
+  // const hasPreview = preview && preview.length > 0;
+  const hasPreview = preview && preview.length > 0 && false;
   const [svgData, setSvgData] = useState<string>('');
   const svgPreview = useRenderSvg(svgData);
 
