@@ -56,7 +56,10 @@ export function BoardListItem({ onClick, dashboardItem }: BoardItemProps) {
           divider={false}
           style={{ width: '10rem' }}
         >
-          <BoardPreview preview={dashboardItem.preview} />
+          <BoardPreview
+            roomId={dashboardItem.roomId}
+            preview={dashboardItem.preview}
+          />
         </Thumbnail>
       </td>
       <td>

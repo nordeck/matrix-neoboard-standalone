@@ -50,7 +50,10 @@ export function BoardTile({ onClick, dashboardItem }: BoardTileProps) {
       <CardActionArea component="div" onClick={onClick}>
         <CardMedia component="div">
           <Thumbnail aria-hidden="true">
-            <BoardPreview preview={dashboardItem.preview} />
+            <BoardPreview
+              roomId={dashboardItem.roomId}
+              preview={dashboardItem.preview}
+            />
           </Thumbnail>
         </CardMedia>
         <CardContent>

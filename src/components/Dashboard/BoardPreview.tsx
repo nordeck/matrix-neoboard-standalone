@@ -18,15 +18,33 @@
 
 import React, { useEffect, useState } from 'react';
 import { useRenderSvg } from '../../lib/dom/useRenderSVG.ts';
+import boardPreview1 from './board1.png';
+import boardPreview2 from './board2.png';
+import boardPreview3 from './board3.png';
+import boardPreview4 from './board4.png';
+import boardPreview5 from './board5.png';
 import { NoBoardPreview } from './NoBoardPreview';
 import { preview2svg } from './utils';
 
 interface BoardPreviewProps {
+  roomId: string;
   preview: string | undefined;
 }
 
-export const BoardPreview: React.FC<BoardPreviewProps> = ({ preview }) => {
-  const hasPreview = preview && preview.length > 0;
+const previewDummies = [
+  boardPreview1,
+  boardPreview2,
+  boardPreview3,
+  boardPreview4,
+  boardPreview5,
+];
+
+export const BoardPreview: React.FC<BoardPreviewProps> = ({
+  roomId,
+  preview,
+}) => {
+  // disable previews for now
+  const hasPreview = preview && preview.length > 0 && false;
   const [svgData, setSvgData] = useState<string>('');
   const svgPreview = useRenderSvg(svgData);
 
@@ -41,9 +59,28 @@ export const BoardPreview: React.FC<BoardPreviewProps> = ({ preview }) => {
         });
     }
   }, [preview, hasPreview]);
-
   if (hasPreview && svgPreview) {
     return svgPreview;
+  } else if (roomId !== undefined) {
+    // get a hash for the room id and find the nearest dummy index
+    const hashString = (str: string): number => {
+      let hash = 0;
+      for (let i = 0; i < str.length; i++) {
+        const char = str.charCodeAt(i);
+        hash = (hash << 5) - hash + char;
+        hash |= 0;
+      }
+      return hash;
+    };
+    const index = Math.abs(hashString(roomId)) % previewDummies.length;
+    const randomPreview = previewDummies[index];
+    return (
+      <img
+        src={randomPreview}
+        alt="Board preview"
+        style={{ maxWidth: '100%' }}
+      />
+    );
   }
 
   return <NoBoardPreview />;
