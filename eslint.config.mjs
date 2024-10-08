@@ -20,6 +20,7 @@ import eslintConfigPrettier from 'eslint-config-prettier';
 import notice from 'eslint-plugin-notice';
 import pluginPromise from 'eslint-plugin-promise';
 import react from 'eslint-plugin-react';
+import hooksPlugin from 'eslint-plugin-react-hooks';
 import testingLibrary from 'eslint-plugin-testing-library';
 import vitest from 'eslint-plugin-vitest';
 import path from 'path';
@@ -86,8 +87,13 @@ export default ts.config(
   },
   {
     ...react.configs.flat.recommended,
+    plugins: {
+      ...react.configs.flat.recommended.plugins,
+      'react-hooks': fixupPluginRules(hooksPlugin),
+    },
     rules: {
       ...react.configs.flat.recommended.rules,
+      ...hooksPlugin.configs.recommended.rules,
       'react/display-name': 'off',
       'react/no-unescaped-entities': 'off',
       // Disabled to avoid weird error messages

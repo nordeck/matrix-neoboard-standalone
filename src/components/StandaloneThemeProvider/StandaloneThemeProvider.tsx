@@ -42,7 +42,7 @@ function ApplyStandaloneThemeProvider({ children }: PropsWithChildren<{}>) {
     if (selectedTheme !== 'light') {
       setTheme('light');
     }
-  }, [selectedTheme]);
+  }, [selectedTheme, setTheme]);
 
   const standaloneTheme = useMemo(() => {
     return deepmerge(theme, standaloneLightTheme);
