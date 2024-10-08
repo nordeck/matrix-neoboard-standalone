@@ -138,6 +138,7 @@ export const LoggedInView = () => {
   }, [
     dispatch,
     homeserverUrl,
+    i18n.language,
     resolveWidgetApi,
     selectedRoomId,
     standaloneClient,

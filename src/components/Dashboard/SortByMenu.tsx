@@ -97,7 +97,7 @@ export const SortByMenu: React.FC = function () {
         </MenuItem>
       );
     });
-  }, [dispatch, sortBy]);
+  }, [dispatch, sortBy, t]);
 
   /**
    * Toggle the menu
