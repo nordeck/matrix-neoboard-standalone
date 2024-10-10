@@ -19,7 +19,7 @@ services:
           - synapse.matrix.internal
 
   synapse-db:
-    image: postgres
+    image: postgres:16
     restart: unless-stopped
     environment:
       - POSTGRES_DB=synapse
@@ -44,7 +44,7 @@ services:
       - ./synapse/matrix.internal.signing.key:/data/matrix.internal.signing.key:ro
 
   mas-db:
-    image: postgres
+    image: postgres:16
     restart: unless-stopped
     environment:
       - POSTGRES_DB=mas
