@@ -20,7 +20,8 @@
     "translate": "i18next \"src/**/*.{ts,tsx}\"",
     "generate-disclaimer": "cp LICENSE ./build/LICENSE.txt && cp NOTICE ./build/NOTICE.txt && yarn licenses generate-disclaimer --prod >> ./build/NOTICE.txt && yarn licenses list --prod --json --no-progress > ./build/licenses.json",
     "docker:build": "sh -c \"${CONTAINER_CLI:-docker} build -t nordeck/matrix-neoboard-standalone .\"",
-    "docker:run": "sh -c \"${CONTAINER_CLI:-docker} run -p 8888:8080 --rm --name matrix-neoboard-standalone nordeck/matrix-neoboard-standalone\""
+    "docker:run": "sh -c \"${CONTAINER_CLI:-docker} run -p 8888:8080 --rm --name matrix-neoboard-standalone nordeck/matrix-neoboard-standalone\"",
+    "version:info": "sh -c ./sdk_version.sh"
   },
   "engines": {
     "node": ">=20.0.0",
@@ -51,6 +52,7 @@
     "react-dom": "^18.3.1",
     "react-i18next": "^15.0.2",
     "react-redux": "^9.1.2",
+    "react-use": "^17.5.1",
     "rxjs": "^7.8.1"
   },
   "browserslist": {
