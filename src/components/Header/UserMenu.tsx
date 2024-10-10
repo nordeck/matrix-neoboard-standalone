@@ -16,6 +16,7 @@
  * along with NeoBoard Standalone. If not, see <https://www.gnu.org/licenses/>.
  */
 
+import InfoIcon from '@mui/icons-material/Info';
 import LogoutIcon from '@mui/icons-material/Logout';
 import {
   Avatar,
@@ -28,6 +29,7 @@ import {
 import React, { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLoggedIn } from '../../state';
+import { AboutDialog } from './AboutDialog';
 import { LogoutDialog } from './LogoutDialog';
 import dummyAvatar from './dummy-avatar.png';
 
@@ -35,6 +37,7 @@ export function UserMenu() {
   const { t } = useTranslation();
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
+
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
   };
@@ -43,6 +46,13 @@ export function UserMenu() {
   };
 
   const [logoutDialogOpen, setLogoutDialogOpen] = useState(false);
+  const [aboutDialogOpen, setAboutDialogOpen] = useState(false);
+
+  const handleAboutClick = useCallback(() => {
+    setAnchorEl(null);
+    setAboutDialogOpen(true);
+  }, [setAnchorEl, setAboutDialogOpen]);
+
   const handleLogoutClick = useCallback(() => {
     setAnchorEl(null);
     setLogoutDialogOpen(true);
@@ -57,6 +67,10 @@ export function UserMenu() {
       <LogoutDialog
         onClose={() => setLogoutDialogOpen(false)}
         open={logoutDialogOpen}
+      />
+      <AboutDialog
+        onClose={() => setAboutDialogOpen(false)}
+        open={aboutDialogOpen}
       />
       <IconButton
         onClick={handleClick}
@@ -74,6 +88,12 @@ export function UserMenu() {
         <MenuItem disabled={true}>
           <ListItemIcon />
           <ListItemText>{username}</ListItemText>
+        </MenuItem>
+        <MenuItem onClick={handleAboutClick}>
+          <ListItemIcon>
+            <InfoIcon fontSize="small" />
+          </ListItemIcon>
+          <ListItemText>{t('userMenu.about', 'About')}</ListItemText>
         </MenuItem>
         <MenuItem onClick={handleLogoutClick}>
           <ListItemIcon>

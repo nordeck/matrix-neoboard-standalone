@@ -1,6 +1,21 @@
 {
+  "aboutDialog": {
+    "about": "About",
+    "cancel": "Cancel",
+    "standalone": {
+      "info": "Version: {{standaloneVersion}} \nCommit hash: {{standaloneCommitHash}}",
+      "title": "Standalone version"
+    },
+    "widget": {
+      "info": "Version: {{widgetVersion}} \nCommit hash: {{widgetCommitHash}}",
+      "title": "Neoboard react sdk version"
+    }
+  },
   "app": {
     "cancel": "Cancel"
+  },
+  "copyableTextButton": {
+    "copy-to-clipboard": "Copy to clipboard"
   },
   "dashboard": {
     "boardList": {
@@ -58,6 +73,7 @@
     "title": "Rename board"
   },
   "userMenu": {
+    "about": "About",
     "logOut": "Log out"
   },
   "welcome": {
