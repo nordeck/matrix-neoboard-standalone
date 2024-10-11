@@ -67,6 +67,14 @@
     "logOut": "Log out",
     "title": "Are you sure you want to log out?"
   },
+  "persistingDialog": {
+    "error": {
+      "confirmAction": "Leave anyway",
+      "text": "An error has occurred while saving your data. If you leave the board anyway, the last changes may be lost.",
+      "title": "Save failed"
+    },
+    "text": "Saving your changes"
+  },
   "renameDialog": {
     "name": "Name",
     "rename": "Rename",
