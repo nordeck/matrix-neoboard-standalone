@@ -1,5 +1,5 @@
 {
-  "name": "matrix-neoboard-standalone",
+  "name": "@nordeck/matrix-neoboard-standalone",
   "version": "0.0.0",
   "type": "module",
   "scripts": {
