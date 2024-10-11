@@ -34,23 +34,31 @@ import {
   whiteboardApi,
 } from '@nordeck/matrix-neoboard-react-sdk';
 import { isEqual } from 'lodash';
-import { Suspense, useCallback, useEffect, useMemo, useState } from 'react';
+import loglevel from 'loglevel';
+import {
+  Suspense,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import { useTranslation } from 'react-i18next';
-import { useLoggedIn } from '../state';
-import { selectSortBy, useAppDispatch, useAppSelector } from '../store';
-import { useGetAllRoomNameEventsQuery } from '../store/api/roomNameApi';
-import { makeSelectWhiteboards } from '../store/api/selectors/selectWhiteboards';
+import { useLoggedIn } from '../../state';
+import { selectSortBy, useAppDispatch, useAppSelector } from '../../store';
+import { useGetAllRoomNameEventsQuery } from '../../store/api/roomNameApi';
+import { makeSelectWhiteboards } from '../../store/api/selectors/selectWhiteboards';
 import {
   StandaloneApiImpl,
   StandaloneWidgetApi,
   StandaloneWidgetApiImpl,
-} from '../toolkit/standalone';
-import { Dashboard } from './Dashboard';
-import { LoggedInLayout } from './LoggedInLayout';
+} from '../../toolkit/standalone';
+import { Dashboard } from '../Dashboard';
+import { LoggedInLayout } from '../LoggedInLayout';
+import { useSaveOnLeave } from './useSaveOnLeave';
 
 export const LoggedInView = () => {
   const { i18n } = useTranslation();
-
   const {
     homeserverUrl,
     resolveWidgetApi,
@@ -61,17 +69,54 @@ export const LoggedInView = () => {
   const [selectedRoomId, setSelectedRoomId] = useState<string>();
   const [widgetApi, setWidgetApi] = useState<StandaloneWidgetApi>();
   const dispatch = useAppDispatch();
+  const whiteboardManager = useWhiteboardManager();
+  /** Whether logo click is currently being handled */
+  const handlingLogoClick = useRef(false);
 
-  const handleLogoClick = useCallback(() => {
+  const clearWhiteboard = useCallback(() => {
+    try {
+      // Clear the whiteboard, so that everything is properly cleaned up.
+      // For example stop event listeners, persistence...
+      whiteboardManager.clear();
+    } catch (error) {
+      // Only log the error and do not block the user from leaving the whiteboard.
+      // There may still be some leftovers around, but the user should be able to move on.
+      loglevel.error('Error while clearing the whiteboard on leave', error);
+    }
     setSelectedRoomId(undefined);
-  }, [setSelectedRoomId]);
+  }, [setSelectedRoomId, whiteboardManager]);
+
+  const { elements: saveOnLeaveElements, persist } = useSaveOnLeave({
+    onConfirmError: clearWhiteboard,
+  });
+
+  const handleLogoClick = useCallback(async () => {
+    if (handlingLogoClick.current) {
+      // Logo click already being handled, do nothing
+      return;
+    }
+
+    handlingLogoClick.current = true;
+
+    const whiteboard = whiteboardManager.getActiveWhiteboardInstance();
+
+    if (whiteboard !== undefined) {
+      try {
+        await persist(whiteboard);
+      } catch {
+        return;
+      }
+    }
+
+    clearWhiteboard();
+    handlingLogoClick.current = false;
+  }, [clearWhiteboard, persist, whiteboardManager]);
 
   const sortBy = useAppSelector((state) => selectSortBy(state));
   const selectWhiteboards = useMemo(
     () => makeSelectWhiteboards(userId, sortBy),
     [sortBy, userId],
   );
-  const whiteboardManager = useWhiteboardManager();
 
   const whiteboards = useAppSelector(
     (state) => selectWhiteboards(state),
@@ -156,6 +201,7 @@ export const LoggedInView = () => {
 
   return (
     <LoggedInLayout onLogoClick={handleLogoClick} title={title}>
+      {saveOnLeaveElements}
       <DraggableStyles />
       {selectedRoomId === undefined ? (
         <Dashboard setSelectedRoomId={setSelectedRoomId} />
