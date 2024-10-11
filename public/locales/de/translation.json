@@ -67,6 +67,14 @@
     "logOut": "Abmelden",
     "title": "Möchtest Du dich wirklich abmelden?"
   },
+  "persistingDialog": {
+    "error": {
+      "confirmAction": "Trotzdem verlassen",
+      "text": "Beim Speichern deiner Daten ist ein Fehler aufgetreten. Wenn du das Board trotzdem verlässt, können die letzten Änderungen verloren gehen.",
+      "title": "Speichern fehlgeschlagen"
+    },
+    "text": "Speichere deine Änderungen"
+  },
   "renameDialog": {
     "name": "Name",
     "rename": "Umbenennen",
