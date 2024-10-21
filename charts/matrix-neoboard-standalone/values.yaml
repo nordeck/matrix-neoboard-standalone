@@ -10,7 +10,7 @@ image:
   tag: latest
 
 imagePullSecrets:
- #- name: dockerconfigjson-ghcr
+# - name: dockerconfigjson-ghcr
 nameOverride: ''
 fullnameOverride: ''
 
@@ -90,8 +90,8 @@ settings:
   hostname: neotoolsuite.example.com
 # Extra env variables to pass to the container
 env: []
-  #- name: REACT_APP_HOMESERVER
-  #  value: "example.com"
-  # link to a non-standalone deployment of the widget, which gets added to the room and will be usable through element
-  #- name: REACT_APP_WIDGET_BASE
-  #  value: "https://matrix-neoboard-widget.example.com"
+# - name: REACT_APP_HOMESERVER
+#   value: "example.com"
+# link to a non-standalone deployment of the widget, which gets added to the room and will be usable through element
+# - name: REACT_APP_WIDGET_BASE
+#   value: "https://matrix-neoboard-widget.example.com"
