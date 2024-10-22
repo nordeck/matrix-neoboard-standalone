@@ -21,5 +21,14 @@ export default defineConfig({
   test: {
     environment: 'happy-dom',
     setupFiles: ['./src/setupTests.ts'],
+    server: {
+      deps: {
+        inline: [
+          '@matrix-widget-toolkit/api',
+          '@matrix-widget-toolkit/react',
+          '@matrix-widget-toolkit/mui',
+        ],
+      },
+    },
   },
 });
