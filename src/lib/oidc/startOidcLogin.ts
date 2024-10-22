@@ -39,7 +39,7 @@ export async function startOidcLogin(
   identityServerUrl?: string,
   isRegistration?: boolean,
 ): Promise<void> {
-  const redirectUri = new URL(window.location.href).href;
+  const redirectUri = `${location.protocol}//${location.host}${location.pathname}`;
   const nonce = randomString(10);
   const prompt = isRegistration ? 'create' : undefined;
 

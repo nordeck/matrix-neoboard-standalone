@@ -27,6 +27,12 @@ const oidcClientConfig = createOidcTestClientConfig();
 
 describe('startOidcLogin', () => {
   beforeAll(() => {
+    // Add a path and a query param
+    Object.defineProperty(window, 'location', {
+      value: new URL('http://example.com/oidc_callback/?lang=en'),
+      configurable: true,
+    });
+
     fetch.mockResponse((req) => {
       if (req.url === 'https://example.com/.well-known/openid-configuration') {
         return {
@@ -52,8 +58,9 @@ describe('startOidcLogin', () => {
       'https://matrix.example.com',
     );
 
+    // The redirect_uri should include the path but not the query params
     expect(window.location.href).toMatch(
-      /^https:\/\/auth\.example\.com\/auth\?client_id=test_client_id&redirect_uri=http%3A%2F%2Fexample\.com%2F&response_type=code&scope=openid\+urn%3Amatrix%3Aorg\.matrix\.msc2967\.client%3Aapi%3A\*\+urn%3Amatrix%3Aorg\.matrix\.msc2967\.client%3Adevice%3A.+&nonce=.+&state=.+&code_challenge=.+&code_challenge_method=S256&response_mode=query/,
+      /^https:\/\/auth\.example\.com\/auth\?client_id=test_client_id&redirect_uri=http%3A%2F%2Fexample\.com%2Foidc_callback%2F&response_type=code&scope=openid\+urn%3Amatrix%3Aorg\.matrix\.msc2967\.client%3Aapi%3A\*\+urn%3Amatrix%3Aorg\.matrix\.msc2967\.client%3Adevice%3A.+&nonce=.+&state=.+&code_challenge=.+&code_challenge_method=S256&response_mode=query/,
     );
   });
 });
