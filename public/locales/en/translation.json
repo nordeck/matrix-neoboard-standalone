@@ -2,13 +2,9 @@
   "aboutDialog": {
     "about": "About",
     "cancel": "Cancel",
-    "standalone": {
-      "info": "Version: {{standaloneVersion}} \nCommit hash: {{standaloneCommitHash}}",
-      "title": "Standalone version"
-    },
-    "widget": {
-      "info": "Version: {{widgetVersion}} \nCommit hash: {{widgetCommitHash}}",
-      "title": "Neoboard react sdk version"
+    "versions": {
+      "info": "Neoboard Standalone version: {{standaloneVersion}}\nCommit hash: {{standaloneCommitHash}}\nNeoboard React SDK version: {{widgetVersion}}\nCommit hash: {{widgetCommitHash}}",
+      "title": "Version"
     }
   },
   "app": {
