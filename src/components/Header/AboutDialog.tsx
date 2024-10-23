@@ -56,20 +56,17 @@ export function AboutDialog({ open, onClose }: AboutDialogProps) {
       <DialogTitle id={titleId}>{t('aboutDialog.about', 'About')}</DialogTitle>
       <DialogContent style={{ whiteSpace: 'pre-wrap' }} id={descriptionId}>
         <CopyableText
-          label={t('aboutDialog.standalone.title', 'Standalone version')}
+          label={t('aboutDialog.versions.title', 'Version')}
           text={t(
-            'aboutDialog.standalone.info',
-            'Version: {{standaloneVersion}} \nCommit hash: {{standaloneCommitHash}}',
-            { standaloneVersion, standaloneCommitHash },
-          )}
-          sx={{ marginTop: 2 }}
-        />
-        <CopyableText
-          label={t('aboutDialog.widget.title', 'Neoboard react sdk version')}
-          text={t(
-            'aboutDialog.widget.info',
-            'Version: {{widgetVersion}} \nCommit hash: {{widgetCommitHash}}',
-            { widgetVersion, widgetCommitHash },
+            'aboutDialog.versions.info',
+            'Neoboard Standalone version: {{standaloneVersion}}\nCommit hash: {{standaloneCommitHash}}\n' +
+              'Neoboard React SDK version: {{widgetVersion}}\nCommit hash: {{widgetCommitHash}}',
+            {
+              standaloneVersion,
+              standaloneCommitHash,
+              widgetVersion,
+              widgetCommitHash,
+            },
           )}
           sx={{ marginTop: 2 }}
         />
