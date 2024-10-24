@@ -18,7 +18,7 @@ Widget API from Matrix Widget Toolkit hides usages of Matrix Widget API, so ther
 between NeoBoard widget and the Matrix Widget API. This allows to have a possibility of another
 Widget API implementation that doesn't depend on Matrix Widget API without changing NeoBoard widget.
 
-Widget API from Matrix Widget Toolkit is better suited for use in widgets then plain Matrix Widget API.
+Widget API from Matrix Widget Toolkit is better suited for use in widgets than plain Matrix Widget API.
 
 For NeoBoard to be available as a standalone application, we are looking into ways that can enable running it
 and other widgets outside of existing Matrix clients. We want to provide functionality that is not available
