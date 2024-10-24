@@ -156,6 +156,7 @@ jobs:
         uses: changesets/action@3de3850952bec538fde60aac71731376e57b9b57 # @v1.4.8
         with:
           publish: yarn changeset tag
+          cwd: ./matrix-neoboard-standalone/
         env:
           GITHUB_TOKEN: ${{ steps.generate_token.outputs.token }}
 
