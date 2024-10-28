@@ -19,6 +19,7 @@
 import { WidgetApi } from '@matrix-widget-toolkit/api';
 import {
   baseApi,
+  canvasReducer,
   connectionInfoReducer,
   shapeSizesReducer,
 } from '@nordeck/matrix-neoboard-react-sdk';
@@ -58,6 +59,7 @@ export function createStore({
       dashboardReducer,
       shapeSizesReducer,
       connectionInfoReducer,
+      canvasReducer,
     },
     middleware: (getDefaultMiddleware) =>
       getDefaultMiddleware({
