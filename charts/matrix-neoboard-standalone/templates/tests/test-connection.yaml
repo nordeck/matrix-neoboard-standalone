@@ -11,5 +11,14 @@ spec:
     - name: wget
       image: busybox
       command: ['wget']
-      args:  ['{{ include "app.fullname" . }}:{{ .Values.service.port }}']
+      args:  ['{{ include "app.fullname" . }}:8080', '-O', '/dev/null']
+      securityContext:
+        capabilities:
+          drop:
+            - ALL
+        readOnlyRootFilesystem: true
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
   restartPolicy: Never
+
