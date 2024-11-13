@@ -15,7 +15,11 @@
  */
 
 import { WidgetApi } from '@matrix-widget-toolkit/api';
-import { baseApi, shapeSizesReducer } from '@nordeck/matrix-neoboard-react-sdk';
+import {
+  baseApi,
+  connectionInfoReducer,
+  shapeSizesReducer,
+} from '@nordeck/matrix-neoboard-react-sdk';
 import { autoBatchEnhancer, configureStore } from '@reduxjs/toolkit';
 import { StandaloneApi } from '../toolkit/standalone';
 import { dashboardReducer } from './dashboard/dashboardSlice';
@@ -47,6 +51,7 @@ export function createStore({
       [baseApi.reducerPath]: baseApi.reducer,
       dashboardReducer,
       shapeSizesReducer,
+      connectionInfoReducer,
     },
     middleware: (getDefaultMiddleware) =>
       getDefaultMiddleware({
