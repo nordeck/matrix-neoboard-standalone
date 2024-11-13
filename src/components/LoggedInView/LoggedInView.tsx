@@ -19,6 +19,8 @@
 import { WidgetParameters } from '@matrix-widget-toolkit/api';
 import { MuiWidgetApiProvider } from '@matrix-widget-toolkit/mui';
 import {
+  ConnectionStateDialog,
+  ConnectionStateProvider,
   DraggableStyles,
   FontsLoadedContextProvider,
   GuidedTourProvider,
@@ -221,9 +223,12 @@ export const LoggedInView = () => {
                   <GuidedTourProvider>
                     <SnackbarProvider>
                       <Snackbar />
-                      <NeoboardApp
-                        layoutProps={{ height: 'calc(90vh - 25px)' }}
-                      />
+                      <ConnectionStateProvider>
+                        <ConnectionStateDialog />
+                        <NeoboardApp
+                          layoutProps={{ height: 'calc(90vh - 25px)' }}
+                        />
+                      </ConnectionStateProvider>
                     </SnackbarProvider>
                   </GuidedTourProvider>
                 </WhiteboardHotkeysProvider>
