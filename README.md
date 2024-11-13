@@ -6,8 +6,11 @@ Standalone version of [NeoBoard](https://github.com/nordeck/matrix-neoboard) - A
 
 ## Configuration
 
-NeoBoard standalone supports some configuration options.
-They can either be set via an environment variable or the dot-env-file.
+NeoBoard standalone is built using the [NeoBoard React SDK](https://github.com/nordeck/matrix-neoboard/tree/main/packages/react-sdk).
+Therefore, all of NeoBoard's configuration options apply also when using it in standalone: see [the configuration section of the NeoBoard README](https://github.com/nordeck/matrix-neoboard?tab=readme-ov-file#configuration).
+
+On top, NeoBoard standalone offer some addition configuration options.
+They can either be set via an environment variable or the `.env`-file.
 
 | Name                    | Description                                                                                                                                                                                    | Example                        |
 | ----------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------ |
@@ -31,7 +34,8 @@ You need to install Node.js (`^ 20.0.0`, prefer using an LTS version) and run `y
 
 After checkout, run `yarn install` to download the required dependencies
 
-> **Warning** Do not use `npm install` when working with this package.
+> [!WARNING]
+> Do not use `npm install` when working with this package.
 
 ### NeoBoard standalone local development environment
 
