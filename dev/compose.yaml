@@ -61,6 +61,17 @@ services:
     volumes:
       - ./mas/config.yaml:/config.yaml:ro
 
+  element:
+    # image: ghcr.io/nordeck/element-web-modules/element-widgetready:latest
+    image: vectorim/element-web
+    restart: unless-stopped
+    depends_on:
+      - synapse
+    volumes:
+      - ./element/config.json:/app/config.json:ro
+      - ./element/navigation.json:/app/navigation.json:ro
+      - ./element/silent.html:/app/silent.html:ro
+
 volumes:
   synapse:
   synapse-db:
