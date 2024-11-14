@@ -1,0 +1,185 @@
+{
+  "default_server_config": {
+    "m.homeserver": {
+      "base_url": "https://synapse.matrix.internal"
+    }
+  },
+  "enable_presence_by_hs_url": {},
+  "brand": "BundesMessenger",
+  "permalink_prefix": "",
+  "show_labs_settings": false,
+  "disable_guests": true,
+  "branding": {
+    "showMatrixBrand": false,
+    "home_title": "Willkommen im BundesMessenger",
+    "home_byline": "Freier Messenger für die öffentliche Hand",
+    "welcome_background_url": "bwi/img/bm_background.svg",
+    "auth_header_logo_url": "bwi/img/dlms_logo.svg",
+    "auth_footer_links": [
+      {
+        "text": "Handgemacht mit ❤ von der BWI",
+        "url": "https://bwi.de"
+      },
+      {
+        "text": "Copyright",
+        "url": "https://messenger.bwi.de/copyright"
+      }
+    ]
+  },
+  "embedded_pages": {
+    "loginForWelcome": true
+  },
+  "content_scanner": {
+    "enabled": false
+  },
+  "desktop_builds": {
+    "available": false
+  },
+  "mobile_builds": {
+    "ios": "https://apps.apple.com/de/app/bundesmessenger/id1616866351",
+    "android": "https://play.google.com/store/apps/details?id=de.bwi.messenger&pli=1",
+    "fdroid": ""
+  },
+  "disable_3pid_login": true,
+  "community_support": false,
+  "faq_url": "https://messenger.bwi.de/bundesmessenger/#FAQ",
+  "bwi_themes": [
+    {
+      "name": "light",
+      "is_dark": false,
+      "default": true,
+      "colors": {
+        "accent": "#108194",
+        "eventbubble-self-bg": "#EAF4F6"
+      },
+      "compound": {
+        "--cpd-color-icon-accent-tertiary": "#2695A8",
+        "--cpd-color-icon-accent-primary": "#108194",
+        "--cpd-color-text-action-accent": "#108194",
+        "--cpd-color-bg-accent-rest": "#108194",
+        "--cpd-color-bg-accent-hovered": "#006A7C",
+        "--cpd-color-bg-accent-pressed": "#005969"
+      }
+    },
+    {
+      "name": "dark",
+      "is_dark": true,
+      "default": true,
+      "colors": {
+        "accent": "#2394A7",
+        "eventbubble-self-bg": "#00232A"
+      },
+      "compound": {
+        "--cpd-color-icon-accent-tertiary": "#108194",
+        "--cpd-color-icon-accent-primary": "#2394A7",
+        "--cpd-color-text-action-accent": "#2394A7",
+        "--cpd-color-bg-accent-rest": "#2394A7",
+        "--cpd-color-bg-accent-hovered": "#36A5B7",
+        "--cpd-color-bg-accent-pressed": "#57B8CA"
+      }
+    }
+  ],
+  "default_theme": "bwi-light",
+  "suppressNotification": [
+    "MESSAGE_EDIT",
+    "org.matrix.msc3381.poll.response",
+    "m.room.redaction",
+    "m.reaction"
+  ],
+  "enabledLanguages": ["de", "en"],
+  "terms_and_conditions_links": [
+    {
+      "text": "Copyright",
+      "url": "https://messenger.bwi.de/copyright"
+    }
+  ],
+  "feature_overview_url": "https://messenger.bwi.de/bundesmessenger/#c4783",
+  "bwi_setting_defaults": {
+    "BwiFeature.closeImageViewOnNavigate": true,
+    "BwiFeature.hideIpAdresses": true,
+    "BwiFeature.hideLowPriorityRoomOption": true,
+    "BwiFeature.roomSecuritySettings": false,
+    "BwiFeature.roomAutoPublish": true,
+    "BwiFeature.hideDebug": true,
+    "BwiFeature.createRoomHideDetails": true,
+    "BwiFeature.restorePassphraseHideDeviceHint": false,
+    "BwiFeature.skipUpdateChangesDialog": true,
+    "BwiFeature.hideRoomHeaderNotifsButton": true,
+    "BwiFeature.roomSummaryHideFiles": true,
+    "BwiFeature.hideNerdyUserSettings": true,
+    "BwiFeature.disableKeyExport": true,
+    "BwiFeature.adminToolsEnabled": ["KICK", "BAN"],
+    "BwiFeature.hideDmInviteLink": true,
+    "BwiFeature.showPersonalNotes": false,
+    "BwiFeature.enforcePassphrase": true,
+    "BwiFeature.exportChat": false,
+    "BwiFeature.celebration": true,
+    "BwiFeature.newFeatures": true,
+    "BwiFeature.registrationDetails": false,
+    "BwiFeature.singleParticipantDms": true,
+    "BwiFeature.hideSearchButton": true,
+    "BwiFeature.hideRoomAccessSettings": true,
+    "BwiFeature.disableProfileAvatarDl": true,
+    "BwiFeature.disableFeedbackToast": true,
+    "BwiFeature.hideCrossSigning": false,
+    "BwiFeature.hideKeyImport": true,
+    "BwiFeature.showMaintenanceInfo": true,
+    "BwiFeature.passwordResetHint": false,
+    "BwiFeature.disableCustomPowerlevel": true,
+    "BwiFeature.hideUserId": true,
+    "BwiFeature.hideSpaces": true,
+    "BwiFeature.composerTransformLonoSnippetToUrl": true,
+    "BwiFeature.disableLoginServerLookup": true,
+    "BwiFeature.userFunctionLabels": true,
+    "BwiFeature.hideLayoutSwitcher": true,
+    "BwiFeature.mandatoryCrossSigning": true,
+    "BwiFeature.whiteListSlashCommands": true,
+    "BwiFeature.locationShareTypesEnabled": ["Pin"],
+    "BwiFeature.disableGeolocation": true,
+    "BwiFeature.hideOSMLink": true,
+    "BwiFeature.hideRedactedMessageSharing": true,
+    "BwiFeature.hideRoomPermissions": true,
+    "BwiFeature.displayOnBoardingViaAccountDataFlag": true,
+    "BwiFeature.hideNotificationTargets": true,
+    "BwiFeature.hideIndividualSounds": true,
+    "BwiFeature.hideThreads": true,
+    "BwiFeature.hideLoginWithQR": true,
+    "BwiFeature.floatingDateIndicator": true,
+    "BwiFeature.fullscreenLocationPicker": true,
+    "BwiFeature.showPollParticipants": true,
+    "BwiFeature.skipPasswordFormValidation": true,
+    "BwiFeature.mandatoryDataPrivacyStatement": false,
+    "BwiFeature.huddleCreationForAll": true,
+    "BwiFeature.secureBackupSettings": true,
+    "BwiFeature.hideE2Eshields": true,
+    "BwiFeature.hideUserVerification": true,
+    "BwiFeature.hidePermalinkCreation": true
+  },
+  "setting_defaults": {
+    "language": "de",
+    "layout": "irc",
+    "UIFeature.passwordReset": false,
+    "UIFeature.registration": false,
+    "UIFeature.serverConfig": false,
+    "UIFeature.languageChange": false,
+    "UIFeature.displayNameMutable": false,
+    "UIFeature.notificationToggles": false,
+    "UIFeature.userEncryption": false,
+    "UIFeature.exploreServers": false,
+    "UIFeature.roomHistorySettings": false,
+    "breadcrumbs": false,
+    "UIFeature.urlPreviews": false,
+    "UIFeature.widgets": false,
+    "UIFeature.advancedSettings": false,
+    "UIFeature.shareQrCode": true,
+    "UIFeature.shareSocial": false,
+    "UIFeature.feedback": false,
+    "UIFeature.identityServer": false,
+    "UIFeature.thirdPartyId": false,
+    "UIFeature.deactivate": false,
+    "UIFeature.advancedEncryption": false,
+    "feature_wysiwyg_composer": true,
+    "showCallButtonsInComposer": false,
+    "promptBeforeInviteUnknownUsers": false
+  }
+}

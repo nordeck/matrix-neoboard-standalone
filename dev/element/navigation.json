@@ -1,0 +1,82 @@
+{
+  "categories": [
+    {
+      "identifier": "od.applications",
+      "display_name": "Applications",
+      "entries": [
+        {
+          "identifier": "swp.fileshare_files",
+          "icon_url": "https://portal.nightly.opendesk.qa/univention/portal/icons/entries/swp.fileshare_files.svg",
+          "display_name": "Files",
+          "link": "https://files.nightly.opendesk.qa/apps/files",
+          "target": "tab_fileshare",
+          "keywords": {}
+        },
+        {
+          "identifier": "swp.groupware_mail",
+          "icon_url": "https://portal.nightly.opendesk.qa/univention/portal/icons/entries/swp.groupware_mail.svg",
+          "display_name": "Email",
+          "link": "https://webmail.nightly.opendesk.qa/appsuite/#app=io.ox/mail",
+          "target": "tab_groupware",
+          "keywords": {}
+        },
+        {
+          "identifier": "swp.groupware_calendar",
+          "icon_url": "https://portal.nightly.opendesk.qa/univention/portal/icons/entries/swp.groupware_calendar.svg",
+          "display_name": "Calendar",
+          "link": "https://webmail.nightly.opendesk.qa/appsuite/#app=io.ox/calendar",
+          "target": "tab_groupware",
+          "keywords": {}
+        },
+        {
+          "identifier": "swp.groupware_contacts",
+          "icon_url": "https://portal.nightly.opendesk.qa/univention/portal/icons/entries/swp.groupware_contacts.svg",
+          "display_name": "Contacts",
+          "link": "https://webmail.nightly.opendesk.qa/appsuite/#app=io.ox/contacts",
+          "target": "tab_groupware",
+          "keywords": {}
+        },
+        {
+          "identifier": "swp.groupware_tasks",
+          "icon_url": "https://portal.nightly.opendesk.qa/univention/portal/icons/entries/swp.groupware_tasks.svg",
+          "display_name": "Tasks",
+          "link": "https://webmail.nightly.opendesk.qa/appsuite/#app=io.ox/tasks",
+          "target": "tab_groupware",
+          "keywords": {}
+        },
+        {
+          "identifier": "swp.management_project",
+          "icon_url": "https://portal.nightly.opendesk.qa/univention/portal/icons/entries/swp.management_project.svg",
+          "display_name": "Projects",
+          "link": "https://projects.nightly.opendesk.qa/auth/keycloak",
+          "target": "tab_projectmanagement",
+          "keywords": {}
+        },
+        {
+          "identifier": "swp.management_knowledge",
+          "icon_url": "https://portal.nightly.opendesk.qa/univention/portal/icons/entries/swp.management_knowledge.svg",
+          "display_name": "Knowledge",
+          "link": "https://wiki.nightly.opendesk.qa",
+          "target": "tab_knowledgemanagement",
+          "keywords": {}
+        },
+        {
+          "identifier": "swp.realtime_videoconference",
+          "icon_url": "https://portal.nightly.opendesk.qa/univention/portal/icons/entries/swp.realtime_videoconference.svg",
+          "display_name": "Videoconference",
+          "link": "https://meet.nightly.opendesk.qa",
+          "target": "tab_realtime_videoconference",
+          "keywords": {}
+        },
+        {
+          "identifier": "swp.realtime_collaboration",
+          "icon_url": "https://portal.nightly.opendesk.qa/univention/portal/icons/entries/swp.realtime_collaboration.svg",
+          "display_name": "Chat",
+          "link": "https://chat.nightly.opendesk.qa",
+          "target": "tab_realtime_collaboration",
+          "keywords": {}
+        }
+      ]
+    }
+  ]
+}

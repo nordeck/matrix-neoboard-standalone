@@ -1,0 +1,171 @@
+{
+  "default_server_config": {
+    "m.homeserver": {
+      "base_url": "https://synapse.matrix.internal",
+      "server_name": "matrix.internal"
+    }
+  },
+  "integrations_ui_url": "https://scalar.vector.im/",
+  "integrations_rest_url": "https://scalar.vector.im/api",
+  "integrations_widgets_urls": [
+    "https://scalar.vector.im/_matrix/integrations/v1",
+    "https://scalar.vector.im/api",
+    "https://scalar-staging.vector.im/_matrix/integrations/v1",
+    "https://scalar-staging.vector.im/api",
+    "https://scalar-staging.riot.im/scalar/api"
+  ],
+  "net.nordeck.element_web.module.widget_toggles": {
+    "config": {
+      "types": ["jitsi", "net.nordeck"]
+    }
+  },
+  "net.nordeck.element_web.module.guest": {
+    "config": {
+      "guest_user_homeserver_url": "https://synapse.matrix.internal",
+      "guest_user_prefix": "@guest-"
+    }
+  },
+  "net.nordeck.element_web.module.opendesk": {
+    "config": {
+      "banner": {
+        "ics_navigation_json_url": "https://element.matrix.internal/navigation.json",
+        "ics_silent_url": "https://element.matrix.internal/silent.html",
+        "portal_logo_svg_url": "https://portal.nightly.opendesk.qa/univention/portal/icons/logos/domain.svg",
+        "portal_url": "https://element.matrix.internal/"
+      },
+      "custom_css_variables": {
+        "--cpd-color-bg-action-primary-rest": "#5e27dd",
+        "--cpd-color-text-action-accent": "#5e27dd",
+        "--cpd-color-icon-on-solid-primary": "#ffffff"
+      }
+    }
+  },
+  "net.nordeck.element_web.module.widget_lifecycle": {
+    "widget_permissions": {
+      "https://element.matrix.internal/jitsi.html": {
+        "identity_approved": true,
+        "preload_approved": true
+      },
+      "https://neoboard.matrix.internal/*": {
+        "preload_approved": true,
+        "capabilities_approved": [
+          "org.matrix.msc2762.send.event:net.nordeck.whiteboard.document.create",
+          "org.matrix.msc2762.receive.event:net.nordeck.whiteboard.document.create",
+          "org.matrix.msc2762.send.event:net.nordeck.whiteboard.document.chunk",
+          "org.matrix.msc2762.receive.event:net.nordeck.whiteboard.document.chunk",
+          "org.matrix.msc2762.send.event:net.nordeck.whiteboard.document.snapshot",
+          "org.matrix.msc2762.receive.event:net.nordeck.whiteboard.document.snapshot",
+          "org.matrix.msc2762.send.state_event:m.room.power_levels#",
+          "org.matrix.msc2762.receive.state_event:m.room.power_levels#",
+          "org.matrix.msc2762.receive.state_event:m.room.member",
+          "org.matrix.msc2762.receive.state_event:m.room.name",
+          "org.matrix.msc2762.send.state_event:net.nordeck.whiteboard",
+          "org.matrix.msc2762.receive.state_event:net.nordeck.whiteboard",
+          "org.matrix.msc2762.send.state_event:net.nordeck.whiteboard.sessions#*",
+          "org.matrix.msc2762.receive.state_event:net.nordeck.whiteboard.sessions",
+          "org.matrix.msc3819.send.to_device:net.nordeck.whiteboard.connection_signaling",
+          "org.matrix.msc3819.receive.to_device:net.nordeck.whiteboard.connection_signaling",
+          "town.robin.msc3846.turn_servers",
+          "org.matrix.msc4039.download_file",
+          "org.matrix.msc4039.upload_file"
+        ]
+      },
+      "https://neochoice.matrix.internal/*": {
+        "preload_approved": true,
+        "capabilities_approved": [
+          "org.matrix.msc2762.send.event:net.nordeck.poll.vote",
+          "org.matrix.msc2762.receive.event:net.nordeck.poll.vote",
+          "org.matrix.msc2762.send.state_event:net.nordeck.poll",
+          "org.matrix.msc2762.receive.state_event:net.nordeck.poll",
+          "org.matrix.msc2762.send.state_event:net.nordeck.poll.settings",
+          "org.matrix.msc2762.receive.state_event:net.nordeck.poll.settings",
+          "org.matrix.msc2762.receive.state_event:m.room.power_levels",
+          "org.matrix.msc2762.receive.state_event:m.room.name",
+          "org.matrix.msc2762.receive.state_event:m.room.member",
+          "org.matrix.msc2762.send.state_event:net.nordeck.poll.group",
+          "org.matrix.msc2762.receive.state_event:net.nordeck.poll.group",
+          "org.matrix.msc2762.send.event:net.nordeck.poll.start",
+          "org.matrix.msc2762.receive.event:net.nordeck.poll.start"
+        ]
+      },
+      "https://neodatefix.matrix.internal/*": {
+        "identity_approved": true,
+        "preload_approved": true,
+        "capabilities_approved": [
+          "org.matrix.msc2931.navigate",
+          "org.matrix.msc2762.timeline:*",
+          "org.matrix.msc2762.receive.state_event:m.room.power_levels",
+          "org.matrix.msc2762.receive.event:m.reaction",
+          "org.matrix.msc2762.receive.state_event:m.room.create",
+          "org.matrix.msc2762.receive.state_event:m.room.tombstone",
+          "org.matrix.msc2762.receive.state_event:m.room.member",
+          "org.matrix.msc2762.send.state_event:m.room.member",
+          "org.matrix.msc2762.receive.state_event:m.room.name",
+          "org.matrix.msc2762.receive.state_event:m.room.topic",
+          "org.matrix.msc2762.receive.state_event:m.space.parent",
+          "org.matrix.msc2762.receive.state_event:m.space.child",
+          "org.matrix.msc2762.receive.state_event:net.nordeck.meetings.metadata",
+          "org.matrix.msc2762.receive.state_event:im.vector.modular.widgets",
+          "org.matrix.msc2762.send.event:net.nordeck.meetings.meeting.create",
+          "org.matrix.msc2762.receive.event:net.nordeck.meetings.meeting.create",
+          "org.matrix.msc2762.send.event:net.nordeck.meetings.breakoutsessions.create",
+          "org.matrix.msc2762.receive.event:net.nordeck.meetings.breakoutsessions.create",
+          "org.matrix.msc2762.send.event:net.nordeck.meetings.meeting.close",
+          "org.matrix.msc2762.receive.event:net.nordeck.meetings.meeting.close",
+          "org.matrix.msc2762.send.event:net.nordeck.meetings.meeting.widgets.handle",
+          "org.matrix.msc2762.receive.event:net.nordeck.meetings.meeting.widgets.handle",
+          "org.matrix.msc2762.send.event:net.nordeck.meetings.meeting.participants.handle",
+          "org.matrix.msc2762.receive.event:net.nordeck.meetings.meeting.participants.handle",
+          "org.matrix.msc2762.send.event:net.nordeck.meetings.meeting.update",
+          "org.matrix.msc2762.receive.event:net.nordeck.meetings.meeting.update",
+          "org.matrix.msc2762.send.event:net.nordeck.meetings.meeting.change.message_permissions",
+          "org.matrix.msc2762.receive.event:net.nordeck.meetings.meeting.change.message_permissions",
+          "org.matrix.msc2762.send.event:net.nordeck.meetings.sub_meetings.send_message",
+          "org.matrix.msc2762.receive.event:net.nordeck.meetings.sub_meetings.send_message",
+          "org.matrix.msc3973.user_directory_search"
+        ]
+      }
+    }
+  },
+  "enable_presence_by_hs_url": {},
+  "embedded_pages": {
+    "loginForWelcome": true
+  },
+  "content_scanner": {
+    "enabled": false
+  },
+  "desktop_builds": {
+    "available": false
+  },
+  "disable_3pid_login": true,
+  "community_support": false,
+  "suppressNotification": [
+    "MESSAGE_EDIT",
+    "org.matrix.msc3381.poll.response",
+    "m.room.redaction",
+    "m.reaction"
+  ],
+  "enabledLanguages": ["en"],
+  "terms_and_conditions_links": [
+    {
+      "text": "Copyright",
+      "url": "#TODO"
+    }
+  ],
+  "setting_defaults": {
+    "language": "en",
+    "layout": "bubble"
+  },
+  "features": {
+    "feature_video_rooms": false,
+    "feature_rust_crypto": true,
+    "feature_ask_to_join": true
+  },
+  "element_call": {
+    "url": "https://call.element.dev"
+  },
+  "jitsi": {
+    "preferred_domain": "meet.matrix.internal"
+  },
+  "disable_guests": false
+}

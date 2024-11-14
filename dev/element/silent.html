@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html lang="en">
+<head/>
+<body>
+<p> This is for the Frame for clients to load. Loggend in status: true</p>
+
+<script type="text/javascript">
+    // TODO: Proper Session Handling: https://openid.net/specs/openid-connect-session-1_0.html
+    // TODO: Proper security assessment / restrict postmessage target origin as much as possible
+    parent.postMessage({"loggedIn": true, "csrftoken": "xyz"}, "*")
+</script>
+</body>
+</html>
