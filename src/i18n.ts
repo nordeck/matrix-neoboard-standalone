@@ -16,38 +16,38 @@
  * along with NeoBoard Standalone. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { WhiteboardReactI18nBackend } from '@nordeck/matrix-neoboard-react-sdk';
 import i18n from 'i18next';
 import LanguageDetector from 'i18next-browser-languagedetector';
-import ChainedBackend from 'i18next-chained-backend';
-import HttpBackend from 'i18next-http-backend';
-import resourcesToBackend from 'i18next-resources-to-backend';
 import { initReactI18next } from 'react-i18next';
 import { setLocale } from './lib';
 
-// Vite seems to handle imports relative to `node_modules/.vite` for dependencies
-// This causes the import to fail in the browser
-export const WidgetToolkitI18nBackend = resourcesToBackend((lng, ns, clb) => {
-  import(
-    /* @vite-ignore */ `@matrix-widget-toolkit/mui/locales/${lng}/${ns}.json`
-  )
-    .then((resources) => clb(null, resources))
-    .catch((err) => clb(err, undefined));
-});
+import neoboardDe from '../../matrix-neoboard/packages/react-sdk/src/locales/de/neoboard.json';
+import neobaordEn from '../../matrix-neoboard/packages/react-sdk/src/locales/en/neoboard.json';
+
+import toolkitDe from '../node_modules/@matrix-widget-toolkit/mui/build/locales/de/widget-toolkit.json';
+import toolkitEn from '../node_modules/@matrix-widget-toolkit/mui/build/locales/en/widget-toolkit.json';
+
+import standaloneDe from './locales/de/translation.json';
+import standaloneEn from './locales/en/translation.json';
 
 i18n
   .use(initReactI18next)
   .use(LanguageDetector)
-  .use(ChainedBackend)
   .init({
     ns: ['translation', 'widget-toolkit', 'neoboard'],
-    backend: {
-      backends: [
-        HttpBackend,
-        WhiteboardReactI18nBackend,
-        WidgetToolkitI18nBackend,
-      ],
-      backendOptions: [{ loadPath: `/locales/{{lng}}/{{ns}}.json` }],
+    // Inline all resources in a low-tech way.
+    // No need for additional dependencies or loaders.
+    resources: {
+      de: {
+        neoboard: neoboardDe,
+        ['widget-toolkit']: toolkitDe,
+        translation: standaloneDe,
+      },
+      en: {
+        neoboard: neobaordEn,
+        ['widget-toolkit']: toolkitEn,
+        translation: standaloneEn,
+      },
     },
     debug: import.meta.env.NODE_ENV === 'development',
     fallbackLng: 'en',
