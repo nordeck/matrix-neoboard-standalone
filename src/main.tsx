@@ -16,12 +16,15 @@
  * along with NeoBoard Standalone. If not, see <https://www.gnu.org/licenses/>.
  */
 
+// init i18 first
+import i18n from './i18n';
+
 import { createWhiteboardManager } from '@nordeck/matrix-neoboard-react-sdk';
 import React, { Suspense } from 'react';
 import { createRoot } from 'react-dom/client';
+import { I18nextProvider } from 'react-i18next';
 import { Provider } from 'react-redux';
 import { AppContainer } from './AppContainer';
-import './i18n';
 import './index.css';
 import { Application } from './state';
 import { createStore, initializeStore } from './store';
@@ -46,12 +49,14 @@ const root = createRoot(container!);
 root.render(
   <React.StrictMode>
     <Suspense fallback={<div>Loading</div>}>
-      <Provider store={store}>
-        <AppContainer
-          application={application}
-          whiteboardManager={whiteboardManager}
-        />
-      </Provider>
+      <I18nextProvider i18n={i18n}>
+        <Provider store={store}>
+          <AppContainer
+            application={application}
+            whiteboardManager={whiteboardManager}
+          />
+        </Provider>
+      </I18nextProvider>
     </Suspense>
   </React.StrictMode>,
 );
