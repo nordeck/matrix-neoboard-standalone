@@ -16,7 +16,7 @@
 
 const i18NextParserConfig = {
   locales: ['en', 'de'],
-  output: 'public/locales/$LOCALE/$NAMESPACE.json',
+  output: 'src/locales/$LOCALE/$NAMESPACE.json',
   sort: true,
   resetDefaultValueLocale: 'en',
   lexers: {

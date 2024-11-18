@@ -43,11 +43,14 @@ export default defineConfig({
   },
   resolve: {
     dedupe: [
-      'react',
-      'react-dom',
       '@matrix-widget-toolkit/react',
-      'react-redux',
       '@mui/material',
+      'i18next',
+      'i18next-browser-languagedetector',
+      'react',
+      'react-18next',
+      'react-dom',
+      'react-redux',
     ],
   },
   server: {
