@@ -21,3 +21,6 @@ ENV CSP_IMG_SRC="http: https: blob:"
 # Allow to send requests to all HTTP(s) URLs
 # Required for sending requests to homeservers
 ENV CSP_CONNECT_SRC="http: https:"
+
+ENV REACT_APP_PREVIEWS=true
+COPY csp.conf /etc/nginx/conf.d/headers/content-security-policy.conf
