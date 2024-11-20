@@ -48,7 +48,6 @@ const ClickableRow = styled('tr')(({ theme }) => ({
 
 export function BoardListItem({ onClick, dashboardItem }: BoardItemProps) {
   const { t } = useTranslation();
-
   return (
     <ClickableRow tabIndex={0} role="button" onClick={onClick}>
       <td style={{ width: 0 }}>

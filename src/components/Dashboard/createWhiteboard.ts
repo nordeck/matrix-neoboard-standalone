@@ -19,6 +19,7 @@
 import { getEnvironment } from '@matrix-widget-toolkit/mui';
 import {
   ROOM_EVENT_DOCUMENT_CREATE,
+  STATE_EVENT_DOCUMENT_PREVIEW,
   STATE_EVENT_WHITEBOARD,
   STATE_EVENT_WHITEBOARD_SESSIONS,
 } from '@nordeck/matrix-neoboard-react-sdk';
@@ -40,6 +41,7 @@ export async function createWhiteboard(
     power_level_content_override: {
       events: {
         [STATE_EVENT_WHITEBOARD_SESSIONS]: 0,
+        [STATE_EVENT_DOCUMENT_PREVIEW]: 0,
       },
     },
   });
