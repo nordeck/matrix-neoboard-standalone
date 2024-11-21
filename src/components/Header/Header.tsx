@@ -16,6 +16,7 @@
 
 import { styled } from '@mui/material';
 import { useTranslation } from 'react-i18next';
+import { InvitesMenu } from './InvitesMenu';
 import { NeoBoardIcon } from './NeoBoardIcon';
 import { UserMenu } from './UserMenu';
 
@@ -30,6 +31,7 @@ const StyledHeader = styled('nav')(() => ({
 
 const Title = styled('div')(({ theme }) => ({
   color: theme.palette.primary.main,
+  flexGrow: 1,
   fontSize: '25px',
   fontWeight: '600',
   overflow: 'hidden',
@@ -57,6 +59,7 @@ export function Header({ onLogoClick, title }: HeaderProps) {
         <NeoBoardIcon onClick={onLogoClick} />
       </div>
       <Title>{title}</Title>
+      <InvitesMenu />
       <UserMenu />
     </StyledHeader>
   );

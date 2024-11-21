@@ -49,6 +49,14 @@
   "header": {
     "dashboard": "Go back to the dashboard"
   },
+  "invitesDialog": {
+    "accept": "Accept invite",
+    "actionFailed": "Action failed",
+    "numberOfPendingInvites_one": "One pending invite",
+    "numberOfPendingInvites_other": "{{count}} pending invites",
+    "reject": "Reject invite",
+    "title": "Invites"
+  },
   "login": {
     "button": "Log In",
     "homeserver": {

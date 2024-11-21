@@ -49,6 +49,14 @@
   "header": {
     "dashboard": "Zurück zum Dashboard"
   },
+  "invitesDialog": {
+    "accept": "Einladung annehmen",
+    "actionFailed": "Fehler",
+    "numberOfPendingInvites_one": "Eine ausstehende Einladung",
+    "numberOfPendingInvites_other": "{{count}} ausstehende Einladungen",
+    "reject": "Einladung ablehnen",
+    "title": "Einladungen"
+  },
   "login": {
     "button": "Einloggen",
     "homeserver": {
