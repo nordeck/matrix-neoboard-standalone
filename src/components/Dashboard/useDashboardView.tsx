@@ -21,7 +21,7 @@ import { DashboardTileView } from './DashboardTileView.tsx';
 import { DashboardItem } from './useDashboardList.ts';
 
 export type CreateBoardItemProps = {
-  onClick: () => void;
+  onClick: () => Promise<void>;
 };
 
 export type BoardItemProps = {
