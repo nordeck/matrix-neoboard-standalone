@@ -35,16 +35,22 @@ const ContentWrapper = styled('div')(() => ({
 type LoggedInLayoutProps = PropsWithChildren<{}> & {
   onLogoClick: () => void;
   title: string;
+  selectedRoomId?: string;
 };
 
 export function LoggedInLayout({
   children,
   onLogoClick,
   title,
+  selectedRoomId,
 }: LoggedInLayoutProps) {
   return (
     <Wrapper>
-      <Header onLogoClick={onLogoClick} title={title} />
+      <Header
+        onLogoClick={onLogoClick}
+        title={title}
+        selectedRoomId={selectedRoomId}
+      />
       <ContentWrapper role="main">{children}</ContentWrapper>
     </Wrapper>
   );

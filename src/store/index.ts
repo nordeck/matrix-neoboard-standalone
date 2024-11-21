@@ -16,6 +16,7 @@
  * along with NeoBoard Standalone. If not, see <https://www.gnu.org/licenses/>.
  */
 
+export * from './api/selectors/selectInvitedOrJoinedRoomMembers';
 export * from './api/selectors/selectWhiteboards';
 export {
   selectSortBy,

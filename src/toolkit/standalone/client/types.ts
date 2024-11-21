@@ -17,6 +17,7 @@
  */
 
 import {
+  PowerLevelsStateEvent,
   RoomEvent,
   StateEvent,
   ToDeviceMessageEvent,
@@ -25,6 +26,14 @@ import {
 import { ICreateRoomOpts, IJoinRoomOpts, Room } from 'matrix-js-sdk';
 import { Symbols } from 'matrix-widget-api';
 import { Observable } from 'rxjs';
+/**
+ * User Data of a matrix user.
+ */
+export type IUser = {
+  user_id: string;
+  display_name?: string;
+  avatar_url?: string;
+};
 
 /**
  * API for communication to the matrix server that would facilitate standalone apps and running widget in a
@@ -46,6 +55,22 @@ export type StandaloneClient = Pick<
   | 'downloadFile'
   | 'sendToDeviceMessage'
 > & {
+  /**
+   * Invite a user to a room.
+   *
+   * @param roomId - The room id to invite the user to.
+   * @param userId - The user id to invite.
+   */
+  invite(roomId: string, userId: string): Promise<void>;
+
+  /**
+   * Search for users in the user directory.
+   *
+   * @param searchTerm - The search term to search for.
+   * @param limit - The maximum number of users to return.
+   */
+  searchUsers(searchTerm: string, limit?: number): Promise<IUser[]>;
+
   /**
    * Creates a new room
    * @param options - Options to create a room
@@ -99,6 +124,15 @@ export type StandaloneClient = Pick<
       roomIds: string[] | Symbols.AnyRoom;
     },
   ): Promise<Array<StateEvent<T>>>;
+
+  /**
+   * Get the power level event of the room.
+   *
+   * Warning: This returns an array of the events even if there is only one event.
+   *
+   * @param roomId - The room id to get the power level event from.
+   */
+  getPowerLevelEvent(roomId: string): Promise<PowerLevelsStateEvent[]>;
 
   /**
    * Send a state event with a given type to the room

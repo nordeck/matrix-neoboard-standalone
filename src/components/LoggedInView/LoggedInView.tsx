@@ -202,7 +202,11 @@ export const LoggedInView = () => {
       : (roomNameState?.entities[selectedRoomId]?.content.name ?? 'neoboard');
 
   return (
-    <LoggedInLayout onLogoClick={handleLogoClick} title={title}>
+    <LoggedInLayout
+      onLogoClick={handleLogoClick}
+      title={title}
+      selectedRoomId={selectedRoomId}
+    >
       {saveOnLeaveElements}
       <DraggableStyles />
       {selectedRoomId === undefined ? (

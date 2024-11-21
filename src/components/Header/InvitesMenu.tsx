@@ -47,16 +47,21 @@ export const InvitesMenu: React.FC = () => {
             defaultValue: '{{count}} pending invites',
             count: invites.length,
           })}
-          size="small"
-          sx={{ ml: 'auto' }}
           onClick={handleOpenDialog}
+          sx={{
+            alignItems: 'center',
+            display: 'flex',
+            height: 40,
+            justifyContent: 'center',
+            width: 40,
+          }}
         >
           <Avatar
             sx={{
-              fontSize: '0.9em',
+              fontSize: '16px',
               bgcolor: theme.palette.primary.dark,
-              width: 30,
-              height: 30,
+              width: 24,
+              height: 24,
             }}
           >
             {invites.length > 99 ? '∞' : invites.length}

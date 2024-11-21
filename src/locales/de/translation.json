@@ -84,6 +84,20 @@
     "rename": "Umbenennen",
     "title": "Board umbenennen"
   },
+  "searchResults": {
+    "error": "Fehler beim Laden der Suchergebnisse",
+    "noResults": "Keine Benutzer zum Einladen gefunden",
+    "noSearchTerm": "Beginne zu tippen, um zu suchen"
+  },
+  "shareMenu": {
+    "invite": "Einladen"
+  },
+  "shareMenuModal": {
+    "invite": "Einladen",
+    "inviteError": "Fehler beim Einladen von Benutzern. Bitte versuche es erneut.",
+    "inviteText": "Lade Personen ein, an diesem Whiteboard zusammenzuarbeiten",
+    "selectedUsers": "Ausgewählte Benutzer:"
+  },
   "userMenu": {
     "about": "Info",
     "logOut": "Abmelden"
