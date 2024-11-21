@@ -20,10 +20,12 @@ import {
   Card,
   CardActionArea,
   CardContent,
+  CircularProgress,
   styled,
   Typography,
 } from '@mui/material';
 import { useTranslation } from 'react-i18next';
+import { useAsyncFn } from 'react-use';
 import { AddIcon } from './AddIcon';
 import { CreateBoardItemProps } from './useDashboardView.tsx';
 
@@ -35,24 +37,38 @@ const StyledCard = styled(Card)(({ theme }) => ({
 
 export const CreateBoardTile = ({ onClick }: CreateBoardItemProps) => {
   const { t } = useTranslation();
+  const [createState, handleCreate] = useAsyncFn(onClick, [onClick]);
 
   return (
     <StyledCard>
-      <CardActionArea onClick={onClick} sx={{ height: '100%' }}>
+      <CardActionArea
+        disabled={createState.loading}
+        onClick={handleCreate}
+        sx={{ height: '100%' }}
+      >
         <CardContent sx={{ textAlign: 'center' }}>
-          <AddIcon sx={{ fontSize: 30 }} />
-          <Typography
-            variant="h6"
-            sx={{
-              fontWeight: 'bold',
-              overflow: 'hidden',
-              textOverflow: 'ellipsis',
-              whiteSpace: 'nowrap',
-            }}
-            mt={1}
-          >
-            {t('dashboard.createBoardTile.createBoard', 'Create a new board')}
-          </Typography>
+          {createState.loading ? (
+            <CircularProgress />
+          ) : (
+            <>
+              <AddIcon sx={{ fontSize: 30 }} />
+              <Typography
+                variant="h6"
+                sx={{
+                  fontWeight: 'bold',
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                  whiteSpace: 'nowrap',
+                }}
+                mt={1}
+              >
+                {t(
+                  'dashboard.createBoardTile.createBoard',
+                  'Create a new board',
+                )}
+              </Typography>
+            </>
+          )}
         </CardContent>
       </CardActionArea>
     </StyledCard>

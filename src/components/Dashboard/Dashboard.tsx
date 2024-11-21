@@ -16,6 +16,7 @@
  * along with NeoBoard Standalone. If not, see <https://www.gnu.org/licenses/>.
  */
 
+import { useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLoggedIn } from '../../state';
 import { DashboardContainer } from './DashboardContainer.tsx';
@@ -37,17 +38,20 @@ export function Dashboard({ setSelectedRoomId }: DashboardProps) {
     <DashboardContainer>
       <DashboardView
         items={dashboardItems}
-        onCreate={async () => {
+        onCreate={useCallback(async () => {
           const roomId = await createWhiteboard(
             standaloneClient,
             t('dashboard.untitled', 'Untitled'),
           );
           setSelectedRoomId(roomId);
-        }}
-        onSelect={(dashboardItem: DashboardItem) => {
-          const roomId = dashboardItem.roomId;
-          setSelectedRoomId(roomId);
-        }}
+        }, [setSelectedRoomId, standaloneClient, t])}
+        onSelect={useCallback(
+          (dashboardItem: DashboardItem) => {
+            const roomId = dashboardItem.roomId;
+            setSelectedRoomId(roomId);
+          },
+          [setSelectedRoomId],
+        )}
       />
     </DashboardContainer>
   );

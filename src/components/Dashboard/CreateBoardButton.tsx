@@ -16,12 +16,14 @@
  * along with NeoBoard Standalone. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { Button, styled } from '@mui/material';
+import { LoadingButton } from '@mui/lab';
+import { Icon, styled } from '@mui/material';
 import { useTranslation } from 'react-i18next';
+import { useAsyncFn } from 'react-use';
 import { AddIcon } from './AddIcon';
 import { CreateBoardItemProps } from './useDashboardView.tsx';
 
-const StyledButton = styled(Button)(({ theme }) => ({
+const StyledButton = styled(LoadingButton)(({ theme }) => ({
   backgroundColor: theme.palette.background.card,
   color: theme.palette.text.primary,
   fontWeight: 'bold',
@@ -37,8 +39,15 @@ const StyledButton = styled(Button)(({ theme }) => ({
 
 export const CreateBoardButton = ({ onClick }: CreateBoardItemProps) => {
   const { t } = useTranslation();
+  const [createState, handleCreate] = useAsyncFn(onClick, [onClick]);
   return (
-    <StyledButton size="large" onClick={onClick} startIcon={<AddIcon />}>
+    <StyledButton
+      disabled={createState.loading}
+      size="large"
+      onClick={handleCreate}
+      startIcon={createState.loading ? <Icon /> : <AddIcon />}
+      loading={createState.loading}
+    >
       {t('dashboard.createBoardTile.createBoard', 'Create a new board')}
     </StyledButton>
   );
