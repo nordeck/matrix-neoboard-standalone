@@ -15,6 +15,7 @@
  */
 
 import {
+  PowerLevelsStateEvent,
   RoomEvent,
   StateEvent,
   ToDeviceMessageEvent,
@@ -45,7 +46,7 @@ import {
 import { Observable, from, fromEvent, map } from 'rxjs';
 import { STATE_EVENT_TOMBSTONE } from '../../../model';
 import { MediaAsset } from './MediaAsset';
-import { StandaloneClient } from './types';
+import { IUser, StandaloneClient } from './types';
 
 /**
  * Implements a standalone client using MatrixClient from matrix-js-sdk.
@@ -72,6 +73,19 @@ export class MatrixStandaloneClient implements StandaloneClient {
         return event.getEffectiveEvent() as unknown as ToDeviceMessageEvent;
       },
     );
+  }
+
+  async invite(roomId: string, userId: string): Promise<void> {
+    await this.matrixClient.invite(roomId, userId);
+  }
+
+  async searchUsers(searchTerm: string, limit: number = 50): Promise<IUser[]> {
+    const { results } = await this.matrixClient.searchUserDirectory({
+      term: searchTerm,
+      limit,
+    });
+
+    return results;
   }
 
   async createRoom(options: ICreateRoomOpts): Promise<{ room_id: string }> {
@@ -108,6 +122,15 @@ export class MatrixStandaloneClient implements StandaloneClient {
       stateKey,
     ) as StateEvent<T>[];
     return Promise.resolve(events);
+  }
+
+  async getPowerLevelEvent(roomId: string): Promise<PowerLevelsStateEvent[]> {
+    const stateEvents = await this.receiveStateEvents(
+      EventType.RoomPowerLevels,
+      { roomIds: [roomId] },
+    );
+
+    return stateEvents as PowerLevelsStateEvent[];
   }
 
   async sendStateEvent(

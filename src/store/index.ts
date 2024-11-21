@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+export * from './api/selectors/selectInvitedOrJoinedRoomMembers';
 export * from './api/selectors/selectWhiteboards';
 export {
   selectSortBy,

@@ -15,9 +15,12 @@
  */
 
 import { styled } from '@mui/material';
+import { Suspense } from 'react';
 import { useTranslation } from 'react-i18next';
+import ErrorBoundary from '../ErrorBoundary';
 import { InvitesMenu } from './InvitesMenu';
 import { NeoBoardIcon } from './NeoBoardIcon';
+import { ShareMenu } from './ShareMenu';
 import { UserMenu } from './UserMenu';
 
 const StyledHeader = styled('nav')(() => ({
@@ -41,26 +44,51 @@ const Title = styled('div')(({ theme }) => ({
   whiteSpace: 'nowrap',
 }));
 
+const TitleWrapper = styled('div')(() => ({
+  alignItems: 'center',
+  display: 'flex',
+  flexGrow: 1,
+  gap: '16px',
+}));
+
+const MenuWrapper = styled('div')(() => ({
+  display: 'flex',
+  gap: '8px',
+}));
+
 type HeaderProps = {
   title: string;
   onLogoClick: () => void;
+  selectedRoomId?: string;
 };
 
-export function Header({ onLogoClick, title }: HeaderProps) {
+export function Header({ onLogoClick, title, selectedRoomId }: HeaderProps) {
   const { t } = useTranslation();
+
   return (
     <StyledHeader>
-      <div
-        style={{ cursor: 'pointer' }}
-        role="button"
-        onClick={onLogoClick}
-        aria-label={t('header.dashboard', 'Go back to the dashboard')}
-      >
-        <NeoBoardIcon onClick={onLogoClick} />
-      </div>
-      <Title>{title}</Title>
-      <InvitesMenu />
-      <UserMenu />
+      <TitleWrapper>
+        <div
+          style={{ cursor: 'pointer' }}
+          role="button"
+          onClick={onLogoClick}
+          aria-label={t('header.dashboard', 'Go back to the dashboard')}
+        >
+          <NeoBoardIcon onClick={onLogoClick} />
+        </div>
+        <Title>{title}</Title>
+      </TitleWrapper>
+      <MenuWrapper>
+        {selectedRoomId && (
+          <ErrorBoundary>
+            <Suspense fallback={null}>
+              <ShareMenu selectedRoomId={selectedRoomId} />
+            </Suspense>
+          </ErrorBoundary>
+        )}
+        <InvitesMenu />
+        <UserMenu />
+      </MenuWrapper>
     </StyledHeader>
   );
 }

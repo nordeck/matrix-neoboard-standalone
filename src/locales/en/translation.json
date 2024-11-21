@@ -84,6 +84,20 @@
     "rename": "Rename",
     "title": "Rename board"
   },
+  "searchResults": {
+    "error": "Error loading search results",
+    "noResults": "No users found to invite",
+    "noSearchTerm": "Start typing to search"
+  },
+  "shareMenu": {
+    "invite": "Invite"
+  },
+  "shareMenuModal": {
+    "invite": "Invite",
+    "inviteError": "Error inviting users. Please try again.",
+    "inviteText": "Invite people to collaborate on this whiteboard",
+    "selectedUsers": "Selected users:"
+  },
   "userMenu": {
     "about": "About",
     "logOut": "Log out"

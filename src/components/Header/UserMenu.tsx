@@ -74,7 +74,6 @@ export function UserMenu() {
       <IconButton
         onClick={handleClick}
         size="small"
-        sx={{ ml: 'auto' }}
         aria-controls={open ? menuId : undefined}
         aria-haspopup="true"
         aria-expanded={open ? 'true' : undefined}
