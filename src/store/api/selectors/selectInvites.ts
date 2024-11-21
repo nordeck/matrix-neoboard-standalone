@@ -1,0 +1,58 @@
+/*
+ * Copyright 2024 Nordeck IT + Consulting GmbH
+ *
+ * NeoBoard Standalone is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or (at your
+ * option) any later version.
+ *
+ * NeoBoard Standalone is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+ * or FITNESS FOR A PARTICULAR PURPOSE.
+ *
+ * See the GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with NeoBoard Standalone. If not, see <https://www.gnu.org/licenses/>.
+ */
+
+import { createSelector } from '@reduxjs/toolkit';
+import { RootState } from '../../store';
+import { selectAllRoomMemberEventEntities } from '../roomMemberApi';
+import { selectAllRoomNameEventEntities } from '../roomNameApi';
+
+export type InviteEntry = {
+  roomId: string;
+  roomName?: string;
+  senderUserId: string;
+  senderDisplayName?: string | null;
+};
+
+export function makeSelectInvites(
+  userId: string,
+): (state: RootState) => InviteEntry[] {
+  return createSelector(
+    selectAllRoomMemberEventEntities,
+    selectAllRoomNameEventEntities,
+    (roomMemberEvents, roomNameEvents): InviteEntry[] => {
+      const invites: InviteEntry[] = Object.values(roomMemberEvents)
+        .filter((event) => event.state_key === userId)
+        .filter((event) => event.content.membership === 'invite')
+        .map((event) => {
+          const senderMembershipEvent = Object.values(roomMemberEvents).find(
+            (e) => e.state_key === event.sender && e.room_id === event.room_id,
+          );
+          const roomNameEvent = Object.values(roomNameEvents).find(
+            (e) => e.room_id === event.room_id,
+          );
+          return {
+            roomId: event.room_id,
+            roomName: roomNameEvent?.content.name,
+            senderUserId: event.sender,
+            senderDisplayName: senderMembershipEvent?.content.displayname,
+          };
+        });
+      return invites;
+    },
+  );
+}

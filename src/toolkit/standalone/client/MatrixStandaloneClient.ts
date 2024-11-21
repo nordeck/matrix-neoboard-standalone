@@ -29,6 +29,7 @@ import {
   EventType,
   ITurnServer as IClientTurnServer,
   ICreateRoomOpts,
+  IJoinRoomOpts,
   MatrixClient,
   MatrixEvent,
   Room,
@@ -77,6 +78,14 @@ export class MatrixStandaloneClient implements StandaloneClient {
 
   async createRoom(options: ICreateRoomOpts): Promise<{ room_id: string }> {
     return await this.matrixClient.createRoom(options);
+  }
+
+  async joinRoom(roomId: string, options?: IJoinRoomOpts): Promise<Room> {
+    return await this.matrixClient.joinRoom(roomId, options);
+  }
+
+  async leaveRoom(roomId: string): Promise<{}> {
+    return await this.matrixClient.leave(roomId);
   }
 
   eventsObservable(): Observable<RoomEvent | StateEvent> {

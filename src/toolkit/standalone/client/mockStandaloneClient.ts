@@ -25,6 +25,8 @@ export type MockedStandaloneClient = Mocked<StandaloneClient>;
 export function mockStandaloneClient(): MockedStandaloneClient {
   return {
     createRoom: vi.fn(),
+    joinRoom: vi.fn(),
+    leaveRoom: vi.fn(),
     closeRoom: vi.fn(),
     eventsObservable: vi.fn().mockReturnValue(new Observable()),
     toDeviceMessagesObservable: vi.fn().mockReturnValue(new Observable()),
