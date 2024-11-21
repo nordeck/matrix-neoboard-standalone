@@ -24,7 +24,7 @@ import {
   Menu,
   MenuItem,
 } from '@mui/material';
-import React, { useCallback, useState } from 'react';
+import React, { MouseEventHandler, useCallback, useId, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLoggedIn } from '../../state';
 import { AboutDialog } from './AboutDialog';
@@ -33,15 +33,16 @@ import dummyAvatar from './dummy-avatar.png';
 
 export function UserMenu() {
   const { t } = useTranslation();
+  const menuId = useId();
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
 
-  const handleClick = (event: React.MouseEvent<HTMLElement>) => {
+  const handleClick: MouseEventHandler<HTMLElement> = useCallback((event) => {
     setAnchorEl(event.currentTarget);
-  };
-  const handleClose = () => {
+  }, []);
+  const handleClose = useCallback(() => {
     setAnchorEl(null);
-  };
+  }, []);
 
   const [logoutDialogOpen, setLogoutDialogOpen] = useState(false);
   const [aboutDialogOpen, setAboutDialogOpen] = useState(false);
@@ -63,18 +64,18 @@ export function UserMenu() {
   return (
     <>
       <LogoutDialog
-        onClose={() => setLogoutDialogOpen(false)}
+        onClose={useCallback(() => setLogoutDialogOpen(false), [])}
         open={logoutDialogOpen}
       />
       <AboutDialog
-        onClose={() => setAboutDialogOpen(false)}
+        onClose={useCallback(() => setAboutDialogOpen(false), [])}
         open={aboutDialogOpen}
       />
       <IconButton
         onClick={handleClick}
         size="small"
         sx={{ ml: 'auto' }}
-        aria-controls={open ? 'account-menu' : undefined}
+        aria-controls={open ? menuId : undefined}
         aria-haspopup="true"
         aria-expanded={open ? 'true' : undefined}
       >
@@ -82,7 +83,7 @@ export function UserMenu() {
           {initial}
         </Avatar>
       </IconButton>
-      <Menu anchorEl={anchorEl} open={open} onClose={handleClose}>
+      <Menu id={menuId} anchorEl={anchorEl} open={open} onClose={handleClose}>
         <MenuItem disabled={true}>
           <ListItemIcon />
           <ListItemText>{username}</ListItemText>

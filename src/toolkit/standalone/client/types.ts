@@ -20,7 +20,7 @@ import {
   ToDeviceMessageEvent,
   WidgetApi,
 } from '@matrix-widget-toolkit/api';
-import { ICreateRoomOpts } from 'matrix-js-sdk';
+import { ICreateRoomOpts, IJoinRoomOpts, Room } from 'matrix-js-sdk';
 import { Symbols } from 'matrix-widget-api';
 import { Observable } from 'rxjs';
 
@@ -49,6 +49,19 @@ export type StandaloneClient = Pick<
    * @param options - Options to create a room
    */
   createRoom(options: ICreateRoomOpts): Promise<{ room_id: string }>;
+
+  /**
+   * Join a room
+   * @param roomId - The room id
+   * @param options - Options to create a room
+   */
+  joinRoom(roomId: string, options?: IJoinRoomOpts): Promise<Room>;
+
+  /**
+   * Leave a room
+   * @param roomId - The room id
+   */
+  leaveRoom(roomId: string): Promise<{}>;
 
   /**
    * Observable that emits room and state events.
