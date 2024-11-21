@@ -64,3 +64,7 @@ experimental_features:
     account_management_url: 'https://mas.matrix.internal/account'
 
 enable_authenticated_media: true
+user_directory:
+  enabled: true
+  search_all_users: true
+  prefer_local_users: true
