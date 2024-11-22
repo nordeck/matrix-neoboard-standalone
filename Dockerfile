@@ -24,3 +24,4 @@ ENV CSP_CONNECT_SRC="http: https:"
 
 ENV REACT_APP_PREVIEWS=true
 COPY csp.conf /etc/nginx/conf.d/headers/content-security-policy.conf
+COPY mimetypes.conf /etc/nginx/conf.d/headers/mimetypes.conf
