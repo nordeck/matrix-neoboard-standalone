@@ -98,7 +98,13 @@ jobs:
         uses: docker/setup-buildx-action@v3
 
       - name: get argo-cd type of sha
-        run: echo "ARGOCD_SHA=$(echo ${{ github.event.pull_request.head.sha }} | cut -c1-8)" >> $GITHUB_ENV
+        run: |
+          COMMIT_SHA=${{ github.sha }}
+          if github.event_name == 'pull_request'
+          then
+            COMMIT_SHA=${{ github.event.pull_request.head.sha }}
+          fi
+          echo "ARGOCD_SHA=$(echo $COMMIT_SHA | cut -c1-8)" >> $GITHUB_ENV
 
       - name: Generate Docker metadata
         id: meta
@@ -129,7 +135,7 @@ jobs:
       - name: Build and push
         uses: docker/build-push-action@v6
         with:
-          push: ${{ github.event_name == 'push' && ( github.ref == 'refs/heads/main' || github.ref == 'refs/heads/release/*' ) || github.event_name == 'pull_request' && secrets.GH_APP_OS_APP_ID != '' }}
+          push: ${{ github.event_name == 'push' && ( github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/heads/release/') ) || github.event_name == 'pull_request' && secrets.GH_APP_OS_APP_ID != '' }}
           context: ./matrix-neoboard-standalone/
           tags: |
             ${{ steps.meta.outputs.tags }}
