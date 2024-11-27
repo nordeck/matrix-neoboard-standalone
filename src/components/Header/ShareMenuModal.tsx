@@ -371,7 +371,7 @@ function SearchResults({
   const { data } = useSWR<IUser[]>(
     searchTerm,
     client.standaloneClient.searchUsers.bind(client.standaloneClient),
-    { suspense: true },
+    { suspense: true, keepPreviousData: true },
   );
   const searchResults = data ?? [];
 
