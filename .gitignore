@@ -22,6 +22,9 @@ build
 *.sln
 *.sw?
 
+# dotenv environment variables file
+.env
+
 # testing
 /coverage
 
