@@ -16,6 +16,7 @@
  * along with NeoBoard Standalone. If not, see <https://www.gnu.org/licenses/>.
  */
 
+import { SWRDevTools } from 'swr-devtools';
 import './App.css';
 import { LoggedInView } from './components/LoggedInView';
 import { StandaloneThemeProvider } from './components/StandaloneThemeProvider';
@@ -27,14 +28,16 @@ export const App = () => {
   const applicationState = useApplicationState();
 
   return (
-    <StandaloneThemeProvider>
-      {applicationState.lifecycleState === 'starting' && <StartingView />}
-      {applicationState.lifecycleState === 'loggedOut' && <WelcomePane />}
-      {applicationState.lifecycleState === 'loggedIn' && (
-        <LoggedInProvider loggedInState={applicationState.state}>
-          <LoggedInView />
-        </LoggedInProvider>
-      )}
-    </StandaloneThemeProvider>
+    <SWRDevTools>
+      <StandaloneThemeProvider>
+        {applicationState.lifecycleState === 'starting' && <StartingView />}
+        {applicationState.lifecycleState === 'loggedOut' && <WelcomePane />}
+        {applicationState.lifecycleState === 'loggedIn' && (
+          <LoggedInProvider loggedInState={applicationState.state}>
+            <LoggedInView />
+          </LoggedInProvider>
+        )}
+      </StandaloneThemeProvider>
+    </SWRDevTools>
   );
 };
