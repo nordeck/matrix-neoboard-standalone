@@ -3,13 +3,14 @@ name: CI
 on:
   push:
     branches:
-      - main
-      - release/*
-  pull_request:
+      - DEVOPS-222
+      #- main
+      #- release/*
+  #pull_request:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: gh-runner-nordeck
     timeout-minutes: 15
     env:
       ARGOCD_SHA: ''
@@ -135,7 +136,7 @@ jobs:
       - name: Build and push
         uses: docker/build-push-action@v6
         with:
-          push: ${{ github.event_name == 'push' && ( github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/heads/release/') ) || github.event_name == 'pull_request' && secrets.GH_APP_OS_APP_ID != '' }}
+          #push: ${{ github.event_name == 'push' && ( github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/heads/release/') ) || github.event_name == 'pull_request' && secrets.GH_APP_OS_APP_ID != '' }}
           context: ./matrix-neoboard-standalone/
           tags: |
             ${{ steps.meta.outputs.tags }}
@@ -150,118 +151,118 @@ jobs:
             REACT_APP_REACT_SDK_REVISION=${{ env.REACT_APP_REACT_SDK_REVISION }}
             REACT_APP_EMBEDDED=true
 
-      - name: Generate GitHub token
-        if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
-        id: generate_token
-        uses: tibdex/github-app-token@3beb63f4bd073e61482598c45c71c1019b59b73a # @v2.1.0
-        with:
-          app_id: ${{ secrets.GH_APP_OS_APP_ID }}
-          private_key: ${{ secrets.GH_APP_OS_PRIVATE_KEY }}
+      # - name: Generate GitHub token
+      #   if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
+      #   id: generate_token
+      #   uses: tibdex/github-app-token@3beb63f4bd073e61482598c45c71c1019b59b73a # @v2.1.0
+      #   with:
+      #     app_id: ${{ secrets.GH_APP_OS_APP_ID }}
+      #     private_key: ${{ secrets.GH_APP_OS_PRIVATE_KEY }}
 
-      - name: Create Release Pull Request or Publish Packages
-        if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
-        uses: changesets/action@3de3850952bec538fde60aac71731376e57b9b57 # @v1.4.8
-        with:
-          publish: yarn changeset tag
-          cwd: ./matrix-neoboard-standalone/
-        env:
-          GITHUB_TOKEN: ${{ steps.generate_token.outputs.token }}
+      # - name: Create Release Pull Request or Publish Packages
+      #   if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
+      #   uses: changesets/action@3de3850952bec538fde60aac71731376e57b9b57 # @v1.4.8
+      #   with:
+      #     publish: yarn changeset tag
+      #     cwd: ./matrix-neoboard-standalone/
+      #   env:
+      #     GITHUB_TOKEN: ${{ steps.generate_token.outputs.token }}
 
-  deploy:
-    if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
-    name: Deploy to Dev
-    runs-on: ubuntu-latest
-    timeout-minutes: 5
-    needs: build
-    steps:
-      # Clone repo to get the helm charts
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: '0'
-          persist-credentials: false
+  # deploy:
+  #   if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
+  #   name: Deploy to Dev
+  #   runs-on: ubuntu-latest
+  #   timeout-minutes: 5
+  #   needs: build
+  #   steps:
+  #     # Clone repo to get the helm charts
+  #     - uses: actions/checkout@v4
+  #       with:
+  #         fetch-depth: '0'
+  #         persist-credentials: false
 
-      - name: Checkout valhalla for values
-        uses: actions/checkout@v4
-        with:
-          ref: dev
-          sparse-checkout: |
-            /cluster/neotoolsuite-dev/matrix-neoboard-standalone/values.dev.yaml
-          sparse-checkout-cone-mode: false
-          repository: nordeck/valhalla
-          token: ${{ secrets.PACKAGE_TOKEN }}
-          path: valhalla
-          persist-credentials: false
+  #     - name: Checkout valhalla for values
+  #       uses: actions/checkout@v4
+  #       with:
+  #         ref: dev
+  #         sparse-checkout: |
+  #           /cluster/neotoolsuite-dev/matrix-neoboard-standalone/values.dev.yaml
+  #         sparse-checkout-cone-mode: false
+  #         repository: nordeck/valhalla
+  #         token: ${{ secrets.PACKAGE_TOKEN }}
+  #         path: valhalla
+  #         persist-credentials: false
 
-      - name: Create Kubeconfig
-        run: |
-          # Extract the base64 encoded config data and write this to the KUBECONFIG
-          echo "${{ secrets.KUBECONFIG_DEV }}" | base64 -d > /tmp/config
-          chmod 600 /tmp/config
+  #     - name: Create Kubeconfig
+  #       run: |
+  #         # Extract the base64 encoded config data and write this to the KUBECONFIG
+  #         echo "${{ secrets.KUBECONFIG_DEV }}" | base64 -d > /tmp/config
+  #         chmod 600 /tmp/config
 
-          echo "KUBECONFIG=/tmp/config" >> $GITHUB_ENV
+  #         echo "KUBECONFIG=/tmp/config" >> $GITHUB_ENV
 
-      - name: deploy k8s to cluster
-        uses: wahyd4/kubectl-helm-action@master
-        env:
-          KUBE_CONFIG_DATA: ${{ secrets.KUBECONFIG_RANCHER_DEV_DEMO }}
-        with:
-          args: |
-            helm upgrade --install matrix-neoboard-standalone ./charts/matrix-neoboard-standalone -f ./valhalla/cluster/neotoolsuite-dev/matrix-neoboard-standalone/values.dev.yaml  -n matrix
+  #     - name: deploy k8s to cluster
+  #       uses: wahyd4/kubectl-helm-action@master
+  #       env:
+  #         KUBE_CONFIG_DATA: ${{ secrets.KUBECONFIG_RANCHER_DEV_DEMO }}
+  #       with:
+  #         args: |
+  #           helm upgrade --install matrix-neoboard-standalone ./charts/matrix-neoboard-standalone -f ./valhalla/cluster/neotoolsuite-dev/matrix-neoboard-standalone/values.dev.yaml  -n matrix
 
-      - name: restart rollout
-        uses: wahyd4/kubectl-helm-action@master
-        env:
-          KUBE_CONFIG_DATA: ${{ secrets.KUBECONFIG_RANCHER_DEV_DEMO }}
-        with:
-          args: |
-            kubectl rollout restart deployment matrix-neoboard-standalone -n matrix
+  #     - name: restart rollout
+  #       uses: wahyd4/kubectl-helm-action@master
+  #       env:
+  #         KUBE_CONFIG_DATA: ${{ secrets.KUBECONFIG_RANCHER_DEV_DEMO }}
+  #       with:
+  #         args: |
+  #           kubectl rollout restart deployment matrix-neoboard-standalone -n matrix
 
-  helm-lint-test:
-    runs-on: ubuntu-latest
-    needs: build
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0 # need main branch to diff against
-      - name: Set up Helm
-        uses: azure/setup-helm@v4
-      - uses: actions/setup-python@v5
-        with:
-          python-version: '3.12'
-          check-latest: true
-      - name: Set up chart-testing
-        uses: helm/chart-testing-action@v2.6.1
-      - name: Check if Helm charts updated (run chart-testing list-changed)
-        id: list-changed
-        run: |
-          changed=$(ct list-changed --target-branch ${{ github.event.repository.default_branch }})
-          if [[ -n "$changed" ]]; then
-            echo "changed=true" >> "$GITHUB_OUTPUT"
-          fi
-      - name: Run chart-testing (lint)
-        if: steps.list-changed.outputs.changed == 'true'
-        # --validate-maintainers is disabled because it tries to resolve the name as GitHub user
-        run: ct lint --validate-maintainers=false --target-branch ${{ github.event.repository.default_branch }}
-      - name: Create kind cluster
-        if: steps.list-changed.outputs.changed == 'true'
-        uses: helm/kind-action@v1.10.0
-      - name: Prepare k8s cluster
-        env:
-          GITHUB_TOKEN: ${{ secrets.PACKAGE_TOKEN }}
-          USERNAME: ${{ github.repository_owner }}
-        if: steps.list-changed.outputs.changed == 'true'
-        run: |
-          kubectl create namespace neoboard-standalone
-          kubectl create secret docker-registry neoboard-standalone --docker-server=https://ghcr.io --docker-username="$USERNAME" --docker-password="$GITHUB_TOKEN" --namespace=neoboard-standalone
-      # This is done since we set DOCKER_METADATA_PR_HEAD_SHA to true in the build job. This makes us use the PR SHA as the tag
-      - name: Set short github sha from github.sha
-        run: echo "SHORT_SHA=`echo ${PR_SHA:-$GITHUB_SHA} | cut -c1-7`" >> $GITHUB_ENV
-        env:
-          PR_SHA: ${{ github.event.pull_request.head.sha }}
-          GITHUB_SHA: ${{ github.sha }}
-      - name: Run chart-testing (install)
-        if: steps.list-changed.outputs.changed == 'true'
-        run: |
-          echo "Running chart-testing install for ${{ env.SHORT_SHA }}"
-          ct install --config=".github/k8s_config.yaml" --target-branch ${{ github.event.repository.default_branch }} --helm-extra-set-args="--set=imagePullSecrets[0].name=neoboard-standalone --set=image.tag=${{ env.SHORT_SHA }}"
+  # helm-lint-test:
+  #   runs-on: ubuntu-latest
+  #   needs: build
+  #   steps:
+  #     - name: Checkout
+  #       uses: actions/checkout@v4
+  #       with:
+  #         fetch-depth: 0 # need main branch to diff against
+  #     - name: Set up Helm
+  #       uses: azure/setup-helm@v4
+  #     - uses: actions/setup-python@v5
+  #       with:
+  #         python-version: '3.12'
+  #         check-latest: true
+  #     - name: Set up chart-testing
+  #       uses: helm/chart-testing-action@v2.6.1
+  #     - name: Check if Helm charts updated (run chart-testing list-changed)
+  #       id: list-changed
+  #       run: |
+  #         changed=$(ct list-changed --target-branch ${{ github.event.repository.default_branch }})
+  #         if [[ -n "$changed" ]]; then
+  #           echo "changed=true" >> "$GITHUB_OUTPUT"
+  #         fi
+  #     - name: Run chart-testing (lint)
+  #       if: steps.list-changed.outputs.changed == 'true'
+  #       # --validate-maintainers is disabled because it tries to resolve the name as GitHub user
+  #       run: ct lint --validate-maintainers=false --target-branch ${{ github.event.repository.default_branch }}
+  #     - name: Create kind cluster
+  #       if: steps.list-changed.outputs.changed == 'true'
+  #       uses: helm/kind-action@v1.10.0
+  #     - name: Prepare k8s cluster
+  #       env:
+  #         GITHUB_TOKEN: ${{ secrets.PACKAGE_TOKEN }}
+  #         USERNAME: ${{ github.repository_owner }}
+  #       if: steps.list-changed.outputs.changed == 'true'
+  #       run: |
+  #         kubectl create namespace neoboard-standalone
+  #         kubectl create secret docker-registry neoboard-standalone --docker-server=https://ghcr.io --docker-username="$USERNAME" --docker-password="$GITHUB_TOKEN" --namespace=neoboard-standalone
+  #     # This is done since we set DOCKER_METADATA_PR_HEAD_SHA to true in the build job. This makes us use the PR SHA as the tag
+  #     - name: Set short github sha from github.sha
+  #       run: echo "SHORT_SHA=`echo ${PR_SHA:-$GITHUB_SHA} | cut -c1-7`" >> $GITHUB_ENV
+  #       env:
+  #         PR_SHA: ${{ github.event.pull_request.head.sha }}
+  #         GITHUB_SHA: ${{ github.sha }}
+  #     - name: Run chart-testing (install)
+  #       if: steps.list-changed.outputs.changed == 'true'
+  #       run: |
+  #         echo "Running chart-testing install for ${{ env.SHORT_SHA }}"
+  #         ct install --config=".github/k8s_config.yaml" --target-branch ${{ github.event.repository.default_branch }} --helm-extra-set-args="--set=imagePullSecrets[0].name=neoboard-standalone --set=image.tag=${{ env.SHORT_SHA }}"
