@@ -969,7 +969,7 @@
 
 "@matrix-widget-toolkit/mui@^2.0.6":
   version "2.0.6"
-  resolved "https://registry.npmjs.org/@matrix-widget-toolkit/mui/-/mui-2.0.6.tgz#ef6fe6644f1021d9a21ee5204f45ba45a3dbe205"
+  resolved "https://registry.yarnpkg.com/@matrix-widget-toolkit/mui/-/mui-2.0.6.tgz#ef6fe6644f1021d9a21ee5204f45ba45a3dbe205"
   integrity sha512-NKkiBytqm2na1COPwd8rw0QILtq2BohbwnFH62ieDPm4ithiAnMLIrL/LklRRQfLzyTb/I10nN/V2PNWgm6byA==
   dependencies:
     "@emotion/cache" "^11.13.1"
@@ -1034,7 +1034,7 @@
 
 "@mui/icons-material@^6.1.2", "@mui/icons-material@^6.1.4":
   version "6.1.6"
-  resolved "https://registry.npmjs.org@mui/icons-material/-/icons-material-6.1.6.tgz#bfaf32874a9f9ec88c07d1ca132d1a0671e9ed7c"
+  resolved "https://registry.yarnpkg.com/@mui/icons-material/-/icons-material-6.1.6.tgz#bfaf32874a9f9ec88c07d1ca132d1a0671e9ed7c"
   integrity sha512-5r9urIL2lxXb/sPN3LFfFYEibsXJUb986HhhIeu1gOcte460pwdSiEhBSxkAuyT8Dj7jvu9MjqSBmSumQELo8A==
   dependencies:
     "@babel/runtime" "^7.26.0"
