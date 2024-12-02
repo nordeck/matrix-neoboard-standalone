@@ -39,6 +39,10 @@ jobs:
           # github actions token but the git token provided via environment variable
           persist-credentials: false
 
+        # required as the runner has v22 setup and symlinked
+      - name: nvm set older node than installed
+        run: nvm install 20.18.1 && nvm use 20.18.1
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
