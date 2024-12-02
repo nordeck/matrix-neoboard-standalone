@@ -39,10 +39,14 @@ jobs:
           # github actions token but the git token provided via environment variable
           persist-credentials: false
 
+      - name: Set Yarn Registry
+        run: yarn config set registry https://registry.npmjs.org
+      - name: Check Yarn Registry
+        run: yarn config get registry
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          registry-url: 'https://registry.npmjs.org'
           node-version: '20'
           cache: 'yarn'
           cache-dependency-path: |
