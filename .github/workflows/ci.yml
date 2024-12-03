@@ -100,7 +100,7 @@ jobs:
       - name: get argo-cd type of sha
         run: |
           COMMIT_SHA=${{ github.sha }}
-          if github.event_name == 'pull_request'
+          if ${{ github.event_name }} == 'pull_request'
           then
             COMMIT_SHA=${{ github.event.pull_request.head.sha }}
           fi
