@@ -54,7 +54,7 @@ services:
       - 'mas-db:/var/lib/postgresql/data'
 
   mas:
-    image: ghcr.io/matrix-org/matrix-authentication-service:main
+    image: ghcr.io/element-hq/matrix-authentication-service:main
     restart: unless-stopped
     depends_on:
       - mas-db
