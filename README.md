@@ -67,14 +67,16 @@ yarn install
 
 Synapse with MAS is required to run NeoBoard standalone locally.
 
-It is possible to use the Compose file in `./dev` to create the environment:
+It is possible to use the Compose file from [opendesk-widgets-docker-compose](https://github.com/nordeck/opendesk-widgets-docker-compose) to create the environment:
 
-- Add the following to the host's hosts-file:
+- Add the following to your hosts-file:  
   `127.0.0.1 matrix.internal mas.matrix.internal synapse.matrix.internal`
-- cd `dev`
-- Depending on the runtime:
-  - `podman compose --podman-run-args="--no-hosts" up`
-  - `docker compose up`
+- Clone opendesk-widgets-docker-compose:  
+  `git clone git@github.com:nordeck/opendesk-widgets-docker-compose.git`
+- `cd opendesk-widgets-docker-compose`
+- Start the required containers:
+  - Podman `podman compose --podman-run-args="--no-hosts" -f compose.mas.yaml up web synapse-db synapse mas-db mas`
+  - Docker `docker compose -f compose.mas.yaml up web synapse-db synapse mas-db mas`
 - Visit the following URLs and accept the certificate
   - <https://matrix.internal>
   - <https://mas.matrix.internal>
@@ -88,7 +90,7 @@ You can now start NeoBoard standalone:
 yarn run dev:https
 ```
 
-Then open the printed URL.
+Then open the printed URL. Your Homeserver is `matrix.internal`.
 
 #### Running
 
