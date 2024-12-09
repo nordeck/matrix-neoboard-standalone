@@ -41,7 +41,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version-file: 'matrix-neoboard-standalone/package.json'
           cache: 'yarn'
           cache-dependency-path: |
             matrix-neoboard-standalone/yarn.lock
