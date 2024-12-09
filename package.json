@@ -2,6 +2,7 @@
   "name": "@nordeck/matrix-neoboard-standalone",
   "version": "0.0.0",
   "type": "module",
+  "private": true,
   "scripts": {
     "dev": "vite",
     "dev:https": "VITE_DEV_SSL=true vite",
