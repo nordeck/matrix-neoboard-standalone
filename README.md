@@ -75,8 +75,8 @@ It is possible to use the Compose file from [opendesk-widgets-docker-compose](ht
   `git clone git@github.com:nordeck/opendesk-widgets-docker-compose.git`
 - `cd opendesk-widgets-docker-compose`
 - Start the required containers:
-  - Podman `podman compose --podman-run-args="--no-hosts" -f compose.mas.yaml up web synapse-db synapse mas-db mas`
-  - Docker `docker compose -f compose.mas.yaml up web synapse-db synapse mas-db mas`
+  - Podman `podman compose --podman-run-args="--no-hosts" -f compose.mas.yaml --env-file nordeck.env up web synapse-db synapse mas-db mas`
+  - Docker `docker compose -f compose.mas.yaml --env-file nordeck.env up web synapse-db synapse mas-db mas`
 - Visit the following URLs and accept the certificate
   - <https://matrix.internal>
   - <https://mas.matrix.internal>
