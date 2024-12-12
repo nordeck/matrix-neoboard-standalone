@@ -45,6 +45,7 @@ export default defineConfig({
   },
   resolve: {
     dedupe: [
+      '@matrix-widget-toolkit/mui',
       '@matrix-widget-toolkit/react',
       '@mui/material',
       'i18next',
