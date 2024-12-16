@@ -118,6 +118,9 @@ In the project directory, you can run:
 - `yarn translate`: Update translation files from code.
 - `yarn generate-disclaimer`: Generates license disclaimer and include it in the build output.
 - `yarn docker:build`: Builds a container image from the output of `yarn build` and `yarn generate-disclaimer`.
+- `yarn clean`: Cleans builds and caches
+- `yarn clean:build`: Cleans builds
+- `yarn clean:cache`: Cleans caches
 
 ### Versioning
 
