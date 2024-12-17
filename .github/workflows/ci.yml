@@ -1,4 +1,4 @@
-name: CI
+name: NeoBoard Standalone CI
 
 on:
   push:
@@ -6,6 +6,10 @@ on:
       - main
       - release/*
   pull_request:
+  workflow_dispatch:
+    inputs:
+      neoboard_ref:
+        description: 'NeoBoard Git ref to check out'
 
 jobs:
   build:
@@ -23,6 +27,7 @@ jobs:
         with:
           repository: nordeck/matrix-neoboard
           path: matrix-neoboard
+          ref: ${{ github.events.inputs.neoboard_ref }}
           # required for changesets
           fetch-depth: '0'
           # don't persist the credentials so the changesets action doesn't use the
