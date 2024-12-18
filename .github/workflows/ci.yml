@@ -12,7 +12,12 @@ on:
         description: 'NeoBoard Git ref to check out'
 
 jobs:
+  ci-checks:
+    uses: ./.github/workflows/ci-checks.yml
+    secrets: inherit
+
   build:
+    needs: ci-checks
     runs-on: ubuntu-latest
     timeout-minutes: 15
     env:
@@ -59,30 +64,6 @@ jobs:
       - name: yarn install neoboard standalone
         working-directory: ./matrix-neoboard-standalone/
         run: yarn install --frozen-lockfile
-
-      - name: depcheck
-        working-directory: ./matrix-neoboard-standalone/
-        run: yarn depcheck
-
-      - name: prettier:check
-        working-directory: ./matrix-neoboard-standalone/
-        run: yarn prettier:check
-
-      - name: Check Linting Rules
-        working-directory: ./matrix-neoboard-standalone/
-        run: yarn lint
-
-      - name: type checking and declarations
-        working-directory: ./matrix-neoboard-standalone/
-        run: yarn tsc
-
-      - name: Check Translations
-        working-directory: ./matrix-neoboard-standalone/
-        run: yarn translate --fail-on-update
-
-      - name: test
-        working-directory: ./matrix-neoboard-standalone/
-        run: yarn run test:all
 
       - name: build
         working-directory: ./matrix-neoboard-standalone/
