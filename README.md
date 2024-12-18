@@ -72,7 +72,7 @@ It is possible to use the Compose file from [opendesk-widgets-docker-compose](ht
 - Add the following to your hosts-file:  
   `127.0.0.1 matrix.internal mas.matrix.internal synapse.matrix.internal`
 - Clone opendesk-widgets-docker-compose:  
-  `git clone git@github.com:nordeck/opendesk-widgets-docker-compose.git`
+  `git clone --recurse-submodules git@github.com:nordeck/opendesk-widgets-docker-compose.git`
 - `cd opendesk-widgets-docker-compose`
 - Start the required containers:
   - Podman `podman compose --podman-run-args="--no-hosts" -f compose.mas.yaml --env-file nordeck.env up web synapse-db synapse mas-db mas`
