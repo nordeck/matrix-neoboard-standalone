@@ -53,7 +53,19 @@ export function makeSelectWhiteboards(
       whiteboardSessionsEvents,
       powerLevelsEvents,
     ): WhiteboardEntry[] => {
+      /**
+       * Currently, the rule is one whiteboard equals one room.
+       * Remembers room IDs to de-duplicate the whiteboard list.
+       */
+      const seenRooms = new Set<string>();
+
       const boards = whiteboards.flatMap((whiteboard) => {
+        if (seenRooms.has(whiteboard.room_id)) {
+          return [];
+        }
+
+        seenRooms.add(whiteboard.room_id);
+
         const roomName = roomNameEvents[whiteboard.room_id]?.content.name;
 
         let latestOwnWhiteboardSessionsEvent:
