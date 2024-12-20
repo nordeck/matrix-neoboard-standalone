@@ -28,7 +28,12 @@ import {
   MenuItem,
   MenuList,
 } from '@mui/material';
-import React, { ComponentProps, useCallback, useState } from 'react';
+import React, {
+  ComponentProps,
+  ReactElement,
+  useCallback,
+  useState,
+} from 'react';
 import { useTranslation } from 'react-i18next';
 import { useDeleteDialog } from '../DeleteDialog';
 import { RenameDialog } from '../RenameDialog';
@@ -92,6 +97,35 @@ export const TileMenu: React.FC<TileMenuProps> = function ({ item }) {
     setRenameDialogOpen(false);
   }, []);
 
+  const menuItems: ReactElement[] = [];
+
+  if (item.permissions.canChangeName) {
+    menuItems.push(
+      <MenuItem key="rename" onClick={handleRenameClick}>
+        <ListItemIcon>
+          <DriveFileRenameOutlineIcon fontSize="small" />
+        </ListItemIcon>
+        <ListItemText>{t('dashboard.boardTile.rename', 'Rename')}</ListItemText>
+      </MenuItem>,
+    );
+  }
+
+  if (item.permissions.canSendTombstone) {
+    if (menuItems.length > 0) {
+      // There should be a divider between other and destructive action
+      menuItems.push(<Divider key="delete-divider" />);
+    }
+
+    menuItems.push(
+      <MenuItem key="delete" onClick={handleDeleteClick}>
+        <ListItemIcon>
+          <DeleteIcon fontSize="small" />
+        </ListItemIcon>
+        <ListItemText>{t('dashboard.boardTile.delete', 'Delete')}</ListItemText>
+      </MenuItem>,
+    );
+  }
+
   return (
     <>
       {deleteDialog}
@@ -116,31 +150,7 @@ export const TileMenu: React.FC<TileMenuProps> = function ({ item }) {
           'aria-labelledby': `board-menu-${roomId}-button`,
         }}
       >
-        <MenuList>
-          {item.permissions.canChangeName && (
-            <>
-              <MenuItem onClick={handleRenameClick}>
-                <ListItemIcon>
-                  <DriveFileRenameOutlineIcon fontSize="small" />
-                </ListItemIcon>
-                <ListItemText>
-                  {t('dashboard.boardTile.rename', 'Rename')}
-                </ListItemText>
-              </MenuItem>
-              <Divider />
-            </>
-          )}
-          {item.permissions.canSendTombstone && (
-            <MenuItem onClick={handleDeleteClick}>
-              <ListItemIcon>
-                <DeleteIcon fontSize="small" />
-              </ListItemIcon>
-              <ListItemText>
-                {t('dashboard.boardTile.delete', 'Delete')}
-              </ListItemText>
-            </MenuItem>
-          )}
-        </MenuList>
+        <MenuList>{menuItems}</MenuList>
       </Menu>
     </>
   );
