@@ -57,6 +57,7 @@ import {
 } from '../../toolkit/standalone';
 import { Dashboard } from '../Dashboard';
 import { LoggedInLayout } from '../LoggedInLayout';
+import { SnapshotLoadStateDialog } from '../SnapshotLoadStateDialog/SnapshotLoadStateDialog';
 import { useSaveOnLeave } from './useSaveOnLeave';
 
 export const LoggedInView = () => {
@@ -229,6 +230,7 @@ export const LoggedInView = () => {
                       <Snackbar />
                       <ConnectionStateProvider>
                         <ConnectionStateDialog />
+                        <SnapshotLoadStateDialog />
                         <NeoboardApp
                           layoutProps={{ height: 'calc(90vh - 25px)' }}
                         />
