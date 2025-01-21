@@ -98,6 +98,15 @@
     "inviteText": "Lade Personen ein, an diesem Whiteboard zusammenzuarbeiten",
     "selectedUsers": "Ausgewählte Benutzer:"
   },
+  "snapshotLoadState": {
+    "dialog": {
+      "goBackButton": {
+        "label": "Zurück"
+      },
+      "text": "Sie können die Inhalte sehen, wenn ein anderer Benutzer an der Tafel arbeitet.",
+      "title": "Das Board kann nicht angezeigt werden"
+    }
+  },
   "userMenu": {
     "about": "Info",
     "logOut": "Abmelden"
