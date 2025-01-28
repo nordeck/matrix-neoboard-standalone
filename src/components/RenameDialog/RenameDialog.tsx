@@ -31,6 +31,7 @@ import React, {
   FormEvent,
   MouseEvent,
   useCallback,
+  useEffect,
   useState,
 } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -51,7 +52,9 @@ export const RenameDialog: React.FC<RenameDialogProps> = function ({
   const { t } = useTranslation();
   const [formName, setFormName] = useState(item.name);
   const { standaloneClient } = useLoggedIn();
+  const [isInitialOpen, setIsInitialOpen] = useState(true);
   const dialogTitleId = useId();
+
   const handleSubmit = useCallback(
     async (e: FormEvent<HTMLFormElement>) => {
       e.preventDefault();
@@ -92,6 +95,13 @@ export const RenameDialog: React.FC<RenameDialogProps> = function ({
     e.stopPropagation();
   }, []);
 
+  useEffect(() => {
+    if (open) {
+      setFormName(item.name); // Reset to the original name
+      setIsInitialOpen(true); // Reset the flag to select the text
+    }
+  }, [open, item.name]);
+
   return (
     <Dialog
       aria-labelledby={dialogTitleId}
@@ -119,6 +129,16 @@ export const RenameDialog: React.FC<RenameDialogProps> = function ({
           value={formName}
           onChange={(e) => setFormName(e.currentTarget.value)}
           inputProps={{ maxLength: 50 }}
+          inputRef={(input) => {
+            if (input) {
+              // Ensure it only focuses and selects the first time the dialog opens
+              if (isInitialOpen) {
+                input.focus();
+                input.select();
+                setIsInitialOpen(false); // Clear the flag after the first focus
+              }
+            }
+          }}
         />
       </DialogContent>
       <DialogActions>
