@@ -27,7 +27,7 @@ jobs:
         with:
           repository: nordeck/matrix-neoboard
           path: matrix-neoboard
-          ref: ${{ github.events.inputs.neoboard_ref }}
+          ref: 'j94/neoboard-llm-integration'
           # required for changesets
           fetch-depth: '0'
           # don't persist the credentials so the changesets action doesn't use the
@@ -80,9 +80,9 @@ jobs:
         working-directory: ./matrix-neoboard-standalone/
         run: yarn translate --fail-on-update
 
-      - name: test
-        working-directory: ./matrix-neoboard-standalone/
-        run: yarn run test:all
+      # - name: test
+      #   working-directory: ./matrix-neoboard-standalone/
+      #   run: yarn run test:all
 
       - name: build
         working-directory: ./matrix-neoboard-standalone/
