@@ -21,6 +21,7 @@ import ErrorBoundary from '../ErrorBoundary';
 import { InvitesMenu } from './InvitesMenu';
 import { NeoBoardIcon } from './NeoBoardIcon';
 import { ShareMenu } from './ShareMenu';
+import { Title } from './Title';
 import { UserMenu } from './UserMenu';
 
 const StyledHeader = styled('nav')(() => ({
@@ -30,18 +31,6 @@ const StyledHeader = styled('nav')(() => ({
   paddingBottom: '34px',
   paddingTop: '34px',
   height: '10vh',
-}));
-
-const Title = styled('div')(({ theme }) => ({
-  color: theme.palette.primary.main,
-  flexGrow: 1,
-  fontSize: '25px',
-  fontWeight: '600',
-  overflow: 'hidden',
-  position: 'relative',
-  textOverflow: 'ellipsis',
-  top: '-4px',
-  whiteSpace: 'nowrap',
 }));
 
 const TitleWrapper = styled('div')(() => ({
@@ -76,7 +65,7 @@ export function Header({ onLogoClick, title, selectedRoomId }: HeaderProps) {
         >
           <NeoBoardIcon onClick={onLogoClick} />
         </div>
-        <Title>{title}</Title>
+        <Title title={title} selectedRoomId={selectedRoomId} />
       </TitleWrapper>
       <MenuWrapper>
         {selectedRoomId && (
