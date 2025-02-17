@@ -40,7 +40,7 @@
     "@mui/material": "^6.1.2",
     "@mui/utils": "^6.0.2",
     "@nordeck/matrix-neoboard-react-sdk": "link:../matrix-neoboard/packages/react-sdk",
-    "@reduxjs/toolkit": "^2.3.0",
+    "@reduxjs/toolkit": "^2.5.1",
     "i18next": "link:../matrix-neoboard/node_modules/i18next",
     "i18next-browser-languagedetector": "^8.0.0",
     "joi": "^17.13.3",
