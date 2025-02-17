@@ -47,7 +47,8 @@
     "title": "NeoBoard löschen"
   },
   "header": {
-    "dashboard": "Zurück zum Dashboard"
+    "dashboard": "Zurück zum Dashboard",
+    "renameBoard": "Zum Umbenennen anklicken"
   },
   "invitesDialog": {
     "accept": "Einladung annehmen",

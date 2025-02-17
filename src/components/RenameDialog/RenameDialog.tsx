@@ -36,12 +36,20 @@ import React, {
 } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLoggedIn } from '../../state';
-import { DashboardItem } from '../Dashboard/useDashboardList';
 
 type RenameDialogProps = {
-  item: DashboardItem;
+  item: {
+    name: string;
+    roomId: string;
+  };
   onClose: () => void;
   open: boolean;
+};
+
+const nameTextFieldSlotProps = {
+  htmlInput: {
+    maxLength: 50,
+  },
 };
 
 export const RenameDialog: React.FC<RenameDialogProps> = function ({
@@ -94,6 +102,9 @@ export const RenameDialog: React.FC<RenameDialogProps> = function ({
     // Stop propagating events from the dialog
     e.stopPropagation();
   }, []);
+  const handleNameChange = useCallback<
+    React.ChangeEventHandler<HTMLInputElement>
+  >((e) => setFormName(e.currentTarget.value), []);
 
   useEffect(() => {
     if (open) {
@@ -123,12 +134,12 @@ export const RenameDialog: React.FC<RenameDialogProps> = function ({
           required
           margin="dense"
           label={t('renameDialog.name', 'Name')}
+          slotProps={nameTextFieldSlotProps}
           type="text"
           fullWidth
           variant="standard"
           value={formName}
-          onChange={(e) => setFormName(e.currentTarget.value)}
-          inputProps={{ maxLength: 50 }}
+          onChange={handleNameChange}
           inputRef={(input) => {
             if (input) {
               // Ensure it only focuses and selects the first time the dialog opens

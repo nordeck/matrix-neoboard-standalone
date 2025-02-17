@@ -47,7 +47,8 @@
     "title": "Delete NeoBoard"
   },
   "header": {
-    "dashboard": "Go back to the dashboard"
+    "dashboard": "Go back to the dashboard",
+    "renameBoard": "Click to rename"
   },
   "invitesDialog": {
     "accept": "Accept invite",
