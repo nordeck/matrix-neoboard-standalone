@@ -19,6 +19,7 @@
 import { styled } from '@mui/material';
 import { Suspense } from 'react';
 import { useTranslation } from 'react-i18next';
+import { Link } from 'react-router';
 import ErrorBoundary from '../ErrorBoundary';
 import { InvitesMenu } from './InvitesMenu';
 import { NeoBoardIcon } from './NeoBoardIcon';
@@ -49,24 +50,24 @@ const MenuWrapper = styled('div')(() => ({
 
 type HeaderProps = {
   title: string;
-  onLogoClick: () => void;
   selectedRoomId?: string;
 };
 
-export function Header({ onLogoClick, title, selectedRoomId }: HeaderProps) {
+export function Header({ title, selectedRoomId }: HeaderProps) {
   const { t } = useTranslation();
 
   return (
     <StyledHeader>
       <TitleWrapper>
-        <div
-          style={{ cursor: 'pointer' }}
-          role="button"
-          onClick={onLogoClick}
-          aria-label={t('header.dashboard', 'Go back to the dashboard')}
-        >
-          <NeoBoardIcon onClick={onLogoClick} />
-        </div>
+        <Link to="/dashboard">
+          <div
+            style={{ cursor: 'pointer' }}
+            role="button"
+            aria-label={t('header.dashboard', 'Go back to the dashboard')}
+          >
+            <NeoBoardIcon />
+          </div>
+        </Link>
         <Title title={title} selectedRoomId={selectedRoomId} />
       </TitleWrapper>
       <MenuWrapper>

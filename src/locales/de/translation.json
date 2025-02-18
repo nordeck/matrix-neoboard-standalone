@@ -10,6 +10,10 @@
   "app": {
     "cancel": "Abbrechen"
   },
+  "boardNotFound": {
+    "link": "Zum Dashboard",
+    "message": "Board nicht gefunden"
+  },
   "copyableTextButton": {
     "copy-to-clipboard": "In die Zwischenablage kopieren"
   },

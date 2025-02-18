@@ -16,28 +16,27 @@
  * along with NeoBoard Standalone. If not, see <https://www.gnu.org/licenses/>.
  */
 
+import { Link } from 'react-router';
 import { BoardTile } from './BoardTile.tsx';
 import { CreateBoardTile } from './CreateBoardTile.tsx';
 import { DashboardOptions } from './DashboardOptions.tsx';
 import { TilesContainer } from './TilesContainer.tsx';
 import type { DashboardViewProps } from './useDashboardView.tsx';
 
-export function DashboardTileView({
-  items,
-  onCreate,
-  onSelect,
-}: DashboardViewProps) {
+export function DashboardTileView({ items, onCreate }: DashboardViewProps) {
   return (
     <>
       <DashboardOptions />
       <TilesContainer>
         <CreateBoardTile onClick={onCreate} />
         {items.map((dashboardItem) => (
-          <BoardTile
+          <Link
             key={dashboardItem.roomId}
-            dashboardItem={dashboardItem}
-            onClick={() => onSelect(dashboardItem)}
-          />
+            to={`/board/${dashboardItem.roomId}`}
+            style={{ textDecoration: 'none' }}
+          >
+            <BoardTile dashboardItem={dashboardItem} />
+          </Link>
         ))}
       </TilesContainer>
     </>

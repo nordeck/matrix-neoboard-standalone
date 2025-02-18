@@ -22,7 +22,11 @@ import {
   connectionInfoReducer,
   shapeSizesReducer,
 } from '@nordeck/matrix-neoboard-react-sdk';
-import { autoBatchEnhancer, configureStore } from '@reduxjs/toolkit';
+import {
+  autoBatchEnhancer,
+  configureStore,
+  Middleware,
+} from '@reduxjs/toolkit';
 import { StandaloneApi } from '../toolkit/standalone';
 import { dashboardReducer } from './dashboard/dashboardSlice';
 import { saveDashboardState } from './dashboard/persistence';
@@ -67,7 +71,7 @@ export function createStore({
             widgetApi,
           } as ThunkExtraArgument,
         },
-      }).concat(loggerMiddleware, baseApi.middleware),
+      }).concat(...([loggerMiddleware, baseApi.middleware] as Middleware[])),
     enhancers: (getDefaultEnhancers) =>
       getDefaultEnhancers().concat(
         autoBatchEnhancer(

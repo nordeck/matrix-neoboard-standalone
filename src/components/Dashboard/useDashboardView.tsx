@@ -27,14 +27,12 @@ export type CreateBoardItemProps = {
 };
 
 export type BoardItemProps = {
-  onClick: () => void;
   dashboardItem: DashboardItem;
 };
 
 export type DashboardViewProps = {
   items: DashboardItem[];
   onCreate: () => Promise<void>;
-  onSelect: (item: DashboardItem) => void;
 };
 
 export const useDashboardView = (): React.FC<DashboardViewProps> => {
