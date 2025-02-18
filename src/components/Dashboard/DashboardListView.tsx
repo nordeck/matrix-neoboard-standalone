@@ -24,9 +24,6 @@ import type { DashboardViewProps } from './useDashboardView.tsx';
 const StyledTable = styled('table')(({ theme }) => ({
   width: '100%',
   borderCollapse: 'collapse',
-  td: {
-    padding: theme.spacing(2, 3),
-  },
   th: {
     textAlign: 'left',
     padding: theme.spacing(2, 3),
@@ -36,11 +33,7 @@ const StyledTable = styled('table')(({ theme }) => ({
   },
 }));
 
-export function DashboardListView({
-  items,
-  onCreate,
-  onSelect,
-}: DashboardViewProps) {
+export function DashboardListView({ items, onCreate }: DashboardViewProps) {
   return (
     <>
       <Stack direction="row" alignItems="center">
@@ -56,7 +49,6 @@ export function DashboardListView({
             <BoardListItem
               key={dashboardItem.roomId}
               dashboardItem={dashboardItem}
-              onClick={() => onSelect(dashboardItem)}
             />
           ))}
         </tbody>

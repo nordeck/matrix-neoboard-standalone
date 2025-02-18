@@ -32,11 +32,10 @@ import { TileMenu } from './TileMenu';
 import { DashboardItem } from './useDashboardList';
 
 type BoardTileProps = {
-  onClick: () => void;
   dashboardItem: DashboardItem;
 };
 
-export function BoardTile({ onClick, dashboardItem }: BoardTileProps) {
+export function BoardTile({ dashboardItem }: BoardTileProps) {
   const { t } = useTranslation();
 
   const hasTileMenu =
@@ -44,8 +43,8 @@ export function BoardTile({ onClick, dashboardItem }: BoardTileProps) {
     dashboardItem.permissions.canSendTombstone;
 
   return (
-    <Card sx={{ width: '14.5rem' }}>
-      <CardActionArea component="div" onClick={onClick}>
+    <Card sx={{ textDecoration: 'none', width: '14.5rem' }}>
+      <CardActionArea component="div">
         <CardMedia component="div">
           <Thumbnail aria-hidden="true">
             <BoardPreview preview={dashboardItem.preview} />
