@@ -16,21 +16,19 @@
 
 import { useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router';
 import { useLoggedIn } from '../../state';
 import { DashboardContainer } from './DashboardContainer.tsx';
 import { createWhiteboard } from './createWhiteboard.ts';
-import { DashboardItem, useDashboardList } from './useDashboardList.ts';
+import { useDashboardList } from './useDashboardList.ts';
 import { useDashboardView } from './useDashboardView.tsx';
 
-type DashboardProps = {
-  setSelectedRoomId: (roomId: string) => void;
-};
-
-export function Dashboard({ setSelectedRoomId }: DashboardProps) {
+export function Dashboard() {
   const { t } = useTranslation();
   const { standaloneClient } = useLoggedIn();
   const dashboardItems = useDashboardList();
   const DashboardView = useDashboardView();
+  const navigate = useNavigate();
 
   return (
     <DashboardContainer>
@@ -41,15 +39,8 @@ export function Dashboard({ setSelectedRoomId }: DashboardProps) {
             standaloneClient,
             t('dashboard.untitled', 'Untitled'),
           );
-          setSelectedRoomId(roomId);
-        }, [setSelectedRoomId, standaloneClient, t])}
-        onSelect={useCallback(
-          (dashboardItem: DashboardItem) => {
-            const roomId = dashboardItem.roomId;
-            setSelectedRoomId(roomId);
-          },
-          [setSelectedRoomId],
-        )}
+          navigate(`/board/${roomId}`);
+        }, [standaloneClient, t, navigate])}
       />
     </DashboardContainer>
   );

@@ -10,6 +10,10 @@
   "app": {
     "cancel": "Cancel"
   },
+  "boardNotFound": {
+    "link": "Go to dashboard",
+    "message": "Board not found"
+  },
   "copyableTextButton": {
     "copy-to-clipboard": "Copy to clipboard"
   },
