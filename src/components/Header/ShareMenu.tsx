@@ -32,7 +32,7 @@ import useSWR from 'swr';
 import { useLoggedIn } from '../../state';
 import { ShareMenuModal } from './ShareMenuModal';
 
-export function ShareMenu({ selectedRoomId }: { selectedRoomId: string }) {
+export function ShareMenu({ roomId }: { roomId: string }) {
   const { t } = useTranslation();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
@@ -57,7 +57,7 @@ export function ShareMenu({ selectedRoomId }: { selectedRoomId: string }) {
   // Get the powerlevel event so we can calculate if the menu is shown. We do this inside of here so it only happens when we are in the room.
   const client = useLoggedIn();
   const { data } = useSWR<PowerLevelsStateEvent[]>(
-    selectedRoomId,
+    roomId,
     client.standaloneClient.getPowerLevelEvent.bind(client.standaloneClient),
     { suspense: true },
   );
@@ -78,7 +78,7 @@ export function ShareMenu({ selectedRoomId }: { selectedRoomId: string }) {
       <ShareMenuModal
         onClose={handleClose}
         open={inviteDialogOpen}
-        selectedRoomId={selectedRoomId}
+        selectedRoomId={roomId}
       />
       <IconButton
         onClick={handleClick}

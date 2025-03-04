@@ -16,22 +16,20 @@
 
 import { isEqual } from 'lodash';
 import { useMemo } from 'react';
-import { useNavigate } from 'react-router';
 import { useLoggedIn } from '../../state';
-import { useSelectedRoom } from '../../state/useSelectedRoom';
 import {
   makeSelectWhiteboards,
   selectSortBy,
   useAppSelector,
 } from '../../store';
+import { useOpenedRoomId } from '../RoomIdProvider';
 import { BoardNotFound } from './BoardNotFound';
 import { BoardView } from './BoardView';
 
 export const BoardViewWrapper = () => {
-  const { selectedRoomId } = useSelectedRoom();
+  const roomId = useOpenedRoomId();
   const { userId } = useLoggedIn();
   const sortBy = useAppSelector((state) => selectSortBy(state));
-  const navigate = useNavigate();
   const selectWhiteboards = useMemo(
     () => makeSelectWhiteboards(userId, sortBy),
     [sortBy, userId],
@@ -42,12 +40,8 @@ export const BoardViewWrapper = () => {
     isEqual,
   );
 
-  if (!selectedRoomId) {
-    navigate('/dashboard');
-  }
-
   const whiteboardEvent = whiteboards.find(
-    (w) => w.whiteboard.room_id === selectedRoomId,
+    (w) => w.whiteboard.room_id === roomId,
   );
 
   return whiteboardEvent ? <BoardView /> : <BoardNotFound />;

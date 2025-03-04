@@ -51,22 +51,22 @@ const EditableTitle = styled('button')(({ theme }) => ({
 
 type TitleProps = {
   title: string;
-  selectedRoomId?: string;
+  roomId?: string;
 };
 
-export function Title({ title, selectedRoomId }: TitleProps) {
+export function Title({ title, roomId }: TitleProps) {
   const { t } = useTranslation();
   const [renameDialogOpen, setRenameDialogOpen] = useState(false);
   const dashboardList = useDashboardList();
   const roomItem = useMemo(
-    () => dashboardList.find((item) => item.roomId === selectedRoomId),
-    [dashboardList, selectedRoomId],
+    () => dashboardList.find((item) => item.roomId === roomId),
+    [dashboardList, roomId],
   );
   const canEditName = !!roomItem?.permissions.canChangeName;
 
   useEffect(() => {
     setRenameDialogOpen(false);
-  }, [selectedRoomId]);
+  }, [roomId]);
 
   const handleOpenRenameDialog = useCallback(
     () => setRenameDialogOpen(true),
@@ -80,7 +80,7 @@ export function Title({ title, selectedRoomId }: TitleProps) {
   return (
     <>
       <StyledTitle>
-        {selectedRoomId && canEditName ? (
+        {roomId && canEditName ? (
           <Tooltip title={t('header.renameBoard', 'Click to rename')}>
             <EditableTitle onClick={handleOpenRenameDialog}>
               {title}
@@ -90,11 +90,11 @@ export function Title({ title, selectedRoomId }: TitleProps) {
           title
         )}
       </StyledTitle>
-      {selectedRoomId && (
+      {roomId && (
         <RenameDialog
           item={{
             name: title,
-            roomId: selectedRoomId,
+            roomId,
           }}
           onClose={handleCloseRenameDialog}
           open={renameDialogOpen}
