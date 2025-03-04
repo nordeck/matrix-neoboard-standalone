@@ -221,6 +221,23 @@ jobs:
           args: |
             kubectl rollout restart deployment matrix-neoboard-standalone -n matrix
 
+      # inifinite canvas
+      - name: deploy k8s to cluster
+        uses: wahyd4/kubectl-helm-action@master
+        env:
+          KUBE_CONFIG_DATA: ${{ secrets.KUBECONFIG_RANCHER_DEV_DEMO }}
+        with:
+          args: |
+            helm upgrade --install matrix-neoboard-standalone-infinite-canvas ./charts/matrix-neoboard-standalone -f ./valhalla/cluster/neotoolsuite-dev/matrix-neoboard-standalone/values.infinite-canvas.yaml  -n matrix
+
+      - name: restart rollout
+        uses: wahyd4/kubectl-helm-action@master
+        env:
+          KUBE_CONFIG_DATA: ${{ secrets.KUBECONFIG_RANCHER_DEV_DEMO }}
+        with:
+          args: |
+            kubectl rollout restart deployment matrix-neoboard-standalone-infinite-canvas -n matrix
+
   helm-lint-test:
     runs-on: ubuntu-latest
     needs: build
