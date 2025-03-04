@@ -191,6 +191,7 @@ jobs:
           ref: dev
           sparse-checkout: |
             /cluster/neotoolsuite-dev/matrix-neoboard-standalone/values.dev.yaml
+            /cluster/neotoolsuite-dev/matrix-neoboard-standalone/values.infinite-canvas.yaml
           sparse-checkout-cone-mode: false
           repository: nordeck/valhalla
           token: ${{ secrets.PACKAGE_TOKEN }}
