@@ -15,29 +15,19 @@
  */
 
 import { WidgetParameters } from '@matrix-widget-toolkit/api';
+import { MuiWidgetApiProvider } from '@matrix-widget-toolkit/mui';
 import { styled } from '@mui/material';
-import {
-  DraggableStyles,
-  powerLevelsApi,
-  roomNameApi,
-  useWhiteboardManager,
-  whiteboardApi,
-} from '@nordeck/matrix-neoboard-react-sdk';
-import loglevel from 'loglevel';
-import { useCallback, useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useLocation, useNavigate } from 'react-router';
 import { useLoggedIn } from '../../state';
-import { useSelectedRoom } from '../../state/useSelectedRoom';
-import { useAppDispatch } from '../../store';
 import { useGetAllRoomNameEventsQuery } from '../../store/api/roomNameApi';
 import {
   StandaloneApiImpl,
-  StandaloneWidgetApi,
   StandaloneWidgetApiImpl,
 } from '../../toolkit/standalone';
 import { Header } from '../Header';
-import { useSaveOnLeave } from './useSaveOnLeave';
+import { useRoomId } from '../RoomIdProvider';
+import { StandaloneWidgetApiProvider } from '../StandaloneWidgetApiProvider';
 
 const Wrapper = styled('div')(({ theme }) => ({
   backgroundColor: theme.palette.background.chrome,
@@ -54,121 +44,66 @@ const ContentWrapper = styled('div')(() => ({
 export const LoggedInLayout: React.FC<React.PropsWithChildren<{}>> = ({
   children,
 }) => {
-  const { selectedRoomId } = useSelectedRoom();
+  const roomId = useRoomId();
   const { i18n } = useTranslation();
-  const { homeserverUrl, resolveWidgetApi, standaloneClient, userId } =
-    useLoggedIn();
-  const [widgetApi, setWidgetApi] = useState<StandaloneWidgetApi>();
-  const whiteboardManager = useWhiteboardManager();
-  const location = useLocation();
-  const navigate = useNavigate();
-  const dispatch = useAppDispatch();
-
-  const clearWhiteboard = useCallback(() => {
-    try {
-      whiteboardManager.clear();
-    } catch (error) {
-      loglevel.error('Error while clearing the whiteboard on leave', error);
-    }
-  }, [whiteboardManager]);
-
-  const { elements: saveOnLeaveElements, persist } = useSaveOnLeave({
-    onConfirmError: clearWhiteboard,
-  });
-
-  useEffect(() => {
-    const handleDashboardNavigation = async () => {
-      if (location.pathname === '/dashboard') {
-        const whiteboard = whiteboardManager.getActiveWhiteboardInstance();
-        if (whiteboard !== undefined) {
-          try {
-            await persist(whiteboard);
-          } catch (error) {
-            console.error('Error persisting whiteboard:', error);
-            return;
-          }
-        }
-        clearWhiteboard();
-      }
-    };
-
-    handleDashboardNavigation();
-  }, [location.pathname, whiteboardManager, persist, clearWhiteboard]);
+  const {
+    homeserverUrl,
+    resolveWidgetApi,
+    standaloneClient,
+    userId,
+    widgetApiPromise,
+  } = useLoggedIn();
 
   const { data: roomNameState } = useGetAllRoomNameEventsQuery();
   const title =
-    selectedRoomId === undefined
+    roomId === undefined
       ? 'neoboard'
-      : (roomNameState?.entities[selectedRoomId]?.content.name ?? 'neoboard');
+      : (roomNameState?.entities[roomId]?.content.name ?? 'neoboard');
 
   useEffect(() => {
-    if (selectedRoomId === undefined) {
-      return;
-    }
+    /**
+     * Sets a room id to a custom no room value.
+     * A particular value is not used by dashboard and can be undefined, but
+     * is needs to be defined currently to be used together with MuiWidgetApiProvider
+     * to leverage it's loading, error handling and other features, otherwise repair screen
+     * will be shown.
+     */
+    const roomId = '!no-room';
 
-    if (widgetApi === undefined) {
-      const widgetParameters: WidgetParameters = {
-        userId,
-        displayName: '',
-        avatarUrl: '',
-        roomId: selectedRoomId,
-        theme: 'light',
-        clientId: 'net.nordeck.matrix_neoboard_standalone',
-        clientLanguage: i18n.language,
-        baseUrl: homeserverUrl,
-        isOpenedByClient: false,
-      };
+    const widgetParameters: WidgetParameters = {
+      userId,
+      displayName: '',
+      avatarUrl: '',
+      roomId,
+      theme: 'light',
+      clientId: 'net.nordeck.matrix_neoboard_standalone',
+      clientLanguage: i18n.language,
+      baseUrl: homeserverUrl,
+      isOpenedByClient: false,
+    };
 
-      const widgetApi = new StandaloneWidgetApiImpl(
-        new StandaloneApiImpl(standaloneClient),
-        'widgetId',
-        widgetParameters,
-      );
-
-      resolveWidgetApi(widgetApi);
-      setWidgetApi(widgetApi);
-      return;
-    }
-
-    widgetApi.overrideWidgetParameters({
-      roomId: selectedRoomId,
-    });
-
-    // Force refetch room widget related endpoints
-    dispatch(
-      powerLevelsApi.endpoints.getPowerLevels.initiate(undefined, {
-        forceRefetch: true,
-      }),
+    const widgetApi = new StandaloneWidgetApiImpl(
+      new StandaloneApiImpl(standaloneClient),
+      'widgetId',
+      widgetParameters,
     );
-    dispatch(
-      roomNameApi.endpoints.getRoomName.initiate(undefined, {
-        forceRefetch: true,
-      }),
-    );
-    dispatch(
-      whiteboardApi.endpoints.getWhiteboards.initiate(undefined, {
-        forceRefetch: true,
-      }),
-    );
+
+    resolveWidgetApi(widgetApi);
   }, [
-    dispatch,
-    navigate,
     homeserverUrl,
     i18n.language,
     resolveWidgetApi,
-    selectedRoomId,
     standaloneClient,
     userId,
-    widgetApi,
   ]);
 
   return (
     <Wrapper>
-      <Header title={title} selectedRoomId={selectedRoomId} />
+      <Header title={title} roomId={roomId} />
       <ContentWrapper role="main">
-        {saveOnLeaveElements}
-        <DraggableStyles />
-        {children}
+        <MuiWidgetApiProvider widgetApiPromise={widgetApiPromise}>
+          <StandaloneWidgetApiProvider>{children}</StandaloneWidgetApiProvider>
+        </MuiWidgetApiProvider>
       </ContentWrapper>
     </Wrapper>
   );

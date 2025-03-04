@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+import { StateEvent } from '@matrix-widget-toolkit/api';
+import { Whiteboard } from '@nordeck/matrix-neoboard-react-sdk';
 import { isEqual } from 'lodash';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { formatTimeAgo } from '../../lib';
@@ -53,6 +55,10 @@ export type DashboardItem = {
    * List of user IDs or null if unavailable.
    */
   users: string[] | null;
+  /**
+   * Whiteboard state event
+   */
+  whiteboard: StateEvent<Whiteboard>;
 };
 
 /**
@@ -107,6 +113,7 @@ function mapWhiteboardToDashboardItem(
     permissions: calculateWhiteboardPermissions(whiteboard.powerLevels, userId),
     preview: whiteboard.preview ?? '',
     users: calculateWhiteboardUserlist(whiteboard.powerLevels),
+    whiteboard: whiteboard.whiteboard,
   };
 }
 

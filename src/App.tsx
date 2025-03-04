@@ -19,11 +19,11 @@ import './App.css';
 import { BoardViewWrapper } from './components/BoardView';
 import { Dashboard } from './components/Dashboard';
 import { LoggedInLayout } from './components/LoggedInLayout';
+import { RoomIdProvider } from './components/RoomIdProvider';
 import { StandaloneThemeProvider } from './components/StandaloneThemeProvider';
 import { StartingView } from './components/StartingView';
 import { WelcomePane } from './components/Welcome/WelcomePane';
 import { LoggedInProvider, useApplicationState } from './state';
-import { SelectedRoomProvider } from './state/useSelectedRoom';
 
 export const App = () => {
   const { lifecycleState } = useApplicationState();
@@ -64,11 +64,11 @@ function ProtectedRoutes() {
 
   return (
     <LoggedInProvider loggedInState={applicationState.state}>
-      <SelectedRoomProvider>
+      <RoomIdProvider>
         <LoggedInLayout>
           <Outlet />
         </LoggedInLayout>
-      </SelectedRoomProvider>
+      </RoomIdProvider>
     </LoggedInProvider>
   );
 }
