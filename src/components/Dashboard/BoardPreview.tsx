@@ -16,25 +16,70 @@
  * along with NeoBoard Standalone. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import React, { useEffect } from 'react';
-import { NoBoardPreview } from './NoBoardPreview';
+import { StateEvent } from '@matrix-widget-toolkit/api';
+import {
+  createWhiteboardManager,
+  SlidePreview,
+  SlideProvider,
+  SlideSkeleton,
+  useActiveWhiteboardInstanceSlideIds,
+  Whiteboard,
+  WhiteboardHotkeysProvider,
+  WhiteboardManager,
+  WhiteboardManagerProvider,
+} from '@nordeck/matrix-neoboard-react-sdk';
+import { first } from 'lodash';
+import React, { useEffect, useState } from 'react';
+import { useStore } from 'react-redux';
+import { useLoggedIn } from '../../state';
+import { NoBoardPreview } from './NoBoardPreview.tsx';
 
 interface BoardPreviewProps {
-  preview: string | undefined;
+  whiteboard: StateEvent<Whiteboard>;
 }
 
-export const BoardPreview: React.FC<BoardPreviewProps> = ({ preview }) => {
-  const hasPreview = preview && preview.length > 0;
+export const BoardPreview: React.FC<BoardPreviewProps> = ({ whiteboard }) => {
+  const store = useStore();
+  const { userId, widgetApiPromise } = useLoggedIn();
+
+  const [whiteboardManager, setWhiteboardManager] =
+    useState<WhiteboardManager>();
 
   useEffect(() => {
-    if (hasPreview) {
-      throw new Error('Not implemented yet');
-    }
-  }, [preview, hasPreview]);
+    const manager = createWhiteboardManager(store, widgetApiPromise, true);
+    manager.selectActiveWhiteboardInstance(whiteboard, userId);
+    setWhiteboardManager(manager);
+    return () => {
+      manager.clear();
+    };
+  }, [store, userId, widgetApiPromise, whiteboard]);
 
-  if (hasPreview) {
-    return <></>;
+  return (
+    <>
+      {whiteboardManager ? (
+        <WhiteboardManagerProvider whiteboardManager={whiteboardManager}>
+          <BoardSlidePreview />
+        </WhiteboardManagerProvider>
+      ) : (
+        <SlideSkeleton />
+      )}
+    </>
+  );
+};
+
+export function BoardSlidePreview() {
+  const slideIds = useActiveWhiteboardInstanceSlideIds();
+  const slideId = first(slideIds);
+
+  if (!slideId) {
+    return <NoBoardPreview />;
   }
 
-  return <NoBoardPreview />;
-};
+  return (
+    <WhiteboardHotkeysProvider>
+      <SlideProvider slideId={slideId}>
+        <SlidePreview />
+      </SlideProvider>
+    </WhiteboardHotkeysProvider>
+  );
+}

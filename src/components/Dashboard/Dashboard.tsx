@@ -32,18 +32,17 @@ export function Dashboard() {
   const DashboardView = useDashboardView();
   const navigate = useNavigate();
 
+  const handleCreate = useCallback(async () => {
+    const roomId = await createWhiteboard(
+      standaloneClient,
+      t('dashboard.untitled', 'Untitled'),
+    );
+    navigate(`/board/${roomId}`);
+  }, [standaloneClient, t, navigate]);
+
   return (
     <DashboardContainer>
-      <DashboardView
-        items={dashboardItems}
-        onCreate={useCallback(async () => {
-          const roomId = await createWhiteboard(
-            standaloneClient,
-            t('dashboard.untitled', 'Untitled'),
-          );
-          navigate(`/board/${roomId}`);
-        }, [standaloneClient, t, navigate])}
-      />
+      <DashboardView items={dashboardItems} onCreate={handleCreate} />
     </DashboardContainer>
   );
 }

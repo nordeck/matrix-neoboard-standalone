@@ -67,7 +67,7 @@ export function BoardListItem({ dashboardItem }: BoardItemProps) {
             divider={false}
             style={{ width: '10rem' }}
           >
-            <BoardPreview preview={dashboardItem.preview} />
+            <BoardPreview whiteboard={dashboardItem.whiteboard} />
           </Thumbnail>
         </UnstyledLink>
       </td>
@@ -129,6 +129,7 @@ function UnstyledLink({
   dashboardItem,
 }: PropsWithChildren<{ dashboardItem: DashboardItem }>) {
   const theme = useTheme();
+
   return (
     <Link
       key={dashboardItem.roomId}

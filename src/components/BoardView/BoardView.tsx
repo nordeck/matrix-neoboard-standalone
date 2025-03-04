@@ -16,55 +16,109 @@
  * along with NeoBoard Standalone. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { MuiWidgetApiProvider } from '@matrix-widget-toolkit/mui';
 import {
   ConnectionStateDialog,
   ConnectionStateProvider,
+  DraggableStyles,
   FontsLoadedContextProvider,
   GuidedTourProvider,
   LayoutStateProvider,
   App as NeoboardApp,
-  PageLoader,
   Snackbar,
   SnackbarProvider,
   WhiteboardHotkeysProvider,
+  powerLevelsApi,
+  roomNameApi,
+  useWhiteboardManager,
+  whiteboardApi,
 } from '@nordeck/matrix-neoboard-react-sdk';
-import { Suspense } from 'react';
-import { useLoggedIn } from '../../state';
+import loglevel from 'loglevel';
+import { useCallback, useEffect } from 'react';
+import { useAppDispatch } from '../../store';
+import { useSaveOnLeave } from '../LoggedInLayout/useSaveOnLeave.tsx';
+import { useOpenedRoomId } from '../RoomIdProvider';
 import { SnapshotLoadStateDialog } from '../SnapshotLoadStateDialog/SnapshotLoadStateDialog';
+import { useStandaloneWidgetApi } from '../StandaloneWidgetApiProvider';
 
 export const BoardView = () => {
-  const { widgetApiPromise } = useLoggedIn();
+  const dispatch = useAppDispatch();
+  const roomId = useOpenedRoomId();
+  const whiteboardManager = useWhiteboardManager();
+  const standaloneWidgetApi = useStandaloneWidgetApi();
+
+  useEffect(() => {
+    // override a widget room id
+    standaloneWidgetApi.overrideWidgetParameters({ roomId });
+
+    // Force refetch room widget related endpoints
+    dispatch(
+      powerLevelsApi.endpoints.getPowerLevels.initiate(undefined, {
+        forceRefetch: true,
+      }),
+    );
+    dispatch(
+      roomNameApi.endpoints.getRoomName.initiate(undefined, {
+        forceRefetch: true,
+      }),
+    );
+    dispatch(
+      whiteboardApi.endpoints.getWhiteboards.initiate(undefined, {
+        forceRefetch: true,
+      }),
+    );
+  }, [roomId, standaloneWidgetApi, dispatch]);
+
+  const clearWhiteboard = useCallback(() => {
+    try {
+      whiteboardManager.clear();
+    } catch (error) {
+      loglevel.error('Error while clearing the whiteboard on leave', error);
+    }
+  }, [whiteboardManager]);
+
+  const { elements: saveOnLeaveElements, persist } = useSaveOnLeave({
+    onConfirmError: clearWhiteboard,
+  });
+
+  useEffect(() => {
+    const handleClear = async () => {
+      const whiteboard = whiteboardManager.getActiveWhiteboardInstance();
+      if (whiteboard !== undefined) {
+        try {
+          await persist(whiteboard);
+        } catch (error) {
+          console.error('Error persisting whiteboard:', error);
+          return;
+        }
+      }
+      clearWhiteboard();
+    };
+
+    return () => {
+      handleClear();
+    };
+  }, [whiteboardManager, persist, clearWhiteboard]);
 
   return (
-    <Suspense fallback={<PageLoader />}>
-      <MuiWidgetApiProvider
-        widgetApiPromise={widgetApiPromise}
-        widgetRegistration={{
-          name: 'NeoBoard',
-          // "pad" suffix to get a custom icon
-          type: 'net.nordeck.whiteboard:pad',
-        }}
-      >
-        <FontsLoadedContextProvider>
-          <LayoutStateProvider>
-            <WhiteboardHotkeysProvider>
-              <GuidedTourProvider>
-                <SnackbarProvider>
-                  <Snackbar />
-                  <ConnectionStateProvider>
-                    <ConnectionStateDialog />
-                    <SnapshotLoadStateDialog />
-                    <NeoboardApp
-                      layoutProps={{ height: 'calc(90vh - 25px)' }}
-                    />
-                  </ConnectionStateProvider>
-                </SnackbarProvider>
-              </GuidedTourProvider>
-            </WhiteboardHotkeysProvider>
-          </LayoutStateProvider>
-        </FontsLoadedContextProvider>
-      </MuiWidgetApiProvider>
-    </Suspense>
+    <>
+      {saveOnLeaveElements}
+      <DraggableStyles />
+      <FontsLoadedContextProvider>
+        <LayoutStateProvider>
+          <WhiteboardHotkeysProvider>
+            <GuidedTourProvider>
+              <SnackbarProvider>
+                <Snackbar />
+                <ConnectionStateProvider>
+                  <ConnectionStateDialog />
+                  <SnapshotLoadStateDialog />
+                  <NeoboardApp layoutProps={{ height: 'calc(90vh - 25px)' }} />
+                </ConnectionStateProvider>
+              </SnackbarProvider>
+            </GuidedTourProvider>
+          </WhiteboardHotkeysProvider>
+        </LayoutStateProvider>
+      </FontsLoadedContextProvider>
+    </>
   );
 };

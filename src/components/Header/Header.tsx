@@ -50,10 +50,10 @@ const MenuWrapper = styled('div')(() => ({
 
 type HeaderProps = {
   title: string;
-  selectedRoomId?: string;
+  roomId?: string;
 };
 
-export function Header({ title, selectedRoomId }: HeaderProps) {
+export function Header({ title, roomId }: HeaderProps) {
   const { t } = useTranslation();
 
   return (
@@ -68,13 +68,13 @@ export function Header({ title, selectedRoomId }: HeaderProps) {
             <NeoBoardIcon />
           </div>
         </Link>
-        <Title title={title} selectedRoomId={selectedRoomId} />
+        <Title title={title} roomId={roomId} />
       </TitleWrapper>
       <MenuWrapper>
-        {selectedRoomId && (
+        {roomId && (
           <ErrorBoundary>
             <Suspense fallback={null}>
-              <ShareMenu selectedRoomId={selectedRoomId} />
+              <ShareMenu roomId={roomId} />
             </Suspense>
           </ErrorBoundary>
         )}

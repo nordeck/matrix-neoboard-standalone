@@ -49,7 +49,7 @@ export function BoardTile({ dashboardItem }: BoardTileProps) {
       <CardActionArea component="div">
         <CardMedia component="div">
           <Thumbnail aria-hidden="true">
-            <BoardPreview preview={dashboardItem.preview} />
+            <BoardPreview whiteboard={dashboardItem.whiteboard} />
           </Thumbnail>
         </CardMedia>
         <CardContent>
