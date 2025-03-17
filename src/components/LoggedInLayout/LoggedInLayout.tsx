@@ -32,13 +32,6 @@ import { StandaloneWidgetApiProvider } from '../StandaloneWidgetApiProvider';
 const Wrapper = styled('div')(({ theme }) => ({
   backgroundColor: theme.palette.background.chrome,
   height: '100vh',
-  paddingLeft: '25px',
-  paddingRight: '25px',
-  paddingBottom: '25px',
-}));
-
-const ContentWrapper = styled('div')(() => ({
-  borderRadius: '8px',
 }));
 
 export const LoggedInLayout: React.FC<React.PropsWithChildren<{}>> = ({
@@ -100,11 +93,11 @@ export const LoggedInLayout: React.FC<React.PropsWithChildren<{}>> = ({
   return (
     <Wrapper>
       <Header title={title} roomId={roomId} />
-      <ContentWrapper role="main">
+      <div role="main">
         <MuiWidgetApiProvider widgetApiPromise={widgetApiPromise}>
           <StandaloneWidgetApiProvider>{children}</StandaloneWidgetApiProvider>
         </MuiWidgetApiProvider>
-      </ContentWrapper>
+      </div>
     </Wrapper>
   );
 };

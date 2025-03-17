@@ -31,6 +31,8 @@ const StyledHeader = styled('nav')(() => ({
   gap: '16px',
   paddingBottom: '34px',
   paddingTop: '34px',
+  paddingLeft: '25px',
+  paddingRight: '25px',
   height: '10vh',
 }));
 
