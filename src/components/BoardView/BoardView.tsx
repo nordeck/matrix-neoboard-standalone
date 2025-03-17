@@ -110,7 +110,7 @@ export const BoardView = () => {
                 <ConnectionStateProvider>
                   <ConnectionStateDialog />
                   <SnapshotLoadStateDialog />
-                  <NeoboardApp layoutProps={{ height: 'calc(90vh - 25px)' }} />
+                  <NeoboardApp layoutProps={{ height: '90vh' }} />
                 </ConnectionStateProvider>
               </SnackbarProvider>
             </GuidedTourProvider>
