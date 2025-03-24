@@ -25,14 +25,20 @@ import {
 import { useSnapshotLoadState } from '@nordeck/matrix-neoboard-react-sdk';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router';
 
 export const SnapshotLoadStateDialog: React.FC = () => {
   const { t } = useTranslation();
   const { snapshotLoadDialogOpen } = useSnapshotLoadState();
+  const navigate = useNavigate();
 
   if (!snapshotLoadDialogOpen) {
     return null;
   }
+
+  const handleGoBack = () => {
+    navigate('/dashboard');
+  };
 
   return (
     <Dialog open={true} disableEscapeKeyDown={true}>
@@ -48,7 +54,7 @@ export const SnapshotLoadStateDialog: React.FC = () => {
         </DialogContentText>
       </DialogContent>
       <DialogActions>
-        <Button variant="contained" onClick={() => window.location.reload()}>
+        <Button variant="contained" onClick={handleGoBack}>
           {t('snapshotLoadState.dialog.goBackButton.label', 'Go back')}
         </Button>
       </DialogActions>
