@@ -112,7 +112,7 @@ describe('Application', () => {
     await application.start();
 
     const state = application.getStateSubject().getValue();
-    expect(state.lifecycleState).toBe('loggedOut');
+    expect(state.lifecycleState).toBe('notLoggedIn');
   });
 
   it('should resume sessions from localStorage', async () => {
@@ -179,7 +179,7 @@ describe('Application', () => {
     await application.start();
 
     const state = application.getStateSubject().getValue();
-    expect(state.lifecycleState).toBe('loggedOut');
+    expect(state.lifecycleState).toBe('notLoggedIn');
 
     expect(console.warn).toHaveBeenCalledWith(
       'Error starting from stored session',
@@ -261,7 +261,7 @@ describe('Application', () => {
     await application.start();
 
     const state = application.getStateSubject().getValue();
-    expect(state.lifecycleState).toBe('loggedOut');
+    expect(state.lifecycleState).toBe('notLoggedIn');
 
     expect(console.warn).toHaveBeenCalledWith(
       'Error completing OIDC login',

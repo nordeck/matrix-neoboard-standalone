@@ -48,11 +48,13 @@ export type LifecycleState =
   // The user is logged in
   | 'loggedIn'
   // The user is not logged in
+  | 'notLoggedIn'
+  // The user just logged out
   | 'loggedOut';
 
 export type ApplicationState =
   | {
-      lifecycleState: 'starting' | 'loggedOut';
+      lifecycleState: 'starting' | 'loggedOut' | 'notLoggedIn';
     }
   | {
       lifecycleState: 'loggedIn';
@@ -92,7 +94,7 @@ export class Application {
    * Start the application:
    * Try to log in from a stored session
    * If there is no stored session, try to complete an OIDC login.
-   * If all above fails the state is logged out.
+   * If all above fails the state is not logged in.
    */
   public async start(): Promise<void> {
     this.credentials.start();
@@ -113,7 +115,7 @@ export class Application {
       console.warn('Error completing OIDC login', error);
     }
 
-    this.state.next({ lifecycleState: 'loggedOut' });
+    this.state.next({ lifecycleState: 'notLoggedIn' });
   }
 
   public getStateSubject(): ObservableBehaviorSubject<ApplicationState> {
