@@ -30,3 +30,10 @@ build
 
 # translation helper files
 public/locales/*/translation_old.json
+
+# Playwright
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
+/playwright/.auth/

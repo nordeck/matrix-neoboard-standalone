@@ -63,6 +63,13 @@ export default defineConfig({
         '../matrix-neoboard/node_modules/pdfmake/build/',
       ],
     },
+    watch: {
+      ignored: [
+        '**/playwright/**',
+        '**/playwright-report/**',
+        '**/test-results/**',
+      ],
+    },
   },
   plugins,
   // Use the env prefix from CRA for backward compatibility.
