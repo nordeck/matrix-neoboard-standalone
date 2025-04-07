@@ -14,6 +14,7 @@ jobs:
         with:
           repository: "nordeck/opendesk-widgets-docker-compose"
           token: ${{ secrets.PACKAGE_TOKEN }}
+          path: opendesk-widgets-docker-compose
       # Update the /etc/hosts of the runner to point to the dev env
       - name: Set the required /etc/hosts entries
         run: |
@@ -33,6 +34,7 @@ jobs:
         run: yarn playwright test
       - name: Start dev env
         run: |
+          cd opendesk-widgets-docker-compose
           docker compose -f compose.mas.yaml --env-file nordeck.env up -d
           docker compose -f compose.mas.yaml --env-file nordeck.env exec synapse /bin/sh -c /scripts/start.sh
           docker compose -f compose.mas.yaml --env-file nordeck.env restart meetings-bot uvs
@@ -40,6 +42,7 @@ jobs:
           docker compose -f compose.mas.yaml --env-file nordeck.env exec mas /bin/sh -c mas-cli manage register-user --yes --username test --password pWPv3OMxEnPkLtvQ2g6L2qWTcY0UAlmHLljwDK0ZoiQZRvJ3nR2dRCKENGvDiadL --email test@example.com --no-admin --display-name test --ignore-password-complexity
           docker compose -f compose.mas.yaml --env-file nordeck.env exec mas /bin/sh -c mas-cli manage verify-email test test@example.com
           docker compose -f compose.mas.yaml --env-file nordeck.env exec mas /bin/sh -c mas-cli manage provision-all-users
+          cd ..
       - uses: actions/upload-artifact@v4
         if: ${{ !cancelled() }}
         with:
