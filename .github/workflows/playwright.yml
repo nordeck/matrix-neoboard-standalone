@@ -22,19 +22,40 @@ jobs:
           echo "127.0.0.1 neodatefix.matrix.internal neochoice.matrix.internal neoboard.matrix.internal meetings-bot.matrix.internal" | sudo tee -a /etc/hosts
           echo "127.0.0.1 meet.matrix.internal uvs.matrix.internal" | sudo tee -a /etc/hosts
           echo "127.0.0.1 livekit.matrix.internal livekit-jwt.matrix.internal turn.matrix.internal" | sudo tee -a /etc/hosts
+
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
         with:
-          node-version: lts/*
-      - name: Install dependencies
-        run: npm install -g yarn && yarn
+          repository: nordeck/matrix-neoboard
+          path: matrix-neoboard
+          ref: ${{ github.events.inputs.neoboard_ref }}
+
+      - uses: actions/checkout@v4
+        with:
+          path: matrix-neoboard-standalone
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: "matrix-neoboard-standalone/package.json"
+          cache: "yarn"
+          cache-dependency-path: |
+            matrix-neoboard-standalone/yarn.lock
+            matrix-neoboard/yarn.lock
+
+      - name: yarn install neoboard
+        working-directory: ./matrix-neoboard/
+        run: yarn install --frozen-lockfile
+
+      - name: yarn install neoboard standalone
+        working-directory: ./matrix-neoboard-standalone/
+        run: yarn install --frozen-lockfile
+
       - name: Install Playwright Browsers
+        working-directory: ./matrix-neoboard-standalone/
         run: yarn playwright install --with-deps
-      - name: Run Playwright tests
-        run: yarn playwright test
       - name: Start dev env
+        working-directory: ./opendesk-widgets-docker-compose/
         run: |
-          cd opendesk-widgets-docker-compose
           docker compose -f compose.mas.yaml --env-file nordeck.env up -d
           docker compose -f compose.mas.yaml --env-file nordeck.env exec synapse /bin/sh -c /scripts/start.sh
           docker compose -f compose.mas.yaml --env-file nordeck.env restart meetings-bot uvs
@@ -42,10 +63,12 @@ jobs:
           docker compose -f compose.mas.yaml --env-file nordeck.env exec mas /bin/sh -c mas-cli manage register-user --yes --username test --password pWPv3OMxEnPkLtvQ2g6L2qWTcY0UAlmHLljwDK0ZoiQZRvJ3nR2dRCKENGvDiadL --email test@example.com --no-admin --display-name test --ignore-password-complexity
           docker compose -f compose.mas.yaml --env-file nordeck.env exec mas /bin/sh -c mas-cli manage verify-email test test@example.com
           docker compose -f compose.mas.yaml --env-file nordeck.env exec mas /bin/sh -c mas-cli manage provision-all-users
-          cd ..
+      - name: Run Playwright tests
+        working-directory: ./matrix-neoboard-standalone/
+        run: yarn playwright test
       - uses: actions/upload-artifact@v4
         if: ${{ !cancelled() }}
         with:
           name: playwright-report
-          path: playwright-report/
+          path: ./matrix-neoboard-standalone/playwright-report/
           retention-days: 30
