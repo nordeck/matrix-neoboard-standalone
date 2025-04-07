@@ -140,6 +140,6 @@ export default defineConfig({
     command: 'yarn dev:https',
     url: 'https://localhost:5173/',
     ignoreHTTPSErrors: true,
-    reuseExistingServer: !process.env.CI,
+    reuseExistingServer: true,
   },
 });
