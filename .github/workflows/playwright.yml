@@ -12,9 +12,10 @@ jobs:
       # Check out the dev env repo
       - uses: actions/checkout@v4
         with:
-          repository: "nordeck/opendesk-widgets-docker-compose"
+          repository: 'nordeck/opendesk-widgets-docker-compose'
           token: ${{ secrets.PACKAGE_TOKEN }}
           path: opendesk-widgets-docker-compose
+          submodules: true
       # Update the /etc/hosts of the runner to point to the dev env
       - name: Set the required /etc/hosts entries
         run: |
@@ -36,8 +37,8 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version-file: "matrix-neoboard-standalone/package.json"
-          cache: "yarn"
+          node-version-file: 'matrix-neoboard-standalone/package.json'
+          cache: 'yarn'
           cache-dependency-path: |
             matrix-neoboard-standalone/yarn.lock
             matrix-neoboard/yarn.lock
