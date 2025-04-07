@@ -57,8 +57,8 @@ jobs:
         working-directory: ./opendesk-widgets-docker-compose/
         run: |
           docker compose -f compose.mas.yaml --env-file nordeck.env up -d
-          docker compose -f compose.mas.yaml --env-file nordeck.env exec synapse /bin/sh -c /scripts/start.sh
-          docker compose -f compose.mas.yaml --env-file nordeck.env restart meetings-bot uvs
+          #docker compose -f compose.mas.yaml --env-file nordeck.env exec synapse /bin/sh -c /scripts/start.sh
+          #docker compose -f compose.mas.yaml --env-file nordeck.env restart meetings-bot uvs
           # Create the test user using the mas cli
           docker compose -f compose.mas.yaml --env-file nordeck.env exec mas /bin/sh -c mas-cli manage register-user --yes --username test --password pWPv3OMxEnPkLtvQ2g6L2qWTcY0UAlmHLljwDK0ZoiQZRvJ3nR2dRCKENGvDiadL --email test@example.com --no-admin --display-name test --ignore-password-complexity
           docker compose -f compose.mas.yaml --env-file nordeck.env exec mas /bin/sh -c mas-cli manage verify-email test test@example.com
