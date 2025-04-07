@@ -86,3 +86,9 @@ jobs:
           name: playwright-report
           path: ./matrix-neoboard-standalone/playwright-report/
           retention-days: 30
+      - uses: actions/upload-artifact@v4
+        if: ${{ !cancelled() }}
+        with:
+          name: playwright-junit
+          path: ./matrix-neoboard-standalone/results.xml
+          retention-days: 30
