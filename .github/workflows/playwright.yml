@@ -60,6 +60,8 @@ jobs:
           #docker compose -f compose.mas.yaml --env-file nordeck.env exec synapse /bin/sh -c /scripts/start.sh
           #docker compose -f compose.mas.yaml --env-file nordeck.env restart meetings-bot uvs
           # wait until matrix.internal is up by checking /_matrix/client/versions
+          # print the synapse logs to the console for debugging
+          docker compose -f compose.mas.yaml --env-file nordeck.env logs synapse
           while ! curl -k -s -o /dev/null -w "%{http_code}" https://matrix.internal/_matrix/client/versions | grep -q 200; do
             echo "Waiting for matrix.internal to be up..."
             sleep 5
