@@ -76,7 +76,10 @@ jobs:
           echo "REACT_APP_WIDGET_BASE=https://matrix-neoboard-widget.dev.nordeck.io" >> .env.local
       - name: Run Playwright tests
         working-directory: ./matrix-neoboard-standalone/
-        run: yarn playwright test
+        run: |
+          yarn dev:https &
+          sleep 10
+          yarn playwright test
       - uses: actions/upload-artifact@v4
         if: ${{ !cancelled() }}
         with:
