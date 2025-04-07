@@ -102,6 +102,7 @@ function UnstyledLink({
 
   return (
     <Link
+      reloadDocument
       key={dashboardItem.roomId}
       to={`/board/${dashboardItem.roomId}`}
       style={{

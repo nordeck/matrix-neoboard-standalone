@@ -29,7 +29,7 @@ async function deleteBoards(page: Page, ids: string[]) {
   ).not.toBeVisible();
 
   // Wait a bit for the boards to load
-  await page.waitForTimeout(2000);
+  await page.waitForTimeout(1000);
 
   // Check if the board exists
   for (let i = 0; i < ids.length; i++) {
@@ -37,13 +37,13 @@ async function deleteBoards(page: Page, ids: string[]) {
 
     await board.locator('[data-testid="MoreHorizIcon"]').click();
     await page.getByRole('menuitem', { name: 'Delete' }).click({ force: true });
-    await expect(page.getByRole('heading')).toContainText('Delete NeoBoard');
+    await expect(page.getByText('Delete NeoBoard')).toBeVisible();
 
     await page.getByRole('button', { name: 'Delete Board' }).click();
     await expect(page.getByText('Delete NeoBoard')).not.toBeVisible();
 
     // Wait a bit for the boards to update
-    await page.waitForTimeout(2000);
+    await page.waitForTimeout(500);
   }
 }
 
@@ -77,13 +77,11 @@ test.describe('dashboard', () => {
     ).not.toBeVisible();
 
     // Wait a bit for the boards to load
-    await page.waitForTimeout(2000);
+    await page.waitForTimeout(1000);
 
-    expect(
-      page.getByRole('button', {
-        name: new RegExp('Untitled.*'),
-      }),
-    ).toHaveCount(1);
+    // Check if we have at least one board
+    const board = page.locator(`[href="/board/${boardId}"]`);
+    await expect(board).toBeVisible();
 
     await deleteBoards(page, [boardId]);
   });
@@ -128,13 +126,13 @@ test.describe('dashboard', () => {
     ).not.toBeVisible();
 
     // Wait a bit for the boards to load
-    await page.waitForTimeout(2000);
+    await page.waitForTimeout(1000);
 
-    expect(
-      page.getByRole('button', {
-        name: new RegExp('Untitled.*'),
-      }),
-    ).toHaveCount(3);
+    // Check if we have the expected number of boards
+    for (let i = 0; i < boards.length; i++) {
+      const board = page.locator(`[href="/board/${boards[i]}"]`);
+      await expect(board).toBeVisible();
+    }
 
     await deleteBoards(page, boards);
   });
@@ -179,15 +177,16 @@ test.describe('dashboard', () => {
     ).not.toBeVisible();
 
     // Wait a bit for the boards to load
-    await page.waitForTimeout(2000);
+    await page.waitForTimeout(1000);
 
     await page.getByRole('button', { name: 'List view' }).click();
 
-    expect(
-      page.getByRole('button', {
-        name: new RegExp('Untitled.*'),
-      }),
-    ).toHaveCount(3);
+    // Check if we have the expected number of boards
+    for (let i = 0; i < boards.length; i++) {
+      const board = page.locator(`[href="/board/${boards[i]}"]`).nth(1);
+      await expect(board).toBeVisible();
+    }
+
     await deleteBoards(page, boards);
   });
 });
