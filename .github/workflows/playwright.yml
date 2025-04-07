@@ -12,7 +12,7 @@ jobs:
       # Check out the dev env repo
       - uses: actions/checkout@v4
         with:
-          repository: 'nordeck/opendesk-widgets-docker-compose'
+          repository: "nordeck/opendesk-widgets-docker-compose"
           token: ${{ secrets.PACKAGE_TOKEN }}
           path: opendesk-widgets-docker-compose
       # Update the /etc/hosts of the runner to point to the dev env
@@ -36,8 +36,8 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version-file: 'matrix-neoboard-standalone/package.json'
-          cache: 'yarn'
+          node-version-file: "matrix-neoboard-standalone/package.json"
+          cache: "yarn"
           cache-dependency-path: |
             matrix-neoboard-standalone/yarn.lock
             matrix-neoboard/yarn.lock
@@ -60,8 +60,8 @@ jobs:
           #docker compose -f compose.mas.yaml --env-file nordeck.env exec synapse /bin/sh -c /scripts/start.sh
           #docker compose -f compose.mas.yaml --env-file nordeck.env restart meetings-bot uvs
           # Create the test user using the mas cli
-          docker compose -f compose.mas.yaml --env-file nordeck.env exec mas mas-cli manage register-user -- --yes --password pWPv3OMxEnPkLtvQ2g6L2qWTcY0UAlmHLljwDK0ZoiQZRvJ3nR2dRCKENGvDiadL --email test@example.com --no-admin --display-name test --ignore-password-complexity test
-          docker compose -f compose.mas.yaml --env-file nordeck.env exec mas mas-cli manage verify-email -- test test@example.com
+          docker compose -f compose.mas.yaml --env-file nordeck.env exec mas mas-cli manage register-user --yes --password pWPv3OMxEnPkLtvQ2g6L2qWTcY0UAlmHLljwDK0ZoiQZRvJ3nR2dRCKENGvDiadL --email test@example.com --no-admin --display-name test --ignore-password-complexity test
+          docker compose -f compose.mas.yaml --env-file nordeck.env exec mas mas-cli manage verify-email test test@example.com
           docker compose -f compose.mas.yaml --env-file nordeck.env exec mas mas-cli manage provision-all-users
       - name: Run Playwright tests
         working-directory: ./matrix-neoboard-standalone/
