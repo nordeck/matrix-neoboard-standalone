@@ -60,9 +60,9 @@ jobs:
           #docker compose -f compose.mas.yaml --env-file nordeck.env exec synapse /bin/sh -c /scripts/start.sh
           #docker compose -f compose.mas.yaml --env-file nordeck.env restart meetings-bot uvs
           # Create the test user using the mas cli
-          docker compose -f compose.mas.yaml --env-file nordeck.env exec mas /bin/sh -c mas-cli manage register-user --yes --username test --password pWPv3OMxEnPkLtvQ2g6L2qWTcY0UAlmHLljwDK0ZoiQZRvJ3nR2dRCKENGvDiadL --email test@example.com --no-admin --display-name test --ignore-password-complexity
-          docker compose -f compose.mas.yaml --env-file nordeck.env exec mas /bin/sh -c mas-cli manage verify-email test test@example.com
-          docker compose -f compose.mas.yaml --env-file nordeck.env exec mas /bin/sh -c mas-cli manage provision-all-users
+          docker compose -f compose.mas.yaml --env-file nordeck.env exec mas mas-cli manage register-user --yes --username test --password pWPv3OMxEnPkLtvQ2g6L2qWTcY0UAlmHLljwDK0ZoiQZRvJ3nR2dRCKENGvDiadL --email test@example.com --no-admin --display-name test --ignore-password-complexity
+          docker compose -f compose.mas.yaml --env-file nordeck.env exec mas mas-cli manage verify-email test test@example.com
+          docker compose -f compose.mas.yaml --env-file nordeck.env exec mas mas-cli manage provision-all-users
       - name: Run Playwright tests
         working-directory: ./matrix-neoboard-standalone/
         run: yarn playwright test
