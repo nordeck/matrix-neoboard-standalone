@@ -12,7 +12,8 @@ jobs:
       # Check out the dev env repo
       - uses: actions/checkout@v4
         with:
-          repository: 'nordeck/opendesk-widgets-docker-compose'
+          repository: "nordeck/opendesk-widgets-docker-compose"
+          token: ${{ secrets.PACKAGE_TOKEN }}
       # Update the /etc/hosts of the runner to point to the dev env
       - name: Set the required /etc/hosts entries
         run: |
