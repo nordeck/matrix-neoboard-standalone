@@ -59,6 +59,11 @@ jobs:
           docker compose -f compose.mas.yaml --env-file nordeck.env up -d
           #docker compose -f compose.mas.yaml --env-file nordeck.env exec synapse /bin/sh -c /scripts/start.sh
           #docker compose -f compose.mas.yaml --env-file nordeck.env restart meetings-bot uvs
+          # wait until matrix.internal is up by checking /_synapse/client/versions
+          while ! curl -k -s -o /dev/null -w "%{http_code}" https://matrix.internal/_synapse/client/versions | grep -q 200; do
+            echo "Waiting for matrix.internal to be up..."
+            sleep 5
+          done
           # Create the test user using the mas cli
           docker compose -f compose.mas.yaml --env-file nordeck.env exec mas mas-cli manage register-user --yes --password pWPv3OMxEnPkLtvQ2g6L2qWTcY0UAlmHLljwDK0ZoiQZRvJ3nR2dRCKENGvDiadL --email test@example.com --no-admin --display-name test --ignore-password-complexity test
           docker compose -f compose.mas.yaml --env-file nordeck.env exec mas mas-cli manage verify-email test test@example.com
