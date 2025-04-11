@@ -26,6 +26,7 @@ import {
 } from '@mui/material';
 import { MouseEvent } from 'react';
 import { useTranslation } from 'react-i18next';
+import { Link } from 'react-router';
 import { BoardPreview } from './BoardPreview';
 import { Thumbnail } from './Thumbnail';
 import { TileMenu } from './TileMenu';
@@ -33,9 +34,10 @@ import { DashboardItem } from './useDashboardList';
 
 type BoardTileProps = {
   dashboardItem: DashboardItem;
+  linkTarget: string;
 };
 
-export function BoardTile({ dashboardItem }: BoardTileProps) {
+export function BoardTile({ dashboardItem, linkTarget }: BoardTileProps) {
   const { t } = useTranslation();
 
   const hasTileMenu =
@@ -44,7 +46,7 @@ export function BoardTile({ dashboardItem }: BoardTileProps) {
 
   return (
     <Card sx={{ textDecoration: 'none', width: '14.5rem' }}>
-      <CardActionArea component="div">
+      <CardActionArea component={Link} to={linkTarget}>
         <CardMedia component="div">
           <Thumbnail aria-hidden="true">
             <BoardPreview whiteboard={dashboardItem.whiteboard} />
