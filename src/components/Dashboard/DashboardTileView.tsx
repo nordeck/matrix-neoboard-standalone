@@ -16,7 +16,6 @@
  * along with NeoBoard Standalone. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { Link } from 'react-router';
 import { BoardTile } from './BoardTile.tsx';
 import { CreateBoardTile } from './CreateBoardTile.tsx';
 import { DashboardOptions } from './DashboardOptions.tsx';
@@ -30,13 +29,11 @@ export function DashboardTileView({ items, onCreate }: DashboardViewProps) {
       <TilesContainer>
         <CreateBoardTile onClick={onCreate} />
         {items.map((dashboardItem) => (
-          <Link
+          <BoardTile
             key={dashboardItem.roomId}
-            to={`/board/${dashboardItem.roomId}`}
-            style={{ textDecoration: 'none' }}
-          >
-            <BoardTile dashboardItem={dashboardItem} />
-          </Link>
+            dashboardItem={dashboardItem}
+            linkTarget={`/board/${dashboardItem.roomId}`}
+          />
         ))}
       </TilesContainer>
     </>

@@ -52,6 +52,13 @@ export const TileMenu: React.FC<TileMenuProps> = function ({ item }) {
   const { deleteDialog, setDeleteDialogOpen } = useDeleteDialog(roomId);
 
   /**
+   * Prevent the propagation of the click event when clicking the menu itself
+   */
+  const onMenuClick = useCallback((event: React.MouseEvent<HTMLElement>) => {
+    event.stopPropagation();
+  }, []);
+
+  /**
    * Toggle the menu
    */
   const handleMenuButtonClick = useCallback(
@@ -145,6 +152,7 @@ export const TileMenu: React.FC<TileMenuProps> = function ({ item }) {
         id={`board-menu-${roomId}`}
         anchorEl={anchorEl}
         open={open}
+        onClick={onMenuClick}
         onClose={handleMenuButtonClick}
         MenuListProps={{
           'aria-labelledby': `board-menu-${roomId}-button`,
