@@ -32,6 +32,7 @@ import { first } from 'lodash';
 import React, { useEffect, useState } from 'react';
 import { useStore } from 'react-redux';
 import { useLoggedIn } from '../../state';
+import { StoreType } from '../../store';
 import { NoBoardPreview } from './NoBoardPreview.tsx';
 
 interface BoardPreviewProps {
@@ -46,7 +47,11 @@ export const BoardPreview: React.FC<BoardPreviewProps> = ({ whiteboard }) => {
     useState<WhiteboardManager>();
 
   useEffect(() => {
-    const manager = createWhiteboardManager(store, widgetApiPromise, true);
+    const manager = createWhiteboardManager(
+      store as StoreType,
+      widgetApiPromise,
+      true,
+    );
     manager.selectActiveWhiteboardInstance(whiteboard, userId);
     setWhiteboardManager(manager);
     return () => {
