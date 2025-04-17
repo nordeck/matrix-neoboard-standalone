@@ -202,11 +202,16 @@ export class Application {
     // wait for sync with the server
     await this.standaloneApiPromise;
 
+    if (!matrixCredentials.deviceId) {
+      throw new Error('Device ID is not available.');
+    }
+
     this.state.next({
       lifecycleState: 'loggedIn',
       matrixClient,
       state: {
         userId: matrixCredentials.userId,
+        deviceId: matrixCredentials.deviceId,
         homeserverUrl: oidcCredentials.homeserverUrl,
         standaloneClient,
         resolveWidgetApi: this.resolveWidgetApi,

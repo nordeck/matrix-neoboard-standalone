@@ -54,6 +54,7 @@ export type StandaloneClient = Pick<
   | 'uploadFile'
   | 'downloadFile'
   | 'sendToDeviceMessage'
+  | 'requestOpenIDConnectToken'
 > & {
   /**
    * Invite a user to a room.

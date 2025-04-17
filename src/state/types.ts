@@ -33,6 +33,7 @@ export type ObservableBehaviorSubject<T> = Pick<
  */
 export type LoggedInState = {
   userId: string;
+  deviceId: string;
   homeserverUrl: string;
   standaloneClient: StandaloneClient;
   /**

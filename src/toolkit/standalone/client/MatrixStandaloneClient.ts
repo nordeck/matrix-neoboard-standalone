@@ -40,6 +40,7 @@ import {
 import {
   IDownloadFileActionFromWidgetResponseData,
   IGetMediaConfigActionFromWidgetResponseData,
+  IOpenIDCredentials,
   IRoomEvent,
   ITurnServer,
   IUploadFileActionFromWidgetResponseData,
@@ -250,7 +251,6 @@ export class MatrixStandaloneClient implements StandaloneClient {
 
   async uploadFile(
     // eslint complains about lib dom types
-
     file: XMLHttpRequestBodyInit,
   ): Promise<IUploadFileActionFromWidgetResponseData> {
     const uploadResult = await this.matrixClient.uploadContent(file);
@@ -298,6 +298,10 @@ export class MatrixStandaloneClient implements StandaloneClient {
         credential: password,
       })),
     );
+  }
+
+  public requestOpenIDConnectToken(): Promise<IOpenIDCredentials> {
+    return this.matrixClient.getOpenIdToken();
   }
 
   public async closeRoom(roomId: string): Promise<void> {
