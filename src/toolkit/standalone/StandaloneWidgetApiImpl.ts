@@ -309,7 +309,7 @@ export class StandaloneWidgetApiImpl implements StandaloneWidgetApi {
 
   /** {@inheritdoc WidgetApi.requestOpenIDConnectToken} */
   async requestOpenIDConnectToken(): Promise<IOpenIDCredentials> {
-    throw new Error('requestOpenIDConnectToken not implemented');
+    return this.standaloneApi.client.requestOpenIDConnectToken();
   }
 
   /** {@inheritdoc WidgetApi.observeTurnServers} */

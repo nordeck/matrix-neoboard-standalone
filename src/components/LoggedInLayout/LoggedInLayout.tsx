@@ -44,6 +44,7 @@ export const LoggedInLayout: React.FC<React.PropsWithChildren<{}>> = ({
     resolveWidgetApi,
     standaloneClient,
     userId,
+    deviceId,
     widgetApiPromise,
   } = useLoggedIn();
 
@@ -73,6 +74,7 @@ export const LoggedInLayout: React.FC<React.PropsWithChildren<{}>> = ({
       clientLanguage: i18n.language,
       baseUrl: homeserverUrl,
       isOpenedByClient: false,
+      deviceId,
     };
 
     const widgetApi = new StandaloneWidgetApiImpl(
@@ -88,6 +90,7 @@ export const LoggedInLayout: React.FC<React.PropsWithChildren<{}>> = ({
     resolveWidgetApi,
     standaloneClient,
     userId,
+    deviceId,
   ]);
 
   return (
