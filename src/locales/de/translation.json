@@ -21,8 +21,7 @@
     "boardList": {
       "created": "Erstellungsdatum",
       "lastView": "Zuletzt angesehen",
-      "name": "Name",
-      "users": "Benutzer"
+      "name": "Name"
     },
     "boardTile": {
       "created": "Erstellt {{created}}",
