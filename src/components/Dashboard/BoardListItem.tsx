@@ -14,16 +14,8 @@
  * limitations under the License.
  */
 
-import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
-import {
-  alpha,
-  IconButton,
-  Stack,
-  styled,
-  Typography,
-  useTheme,
-} from '@mui/material';
-import { MouseEvent, PropsWithChildren } from 'react';
+import { alpha, Stack, styled, Typography, useTheme } from '@mui/material';
+import { PropsWithChildren } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router';
 import { BoardPreview } from './BoardPreview.tsx';
@@ -31,7 +23,6 @@ import { Thumbnail } from './Thumbnail.tsx';
 import { TileMenu } from './TileMenu';
 import { DashboardItem } from './useDashboardList.ts';
 import { BoardItemProps } from './useDashboardView.tsx';
-import { UserChip } from './UserChip.tsx';
 
 const BoardTitle = styled(Typography)(() => ({
   fontWeight: 'bold',
@@ -83,20 +74,6 @@ export function BoardListItem({ dashboardItem }: BoardItemProps) {
       </td>
       <td>
         <UnstyledLink dashboardItem={dashboardItem}>
-          <Stack direction="row" alignItems="center" gap={1}>
-            <Stack direction="column">
-              {dashboardItem.users?.map((user) => (
-                <UserChip key={user} user={user} onClick={noop} />
-              ))}
-            </Stack>
-            <IconButton onClick={noop} component="span">
-              <PeopleAltIcon />
-            </IconButton>
-          </Stack>
-        </UnstyledLink>
-      </td>
-      <td>
-        <UnstyledLink dashboardItem={dashboardItem}>
           <Typography color="textSecondary" sx={{ fontSize: 13 }}>
             {t('dashboard.boardTile.lastView', 'Last view {{lastView}}', {
               lastView: dashboardItem.lastView,
@@ -115,11 +92,6 @@ export function BoardListItem({ dashboardItem }: BoardItemProps) {
       </td>
     </ClickableRow>
   );
-}
-
-function noop(event: MouseEvent): void {
-  event.preventDefault();
-  event.stopPropagation();
 }
 
 function UnstyledLink({
