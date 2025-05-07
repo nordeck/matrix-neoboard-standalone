@@ -36,7 +36,7 @@ export type WhiteboardEntry = {
 
 export function makeSelectWhiteboards(
   userId: string,
-  sortBy: SortBy,
+  sortBy?: SortBy,
 ): (state: RootState) => WhiteboardEntry[] {
   return createSelector(
     selectAllWhiteboards,
@@ -107,7 +107,9 @@ export function makeSelectWhiteboards(
         return [];
       });
 
-      boards.sort(createBoardComparator(sortBy));
+      if (sortBy) {
+        boards.sort(createBoardComparator(sortBy));
+      }
 
       return boards;
     },

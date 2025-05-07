@@ -17,11 +17,7 @@
 import { isEqual } from 'lodash';
 import { useMemo } from 'react';
 import { useLoggedIn } from '../../state';
-import {
-  makeSelectWhiteboards,
-  selectSortBy,
-  useAppSelector,
-} from '../../store';
+import { makeSelectWhiteboards, useAppSelector } from '../../store';
 import { useOpenedRoomId } from '../RoomIdProvider';
 import { BoardNotFound } from './BoardNotFound';
 import { BoardView } from './BoardView';
@@ -29,10 +25,9 @@ import { BoardView } from './BoardView';
 export const BoardViewWrapper = () => {
   const roomId = useOpenedRoomId();
   const { userId } = useLoggedIn();
-  const sortBy = useAppSelector((state) => selectSortBy(state));
   const selectWhiteboards = useMemo(
-    () => makeSelectWhiteboards(userId, sortBy),
-    [sortBy, userId],
+    () => makeSelectWhiteboards(userId),
+    [userId],
   );
 
   const whiteboards = useAppSelector(

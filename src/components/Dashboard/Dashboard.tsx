@@ -16,8 +16,10 @@
 
 import { useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useStore } from 'react-redux';
 import { useNavigate } from 'react-router';
 import { useLoggedIn } from '../../state';
+import { makeSelectWhiteboards, RootState } from '../../store';
 import { DashboardContainer } from './DashboardContainer.tsx';
 import { createWhiteboard } from './createWhiteboard.ts';
 import { useDashboardList } from './useDashboardList.ts';
@@ -29,14 +31,38 @@ export function Dashboard() {
   const dashboardItems = useDashboardList();
   const DashboardView = useDashboardView();
   const navigate = useNavigate();
+  const store = useStore<RootState>();
+  const { userId } = useLoggedIn();
 
   const handleCreate = useCallback(async () => {
     const roomId = await createWhiteboard(
       standaloneClient,
       t('dashboard.untitled', 'Untitled'),
     );
+
+    let promiseResolve: (value: unknown) => void;
+    const promise = new Promise((resolve) => {
+      promiseResolve = resolve;
+    });
+
+    const selectWhiteboards = makeSelectWhiteboards(userId);
+    const unsubscribe = store.subscribe(() => {
+      const state = store.getState();
+
+      const whiteboards = selectWhiteboards(state);
+      const whiteboard = whiteboards.find(
+        (wb) => wb.whiteboard.room_id === roomId,
+      );
+      if (whiteboard) {
+        promiseResolve(undefined);
+      }
+    });
+
+    await promise;
+    unsubscribe();
+
     navigate(`/board/${roomId}`);
-  }, [standaloneClient, t, navigate]);
+  }, [standaloneClient, t, navigate, store, userId]);
 
   return (
     <DashboardContainer>
