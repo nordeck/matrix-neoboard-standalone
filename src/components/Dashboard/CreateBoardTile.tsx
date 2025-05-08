@@ -28,8 +28,7 @@ import { AddIcon } from './AddIcon';
 import { CreateBoardItemProps } from './useDashboardView.tsx';
 
 const StyledCard = styled(Card)(({ theme }) => ({
-  width: '14.5rem',
-  minHeight: '251px',
+  width: '20.5rem',
   backgroundColor: theme.palette.background.card,
 }));
 
