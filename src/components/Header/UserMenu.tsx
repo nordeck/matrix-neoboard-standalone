@@ -14,22 +14,26 @@
  * limitations under the License.
  */
 
+import { ElementAvatar } from '@matrix-widget-toolkit/mui';
 import InfoIcon from '@mui/icons-material/Info';
 import LogoutIcon from '@mui/icons-material/Logout';
 import {
-  Avatar,
   IconButton,
   ListItemIcon,
   ListItemText,
   Menu,
   MenuItem,
+  Tooltip,
 } from '@mui/material';
+import {
+  getUserColor,
+  useUserDetails,
+} from '@nordeck/matrix-neoboard-react-sdk';
 import React, { MouseEventHandler, useCallback, useId, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLoggedIn } from '../../state';
 import { AboutDialog } from './AboutDialog';
 import { LogoutDialog } from './LogoutDialog';
-import dummyAvatar from './dummy-avatar.png';
 
 export function UserMenu() {
   const { t } = useTranslation();
@@ -58,8 +62,10 @@ export function UserMenu() {
   }, [setAnchorEl, setLogoutDialogOpen]);
 
   const { userId } = useLoggedIn();
-  const username = userId.substring(1, userId.indexOf(':'));
-  const initial = username.substring(0, 1);
+  const { getUserAvatarUrl, getUserDisplayName } = useUserDetails();
+
+  const username = getUserDisplayName(userId);
+  const avatarUrl = getUserAvatarUrl(userId);
 
   return (
     <>
@@ -71,17 +77,23 @@ export function UserMenu() {
         onClose={useCallback(() => setAboutDialogOpen(false), [])}
         open={aboutDialogOpen}
       />
-      <IconButton
-        onClick={handleClick}
-        size="small"
-        aria-controls={open ? menuId : undefined}
-        aria-haspopup="true"
-        aria-expanded={open ? 'true' : undefined}
-      >
-        <Avatar sx={{ width: 30, height: 30 }} src={dummyAvatar}>
-          {initial}
-        </Avatar>
-      </IconButton>
+      <Tooltip title={t('userMenu.tooltip', 'User menu')}>
+        <IconButton
+          onClick={handleClick}
+          size="small"
+          aria-controls={open ? menuId : undefined}
+          aria-haspopup="true"
+          aria-expanded={open ? 'true' : undefined}
+        >
+          <ElementAvatar
+            sx={{ width: 30, height: 30 }}
+            userId={userId}
+            displayName={username}
+            avatarUrl={avatarUrl}
+            style={{ outline: `${getUserColor(userId)} solid 2px` }}
+          />
+        </IconButton>
+      </Tooltip>
       <Menu id={menuId} anchorEl={anchorEl} open={open} onClose={handleClose}>
         <MenuItem disabled={true}>
           <ListItemIcon />

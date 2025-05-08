@@ -113,7 +113,8 @@
   },
   "userMenu": {
     "about": "About",
-    "logOut": "Log out"
+    "logOut": "Log out",
+    "tooltip": "User menu"
   },
   "welcome": {
     "loading": "Starting…",
