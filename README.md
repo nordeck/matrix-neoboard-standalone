@@ -1,6 +1,6 @@
 # NeoBoard Standalone
 
-![Build](https://github.com/nordeck/matrix-neoboard-standalone/workflows/CI/badge.svg)
+[![CI](https://github.com/nordeck/matrix-neoboard-standalone/actions/workflows/ci.yml/badge.svg)](https://github.com/nordeck/matrix-neoboard-standalone/actions/workflows/ci.yml)
 
 Standalone version of [NeoBoard](https://github.com/nordeck/matrix-neoboard) - A collaborative whiteboard widget for Element, based on Matrix.
 
