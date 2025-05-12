@@ -19,29 +19,19 @@ import {
   ROOM_EVENT_DOCUMENT_CREATE,
   STATE_EVENT_WHITEBOARD,
 } from '@nordeck/matrix-neoboard-react-sdk';
-import { STATE_EVENT_SESSION } from '../../model';
 import { StandaloneClient } from '../../toolkit/standalone';
 
 /**
- * Creates a room with whiteboard and the widget.
+ * Creates a whiteboard and the widget in already created room.
  * - Follows the same room/whiteboard initialization as neoboard widget does: https://github.com/nordeck/matrix-neoboard/blob/f1222f6d41442861b5e3075c722280effddc679e/packages/react-sdk/src/state/useOwnedWhiteboard.tsx#L74-L101
  * - Sends neoboard widget and layout event
  * @param standaloneClient Standalone Client
- * @param name room name
+ * @param roomId room id
  */
 export async function createWhiteboard(
   standaloneClient: StandaloneClient,
-  name?: string,
-): Promise<string> {
-  const { room_id: roomId } = await standaloneClient.createRoom({
-    name,
-    power_level_content_override: {
-      events: {
-        [STATE_EVENT_SESSION]: 0,
-      },
-    },
-  });
-
+  roomId: string,
+): Promise<void> {
   const documentId = await standaloneClient.sendRoomEvent(
     ROOM_EVENT_DOCUMENT_CREATE,
     {},
@@ -91,6 +81,4 @@ export async function createWhiteboard(
       ),
     ]);
   }
-
-  return roomId;
 }

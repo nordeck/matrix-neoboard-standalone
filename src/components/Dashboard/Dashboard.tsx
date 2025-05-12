@@ -18,8 +18,9 @@ import { useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useStore } from 'react-redux';
 import { useNavigate } from 'react-router';
+import { STATE_EVENT_SESSION } from '../../model';
 import { useLoggedIn } from '../../state';
-import { makeSelectWhiteboards, RootState } from '../../store';
+import { makeSelectWhiteboard, RootState } from '../../store';
 import { DashboardContainer } from './DashboardContainer.tsx';
 import { createWhiteboard } from './createWhiteboard.ts';
 import { useDashboardList } from './useDashboardList.ts';
@@ -32,37 +33,42 @@ export function Dashboard() {
   const DashboardView = useDashboardView();
   const navigate = useNavigate();
   const store = useStore<RootState>();
-  const { userId, deviceId } = useLoggedIn();
 
   const handleCreate = useCallback(async () => {
-    const roomId = await createWhiteboard(
-      standaloneClient,
-      t('dashboard.untitled', 'Untitled'),
-    );
+    // create room first
+    const { room_id: roomId } = await standaloneClient.createRoom({
+      name: t('dashboard.untitled', 'Untitled'),
+      power_level_content_override: {
+        events: {
+          [STATE_EVENT_SESSION]: 0,
+        },
+      },
+    });
 
+    // create a promise that will be resolved when whiteboard data is in store
     let promiseResolve: (value: unknown) => void;
     const promise = new Promise((resolve) => {
       promiseResolve = resolve;
     });
 
-    const selectWhiteboards = makeSelectWhiteboards(userId, deviceId);
+    const selectWhiteboard = makeSelectWhiteboard(roomId);
     const unsubscribe = store.subscribe(() => {
       const state = store.getState();
 
-      const whiteboards = selectWhiteboards(state);
-      const whiteboard = whiteboards.find(
-        (wb) => wb.whiteboard.room_id === roomId,
-      );
+      const whiteboard = selectWhiteboard(state);
       if (whiteboard) {
         promiseResolve(undefined);
       }
     });
 
+    // create a whiteboard in the room
+    await createWhiteboard(standaloneClient, roomId);
+
     await promise;
     unsubscribe();
 
     navigate(`/board/${roomId}`);
-  }, [standaloneClient, t, navigate, store, userId, deviceId]);
+  }, [standaloneClient, t, navigate, store]);
 
   return (
     <DashboardContainer>

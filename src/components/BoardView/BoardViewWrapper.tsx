@@ -16,28 +16,22 @@
 
 import { isEqual } from 'lodash';
 import { useMemo } from 'react';
-import { useLoggedIn } from '../../state';
-import { makeSelectWhiteboards, useAppSelector } from '../../store';
+import { makeSelectWhiteboard, useAppSelector } from '../../store';
 import { useOpenedRoomId } from '../RoomIdProvider';
 import { BoardNotFound } from './BoardNotFound';
 import { BoardView } from './BoardView';
 
 export const BoardViewWrapper = () => {
   const roomId = useOpenedRoomId();
-  const { userId, deviceId } = useLoggedIn();
-  const selectWhiteboards = useMemo(
-    () => makeSelectWhiteboards(userId, deviceId),
-    [userId, deviceId],
+  const selectWhiteboard = useMemo(
+    () => makeSelectWhiteboard(roomId),
+    [roomId],
   );
 
-  const whiteboards = useAppSelector(
-    (state) => selectWhiteboards(state),
+  const whiteboard = useAppSelector(
+    (state) => selectWhiteboard(state),
     isEqual,
   );
 
-  const whiteboardEvent = whiteboards.find(
-    (w) => w.whiteboard.room_id === roomId,
-  );
-
-  return whiteboardEvent ? <BoardView /> : <BoardNotFound />;
+  return whiteboard ? <BoardView /> : <BoardNotFound />;
 };
