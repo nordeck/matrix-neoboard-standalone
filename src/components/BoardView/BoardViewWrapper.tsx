@@ -26,10 +26,10 @@ import { BoardView } from './BoardView';
 
 export const BoardViewWrapper = () => {
   const roomId = useOpenedRoomId();
-  const { userId } = useLoggedIn();
+  const { userId, deviceId } = useLoggedIn();
   const selectWhiteboards = useMemo(
-    () => makeSelectWhiteboards(userId),
-    [userId],
+    () => makeSelectWhiteboards(userId, deviceId),
+    [userId, deviceId],
   );
 
   const whiteboards = useAppSelector(

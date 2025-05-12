@@ -20,8 +20,8 @@ import { getEnvironment } from '@matrix-widget-toolkit/mui';
 import {
   ROOM_EVENT_DOCUMENT_CREATE,
   STATE_EVENT_WHITEBOARD,
-  STATE_EVENT_WHITEBOARD_SESSIONS,
 } from '@nordeck/matrix-neoboard-react-sdk';
+import { STATE_EVENT_SESSION } from '../../model';
 import { StandaloneClient } from '../../toolkit/standalone';
 
 /**
@@ -39,7 +39,7 @@ export async function createWhiteboard(
     name,
     power_level_content_override: {
       events: {
-        [STATE_EVENT_WHITEBOARD_SESSIONS]: 0,
+        [STATE_EVENT_SESSION]: 0,
       },
     },
   });
