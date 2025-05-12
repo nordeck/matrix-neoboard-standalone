@@ -65,11 +65,11 @@ export type DashboardItem = {
  * Returns a list of dashboard items, that can be used to easily render the tiles.
  */
 export function useDashboardList(): DashboardItem[] {
-  const { userId } = useLoggedIn();
+  const { userId, deviceId } = useLoggedIn();
   const sortBy = useAppSelector((state) => selectSortBy(state));
   const selectWhiteboards = useMemo(
-    () => makeSelectWhiteboards(userId, sortBy),
-    [sortBy, userId],
+    () => makeSelectWhiteboards(userId, deviceId, sortBy),
+    [sortBy, userId, deviceId],
   );
   const whiteboards = useAppSelector(
     (state) => selectWhiteboards(state),
