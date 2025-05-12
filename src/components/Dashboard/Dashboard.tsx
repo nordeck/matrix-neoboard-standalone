@@ -32,7 +32,7 @@ export function Dashboard() {
   const DashboardView = useDashboardView();
   const navigate = useNavigate();
   const store = useStore<RootState>();
-  const { userId } = useLoggedIn();
+  const { userId, deviceId } = useLoggedIn();
 
   const handleCreate = useCallback(async () => {
     const roomId = await createWhiteboard(
@@ -45,7 +45,7 @@ export function Dashboard() {
       promiseResolve = resolve;
     });
 
-    const selectWhiteboards = makeSelectWhiteboards(userId);
+    const selectWhiteboards = makeSelectWhiteboards(userId, deviceId);
     const unsubscribe = store.subscribe(() => {
       const state = store.getState();
 
@@ -62,7 +62,7 @@ export function Dashboard() {
     unsubscribe();
 
     navigate(`/board/${roomId}`);
-  }, [standaloneClient, t, navigate, store, userId]);
+  }, [standaloneClient, t, navigate, store, userId, deviceId]);
 
   return (
     <DashboardContainer>

@@ -15,7 +15,7 @@
  */
 
 import { PowerLevelsStateEvent, StateEvent } from '@matrix-widget-toolkit/api';
-import { Whiteboard } from '@nordeck/matrix-neoboard-react-sdk';
+import { matrixRtcMode, Whiteboard } from '@nordeck/matrix-neoboard-react-sdk';
 import { createSelector } from '@reduxjs/toolkit';
 import { WhiteboardSessionsEvent } from '../../../model';
 import { SortBy } from '../../dashboard/dashboardSlice';
@@ -36,6 +36,7 @@ export type WhiteboardEntry = {
 
 export function makeSelectWhiteboards(
   userId: string,
+  deviceId: string,
   sortBy?: SortBy,
 ): (state: RootState) => WhiteboardEntry[] {
   return createSelector(
@@ -71,11 +72,12 @@ export function makeSelectWhiteboards(
           | undefined = undefined;
 
         // Find latest whiteboardSessions for the whiteboard room and the current user
+        const stateKey = matrixRtcMode ? `_${userId}_${deviceId}` : userId;
         Object.values(whiteboardSessionsEvents).forEach(
           (whiteboardSessionsEvent) => {
             if (
               whiteboardSessionsEvent.room_id === whiteboard.room_id &&
-              whiteboardSessionsEvent.state_key === userId &&
+              whiteboardSessionsEvent.state_key === stateKey &&
               (latestOwnWhiteboardSessionsEvent === undefined ||
                 latestOwnWhiteboardSessionsEvent.origin_server_ts <
                   whiteboardSessionsEvent.origin_server_ts)
