@@ -28,6 +28,11 @@ import { selectAllRoomNameEventEntities } from '../roomNameApi';
 import { selectAllWhiteboards } from '../whiteboardApi';
 import { selectAllWhiteboardSessionsEventEntities } from '../whiteboardSessionsApi';
 
+export type SingleWhiteboard = {
+  roomName: string;
+  whiteboard: StateEvent<Whiteboard>;
+};
+
 export type WhiteboardEntry = {
   roomName: string;
   whiteboard: StateEvent<Whiteboard>;
@@ -35,6 +40,31 @@ export type WhiteboardEntry = {
   powerLevels: StateEvent<PowerLevelsStateEvent> | undefined;
   preview: string | undefined;
 };
+
+export function makeSelectWhiteboard(
+  roomId: string,
+): (state: RootState) => SingleWhiteboard | undefined {
+  return createSelector(
+    selectAllWhiteboards,
+    selectAllRoomNameEventEntities,
+    (whiteboards, roomNameEvents): SingleWhiteboard | undefined => {
+      const whiteboard = whiteboards.find((whiteboard) => {
+        return whiteboard.room_id === roomId;
+      });
+
+      const roomName = roomNameEvents[roomId]?.content.name;
+
+      if (whiteboard && roomName) {
+        return {
+          roomName,
+          whiteboard,
+        };
+      }
+
+      return undefined;
+    },
+  );
+}
 
 export function makeSelectWhiteboards(
   userId: string,
