@@ -52,8 +52,8 @@ export function BoardTile({ dashboardItem, linkTarget }: BoardTileProps) {
             <BoardPreview whiteboard={dashboardItem.whiteboard} />
           </Thumbnail>
         </CardMedia>
-        <Box sx={{ display: 'flex' }}>
-          <CardContent sx={{ minWidth: 0 }}>
+        <Box sx={{ display: 'flex', justifyContent: 'stretch' }}>
+          <CardContent sx={{ minWidth: 0, flex: 'auto' }}>
             <Typography
               variant="h5"
               component="div"
