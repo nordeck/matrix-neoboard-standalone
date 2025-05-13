@@ -20,4 +20,4 @@ ENV CSP_IMG_SRC="http: https: blob:"
 
 # Allow to send requests to all HTTP(s) URLs
 # Required for sending requests to homeservers
-ENV CSP_CONNECT_SRC="http: https:"
+ENV CSP_CONNECT_SRC="http: https: wss:"
