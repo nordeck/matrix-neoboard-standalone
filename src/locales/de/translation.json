@@ -61,6 +61,14 @@
     "reject": "Einladung ablehnen",
     "title": "Einladungen"
   },
+  "languageDialog": {
+    "cancel": "Abbrechen",
+    "confirm": "Bestätigen",
+    "description": "Bitte wähle deine bevorzugte Sprache aus:",
+    "english": "Englisch",
+    "german": "Deutsch",
+    "title": "Sprache"
+  },
   "login": {
     "button": "Einloggen",
     "homeserver": {
@@ -113,6 +121,7 @@
   },
   "userMenu": {
     "about": "Info",
+    "language": "Sprache",
     "logOut": "Abmelden",
     "tooltip": "Benutzermenü"
   },

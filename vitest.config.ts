@@ -15,9 +15,11 @@
  */
 /// <reference types="vitest" />
 
-import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
+import { defineConfig } from 'vitest/config';
 
 export default defineConfig({
+  plugins: [react()],
   test: {
     environment: 'happy-dom',
     setupFiles: ['./src/setupTests.ts'],
@@ -27,6 +29,9 @@ export default defineConfig({
           '@matrix-widget-toolkit/api',
           '@matrix-widget-toolkit/react',
           '@matrix-widget-toolkit/mui',
+          'react',
+          'react-dom',
+          'react-i18next',
         ],
       },
     },

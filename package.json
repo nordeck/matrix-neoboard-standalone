@@ -41,6 +41,7 @@
     "@mui/utils": "^6.0.2",
     "@nordeck/matrix-neoboard-react-sdk": "link:../matrix-neoboard/packages/react-sdk",
     "@reduxjs/toolkit": "^2.6.1",
+    "@testing-library/user-event": "^14.6.1",
     "i18next": "link:../matrix-neoboard/node_modules/i18next",
     "i18next-browser-languagedetector": "^8.0.0",
     "joi": "^17.13.3",
@@ -55,6 +56,7 @@
     "react-redux": "^9.2.0",
     "react-router": "^7.4.0",
     "react-use": "^17.5.1",
+    "redux": "^5.0.0",
     "rxjs": "^7.8.1",
     "swr": "^2.3.3"
   },
@@ -89,6 +91,7 @@
     "@typescript-eslint/eslint-plugin": "^8.8.1",
     "@typescript-eslint/parser": "^8.8.1",
     "@vitejs/plugin-basic-ssl": "^1.1.0",
+    "@vitejs/plugin-react": "^4.4.1",
     "@vitejs/plugin-react-swc": "^3.7.1",
     "@vitest/coverage-v8": "^2.1.8",
     "@vitest/ui": "^2.1.2",
