@@ -27,6 +27,7 @@ import {
   ListItemText,
   Menu,
   MenuItem,
+  Tooltip,
 } from '@mui/material';
 import { MouseEvent, useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -82,22 +83,25 @@ export function ShareMenu({ roomId }: { roomId: string }) {
         open={inviteDialogOpen}
         selectedRoomId={roomId}
       />
-      <IconButton
-        onClick={handleClick}
-        size="small"
-        aria-controls={open ? 'share-menu' : undefined}
-        aria-haspopup="true"
-        aria-expanded={open ? 'true' : undefined}
-        sx={{
-          alignItems: 'center',
-          display: 'flex',
-          height: 40,
-          justifyContent: 'center',
-          width: 40,
-        }}
-      >
-        <Share sx={{ width: 24, height: 24 }} />
-      </IconButton>
+      <Tooltip title={t('shareMenu.invite', 'Invite')}>
+        <IconButton
+          onClick={handleClick}
+          size="small"
+          aria-label={t('shareMenu.invite', 'Invite')}
+          aria-controls={open ? 'share-menu' : undefined}
+          aria-haspopup="true"
+          aria-expanded={open ? 'true' : undefined}
+          sx={{
+            alignItems: 'center',
+            display: 'flex',
+            height: 40,
+            justifyContent: 'center',
+            width: 40,
+          }}
+        >
+          <Share sx={{ width: 24, height: 24 }} />
+        </IconButton>
+      </Tooltip>
       <Menu
         id="share-menu"
         anchorEl={anchorEl}
