@@ -18,34 +18,32 @@ import '@testing-library/jest-dom/vitest';
 import { cleanup } from '@testing-library/react';
 import crypto from 'crypto';
 import { TextDecoder, TextEncoder } from 'util';
-import { afterEach, vi } from 'vitest';
+import { afterEach, beforeAll, vi } from 'vitest';
 import createFetchMock from 'vitest-fetch-mock';
-import './i18n';
-import { setLocale } from './lib/locale';
 
-// Use a different configuration for i18next during tests
-vi.mock('./i18n', async () => {
-  const i18n = await vi.importActual('i18next');
-  const { initReactI18next } = await vi.importActual('react-i18next');
+// Import React specifically for test environment setup
+import React from 'react';
 
-  // @ts-expect-error ignore for tests
-  i18n.use(initReactI18next).init({
-    fallbackLng: 'en',
-    interpolation: {
-      escapeValue: false,
-    },
-    resources: { en: {} },
+// Configure React for testing environment
+// Configure globals needed for React 18
+beforeAll(() => {
+  // Ensure React is properly initialized for the test environment
+  globalThis.React = React;
+
+  // Set up proper environment for React hooks
+  window.HTMLElement.prototype.scrollIntoView = vi.fn();
+  window.HTMLElement.prototype.scrollTo = vi.fn();
+  window.scrollTo = vi.fn();
+
+  // React 18 requires this for concurrent features
+  vi.stubGlobal('IS_REACT_ACT_ENVIRONMENT', true);
+
+  // Force React to use the same copy throughout tests
+  vi.mock('react', async () => {
+    const actual = await vi.importActual('react');
+    return actual;
   });
-
-  return i18n;
 });
-setLocale('en');
-
-// Mock i18next's t to fix loading of translations
-vi.mock('i18next', async () => ({
-  ...(await vi.importActual('i18next')),
-  t: (_key: string, fallback: string) => fallback,
-}));
 
 // Set up parts of the crypto API needed for the tests
 Object.defineProperty(global.self, 'crypto', {

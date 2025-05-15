@@ -61,6 +61,14 @@
     "reject": "Reject invite",
     "title": "Invites"
   },
+  "languageDialog": {
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "description": "Please select your preferred language:",
+    "english": "English",
+    "german": "German",
+    "title": "Language"
+  },
   "login": {
     "button": "Log In",
     "homeserver": {
@@ -113,6 +121,7 @@
   },
   "userMenu": {
     "about": "About",
+    "language": "Language",
     "logOut": "Log out",
     "tooltip": "User menu"
   },
