@@ -56,6 +56,7 @@
   "invitesDialog": {
     "accept": "Einladung annehmen",
     "actionFailed": "Fehler",
+    "numberOfPendingInvites_zero": "Keine ausstehenden Einladungen",
     "numberOfPendingInvites_one": "Eine ausstehende Einladung",
     "numberOfPendingInvites_other": "{{count}} ausstehende Einladungen",
     "reject": "Einladung ablehnen",

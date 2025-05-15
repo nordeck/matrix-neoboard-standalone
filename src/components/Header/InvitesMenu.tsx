@@ -14,7 +14,8 @@
  * limitations under the License.
  */
 
-import { Avatar, IconButton, useTheme } from '@mui/material';
+import Notifications from '@mui/icons-material/Notifications';
+import { Badge, IconButton, Tooltip } from '@mui/material';
 import { isEqual } from 'lodash';
 import { useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -25,7 +26,6 @@ import { InvitesDialog } from './InvitesDialog';
 
 export const InvitesMenu: React.FC = () => {
   const [invitesDialogOpen, setInvitesDialogOpen] = useState(false);
-  const theme = useTheme();
   const { t } = useTranslation();
   const { userId } = useLoggedIn();
 
@@ -33,18 +33,25 @@ export const InvitesMenu: React.FC = () => {
   const invites = useAppSelector((state) => selectInvites(state), isEqual);
 
   const handleCloseDialog = useCallback(() => setInvitesDialogOpen(false), []);
-  const handleOpenDialog = useCallback(() => setInvitesDialogOpen(true), []);
+  const handleOpenDialog = useCallback(() => {
+    if (invites.length > 0) {
+      setInvitesDialogOpen(true);
+    }
+  }, [invites.length]);
+
+  const tooltipTitle = t('invitesDialog.numberOfPendingInvites', {
+    defaultValue_zero: 'No pending invites',
+    defaultValue_one: 'One pending invite',
+    defaultValue: '{{count}} pending invites',
+    count: invites.length,
+  });
 
   return (
     <>
       <InvitesDialog onClose={handleCloseDialog} open={invitesDialogOpen} />
-      {invites.length > 0 && (
+      <Tooltip title={tooltipTitle}>
         <IconButton
-          aria-label={t('invitesDialog.numberOfPendingInvites', {
-            defaultValue_one: 'One pending invite',
-            defaultValue: '{{count}} pending invites',
-            count: invites.length,
-          })}
+          aria-label={tooltipTitle}
           onClick={handleOpenDialog}
           sx={{
             alignItems: 'center',
@@ -54,18 +61,14 @@ export const InvitesMenu: React.FC = () => {
             width: 40,
           }}
         >
-          <Avatar
-            sx={{
-              fontSize: '16px',
-              bgcolor: theme.palette.primary.dark,
-              width: 24,
-              height: 24,
-            }}
+          <Badge
+            badgeContent={invites.length > 99 ? '∞' : invites.length}
+            color="primary"
           >
-            {invites.length > 99 ? '∞' : invites.length}
-          </Avatar>
+            <Notifications />
+          </Badge>
         </IconButton>
-      )}
+      </Tooltip>
     </>
   );
 };
