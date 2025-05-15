@@ -19,13 +19,17 @@
 import { ElementAvatar } from '@matrix-widget-toolkit/mui';
 import InfoIcon from '@mui/icons-material/Info';
 import LogoutIcon from '@mui/icons-material/Logout';
+import TranslateIcon from '@mui/icons-material/Translate';
+
 import {
+  Divider,
   IconButton,
   ListItemIcon,
   ListItemText,
   Menu,
   MenuItem,
   Tooltip,
+  Typography,
 } from '@mui/material';
 import {
   getUserColor,
@@ -35,6 +39,7 @@ import React, { MouseEventHandler, useCallback, useId, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLoggedIn } from '../../state';
 import { AboutDialog } from './AboutDialog';
+import { LanguageDialog } from './LanguageDialog';
 import { LogoutDialog } from './LogoutDialog';
 
 export function UserMenu() {
@@ -50,8 +55,14 @@ export function UserMenu() {
     setAnchorEl(null);
   }, []);
 
-  const [logoutDialogOpen, setLogoutDialogOpen] = useState(false);
   const [aboutDialogOpen, setAboutDialogOpen] = useState(false);
+  const [languageDialogOpen, setLanguageDialogOpen] = useState(false);
+  const [logoutDialogOpen, setLogoutDialogOpen] = useState(false);
+
+  const handleLanguageClick = useCallback(() => {
+    setAnchorEl(null);
+    setLanguageDialogOpen(true);
+  }, [setAnchorEl]);
 
   const handleAboutClick = useCallback(() => {
     setAnchorEl(null);
@@ -71,14 +82,22 @@ export function UserMenu() {
 
   return (
     <>
-      <LogoutDialog
-        onClose={useCallback(() => setLogoutDialogOpen(false), [])}
-        open={logoutDialogOpen}
+      <LanguageDialog
+        onClose={useCallback(() => setLanguageDialogOpen(false), [])}
+        open={languageDialogOpen}
+        // onLanguageSelected={useCallback(() => setLanguageDialogOpen(false), [])}
       />
+
       <AboutDialog
         onClose={useCallback(() => setAboutDialogOpen(false), [])}
         open={aboutDialogOpen}
       />
+
+      <LogoutDialog
+        onClose={useCallback(() => setLogoutDialogOpen(false), [])}
+        open={logoutDialogOpen}
+      />
+
       <Tooltip title={t('userMenu.tooltip', 'User menu')}>
         <IconButton
           onClick={handleClick}
@@ -88,7 +107,7 @@ export function UserMenu() {
           aria-expanded={open ? 'true' : undefined}
         >
           <ElementAvatar
-            sx={{ width: 30, height: 30 }}
+            sx={{ width: 32, height: 32 }}
             userId={userId}
             displayName={username}
             avatarUrl={avatarUrl}
@@ -97,16 +116,48 @@ export function UserMenu() {
         </IconButton>
       </Tooltip>
       <Menu id={menuId} anchorEl={anchorEl} open={open} onClose={handleClose}>
-        <MenuItem disabled={true}>
-          <ListItemIcon />
-          <ListItemText>{username}</ListItemText>
+        <MenuItem>
+          <ListItemIcon
+            sx={{
+              paddingRight: '16px',
+            }}
+          >
+            <ElementAvatar
+              sx={{ width: 32, height: 32 }}
+              userId={userId}
+              displayName={username}
+              avatarUrl={avatarUrl}
+              style={{ outline: `${getUserColor(userId)} solid 2px` }}
+            />
+          </ListItemIcon>
+          <ListItemText>
+            {username !== userId && (
+              <Typography variant="h4" color="textPrimary">
+                {username}
+              </Typography>
+            )}
+            <Typography variant="h5" color="textSecondary">
+              {userId}
+            </Typography>
+          </ListItemText>
         </MenuItem>
+
+        <Divider />
+
+        <MenuItem onClick={handleLanguageClick}>
+          <ListItemIcon>
+            <TranslateIcon fontSize="small" />
+          </ListItemIcon>
+          <ListItemText>{t('userMenu.language', 'Language')}</ListItemText>
+        </MenuItem>
+
         <MenuItem onClick={handleAboutClick}>
           <ListItemIcon>
             <InfoIcon fontSize="small" />
           </ListItemIcon>
           <ListItemText>{t('userMenu.about', 'About')}</ListItemText>
         </MenuItem>
+
         <MenuItem onClick={handleLogoutClick}>
           <ListItemIcon>
             <LogoutIcon fontSize="small" />

@@ -17,6 +17,7 @@
  */
 
 import { getEnvironment } from '@matrix-widget-toolkit/mui';
+import InfoIcon from '@mui/icons-material/Info';
 import {
   Button,
   Dialog,
@@ -53,7 +54,11 @@ export function AboutDialog({ open, onClose }: AboutDialogProps) {
       aria-labelledby={titleId}
       aria-describedby={descriptionId}
     >
-      <DialogTitle id={titleId}>{t('aboutDialog.about', 'About')}</DialogTitle>
+      <DialogTitle id={titleId} sx={{ display: 'flex', alignItems: 'center' }}>
+        <InfoIcon sx={{ marginRight: 2 }} />
+        {t('aboutDialog.about', 'About')}
+      </DialogTitle>
+
       <DialogContent style={{ whiteSpace: 'pre-wrap' }} id={descriptionId}>
         <CopyableText
           label={t('aboutDialog.versions.title', 'Version')}
