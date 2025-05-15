@@ -56,6 +56,7 @@
   "invitesDialog": {
     "accept": "Accept invite",
     "actionFailed": "Action failed",
+    "numberOfPendingInvites_zero": "No pending invites",
     "numberOfPendingInvites_one": "One pending invite",
     "numberOfPendingInvites_other": "{{count}} pending invites",
     "reject": "Reject invite",
