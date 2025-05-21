@@ -199,10 +199,6 @@ export function ShareMenuModal({
         {selectedUsers.length > 0 && (
           <Box
             sx={{
-              display: 'flex',
-              flexDirection: 'row',
-              alignItems: 'center',
-              gap: '8px',
               mt: 2,
             }}
           >
@@ -211,30 +207,40 @@ export function ShareMenuModal({
                 Selected users:
               </Trans>
             </Typography>
-
-            {selectedUsers.map((user) => (
-              <>
-                {/* Small user pill of selected users which can be deselected using an iconbutton of a close icon */}
-                <Chip
-                  onDelete={() =>
-                    setSelectedUsers((prev) =>
-                      prev.filter((u) => u.user_id !== user.user_id),
-                    )
-                  }
-                  key={user.user_id}
-                  avatar={
-                    <ElementAvatar
-                      userId={user.user_id}
-                      displayName={user.display_name}
-                      src={user.avatar_url ?? ''}
-                    >
-                      {user.display_name?.substring(0, 1)}
-                    </ElementAvatar>
-                  }
-                  label={user.display_name}
-                />
-              </>
-            ))}
+            <Box
+              sx={{
+                display: 'flex',
+                flexDirection: 'row',
+                alignItems: 'center',
+                gap: 1,
+                mt: 1,
+                flexWrap: 'wrap',
+              }}
+            >
+              {selectedUsers.map((user) => (
+                <>
+                  {/* Small user pill of selected users which can be deselected using an iconbutton of a close icon */}
+                  <Chip
+                    onDelete={() =>
+                      setSelectedUsers((prev) =>
+                        prev.filter((u) => u.user_id !== user.user_id),
+                      )
+                    }
+                    key={user.user_id}
+                    avatar={
+                      <ElementAvatar
+                        userId={user.user_id}
+                        displayName={user.display_name}
+                        src={user.avatar_url ?? ''}
+                      >
+                        {user.display_name?.substring(0, 1)}
+                      </ElementAvatar>
+                    }
+                    label={user.display_name}
+                  />
+                </>
+              ))}
+            </Box>
           </Box>
         )}
 
