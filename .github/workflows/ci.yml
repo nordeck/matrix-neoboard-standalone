@@ -231,9 +231,6 @@ jobs:
     steps:
       # Clone repo to get the helm charts
       - uses: actions/checkout@v4
-        with:
-          fetch-depth: '0'
-          persist-credentials: false
 
       - name: Checkout valhalla for values
         uses: actions/checkout@v4
@@ -248,43 +245,29 @@ jobs:
           path: valhalla
           persist-credentials: false
 
+      - name: Set up Helm
+        uses: azure/setup-helm@v4.3.0
+
       - name: Create Kubeconfig
         run: |
           # Extract the base64 encoded config data and write this to the KUBECONFIG
-          echo "${{ secrets.KUBECONFIG_DEV }}" | base64 -d > /tmp/config
+          echo "${{ secrets.KUBECONFIG_NEOTOOLSUITE_DEV }}" | base64 -d > /tmp/config
           chmod 600 /tmp/config
-
           echo "KUBECONFIG=/tmp/config" >> $GITHUB_ENV
 
       - name: deploy k8s to cluster
-        uses: wahyd4/kubectl-helm-action@master
-        env:
-          KUBE_CONFIG_DATA: ${{ secrets.KUBECONFIG_RANCHER_DEV_DEMO }}
-        with:
-          args: |
-            helm upgrade --install matrix-neoboard-standalone ./charts/matrix-neoboard-standalone -f ./valhalla/cluster/neotoolsuite-dev/matrix-neoboard-standalone/values.dev.yaml -n matrix
+        run: |
+          helm upgrade --install matrix-neoboard-standalone ./charts/matrix-neoboard-standalone -f ./valhalla/cluster/neotoolsuite-dev/matrix-neoboard-standalone/values.dev.yaml -n matrix
 
       - name: restart rollout
-        uses: wahyd4/kubectl-helm-action@master
-        env:
-          KUBE_CONFIG_DATA: ${{ secrets.KUBECONFIG_RANCHER_DEV_DEMO }}
-        with:
-          args: |
-            kubectl rollout restart deployment matrix-neoboard-standalone -n matrix
+        run: |
+          kubectl rollout restart deployment matrix-neoboard-standalone -n matrix
 
       # inifinite canvas
       - name: deploy k8s to cluster
-        uses: wahyd4/kubectl-helm-action@master
-        env:
-          KUBE_CONFIG_DATA: ${{ secrets.KUBECONFIG_RANCHER_DEV_DEMO }}
-        with:
-          args: |
-            helm upgrade --install matrix-neoboard-standalone-infinite-canvas ./charts/matrix-neoboard-standalone -f ./valhalla/cluster/neotoolsuite-dev/matrix-neoboard-standalone/values.infinite-canvas.yaml -n matrix
+        run: |
+          helm upgrade --install matrix-neoboard-standalone-infinite-canvas ./charts/matrix-neoboard-standalone -f ./valhalla/cluster/neotoolsuite-dev/matrix-neoboard-standalone/values.infinite-canvas.yaml -n matrix
 
       - name: restart rollout
-        uses: wahyd4/kubectl-helm-action@master
-        env:
-          KUBE_CONFIG_DATA: ${{ secrets.KUBECONFIG_RANCHER_DEV_DEMO }}
-        with:
-          args: |
-            kubectl rollout restart deployment matrix-neoboard-standalone-infinite-canvas -n matrix
+        run: |
+          kubectl rollout restart deployment matrix-neoboard-standalone-infinite-canvas -n matrix
