@@ -33,9 +33,14 @@ export function mockStandaloneClient(): MockedStandaloneClient {
     // @ts-expect-error - T doesn't matter here
     receiveStateEvents: vi.fn(),
     sendStateEvent: vi.fn(),
+    sendDelayedStateEvent: vi
+      .fn()
+      .mockResolvedValue('syd_bcooaGNyKtyFbIGjGMQR'),
     // @ts-expect-error - T doesn't matter here
     receiveRoomEvents: vi.fn(),
     sendRoomEvent: vi.fn(),
+    sendDelayedRoomEvent: vi.fn().mockResolvedValue('syd_wlGAStYmBRRdjnWiHSDA'),
+    updateDelayedEvent: vi.fn().mockResolvedValue(undefined),
     readEventRelations: vi.fn(),
     observeTurnServers: vi.fn(),
     searchUserDirectory: vi.fn(),
