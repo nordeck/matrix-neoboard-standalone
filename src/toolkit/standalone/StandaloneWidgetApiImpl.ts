@@ -33,6 +33,7 @@ import {
   IWidgetApiRequestData,
   ModalButtonID,
   Symbols,
+  UpdateDelayedEventAction,
   WidgetEventCapability,
 } from 'matrix-widget-api';
 import { Observable } from 'rxjs';
@@ -145,6 +146,25 @@ export class StandaloneWidgetApiImpl implements StandaloneWidgetApi {
     });
   }
 
+  /** {@inheritDoc WidgetApi.sendDelayedStateEvent} */
+  async sendDelayedStateEvent<T>(
+    eventType: string,
+    content: T,
+    delay: number,
+    { roomId, stateKey = '' }: { roomId?: string; stateKey?: string } = {},
+  ): Promise<{ delay_id: string }> {
+    const targetRoomId = this.targetRoomId(roomId);
+    return await this.standaloneApi.sendDelayedStateEvent(
+      eventType,
+      content,
+      delay,
+      {
+        roomId: targetRoomId,
+        stateKey,
+      },
+    );
+  }
+
   /** {@inheritDoc WidgetApi.receiveRoomEvents} */
   async receiveRoomEvents<T>(
     eventType: string,
@@ -185,6 +205,32 @@ export class StandaloneWidgetApiImpl implements StandaloneWidgetApi {
     return await this.standaloneApi.sendRoomEvent(eventType, content, {
       roomId: targetRoomId,
     });
+  }
+
+  /** {@inheritDoc WidgetApi.sendDelayedRoomEvent} */
+  async sendDelayedRoomEvent<T>(
+    eventType: string,
+    content: T,
+    delay: number,
+    { roomId }: { roomId?: string } = {},
+  ): Promise<{ delay_id: string }> {
+    const targetRoomId = this.targetRoomId(roomId);
+    return await this.standaloneApi.sendDelayedRoomEvent(
+      eventType,
+      content,
+      delay,
+      {
+        roomId: targetRoomId,
+      },
+    );
+  }
+
+  /** {@inheritDoc WidgetApi.updateDelayedEvent} */
+  async updateDelayedEvent(
+    delayId: string,
+    action: UpdateDelayedEventAction,
+  ): Promise<void> {
+    return this.standaloneApi.updateDelayedEvent(delayId, action);
   }
 
   /** {@inheritDoc WidgetApi.readEventRelations} */

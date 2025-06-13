@@ -19,7 +19,7 @@ import {
   StateEvent,
   ToDeviceMessageEvent,
 } from '@matrix-widget-toolkit/api';
-import { Symbols } from 'matrix-widget-api';
+import { Symbols, UpdateDelayedEventAction } from 'matrix-widget-api';
 import {
   Observable,
   ReplaySubject,
@@ -114,6 +114,23 @@ export class StandaloneApiImpl implements StandaloneApi {
     }
   }
 
+  /** {@inheritDoc WidgetApi.sendDelayedStateEvent} */
+  async sendDelayedStateEvent<T>(
+    eventType: string,
+    content: T,
+    delay: number,
+    { roomId, stateKey = '' }: { roomId: string; stateKey?: string },
+  ): Promise<{ delay_id: string }> {
+    const delay_id = await this.client.sendDelayedStateEvent(
+      eventType,
+      stateKey,
+      content,
+      roomId,
+      delay,
+    );
+    return { delay_id };
+  }
+
   observeRoomEvents<T>(
     eventType: string,
     {
@@ -179,6 +196,30 @@ export class StandaloneApiImpl implements StandaloneApi {
     } finally {
       subscription.unsubscribe();
     }
+  }
+
+  /** {@inheritDoc WidgetApi.sendDelayedRoomEvent} */
+  async sendDelayedRoomEvent<T>(
+    eventType: string,
+    content: T,
+    delay: number,
+    { roomId }: { roomId: string },
+  ): Promise<{ delay_id: string }> {
+    const delay_id = await this.client.sendDelayedRoomEvent(
+      eventType,
+      content,
+      roomId,
+      delay,
+    );
+    return { delay_id };
+  }
+
+  /** {@inheritDoc WidgetApi.updateDelayedEvent} */
+  async updateDelayedEvent(
+    delayId: string,
+    action: UpdateDelayedEventAction,
+  ): Promise<void> {
+    await this.client.updateDelayedEvent(delayId, action);
   }
 
   observeToDeviceMessages<T>(
