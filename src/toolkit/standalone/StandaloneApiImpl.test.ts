@@ -19,7 +19,7 @@ import {
   StateEvent,
   ToDeviceMessageEvent,
 } from '@matrix-widget-toolkit/api';
-import { Symbols } from 'matrix-widget-api';
+import { Symbols, UpdateDelayedEventAction } from 'matrix-widget-api';
 import { firstValueFrom, of, take, toArray } from 'rxjs';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { StandaloneApiImpl } from './StandaloneApiImpl';
@@ -298,6 +298,25 @@ describe('StandaloneApiImpl', () => {
     });
   });
 
+  describe('sendDelayedStateEvent', () => {
+    it('should send delayed state event', async () => {
+      standaloneApi = new StandaloneApiImpl(standaloneClient);
+
+      await expect(
+        standaloneApi.sendDelayedStateEvent(
+          'com.example.test',
+          {
+            key: 'value',
+          },
+          1000,
+          {
+            roomId: '!current-room',
+          },
+        ),
+      ).resolves.toEqual({ delay_id: 'syd_bcooaGNyKtyFbIGjGMQR' });
+    });
+  });
+
   describe('observeRoomEvents', () => {
     it('should receive updates about room events from any room', async () => {
       standaloneClient.receiveRoomEvents.mockResolvedValue([
@@ -511,6 +530,38 @@ describe('StandaloneApiImpl', () => {
         }),
       ).rejects.toThrowError('Power to low');
       expect(standaloneClient.sendRoomEvent).toBeCalled();
+    });
+  });
+
+  describe('sendDelayedRoomEvent', () => {
+    it('should send delayed room event', async () => {
+      standaloneApi = new StandaloneApiImpl(standaloneClient);
+
+      await expect(
+        standaloneApi.sendDelayedRoomEvent(
+          'com.example.test',
+          {
+            key: 'value',
+          },
+          1000,
+          {
+            roomId: '!current-room',
+          },
+        ),
+      ).resolves.toEqual({ delay_id: 'syd_wlGAStYmBRRdjnWiHSDA' });
+    });
+  });
+
+  describe('updateDelayedEvent', () => {
+    it('should update delayed event', async () => {
+      standaloneApi = new StandaloneApiImpl(standaloneClient);
+
+      await expect(
+        standaloneApi.updateDelayedEvent(
+          'syd_wlGAStYmBRRdjnWiHSDA',
+          UpdateDelayedEventAction.Cancel,
+        ),
+      ).resolves.toBeUndefined();
     });
   });
 

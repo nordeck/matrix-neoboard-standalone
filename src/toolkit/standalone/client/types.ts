@@ -22,7 +22,7 @@ import {
   WidgetApi,
 } from '@matrix-widget-toolkit/api';
 import { ICreateRoomOpts, IJoinRoomOpts, Room } from 'matrix-js-sdk';
-import { Symbols } from 'matrix-widget-api';
+import { Symbols, UpdateDelayedEventAction } from 'matrix-widget-api';
 import { Observable } from 'rxjs';
 /**
  * User Data of a matrix user.
@@ -139,12 +139,30 @@ export type StandaloneClient = Pick<
    * @param stateKey - State key.
    * @param content - The content of the event.
    * @param roomId - The room id
+   * @returns event id
    */
   sendStateEvent(
     eventType: string,
     stateKey: string,
     content: unknown,
     roomId: string,
+  ): Promise<string>;
+
+  /**
+   * Send a delayed state event with a given type to the room
+   * @param eventType - The type of the event to send.
+   * @param stateKey - State key.
+   * @param content - The content of the event.
+   * @param roomId - The room id
+   * @param delay - The delay in ms
+   * @returns delay id
+   */
+  sendDelayedStateEvent(
+    eventType: string,
+    stateKey: string,
+    content: unknown,
+    roomId: string,
+    delay: number,
   ): Promise<string>;
 
   /**
@@ -177,12 +195,38 @@ export type StandaloneClient = Pick<
    * @param eventType - The event type.
    * @param content -The event content.
    * @param roomId - The room id
+   * @returns event id
    */
   sendRoomEvent(
     eventType: string,
     content: unknown,
     roomId: string,
   ): Promise<string>;
+
+  /**
+   * Sends a delayed room event with a given type to the room.
+   * @param eventType - The event type.
+   * @param content -The event content.
+   * @param roomId - The room id
+   * @param delay - The delay in ms
+   * @returns delay id
+   */
+  sendDelayedRoomEvent(
+    eventType: string,
+    content: unknown,
+    roomId: string,
+    delay: number,
+  ): Promise<string>;
+
+  /**
+   * Update a delayed event by delay id
+   * @param delayId - The delay id of the event
+   * @param action - The action to update
+   */
+  updateDelayedEvent(
+    delayId: string,
+    action: UpdateDelayedEventAction,
+  ): Promise<void>;
 
   /**
    * Receive all events that relate to a given `eventId` by means of MSC2674.
