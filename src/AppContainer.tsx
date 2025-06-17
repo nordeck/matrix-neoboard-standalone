@@ -17,20 +17,44 @@
  */
 
 import {
-  WhiteboardManager,
+  createWhiteboardManager,
   WhiteboardManagerProvider,
 } from '@nordeck/matrix-neoboard-react-sdk';
+import { useEffect, useMemo } from 'react';
+import { useLocation } from 'react-router';
 import { App } from './App';
 import { Application } from './state';
 import { ApplicationProvider } from './state/useApplication';
+import { StoreType } from './store';
 
 export const AppContainer = ({
   application,
-  whiteboardManager,
+  store,
 }: {
   application: Application;
-  whiteboardManager: WhiteboardManager;
+  store: StoreType;
 }) => {
+  const location = useLocation();
+
+  // Determine if RTC should be disabled based on current route
+  const shouldDisableRtc = !location.pathname.startsWith('/board/');
+
+  // Create whiteboard manager based on current route
+  const whiteboardManager = useMemo(() => {
+    return createWhiteboardManager(
+      store,
+      application.widgetApiPromise,
+      shouldDisableRtc,
+    );
+  }, [store, application.widgetApiPromise, shouldDisableRtc]);
+
+  // Cleanup whiteboard manager when it changes or component unmounts
+  useEffect(() => {
+    return () => {
+      whiteboardManager.clear();
+    };
+  }, [whiteboardManager]);
+
   return (
     <ApplicationProvider application={application}>
       <WhiteboardManagerProvider whiteboardManager={whiteboardManager}>

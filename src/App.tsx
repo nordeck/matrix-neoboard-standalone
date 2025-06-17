@@ -18,7 +18,6 @@
 
 import { useEffect, useRef, useState } from 'react';
 import {
-  BrowserRouter,
   Navigate,
   Outlet,
   Route,
@@ -46,22 +45,20 @@ export const App = () => {
 
   return (
     <StandaloneThemeProvider>
-      <BrowserRouter>
-        <Routes>
-          {/* Protected Routes for Logged In Users */}
-          <Route element={<ProtectedRoutes />}>
-            <Route path="/dashboard" element={<DashboardWithRedirect />} />
-            <Route path="/board/:roomId" element={<BoardViewWrapper />} />
-            <Route path="*" element={<Navigate to="/dashboard" replace />} />
-          </Route>
-          {['notLoggedIn', 'loggedOut'].includes(lifecycleState) && (
-            <>
-              <Route path="/login" element={<WelcomePane />} />
-              <Route path="*" element={<Navigate to="/login" replace />} />
-            </>
-          )}
-        </Routes>
-      </BrowserRouter>
+      <Routes>
+        {/* Protected Routes for Logged In Users */}
+        <Route element={<ProtectedRoutes />}>
+          <Route path="/dashboard" element={<DashboardWithRedirect />} />
+          <Route path="/board/:roomId" element={<BoardViewWrapper />} />
+          <Route path="*" element={<Navigate to="/dashboard" replace />} />
+        </Route>
+        {['notLoggedIn', 'loggedOut'].includes(lifecycleState) && (
+          <>
+            <Route path="/login" element={<WelcomePane />} />
+            <Route path="*" element={<Navigate to="/login" replace />} />
+          </>
+        )}
+      </Routes>
     </StandaloneThemeProvider>
   );
 };
