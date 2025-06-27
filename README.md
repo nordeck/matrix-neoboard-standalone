@@ -132,6 +132,11 @@ Learn more in the [`.changeset` folder](./.changeset).
 Once the change is merged to `main`, a “Version Packages” pull request will be created.
 As soon as the project maintainers merged it, the package will be released and the container is published.
 
+### Processing Renovate PRs
+
+Renovate PRs which update packages that are direct dependencies of our packages (and not `devDependencies`) need a changeset as described above.
+Specify the impact as `patch`.
+
 ### Architecture Decision Records
 
 We use [Architecture Decision Records (ADR)s](https://github.com/nordeck/matrix-widget-toolkit/blob/main/docs/adrs/adr001-use-adrs-to-document-decisions.md) to document decisions for our software.
