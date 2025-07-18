@@ -10,6 +10,10 @@
   "app": {
     "cancel": "Cancel"
   },
+  "boardNotFound": {
+    "link": "Go to dashboard",
+    "message": "Board not found"
+  },
   "copyableTextButton": {
     "copy-to-clipboard": "Copy to clipboard"
   },
@@ -17,8 +21,7 @@
     "boardList": {
       "created": "Created",
       "lastView": "Recently viewed",
-      "name": "Name",
-      "users": "Users in board"
+      "name": "Name"
     },
     "boardTile": {
       "created": "Created {{created}}",
@@ -47,15 +50,25 @@
     "title": "Delete NeoBoard"
   },
   "header": {
-    "dashboard": "Go back to the dashboard"
+    "dashboard": "Go back to the dashboard",
+    "renameBoard": "Click to rename"
   },
   "invitesDialog": {
     "accept": "Accept invite",
     "actionFailed": "Action failed",
+    "numberOfPendingInvites_zero": "No pending invites",
     "numberOfPendingInvites_one": "One pending invite",
     "numberOfPendingInvites_other": "{{count}} pending invites",
     "reject": "Reject invite",
     "title": "Invites"
+  },
+  "languageDialog": {
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "description": "Please select your preferred language:",
+    "english": "English",
+    "german": "German",
+    "title": "Language"
   },
   "login": {
     "button": "Log In",
@@ -109,7 +122,9 @@
   },
   "userMenu": {
     "about": "About",
-    "logOut": "Log out"
+    "language": "Language",
+    "logOut": "Log out",
+    "tooltip": "User menu"
   },
   "welcome": {
     "loading": "Starting…",

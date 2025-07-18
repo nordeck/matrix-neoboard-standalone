@@ -1,4 +1,4 @@
-FROM ghcr.io/nordeck/matrix-widget-toolkit/widget-server:1
+FROM ghcr.io/nordeck/matrix-widget-toolkit/widget-server:1@sha256:e20146b7f11dfb663874fed7a289e412ce6e8e623c6eb2261e35a220029ba042
 
 ARG REACT_APP_VERSION
 ARG REACT_APP_REVISION
@@ -20,4 +20,4 @@ ENV CSP_IMG_SRC="http: https: blob:"
 
 # Allow to send requests to all HTTP(s) URLs
 # Required for sending requests to homeservers
-ENV CSP_CONNECT_SRC="http: https:"
+ENV CSP_CONNECT_SRC="http: https: wss:"

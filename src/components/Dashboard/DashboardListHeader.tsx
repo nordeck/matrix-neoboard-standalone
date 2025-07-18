@@ -44,14 +44,6 @@ export function DashboardListHeader() {
         component="th"
         sx={{ fontSize: 13 }}
       >
-        {t('dashboard.boardList.users', 'Users in board')}
-      </Typography>
-      <Typography
-        variant="h6"
-        color="textSecondary"
-        component="th"
-        sx={{ fontSize: 13 }}
-      >
         {t('dashboard.boardList.lastView', 'Recently viewed')}
       </Typography>
       <Typography

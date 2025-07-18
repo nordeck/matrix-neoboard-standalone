@@ -16,15 +16,15 @@
  * along with NeoBoard Standalone. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
-import { alpha, IconButton, Stack, styled, Typography } from '@mui/material';
-import { MouseEvent } from 'react';
+import { alpha, Stack, styled, Typography, useTheme } from '@mui/material';
+import { PropsWithChildren } from 'react';
 import { useTranslation } from 'react-i18next';
+import { Link } from 'react-router';
 import { BoardPreview } from './BoardPreview.tsx';
 import { Thumbnail } from './Thumbnail.tsx';
 import { TileMenu } from './TileMenu';
+import { DashboardItem } from './useDashboardList.ts';
 import { BoardItemProps } from './useDashboardView.tsx';
-import { UserChip } from './UserChip.tsx';
 
 const BoardTitle = styled(Typography)(() => ({
   fontWeight: 'bold',
@@ -46,61 +46,78 @@ const ClickableRow = styled('tr')(({ theme }) => ({
   },
 }));
 
-export function BoardListItem({ onClick, dashboardItem }: BoardItemProps) {
+export function BoardListItem({ dashboardItem }: BoardItemProps) {
   const { t } = useTranslation();
 
   return (
-    <ClickableRow tabIndex={0} role="button" onClick={onClick}>
+    <ClickableRow tabIndex={0} role="button">
       <td style={{ width: 0 }}>
-        <Thumbnail
-          aria-hidden="true"
-          divider={false}
-          style={{ width: '10rem' }}
-        >
-          <BoardPreview preview={dashboardItem.preview} />
-        </Thumbnail>
+        <UnstyledLink dashboardItem={dashboardItem}>
+          <Thumbnail
+            aria-hidden="true"
+            divider={false}
+            style={{ width: '10rem' }}
+          >
+            <BoardPreview whiteboard={dashboardItem.whiteboard} />
+          </Thumbnail>
+        </UnstyledLink>
       </td>
       <td>
-        <Stack direction="row" alignItems="center" gap={1}>
-          <BoardTitle variant="h4" component="div">
-            {dashboardItem.name}
-          </BoardTitle>
-          {dashboardItem.permissions.canChangeName && (
-            <TileMenu item={dashboardItem} />
-          )}
-        </Stack>
-      </td>
-      <td>
-        <Stack direction="row" alignItems="center" gap={1}>
-          <Stack direction="column">
-            {dashboardItem.users?.map((user) => (
-              <UserChip key={user} user={user} onClick={noop} />
-            ))}
+        <UnstyledLink dashboardItem={dashboardItem}>
+          <Stack direction="row" alignItems="center" gap={1}>
+            <BoardTitle variant="h4" component="div">
+              {dashboardItem.name}
+            </BoardTitle>
+            {dashboardItem.permissions.canChangeName && (
+              <TileMenu item={dashboardItem} />
+            )}
           </Stack>
-          <IconButton onClick={noop} component="span">
-            <PeopleAltIcon />
-          </IconButton>
-        </Stack>
+        </UnstyledLink>
       </td>
       <td>
-        <Typography color="textSecondary" sx={{ fontSize: 13 }}>
-          {t('dashboard.boardTile.lastView', 'Last view {{lastView}}', {
-            lastView: dashboardItem.lastView,
-          })}
-        </Typography>
+        <UnstyledLink dashboardItem={dashboardItem}>
+          <Typography color="textSecondary" sx={{ fontSize: 13 }}>
+            {t('dashboard.boardTile.lastView', 'Last view {{lastView}}', {
+              lastView: dashboardItem.lastView,
+            })}
+          </Typography>
+        </UnstyledLink>
       </td>
       <td>
-        <Typography color="textSecondary" sx={{ fontSize: 13 }}>
-          {t('dashboard.boardTile.created', 'Created {{created}}', {
-            created: dashboardItem.created,
-          })}
-        </Typography>
+        <UnstyledLink dashboardItem={dashboardItem}>
+          <Typography color="textSecondary" sx={{ fontSize: 13 }}>
+            {t('dashboard.boardTile.created', 'Created {{created}}', {
+              created: dashboardItem.created,
+            })}
+          </Typography>
+        </UnstyledLink>
       </td>
     </ClickableRow>
   );
 }
 
-function noop(event: MouseEvent): void {
-  event.preventDefault();
-  event.stopPropagation();
+function UnstyledLink({
+  children,
+  dashboardItem,
+}: PropsWithChildren<{ dashboardItem: DashboardItem }>) {
+  const theme = useTheme();
+
+  return (
+    <Link
+      key={dashboardItem.roomId}
+      to={`/board/${dashboardItem.roomId}`}
+      style={{
+        alignItems: 'center',
+        color: 'inherit',
+        display: 'flex',
+        // @todo This is not great of course, but required for the links to work.
+        // We should switch the list to a CSS grid view instead.
+        height: '122px',
+        padding: theme.spacing(2, 3),
+        textDecoration: 'none',
+      }}
+    >
+      {children}
+    </Link>
+  );
 }

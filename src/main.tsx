@@ -20,6 +20,7 @@
 import i18n from './i18n';
 
 import { createWhiteboardManager } from '@nordeck/matrix-neoboard-react-sdk';
+import log from 'loglevel';
 import React, { Suspense } from 'react';
 import { createRoot } from 'react-dom/client';
 import { I18nextProvider } from 'react-i18next';
@@ -28,6 +29,10 @@ import { AppContainer } from './AppContainer';
 import './index.css';
 import { Application } from './state';
 import { createStore, initializeStore } from './store';
+
+if (process.env.NODE_ENV === 'development') {
+  log.setDefaultLevel('debug');
+}
 
 const application = new Application();
 application.start();

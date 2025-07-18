@@ -27,6 +27,7 @@ import {
   ListItemText,
   Menu,
   MenuItem,
+  Tooltip,
 } from '@mui/material';
 import { MouseEvent, useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -34,7 +35,7 @@ import useSWR from 'swr';
 import { useLoggedIn } from '../../state';
 import { ShareMenuModal } from './ShareMenuModal';
 
-export function ShareMenu({ selectedRoomId }: { selectedRoomId: string }) {
+export function ShareMenu({ roomId }: { roomId: string }) {
   const { t } = useTranslation();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
@@ -59,7 +60,7 @@ export function ShareMenu({ selectedRoomId }: { selectedRoomId: string }) {
   // Get the powerlevel event so we can calculate if the menu is shown. We do this inside of here so it only happens when we are in the room.
   const client = useLoggedIn();
   const { data } = useSWR<PowerLevelsStateEvent[]>(
-    selectedRoomId,
+    roomId,
     client.standaloneClient.getPowerLevelEvent.bind(client.standaloneClient),
     { suspense: true },
   );
@@ -80,24 +81,27 @@ export function ShareMenu({ selectedRoomId }: { selectedRoomId: string }) {
       <ShareMenuModal
         onClose={handleClose}
         open={inviteDialogOpen}
-        selectedRoomId={selectedRoomId}
+        selectedRoomId={roomId}
       />
-      <IconButton
-        onClick={handleClick}
-        size="small"
-        aria-controls={open ? 'share-menu' : undefined}
-        aria-haspopup="true"
-        aria-expanded={open ? 'true' : undefined}
-        sx={{
-          alignItems: 'center',
-          display: 'flex',
-          height: 40,
-          justifyContent: 'center',
-          width: 40,
-        }}
-      >
-        <Share sx={{ width: 24, height: 24 }} />
-      </IconButton>
+      <Tooltip title={t('shareMenu.invite', 'Invite')}>
+        <IconButton
+          onClick={handleClick}
+          size="small"
+          aria-label={t('shareMenu.invite', 'Invite')}
+          aria-controls={open ? 'share-menu' : undefined}
+          aria-haspopup="true"
+          aria-expanded={open ? 'true' : undefined}
+          sx={{
+            alignItems: 'center',
+            display: 'flex',
+            height: 40,
+            justifyContent: 'center',
+            width: 40,
+          }}
+        >
+          <Share sx={{ width: 24, height: 24 }} />
+        </IconButton>
+      </Tooltip>
       <Menu
         id="share-menu"
         anchorEl={anchorEl}

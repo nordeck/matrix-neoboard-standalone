@@ -18,41 +18,63 @@
 
 import { useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useStore } from 'react-redux';
+import { useNavigate } from 'react-router';
+import { STATE_EVENT_SESSION } from '../../model';
 import { useLoggedIn } from '../../state';
+import { makeSelectWhiteboard, RootState } from '../../store';
 import { DashboardContainer } from './DashboardContainer.tsx';
 import { createWhiteboard } from './createWhiteboard.ts';
-import { DashboardItem, useDashboardList } from './useDashboardList.ts';
+import { useDashboardList } from './useDashboardList.ts';
 import { useDashboardView } from './useDashboardView.tsx';
 
-type DashboardProps = {
-  setSelectedRoomId: (roomId: string) => void;
-};
-
-export function Dashboard({ setSelectedRoomId }: DashboardProps) {
+export function Dashboard() {
   const { t } = useTranslation();
   const { standaloneClient } = useLoggedIn();
   const dashboardItems = useDashboardList();
   const DashboardView = useDashboardView();
+  const navigate = useNavigate();
+  const store = useStore<RootState>();
+
+  const handleCreate = useCallback(async () => {
+    // create room first
+    const { room_id: roomId } = await standaloneClient.createRoom({
+      name: t('dashboard.untitled', 'Untitled'),
+      power_level_content_override: {
+        events: {
+          [STATE_EVENT_SESSION]: 0,
+        },
+      },
+    });
+
+    // create a promise that will be resolved when whiteboard data is in store
+    let promiseResolve: (value: unknown) => void;
+    const promise = new Promise((resolve) => {
+      promiseResolve = resolve;
+    });
+
+    const selectWhiteboard = makeSelectWhiteboard(roomId);
+    const unsubscribe = store.subscribe(() => {
+      const state = store.getState();
+
+      const whiteboard = selectWhiteboard(state);
+      if (whiteboard) {
+        promiseResolve(undefined);
+      }
+    });
+
+    // create a whiteboard in the room
+    await createWhiteboard(standaloneClient, roomId);
+
+    await promise;
+    unsubscribe();
+
+    navigate(`/board/${roomId}`);
+  }, [standaloneClient, t, navigate, store]);
 
   return (
     <DashboardContainer>
-      <DashboardView
-        items={dashboardItems}
-        onCreate={useCallback(async () => {
-          const roomId = await createWhiteboard(
-            standaloneClient,
-            t('dashboard.untitled', 'Untitled'),
-          );
-          setSelectedRoomId(roomId);
-        }, [setSelectedRoomId, standaloneClient, t])}
-        onSelect={useCallback(
-          (dashboardItem: DashboardItem) => {
-            const roomId = dashboardItem.roomId;
-            setSelectedRoomId(roomId);
-          },
-          [setSelectedRoomId],
-        )}
-      />
+      <DashboardView items={dashboardItems} onCreate={handleCreate} />
     </DashboardContainer>
   );
 }

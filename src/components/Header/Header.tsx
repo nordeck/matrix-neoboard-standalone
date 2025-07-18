@@ -19,10 +19,12 @@
 import { styled } from '@mui/material';
 import { Suspense } from 'react';
 import { useTranslation } from 'react-i18next';
+import { Link } from 'react-router';
 import ErrorBoundary from '../ErrorBoundary';
 import { InvitesMenu } from './InvitesMenu';
 import { NeoBoardIcon } from './NeoBoardIcon';
 import { ShareMenu } from './ShareMenu';
+import { Title } from './Title';
 import { UserMenu } from './UserMenu';
 
 const StyledHeader = styled('nav')(() => ({
@@ -31,19 +33,9 @@ const StyledHeader = styled('nav')(() => ({
   gap: '16px',
   paddingBottom: '34px',
   paddingTop: '34px',
+  paddingLeft: '25px',
+  paddingRight: '25px',
   height: '10vh',
-}));
-
-const Title = styled('div')(({ theme }) => ({
-  color: theme.palette.primary.main,
-  flexGrow: 1,
-  fontSize: '25px',
-  fontWeight: '600',
-  overflow: 'hidden',
-  position: 'relative',
-  textOverflow: 'ellipsis',
-  top: '-4px',
-  whiteSpace: 'nowrap',
 }));
 
 const TitleWrapper = styled('div')(() => ({
@@ -60,31 +52,31 @@ const MenuWrapper = styled('div')(() => ({
 
 type HeaderProps = {
   title: string;
-  onLogoClick: () => void;
-  selectedRoomId?: string;
+  roomId?: string;
 };
 
-export function Header({ onLogoClick, title, selectedRoomId }: HeaderProps) {
+export function Header({ title, roomId }: HeaderProps) {
   const { t } = useTranslation();
 
   return (
     <StyledHeader>
       <TitleWrapper>
-        <div
-          style={{ cursor: 'pointer' }}
-          role="button"
-          onClick={onLogoClick}
-          aria-label={t('header.dashboard', 'Go back to the dashboard')}
-        >
-          <NeoBoardIcon onClick={onLogoClick} />
-        </div>
-        <Title>{title}</Title>
+        <Link to="/dashboard">
+          <div
+            style={{ cursor: 'pointer' }}
+            role="button"
+            aria-label={t('header.dashboard', 'Go back to the dashboard')}
+          >
+            <NeoBoardIcon />
+          </div>
+        </Link>
+        <Title title={title} roomId={roomId} />
       </TitleWrapper>
       <MenuWrapper>
-        {selectedRoomId && (
+        {roomId && (
           <ErrorBoundary>
             <Suspense fallback={null}>
-              <ShareMenu selectedRoomId={selectedRoomId} />
+              <ShareMenu roomId={roomId} />
             </Suspense>
           </ErrorBoundary>
         )}

@@ -17,14 +17,12 @@
  */
 
 import { StateEvent } from '@matrix-widget-toolkit/api';
-import {
-  STATE_EVENT_WHITEBOARD_SESSIONS,
-  baseApi as neoboardBaseApi,
-} from '@nordeck/matrix-neoboard-react-sdk';
+import { baseApi as neoboardBaseApi } from '@nordeck/matrix-neoboard-react-sdk';
 import { EntityState, createEntityAdapter } from '@reduxjs/toolkit';
 import { Symbols } from 'matrix-widget-api';
 import { bufferTime, filter } from 'rxjs';
 import {
+  STATE_EVENT_SESSION,
   WhiteboardSessionsEvent,
   isValidWhiteboardSessionsEvent,
 } from '../../model';
@@ -44,7 +42,7 @@ export const whiteboardSessionsApi = neoboardBaseApi.injectEndpoints({
         const standaloneApi = await (extra as ThunkExtraArgument).standaloneApi;
 
         const events = await standaloneApi.client.receiveStateEvents(
-          STATE_EVENT_WHITEBOARD_SESSIONS,
+          STATE_EVENT_SESSION,
           { roomIds: Symbols.AnyRoom },
         );
 
@@ -65,7 +63,7 @@ export const whiteboardSessionsApi = neoboardBaseApi.injectEndpoints({
         await cacheDataLoaded;
 
         const subscription = standaloneApi
-          .observeStateEvents(STATE_EVENT_WHITEBOARD_SESSIONS, {
+          .observeStateEvents(STATE_EVENT_SESSION, {
             roomIds: Symbols.AnyRoom,
           })
           .pipe(

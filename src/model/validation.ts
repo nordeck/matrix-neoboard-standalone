@@ -35,6 +35,7 @@ export function isValidEvent(
     | ToDeviceMessageEvent<unknown>,
   eventType: string,
   schema: Joi.AnySchema,
+  allowEmptyContent = false,
 ): boolean {
   if (event.type !== eventType) {
     return false;
@@ -45,7 +46,7 @@ export function isValidEvent(
     typeof event.content !== 'object' ||
     Object.keys(event.content).length === 0
   ) {
-    return false;
+    return allowEmptyContent;
   }
 
   const { error } = schema.validate(event.content);

@@ -23,7 +23,7 @@ import {
   WidgetApi,
   WidgetParameters,
 } from '@matrix-widget-toolkit/api';
-import { Symbols } from 'matrix-widget-api';
+import { Symbols, UpdateDelayedEventAction } from 'matrix-widget-api';
 import { Observable } from 'rxjs';
 import { StandaloneClient } from './client';
 
@@ -82,6 +82,24 @@ export type StandaloneApi = {
   ): Promise<StateEvent<T>>;
 
   /**
+   * Send a delayed state event with a given type to the current room.
+   * @param eventType - The type of the event to send.
+   * @param content - The content of the event.
+   * @param delay - The delay of the event in milliseconds.
+   * @param options - Options for sending the state event.
+   *                  Use `roomId` to send the state event to another room.
+   *                  Use `stateKey` to send a state event with a custom state
+   *                  key.
+   * @returns The result data of delayed event with delay_id.
+   */
+  sendDelayedStateEvent<T>(
+    eventType: string,
+    content: T,
+    delay: number,
+    options: { roomId: string; stateKey?: string },
+  ): Promise<{ delay_id: string }>;
+
+  /**
    * Provide an observable that can be used to listen to room event updates of
    * a given type in the current room.
    * Initially, the previous room events are emitted.
@@ -120,6 +138,34 @@ export type StandaloneApi = {
     content: T,
     { roomId }: { roomId: string },
   ): Promise<RoomEvent<T>>;
+
+  /**
+   * Send a delayed room event with a given type to the current room.
+   * @param eventType - The type of the event to send.
+   * @param content - The content of the event.
+   * @param delay - The delay of the event in milliseconds.
+   * @param options - Options for sending the state event.
+   *                  Use `roomId` to send the state event to another room.
+   *                  Use `stateKey` to send a state event with a custom state
+   *                  key.
+   * @returns The result data of delayed event with delay_id.
+   */
+  sendDelayedRoomEvent<T>(
+    eventType: string,
+    content: T,
+    delay: number,
+    options: { roomId: string },
+  ): Promise<{ delay_id: string }>;
+
+  /**
+   * Update a delayed event by delay id
+   * @param delayId - The delay id of the event
+   * @param action - The action to update
+   */
+  updateDelayedEvent(
+    delayId: string,
+    action: UpdateDelayedEventAction,
+  ): Promise<void>;
 
   /**
    * Observes all to device messages send to the current device.

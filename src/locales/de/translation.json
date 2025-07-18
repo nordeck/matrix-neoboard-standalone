@@ -10,6 +10,10 @@
   "app": {
     "cancel": "Abbrechen"
   },
+  "boardNotFound": {
+    "link": "Zum Dashboard",
+    "message": "Board nicht gefunden"
+  },
   "copyableTextButton": {
     "copy-to-clipboard": "In die Zwischenablage kopieren"
   },
@@ -17,8 +21,7 @@
     "boardList": {
       "created": "Erstellungsdatum",
       "lastView": "Zuletzt angesehen",
-      "name": "Name",
-      "users": "Benutzer"
+      "name": "Name"
     },
     "boardTile": {
       "created": "Erstellt {{created}}",
@@ -47,15 +50,25 @@
     "title": "NeoBoard löschen"
   },
   "header": {
-    "dashboard": "Zurück zum Dashboard"
+    "dashboard": "Zurück zum Dashboard",
+    "renameBoard": "Zum Umbenennen anklicken"
   },
   "invitesDialog": {
     "accept": "Einladung annehmen",
     "actionFailed": "Fehler",
+    "numberOfPendingInvites_zero": "Keine ausstehenden Einladungen",
     "numberOfPendingInvites_one": "Eine ausstehende Einladung",
     "numberOfPendingInvites_other": "{{count}} ausstehende Einladungen",
     "reject": "Einladung ablehnen",
     "title": "Einladungen"
+  },
+  "languageDialog": {
+    "cancel": "Abbrechen",
+    "confirm": "Bestätigen",
+    "description": "Bitte wähle deine bevorzugte Sprache aus:",
+    "english": "Englisch",
+    "german": "Deutsch",
+    "title": "Sprache"
   },
   "login": {
     "button": "Einloggen",
@@ -109,7 +122,9 @@
   },
   "userMenu": {
     "about": "Info",
-    "logOut": "Abmelden"
+    "language": "Sprache",
+    "logOut": "Abmelden",
+    "tooltip": "Benutzermenü"
   },
   "welcome": {
     "loading": "Starte...",

@@ -22,11 +22,7 @@ import { DashboardOptions } from './DashboardOptions.tsx';
 import { TilesContainer } from './TilesContainer.tsx';
 import type { DashboardViewProps } from './useDashboardView.tsx';
 
-export function DashboardTileView({
-  items,
-  onCreate,
-  onSelect,
-}: DashboardViewProps) {
+export function DashboardTileView({ items, onCreate }: DashboardViewProps) {
   return (
     <>
       <DashboardOptions />
@@ -36,7 +32,7 @@ export function DashboardTileView({
           <BoardTile
             key={dashboardItem.roomId}
             dashboardItem={dashboardItem}
-            onClick={() => onSelect(dashboardItem)}
+            linkTarget={`/board/${dashboardItem.roomId}`}
           />
         ))}
       </TilesContainer>

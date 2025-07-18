@@ -16,6 +16,8 @@
  * along with NeoBoard Standalone. If not, see <https://www.gnu.org/licenses/>.
  */
 
+import { StateEvent } from '@matrix-widget-toolkit/api';
+import { Whiteboard } from '@nordeck/matrix-neoboard-react-sdk';
 import { isEqual } from 'lodash';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { formatTimeAgo } from '../../lib';
@@ -55,17 +57,21 @@ export type DashboardItem = {
    * List of user IDs or null if unavailable.
    */
   users: string[] | null;
+  /**
+   * Whiteboard state event
+   */
+  whiteboard: StateEvent<Whiteboard>;
 };
 
 /**
  * Returns a list of dashboard items, that can be used to easily render the tiles.
  */
 export function useDashboardList(): DashboardItem[] {
-  const { userId } = useLoggedIn();
+  const { userId, deviceId } = useLoggedIn();
   const sortBy = useAppSelector((state) => selectSortBy(state));
   const selectWhiteboards = useMemo(
-    () => makeSelectWhiteboards(userId, sortBy),
-    [sortBy, userId],
+    () => makeSelectWhiteboards(userId, deviceId, sortBy),
+    [sortBy, userId, deviceId],
   );
   const whiteboards = useAppSelector(
     (state) => selectWhiteboards(state),
@@ -109,6 +115,7 @@ function mapWhiteboardToDashboardItem(
     permissions: calculateWhiteboardPermissions(whiteboard.powerLevels, userId),
     preview: whiteboard.preview ?? '',
     users: calculateWhiteboardUserlist(whiteboard.powerLevels),
+    whiteboard: whiteboard.whiteboard,
   };
 }
 

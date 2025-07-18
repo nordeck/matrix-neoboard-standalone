@@ -1,0 +1,252 @@
+vars: {
+  d2-config: {
+    layout-engine: elk
+    theme-id: 8
+  }
+}
+
+title: |`md
+  # Deployment - NeoBoard Standalone
+`| {
+  near: top-center
+}
+
+direction: down
+
+User: {
+  label: "User"
+  shape: person
+  style: {
+    font-size: 24
+  }
+}
+
+KubernetesCluster: {
+  label: "NeoBoard Standalone Cluster"
+  shape: rectangle
+  style: {
+    font-size: 24
+  }
+  note: |`md
+    ## Scalable Components
+
+    - `Ingress`: Handles traffic routing and scales with demand.
+    - `NeoBoard Standalone`: Scales horizontally to support more user requests to the frontend. Static Webapp can be heavily cached.
+    - `LiveKit JWT Server`: Scales horizontally with the number of users and negotiates access tokens to the LiveKit server.
+    - `PostgreSQL`: Scales to support the Synapse and MAS databases.
+    - `Synapse`: Scales horizontally using worker setup, which can be automated with an Operator.
+    - `MAS`: Scales horizontally with the number of users and handles authentication and authorization.
+  `|
+
+  NamespaceKubeSystem: {
+    label: "Namespace 'kube-system'"
+    shape: rectangle
+    style: {
+      font-size: 24
+    }
+
+    Ingress: {
+      icon: "https://static.structurizr.com/themes/kubernetes-v0.3/ing-256.png"
+      label: "Ingress"
+      shape: rectangle
+      style: {
+        font-size: 24
+        multiple: true
+      }
+    }
+
+    CertManager: {
+      icon: "https://static.structurizr.com/themes/kubernetes-v0.3/deploy-256.png"
+      label: "cert-manager"
+      shape: rectangle
+      style: {
+        font-size: 24
+        multiple: true
+      }
+    }
+
+    CertManager -> Ingress: {
+      label: "Provides TLS certificates"
+    }
+
+    Ingress -> CertManager: {
+      label: "Requests TLS certificates"
+    }
+  }
+
+  NamespaceMatrix: {
+    label: "Namespace 'matrix'"
+    shape: rectangle
+    style: {
+      font-size: 24
+    }
+
+    MasApp: {
+      icon: "https://static.structurizr.com/themes/kubernetes-v0.3/deploy-256.png"
+      label: "Matrix Authentication Service (MAS)"
+      shape: rectangle
+      style: {
+        font-size: 24
+        multiple: true
+      }
+    }
+
+    MasDatabase: {
+      label: "PostgreSQL Database for MAS"
+      shape: cylinder
+      style.fill: "#E5EDFF"
+    }
+
+    MasApp -> MasDatabase: {
+      label: "Saves its state in the database"
+    }
+
+    Synapse: {
+      icon: "https://static.structurizr.com/themes/kubernetes-v0.3/deploy-256.png"
+      label: "Synapse"
+      shape: rectangle
+      style: {
+        font-size: 24
+        multiple: true
+      }
+    }
+
+    SynapseDatabase: {
+      label: "PostgreSQL Database for Synapse"
+      shape: cylinder
+      style.fill: "#E5EDFF"
+    }
+
+    NeoBoardStandalone: {
+      icon: "https://static.structurizr.com/themes/kubernetes-v0.3/deploy-256.png"
+      label: "NeoBoard Standalone"
+      shape: rectangle
+      style: {
+        font-size: 24
+        multiple: true
+      }
+    }
+
+    LiveKitJWTServer: {
+      icon: "https://static.structurizr.com/themes/kubernetes-v0.3/deploy-256.png"
+      label: "LiveKit JWT Server"
+      shape: rectangle
+      style: {
+        font-size: 24
+        multiple: true
+      }
+    }
+
+    LiveKitJWTServer -> Synapse: {
+      label: "Verifies the NeoBoard user's OpenID token"
+    }
+
+    Synapse -> SynapseDatabase: {
+      label: "Saves its state in the database"
+    }
+  }
+
+  NamespaceKubeSystem.Ingress -> NamespaceMatrix.MasApp: {
+    label: "Next-gen Matrix Auth API\n\n\n\n"
+  }
+  NamespaceKubeSystem.Ingress -> NamespaceMatrix.NeoBoardStandalone: {
+    label: "Download the NeoBoard Standalone Webapp"
+  }
+  NamespaceKubeSystem.Ingress -> NamespaceMatrix.Synapse: {
+    label: "Matrix Client-Server API"
+  }
+
+  NamespaceMatrix.Synapse -> NamespaceMatrix.MasApp: {
+    label: "Token introspection"
+  }
+
+  NamespaceMatrix.MasApp <-> NamespaceMatrix.Synapse: {
+    label: "Syncs Homeserver/OpenID Provider specific data"
+  }
+}
+
+LiveKitCloud: {
+  label: ""
+  shape: rectangle
+  note: |`md
+    ## LiveKit
+
+    LiveKit is a WebRTC SFU (Selective Forwarding Unit) which allows for the real-time-collaboration
+    on the NeoBoard.
+
+    This can either be a self-hosted LiveKit server (preferable) or the LiveKit cloud.
+    The LiveKit server from an existing Element Call installation can be reused. We can also reuse the same JWT server.
+  `|
+  style: {
+    font-size: 24
+  }
+
+  livekit_icon: {
+    label: ""
+    icon: https://livekit.io/images/reduced-logo.svg
+    shape: image
+  }
+
+  LiveKitServer: {
+    label: "LiveKit Server"
+    shape: rectangle
+    style: {
+      font-size: 24
+      multiple: true
+    }
+  }
+}
+
+PostgreSQLCluster: {
+  label: ""
+  shape: rectangle
+  note: |`md
+    ## PostgreSQL
+
+    The cluster hosts the synapse and MAS databases.
+    It is meant to be scalable for both services using traditional PostgreSQL clustering.
+
+    NeoBoard Standalone itself does not require a database as we are using Matrix as our backend.
+  `|
+  style: {
+    font-size: 24
+  }
+
+  postgres_icon: {
+    label: ""
+    icon: https://www.vectorlogo.zone/logos/postgresql/postgresql-icon.svg
+    shape: image
+  }
+
+  PostgreSQLNode: {
+    label: "PostgreSQL Node"
+    shape: rectangle
+    style: {
+      font-size: 24
+      multiple: true
+    }
+  }
+}
+
+KubernetesCluster.NamespaceKubeSystem.Ingress -> KubernetesCluster.NamespaceMatrix.LiveKitJWTServer: {
+  label: "\n\n\n\nRequest a LiveKit access token"
+}
+
+KubernetesCluster.NamespaceMatrix.LiveKitJWTServer -> LiveKitCloud.LiveKitServer: {
+  label: "Gets access token from LiveKit"
+}
+
+User -> LiveKitCloud.LiveKitServer: {
+  label: "Uses LiveKit as an SFU"
+}
+
+KubernetesCluster.NamespaceMatrix.SynapseDatabase -> PostgreSQLCluster.PostgreSQLNode: {
+  label: "Database is backed in the PostgreSQL cluster"
+}
+KubernetesCluster.NamespaceMatrix.MasDatabase -> PostgreSQLCluster.PostgreSQLNode: {
+  label: "Database is backed in the PostgreSQL cluster"
+}
+
+User -> KubernetesCluster.NamespaceKubeSystem.Ingress: {
+  label: "Sends requests to the NeoBoard Standalone Backend"
+}

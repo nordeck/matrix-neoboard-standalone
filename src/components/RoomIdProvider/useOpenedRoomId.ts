@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Nordeck IT + Consulting GmbH
+ * Copyright 2025 Nordeck IT + Consulting GmbH
  *
  * NeoBoard Standalone is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -16,4 +16,19 @@
  * along with NeoBoard Standalone. If not, see <https://www.gnu.org/licenses/>.
  */
 
-export { LoggedInView } from './LoggedInView';
+import { useContext } from 'react';
+import { RoomIdContext } from './RoomIdProvider';
+
+export function useOpenedRoomId(): string {
+  const context = useContext(RoomIdContext);
+
+  if (!context) {
+    throw new Error('useOpenedRoomId must be used within a RoomIdProvider');
+  }
+
+  if (!context.roomId) {
+    throw new Error('useOpenedRoomId must be used when room is opened');
+  }
+
+  return context.roomId;
+}

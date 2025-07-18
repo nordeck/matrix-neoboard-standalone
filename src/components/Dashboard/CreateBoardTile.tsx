@@ -30,8 +30,9 @@ import { AddIcon } from './AddIcon';
 import { CreateBoardItemProps } from './useDashboardView.tsx';
 
 const StyledCard = styled(Card)(({ theme }) => ({
-  width: '14.5rem',
-  minHeight: '251px',
+  width: '20.5rem',
+  minHeight:
+    'calc(20.5rem / 16 * 9 + 1px + 2 * 16px + 0.9375rem * (1.334 + 1.5))',
   backgroundColor: theme.palette.background.card,
 }));
 

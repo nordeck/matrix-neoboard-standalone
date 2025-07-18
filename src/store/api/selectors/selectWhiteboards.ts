@@ -17,7 +17,7 @@
  */
 
 import { PowerLevelsStateEvent, StateEvent } from '@matrix-widget-toolkit/api';
-import { Whiteboard } from '@nordeck/matrix-neoboard-react-sdk';
+import { matrixRtcMode, Whiteboard } from '@nordeck/matrix-neoboard-react-sdk';
 import { createSelector } from '@reduxjs/toolkit';
 import { WhiteboardSessionsEvent } from '../../../model';
 import { SortBy } from '../../dashboard/dashboardSlice';
@@ -28,6 +28,11 @@ import { selectAllRoomNameEventEntities } from '../roomNameApi';
 import { selectAllWhiteboards } from '../whiteboardApi';
 import { selectAllWhiteboardSessionsEventEntities } from '../whiteboardSessionsApi';
 
+export type SingleWhiteboard = {
+  roomName: string;
+  whiteboard: StateEvent<Whiteboard>;
+};
+
 export type WhiteboardEntry = {
   roomName: string;
   whiteboard: StateEvent<Whiteboard>;
@@ -36,9 +41,35 @@ export type WhiteboardEntry = {
   preview: string | undefined;
 };
 
+export function makeSelectWhiteboard(
+  roomId: string,
+): (state: RootState) => SingleWhiteboard | undefined {
+  return createSelector(
+    selectAllWhiteboards,
+    selectAllRoomNameEventEntities,
+    (whiteboards, roomNameEvents): SingleWhiteboard | undefined => {
+      const whiteboard = whiteboards.find((whiteboard) => {
+        return whiteboard.room_id === roomId;
+      });
+
+      const roomName = roomNameEvents[roomId]?.content.name;
+
+      if (whiteboard && roomName) {
+        return {
+          roomName,
+          whiteboard,
+        };
+      }
+
+      return undefined;
+    },
+  );
+}
+
 export function makeSelectWhiteboards(
   userId: string,
-  sortBy: SortBy,
+  deviceId: string,
+  sortBy?: SortBy,
 ): (state: RootState) => WhiteboardEntry[] {
   return createSelector(
     selectAllWhiteboards,
@@ -73,11 +104,12 @@ export function makeSelectWhiteboards(
           | undefined = undefined;
 
         // Find latest whiteboardSessions for the whiteboard room and the current user
+        const stateKey = matrixRtcMode ? `_${userId}_${deviceId}` : userId;
         Object.values(whiteboardSessionsEvents).forEach(
           (whiteboardSessionsEvent) => {
             if (
               whiteboardSessionsEvent.room_id === whiteboard.room_id &&
-              whiteboardSessionsEvent.state_key === userId &&
+              whiteboardSessionsEvent.state_key === stateKey &&
               (latestOwnWhiteboardSessionsEvent === undefined ||
                 latestOwnWhiteboardSessionsEvent.origin_server_ts <
                   whiteboardSessionsEvent.origin_server_ts)
@@ -109,7 +141,9 @@ export function makeSelectWhiteboards(
         return [];
       });
 
-      boards.sort(createBoardComparator(sortBy));
+      if (sortBy) {
+        boards.sort(createBoardComparator(sortBy));
+      }
 
       return boards;
     },

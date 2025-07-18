@@ -1,6 +1,6 @@
 # NeoBoard Standalone
 
-![Build](https://github.com/nordeck/matrix-neoboard-standalone/workflows/CI/badge.svg)
+[![CI](https://github.com/nordeck/matrix-neoboard-standalone/actions/workflows/ci.yml/badge.svg)](https://github.com/nordeck/matrix-neoboard-standalone/actions/workflows/ci.yml)
 
 Standalone version of [NeoBoard](https://github.com/nordeck/matrix-neoboard) - A collaborative whiteboard widget for Element, based on Matrix.
 
@@ -131,6 +131,11 @@ Learn more in the [`.changeset` folder](./.changeset).
 
 Once the change is merged to `main`, a “Version Packages” pull request will be created.
 As soon as the project maintainers merged it, the package will be released and the container is published.
+
+### Processing Renovate PRs
+
+Renovate PRs which update packages that are direct dependencies of our packages (and not `devDependencies`) need a changeset as described above.
+Specify the impact as `patch`.
 
 ### Architecture Decision Records
 

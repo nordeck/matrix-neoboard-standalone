@@ -40,10 +40,12 @@ import {
 import {
   IDownloadFileActionFromWidgetResponseData,
   IGetMediaConfigActionFromWidgetResponseData,
+  IOpenIDCredentials,
   IRoomEvent,
   ITurnServer,
   IUploadFileActionFromWidgetResponseData,
   Symbols,
+  UpdateDelayedEventAction,
 } from 'matrix-widget-api';
 import { Observable, from, fromEvent, map } from 'rxjs';
 import { STATE_EVENT_TOMBSTONE } from '../../../model';
@@ -144,12 +146,28 @@ export class MatrixStandaloneClient implements StandaloneClient {
     const { event_id } = await this.matrixClient.sendStateEvent(
       roomId,
       eventType as keyof StateEvents,
-      // bypass matrix-js-sdk typings here
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      content as any,
+      content as StateEvents[keyof StateEvents],
       stateKey,
     );
     return event_id;
+  }
+
+  async sendDelayedStateEvent(
+    eventType: string,
+    stateKey: string,
+    content: unknown,
+    roomId: string,
+    delay: number,
+  ): Promise<string> {
+    const { delay_id } =
+      await this.matrixClient._unstable_sendDelayedStateEvent(
+        roomId,
+        { delay },
+        eventType as keyof StateEvents,
+        content as StateEvents[keyof StateEvents],
+        stateKey,
+      );
+    return delay_id;
   }
 
   receiveRoomEvents<T>(
@@ -176,11 +194,32 @@ export class MatrixStandaloneClient implements StandaloneClient {
     const { event_id } = await this.matrixClient.sendEvent(
       roomId,
       eventType as keyof TimelineEvents,
-      // bypass matrix-js-sdk typings here
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      content as any,
+      content as TimelineEvents[keyof TimelineEvents],
     );
     return event_id;
+  }
+
+  async sendDelayedRoomEvent(
+    eventType: string,
+    content: unknown,
+    roomId: string,
+    delay: number,
+  ): Promise<string> {
+    const { delay_id } = await this.matrixClient._unstable_sendDelayedEvent(
+      roomId,
+      { delay },
+      null,
+      eventType as keyof TimelineEvents,
+      content as TimelineEvents[keyof TimelineEvents],
+    );
+    return delay_id;
+  }
+
+  async updateDelayedEvent(
+    delayId: string,
+    action: UpdateDelayedEventAction,
+  ): Promise<void> {
+    await this.matrixClient._unstable_updateDelayedEvent(delayId, action);
   }
 
   async readEventRelations(
@@ -250,7 +289,6 @@ export class MatrixStandaloneClient implements StandaloneClient {
 
   async uploadFile(
     // eslint complains about lib dom types
-
     file: XMLHttpRequestBodyInit,
   ): Promise<IUploadFileActionFromWidgetResponseData> {
     const uploadResult = await this.matrixClient.uploadContent(file);
@@ -298,6 +336,10 @@ export class MatrixStandaloneClient implements StandaloneClient {
         credential: password,
       })),
     );
+  }
+
+  public requestOpenIDConnectToken(): Promise<IOpenIDCredentials> {
+    return this.matrixClient.getOpenIdToken();
   }
 
   public async closeRoom(roomId: string): Promise<void> {

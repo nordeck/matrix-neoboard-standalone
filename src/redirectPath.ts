@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Nordeck IT + Consulting GmbH
+ * Copyright 2025 Nordeck IT + Consulting GmbH
  *
  * NeoBoard Standalone is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -16,18 +16,16 @@
  * along with NeoBoard Standalone. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { Avatar, Chip, ChipProps } from '@mui/material';
+const REDIRECT_PATH_KEY = 'redirectPath';
 
-export function UserChip({
-  user,
-  onClick,
-}: {
-  user: string;
-  onClick?: ChipProps['onClick'];
-}) {
-  const initial = user.charAt(1).toUpperCase();
+export const getRedirectPath = (): string | null => {
+  return sessionStorage.getItem(REDIRECT_PATH_KEY);
+};
 
-  return (
-    <Chip avatar={<Avatar>{initial}</Avatar>} label={user} onClick={onClick} />
-  );
-}
+export const setRedirectPath = (path: string): void => {
+  sessionStorage.setItem(REDIRECT_PATH_KEY, path);
+};
+
+export const clearRedirectPath = (): void => {
+  sessionStorage.removeItem(REDIRECT_PATH_KEY);
+};
