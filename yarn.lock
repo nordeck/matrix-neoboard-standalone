@@ -1762,19 +1762,19 @@
     "@typescript-eslint/types" "8.18.2"
     eslint-visitor-keys "^4.2.0"
 
-"@vitejs/plugin-basic-ssl@^1.1.0":
+"@vitejs/plugin-basic-ssl@1.1.0":
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/@vitejs/plugin-basic-ssl/-/plugin-basic-ssl-1.1.0.tgz#8b840305a6b48e8764803435ec0c716fa27d3802"
   integrity sha512-wO4Dk/rm8u7RNhOf95ZzcEmC9rYOncYgvq4z3duaJrCgjN8BxAnDVyndanfcJZ0O6XZzHz6Q0hTimxTg8Y9g/A==
 
-"@vitejs/plugin-react-swc@^3.7.1":
+"@vitejs/plugin-react-swc@3.7.1":
   version "3.7.1"
   resolved "https://registry.yarnpkg.com/@vitejs/plugin-react-swc/-/plugin-react-swc-3.7.1.tgz#bc5af48ef35c525d623fa14177c912cbaa86a846"
   integrity sha512-vgWOY0i1EROUK0Ctg1hwhtC3SdcDjZcdit4Ups4aPkDcB1jYhmo+RMYWY87cmXMhvtD5uf8lV89j2w16vkdSVg==
   dependencies:
     "@swc/core" "^1.7.26"
 
-"@vitejs/plugin-react@^4.4.1":
+"@vitejs/plugin-react@4.4.1":
   version "4.4.1"
   resolved "https://registry.yarnpkg.com/@vitejs/plugin-react/-/plugin-react-4.4.1.tgz#d7d1e9c9616d7536b0953637edfee7c6cbe2fe0f"
   integrity sha512-IpEm5ZmeXAP/osiBXVVP5KjFMzbWOonMs0NaQQl+xYnUAcq4oHUBsF2+p4MgKWG4YMmFYJU8A6sxRPuowllm6w==
@@ -1785,7 +1785,7 @@
     "@types/babel__core" "^7.20.5"
     react-refresh "^0.17.0"
 
-"@vitest/coverage-v8@^2.1.8":
+"@vitest/coverage-v8@2.1.8":
   version "2.1.8"
   resolved "https://registry.yarnpkg.com/@vitest/coverage-v8/-/coverage-v8-2.1.8.tgz#738527e6e79cef5004248452527e272e0df12284"
   integrity sha512-2Y7BPlKH18mAZYAW1tYByudlCYrQyl5RGvnnDYJKW5tCiO5qg3KSAy3XAxcxKz900a0ZXxWtKrMuZLe3lKBpJw==
@@ -1860,7 +1860,7 @@
   dependencies:
     tinyspy "^3.0.2"
 
-"@vitest/ui@^2.1.2":
+"@vitest/ui@2.1.2":
   version "2.1.2"
   resolved "https://registry.yarnpkg.com/@vitest/ui/-/ui-2.1.2.tgz#039d2a264ea517cb2f5b8a6a5d806c6a7c73f9a2"
   integrity sha512-92gcNzkDnmxOxyHzQrQYRsoV9Q0Aay0r4QMLnV+B+lbqlUWa8nDg9ivyLV5mMVTtGirHsYUGGh/zbIA55gBZqA==
@@ -6372,7 +6372,7 @@ vitest-fetch-mock@0.3.0:
   dependencies:
     cross-fetch "^4.0.0"
 
-vitest@^2.1.9:
+vitest@2.1.9:
   version "2.1.9"
   resolved "https://registry.yarnpkg.com/vitest/-/vitest-2.1.9.tgz#7d01ffd07a553a51c87170b5e80fea3da7fb41e7"
   integrity sha512-MSmPM9REYqDGBI8439mA4mWhV5sKmDlBKWIYbA3lRb2PTHACE0mgKwA8yQ2xq9vxDTuk4iPrECBAEW2aoFXY0Q==
