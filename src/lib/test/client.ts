@@ -33,7 +33,8 @@ const defaultMockProperties: Partial<MatrixClient> = {
   sendStateEvent: vi.fn().mockResolvedValue({
     event_id: `event-${eventId++}`,
   }),
-  getRoom: vi.fn(),
+  getRoom: vi.fn().mockResolvedValue(null),
+  getVisibleRooms: vi.fn().mockReturnValue([]),
 };
 
 /**
