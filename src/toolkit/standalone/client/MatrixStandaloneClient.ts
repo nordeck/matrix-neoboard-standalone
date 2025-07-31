@@ -31,6 +31,7 @@ import {
   ITurnServer as IClientTurnServer,
   ICreateRoomOpts,
   IJoinRoomOpts,
+  KnownMembership,
   MatrixClient,
   MatrixEvent,
   Room,
@@ -47,7 +48,16 @@ import {
   Symbols,
   UpdateDelayedEventAction,
 } from 'matrix-widget-api';
-import { Observable, from, fromEvent, map } from 'rxjs';
+import {
+  Observable,
+  firstValueFrom,
+  from,
+  fromEvent,
+  interval,
+  map,
+  timeout as rxTimeout,
+  takeWhile,
+} from 'rxjs';
 import { STATE_EVENT_TOMBSTONE } from '../../../model';
 import { MediaAsset } from './MediaAsset';
 import { IUser, StandaloneClient } from './types';
@@ -370,7 +380,44 @@ export class MatrixStandaloneClient implements StandaloneClient {
       }
     }
 
+    // Wait until getRooms is updated and does not contain the room anymore, or timeout after 10 seconds
+    await this.waitForRoomDeletionRx(this.matrixClient, roomId, 10000);
+
     await Promise.allSettled(promises);
+  }
+
+  private waitForRoomDeletionRx(
+    matrixClient: MatrixClient,
+    roomId: string,
+    timeoutMs: number = 10000,
+  ): Promise<void> {
+    const pollInterval = 100;
+    return firstValueFrom(
+      interval(pollInterval).pipe(
+        map(() => {
+          const room = matrixClient.getRoom(roomId);
+          const isGone =
+            (room === null ||
+              (typeof room.getMyMembership === 'function' &&
+                room.getMyMembership() === KnownMembership.Leave)) &&
+            !matrixClient
+              .getVisibleRooms()
+              .some((r: Room) => r.roomId === roomId);
+          return isGone;
+        }),
+        takeWhile((isGone) => !isGone, true),
+        rxTimeout({ first: timeoutMs }),
+      ),
+    )
+      .then(() => undefined)
+      .catch((err) => {
+        if (err.name === 'TimeoutError') {
+          throw new Error(
+            `Timed out waiting for room ${roomId} to be deleted/left`,
+          );
+        }
+        throw err;
+      });
   }
 
   private pickRooms(roomIds: string[] | Symbols.AnyRoom): Room[] {
