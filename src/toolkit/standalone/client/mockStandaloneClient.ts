@@ -48,6 +48,5 @@ export function mockStandaloneClient(): MockedStandaloneClient {
     uploadFile: vi.fn(),
     downloadFile: vi.fn(),
     sendToDeviceMessage: vi.fn(),
-    getRoom: vi.fn(),
   };
 }
