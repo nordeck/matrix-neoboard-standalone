@@ -20,6 +20,7 @@ import {
   PowerLevelsStateEvent,
   RoomEvent,
   StateEvent,
+  StateEventCreateContent,
   ToDeviceMessageEvent,
   WidgetApi,
 } from '@matrix-widget-toolkit/api';
@@ -129,11 +130,20 @@ export type StandaloneClient = Pick<
   /**
    * Get the power level event of the room.
    *
-   * Warning: This returns an array of the events even if there is only one event.
-   *
    * @param roomId - The room id to get the power level event from.
    */
-  getPowerLevelEvent(roomId: string): Promise<PowerLevelsStateEvent[]>;
+  getPowerLevelEvent(
+    roomId: string,
+  ): Promise<StateEvent<PowerLevelsStateEvent> | undefined>;
+
+  /**
+   * Get the room create event.
+   *
+   * @param roomId - The room id to get the room create event from.
+   */
+  getRoomCreateEvent(
+    roomId: string,
+  ): Promise<StateEvent<StateEventCreateContent> | undefined>;
 
   /**
    * Send a state event with a given type to the room

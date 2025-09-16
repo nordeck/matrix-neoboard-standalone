@@ -20,9 +20,13 @@ import {
   PowerLevelsStateEvent,
   RoomEvent,
   StateEvent,
+  StateEventCreateContent,
   ToDeviceMessageEvent,
   TurnServer,
+  isValidCreateEventSchema,
+  isValidPowerLevelStateEvent,
 } from '@matrix-widget-toolkit/api';
+import { last } from 'lodash';
 import {
   ClientEvent,
   Direction,
@@ -128,13 +132,26 @@ export class MatrixStandaloneClient implements StandaloneClient {
     return Promise.resolve(events);
   }
 
-  async getPowerLevelEvent(roomId: string): Promise<PowerLevelsStateEvent[]> {
-    const stateEvents = await this.receiveStateEvents(
-      EventType.RoomPowerLevels,
-      { roomIds: [roomId] },
-    );
+  async getPowerLevelEvent(
+    roomId: string,
+  ): Promise<StateEvent<PowerLevelsStateEvent> | undefined> {
+    const stateEvents = (
+      await this.receiveStateEvents(EventType.RoomPowerLevels, {
+        roomIds: [roomId],
+      })
+    ).filter(isValidPowerLevelStateEvent);
 
-    return stateEvents as PowerLevelsStateEvent[];
+    return last(stateEvents);
+  }
+
+  async getRoomCreateEvent(
+    roomId: string,
+  ): Promise<StateEvent<StateEventCreateContent> | undefined> {
+    const stateEvents = (
+      await this.receiveStateEvents(EventType.RoomCreate, { roomIds: [roomId] })
+    ).filter(isValidCreateEventSchema);
+
+    return last(stateEvents);
   }
 
   async sendStateEvent(
