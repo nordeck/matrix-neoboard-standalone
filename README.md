@@ -12,10 +12,15 @@ Therefore, all of NeoBoard's configuration options apply also when using it in s
 On top, NeoBoard standalone offer some addition configuration options.
 They can either be set via an environment variable or the `.env`-file.
 
-| Name                    | Description                                                                                                                                                                                    | Example                        |
-| ----------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------ |
-| `REACT_APP_WIDGET_BASE` | This sets the widget url for when the room is viewed using element-web or other widget-supporting clients. The schema (i.e.: `https://`) is required. If not set, a widget won't be available. | `https://neoboard.example.com` |
-| `REACT_APP_HOMESERVER`  | If set, it uses this homeserver instead of showing an input field on the login screen. Do not use `https://`.                                                                                  | `example.com`                  |
+| Name                                   | Description                                                                                                                                                                                    | Example                        |
+| -------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------ |
+| `REACT_APP_WIDGET_BASE`                | This sets the widget url for when the room is viewed using element-web or other widget-supporting clients. The schema (i.e.: `https://`) is required. If not set, a widget won't be available. | `https://neoboard.example.com` |
+| `REACT_APP_HOMESERVER`                 | If set, it uses this homeserver instead of showing an input field on the login screen. Do not use `https://`.                                                                                  | `example.com`                  |
+| `REACT_APP_LIGHT_PRIMARY_COLOR`        | This overrides a primary palette color for the light theme.                                                                                                                                    | `#e85e10`                      |
+| `REACT_APP_LIGHT_PRIMARY_COLOR_LIGHT`  | This overrides a primary palette light color for the light theme.                                                                                                                              | `#ff8a42`                      |
+| `REACT_APP_LIGHT_PRIMARY_COLOR_DARK`   | This overrides a primary palette light color for the dark theme.                                                                                                                               | `#b52e00`                      |
+| `REACT_APP_LIGHT_BACKGROUND_LOGGED_IN` | A background when user is logged in.                                                                                                                                                           | `#fcf9f3`                      |
+| `REACT_APP_LIGHT_BACKGROUND_CARD`      | A card background when a board is created.                                                                                                                                                     | `#fce2cf`                      |
 
 ## Getting Started
 

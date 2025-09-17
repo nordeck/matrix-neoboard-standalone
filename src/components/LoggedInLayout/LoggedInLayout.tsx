@@ -32,7 +32,7 @@ import { useRoomId } from '../RoomIdProvider';
 import { StandaloneWidgetApiProvider } from '../StandaloneWidgetApiProvider';
 
 const Wrapper = styled('div')(({ theme }) => ({
-  backgroundColor: theme.palette.background.chrome,
+  backgroundColor: theme.palette.background.loggedIn,
   height: '100vh',
 }));
 

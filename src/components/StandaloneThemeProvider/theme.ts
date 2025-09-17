@@ -16,6 +16,7 @@
  * along with NeoBoard Standalone. If not, see <https://www.gnu.org/licenses/>.
  */
 
+import { getEnvironment } from '@matrix-widget-toolkit/mui';
 import { ThemeOptions } from '@mui/material';
 
 const fontFamily = [
@@ -33,16 +34,41 @@ const fontFamily = [
   '"Noto Color Emoji"',
 ].join(',');
 
+const lightPrimaryColor = getEnvironment(
+  'REACT_APP_LIGHT_PRIMARY_COLOR',
+  '#e85e10',
+);
+
+const lightPrimaryColorLight = getEnvironment(
+  'REACT_APP_LIGHT_PRIMARY_COLOR_LIGHT',
+  '#ff8a42',
+);
+
+const lightPrimaryColorDark = getEnvironment(
+  'REACT_APP_LIGHT_PRIMARY_COLOR_DARK',
+  '#b52e00',
+);
+
+const lightBackgroundLoggedIn = getEnvironment(
+  'REACT_APP_LIGHT_BACKGROUND_LOGGED_IN',
+  '#fcf9f3',
+);
+
+const lightBackgroundCard = getEnvironment(
+  'REACT_APP_LIGHT_BACKGROUND_CARD',
+  '#fce2cf',
+);
+
 export const standaloneLightTheme: ThemeOptions = {
   palette: {
     primary: {
-      main: '#e85e10',
-      light: '#ff8a42',
-      dark: '#b52e00',
+      main: lightPrimaryColor,
+      light: lightPrimaryColorLight,
+      dark: lightPrimaryColorDark,
     },
     background: {
-      card: '#FCE2CF',
-      chrome: '#fcf9f3',
+      loggedIn: lightBackgroundLoggedIn,
+      card: lightBackgroundCard,
       paper: '#fff',
     },
   },
