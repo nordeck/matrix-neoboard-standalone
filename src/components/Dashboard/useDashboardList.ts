@@ -112,7 +112,11 @@ function mapWhiteboardToDashboardItem(
     name: whiteboard.roomName,
     lastView: formatLastView(whiteboard),
     created: formatCreated(whiteboard),
-    permissions: calculateWhiteboardPermissions(whiteboard.powerLevels, userId),
+    permissions: calculateWhiteboardPermissions(
+      whiteboard.powerLevels,
+      whiteboard.roomCreateEvent,
+      userId,
+    ),
     preview: whiteboard.preview ?? '',
     users: calculateWhiteboardUserlist(whiteboard.powerLevels),
     whiteboard: whiteboard.whiteboard,

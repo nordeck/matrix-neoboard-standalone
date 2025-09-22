@@ -16,13 +16,18 @@
  * along with NeoBoard Standalone. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { PowerLevelsStateEvent, StateEvent } from '@matrix-widget-toolkit/api';
+import {
+  PowerLevelsStateEvent,
+  StateEvent,
+  StateEventCreateContent,
+} from '@matrix-widget-toolkit/api';
 import { matrixRtcMode, Whiteboard } from '@nordeck/matrix-neoboard-react-sdk';
 import { createSelector } from '@reduxjs/toolkit';
 import { WhiteboardSessionsEvent } from '../../../model';
 import { SortBy } from '../../dashboard/dashboardSlice';
 import { RootState } from '../../store';
 import { selectAllPowerLevelsEventEntities } from '../PowerLevelsApi';
+import { selectAllRoomCreateEventEntities } from '../roomCreateApi.ts';
 import { selectAllRoomMemberEventEntities } from '../roomMemberApi';
 import { selectAllRoomNameEventEntities } from '../roomNameApi';
 import { selectAllWhiteboards } from '../whiteboardApi';
@@ -38,6 +43,7 @@ export type WhiteboardEntry = {
   whiteboard: StateEvent<Whiteboard>;
   whiteboardSessions: StateEvent<WhiteboardSessionsEvent> | undefined;
   powerLevels: StateEvent<PowerLevelsStateEvent> | undefined;
+  roomCreateEvent: StateEvent<StateEventCreateContent> | undefined;
   preview: string | undefined;
 };
 
@@ -77,12 +83,14 @@ export function makeSelectWhiteboards(
     selectAllRoomMemberEventEntities,
     selectAllWhiteboardSessionsEventEntities,
     selectAllPowerLevelsEventEntities,
+    selectAllRoomCreateEventEntities,
     (
       whiteboards,
       roomNameEvents,
       roomMemberEvents,
       whiteboardSessionsEvents,
       powerLevelsEvents,
+      roomCreateEvents,
     ): WhiteboardEntry[] => {
       /**
        * Currently, the rule is one whiteboard equals one room.
@@ -90,14 +98,16 @@ export function makeSelectWhiteboards(
        */
       const seenRooms = new Set<string>();
 
-      const boards = whiteboards.flatMap((whiteboard) => {
-        if (seenRooms.has(whiteboard.room_id)) {
+      const boards: WhiteboardEntry[] = whiteboards.flatMap((whiteboard) => {
+        const { room_id } = whiteboard;
+
+        if (seenRooms.has(room_id)) {
           return [];
         }
 
-        seenRooms.add(whiteboard.room_id);
+        seenRooms.add(room_id);
 
-        const roomName = roomNameEvents[whiteboard.room_id]?.content.name;
+        const roomName = roomNameEvents[room_id]?.content.name;
 
         let latestOwnWhiteboardSessionsEvent:
           | StateEvent<WhiteboardSessionsEvent>
@@ -123,8 +133,7 @@ export function makeSelectWhiteboards(
           roomName &&
           // select rooms where user is a member (invited or joined, filters out leave membership)
           Object.values(roomMemberEvents).some(
-            (e) =>
-              e && e.room_id === whiteboard.room_id && e.state_key === userId,
+            (e) => e && e.room_id === room_id && e.state_key === userId,
           )
         ) {
           return [
@@ -132,7 +141,8 @@ export function makeSelectWhiteboards(
               roomName,
               whiteboard,
               whiteboardSessions: latestOwnWhiteboardSessionsEvent,
-              powerLevels: powerLevelsEvents[whiteboard.room_id],
+              powerLevels: powerLevelsEvents[room_id],
+              roomCreateEvent: roomCreateEvents[room_id],
               preview: undefined,
             },
           ];

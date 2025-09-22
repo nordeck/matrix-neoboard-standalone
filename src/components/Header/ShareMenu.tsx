@@ -19,6 +19,8 @@
 import {
   hasActionPower,
   PowerLevelsStateEvent,
+  StateEvent,
+  StateEventCreateContent,
 } from '@matrix-widget-toolkit/api';
 import { Group, Share } from '@mui/icons-material';
 import {
@@ -59,20 +61,36 @@ export function ShareMenu({ roomId }: { roomId: string }) {
 
   // Get the powerlevel event so we can calculate if the menu is shown. We do this inside of here so it only happens when we are in the room.
   const client = useLoggedIn();
-  const { data } = useSWR<PowerLevelsStateEvent[]>(
+  const { data: powerLevelsEvent } = useSWR<
+    StateEvent<PowerLevelsStateEvent> | undefined
+  >(
     roomId,
     client.standaloneClient.getPowerLevelEvent.bind(client.standaloneClient),
+    { suspense: true },
+  );
+  const { data: roomCreateEvent } = useSWR<
+    StateEvent<StateEventCreateContent> | undefined
+  >(
+    roomId,
+    client.standaloneClient.getRoomCreateEvent.bind(client.standaloneClient),
     { suspense: true },
   );
 
   // If we don't have the power level event, we can't calculate if the user can invite.
   // We assume the user can't invite in this case.
-  if (!data) {
+  if (!powerLevelsEvent) {
     return null;
   }
 
   // If the user is not allowed to invite, we don't show the menu item.
-  if (!hasActionPower(data[0], client.userId, 'invite')) {
+  if (
+    !hasActionPower(
+      powerLevelsEvent.content,
+      roomCreateEvent,
+      client.userId,
+      'invite',
+    )
+  ) {
     return null;
   }
 
