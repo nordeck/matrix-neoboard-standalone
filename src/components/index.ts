@@ -16,6 +16,4 @@
  * along with NeoBoard Standalone. If not, see <https://www.gnu.org/licenses/>.
  */
 
-export { Header } from './Header';
-export { HeaderMenu } from './HeaderMenu';
-export { HeaderTitle } from './HeaderTitle';
+export * from './StandaloneThemeProvider';

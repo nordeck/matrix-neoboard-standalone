@@ -84,6 +84,11 @@
     "logOut": "Abmelden",
     "title": "Möchtest Du dich wirklich abmelden?"
   },
+  "navbar": {
+    "portalLogo": "Portal Logo",
+    "showMenu": "Menü anzeigen",
+    "showPortal": "Portal anzeigen"
+  },
   "persistingDialog": {
     "error": {
       "confirmAction": "Trotzdem verlassen",

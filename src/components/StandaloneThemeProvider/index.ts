@@ -17,3 +17,4 @@
  */
 
 export { StandaloneThemeProvider } from './StandaloneThemeProvider';
+export { standaloneLightTheme } from './theme';

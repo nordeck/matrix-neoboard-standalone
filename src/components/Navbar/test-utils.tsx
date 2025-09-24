@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Nordeck IT + Consulting GmbH
+ * Copyright 2025 Nordeck IT + Consulting GmbH
  *
  * NeoBoard Standalone is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -16,6 +16,26 @@
  * along with NeoBoard Standalone. If not, see <https://www.gnu.org/licenses/>.
  */
 
-export { Header } from './Header';
-export { HeaderMenu } from './HeaderMenu';
-export { HeaderTitle } from './HeaderTitle';
+import { createTheme, ThemeProvider } from '@mui/material';
+import { render, RenderOptions } from '@testing-library/react';
+import { ReactElement, ReactNode } from 'react';
+import { standaloneLightTheme } from '../StandaloneThemeProvider';
+
+type Props = {
+  children: ReactNode;
+};
+
+const theme = createTheme(standaloneLightTheme);
+
+function Wrapper({ children }: Props) {
+  return <ThemeProvider theme={theme}>{children}</ThemeProvider>;
+}
+
+function renderWithTheme(
+  ui: ReactElement,
+  options?: Omit<RenderOptions, 'wrapper'>,
+) {
+  return render(ui, { wrapper: Wrapper, ...options });
+}
+
+export { renderWithTheme };

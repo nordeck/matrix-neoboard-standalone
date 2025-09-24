@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Nordeck IT + Consulting GmbH
+ * Copyright 2025 Nordeck IT + Consulting GmbH
  *
  * NeoBoard Standalone is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -17,21 +17,33 @@
  */
 
 import { styled } from '@mui/material';
-import { PropsWithChildren } from 'react';
+import { Suspense } from 'react';
+import ErrorBoundary from '../ErrorBoundary.tsx';
+import { InvitesMenu } from './InvitesMenu.tsx';
+import { ShareMenu } from './ShareMenu.tsx';
+import { UserMenu } from './UserMenu.tsx';
 
-const StyledHeader = styled('nav')(({ theme }) => ({
-  alignItems: 'center',
+const MenuWrapper = styled('div')(() => ({
   display: 'flex',
-  gap: '16px',
-  paddingBottom: '34px',
-  paddingTop: '34px',
-  paddingLeft: '25px',
-  paddingRight: '25px',
-  height: theme.offsetHeight,
+  gap: '8px',
 }));
 
-type HeaderProps = PropsWithChildren<{}>;
+type Props = {
+  roomId?: string;
+};
 
-export function Header({ children }: HeaderProps) {
-  return <StyledHeader>{children}</StyledHeader>;
+export function HeaderMenu({ roomId }: Props) {
+  return (
+    <MenuWrapper>
+      {roomId && (
+        <ErrorBoundary>
+          <Suspense fallback={null}>
+            <ShareMenu roomId={roomId} />
+          </Suspense>
+        </ErrorBoundary>
+      )}
+      <InvitesMenu />
+      <UserMenu />
+    </MenuWrapper>
+  );
 }

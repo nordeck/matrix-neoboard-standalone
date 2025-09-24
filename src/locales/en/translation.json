@@ -84,6 +84,11 @@
     "logOut": "Log out",
     "title": "Are you sure you want to log out?"
   },
+  "navbar": {
+    "portalLogo": "Portal logo",
+    "showMenu": "Show menu",
+    "showPortal": "Show portal"
+  },
   "persistingDialog": {
     "error": {
       "confirmAction": "Leave anyway",

@@ -16,25 +16,25 @@
  * along with NeoBoard Standalone. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { createSvgIcon } from '@mui/material';
+import AddRoundedIcon from '@mui/icons-material/AddRounded';
+import { SxProps, Theme } from '@mui/material/styles';
 
-export const AddIcon = createSvgIcon(
-  <svg viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <rect width="30" height="30" rx="4" fill="#B7251E" />
-    <path
-      d="M15.3057 9.07166V19.5408"
-      stroke="#F8FDDE"
-      strokeWidth="2.5"
-      strokeLinecap="round"
-      strokeLinejoin="round"
+type AddIconProps = {
+  sx?: SxProps<Theme>;
+};
+
+export function AddIcon({ sx }: AddIconProps) {
+  return (
+    <AddRoundedIcon
+      sx={[
+        {
+          color: 'primary.contrastText',
+          backgroundColor: 'primary.dark',
+          borderRadius: '4px',
+          padding: 0.2,
+        },
+        ...(Array.isArray(sx) ? sx : [sx]),
+      ]}
     />
-    <path
-      d="M20.5405 14.3063H10.0713"
-      stroke="#F8FDDE"
-      strokeWidth="2.5"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    />
-  </svg>,
-  'Add',
-);
+  );
+}

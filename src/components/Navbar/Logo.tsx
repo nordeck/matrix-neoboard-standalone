@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Nordeck IT + Consulting GmbH
+ * Copyright 2025 Nordeck IT + Consulting GmbH
  *
  * NeoBoard Standalone is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -16,6 +16,28 @@
  * along with NeoBoard Standalone. If not, see <https://www.gnu.org/licenses/>.
  */
 
-export { Header } from './Header';
-export { HeaderMenu } from './HeaderMenu';
-export { HeaderTitle } from './HeaderTitle';
+import { styled } from '@mui/material';
+
+type Props = {
+  alt: string;
+  ariaLabel: string;
+  href: string;
+  src: string;
+};
+
+const Root = styled('a')({
+  display: 'flex',
+  padding: '0 24px',
+});
+
+const Image = styled('img')({
+  width: 82,
+});
+
+export function Logo({ alt, ariaLabel, href, src }: Props) {
+  return (
+    <Root aria-label={ariaLabel} href={href}>
+      <Image alt={alt} src={src} />
+    </Root>
+  );
+}

@@ -112,7 +112,6 @@ export function ShareMenu({ roomId }: { roomId: string }) {
           sx={{
             alignItems: 'center',
             display: 'flex',
-            height: 40,
             justifyContent: 'center',
             width: 40,
           }}

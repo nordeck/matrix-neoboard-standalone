@@ -19,8 +19,26 @@
 import '@mui/material/styles';
 
 declare module '@mui/material/styles' {
+  interface Theme {
+    offsetHeight: string;
+    navbar: NavbarOptions;
+  }
+  interface ThemeOptions {
+    offsetHeight: string;
+    navbar: NavbarOptions;
+  }
   interface TypeBackground {
-    chrome: string;
+    loggedIn: string;
     card: string;
   }
 }
+
+type NavbarOptions = {
+  color: {
+    bgCanvasDefault: string;
+    textActionAccent: string;
+    textPrimary: string;
+    iconOnSolidPrimary: string;
+  };
+  height: string;
+};

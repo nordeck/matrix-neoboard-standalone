@@ -16,6 +16,7 @@
  * along with NeoBoard Standalone. If not, see <https://www.gnu.org/licenses/>.
  */
 
+import { useTheme } from '@mui/material';
 import {
   ConnectionStateDialog,
   ConnectionStateProvider,
@@ -41,6 +42,7 @@ import { SnapshotLoadStateDialog } from '../SnapshotLoadStateDialog/SnapshotLoad
 import { useStandaloneWidgetApi } from '../StandaloneWidgetApiProvider';
 
 export const BoardView = () => {
+  const theme = useTheme();
   const dispatch = useAppDispatch();
   const roomId = useOpenedRoomId();
   const whiteboardManager = useWhiteboardManager();
@@ -112,7 +114,11 @@ export const BoardView = () => {
                 <ConnectionStateProvider>
                   <ConnectionStateDialog />
                   <SnapshotLoadStateDialog />
-                  <NeoboardApp layoutProps={{ height: '90vh' }} />
+                  <NeoboardApp
+                    layoutProps={{
+                      height: `calc(100% - ${theme.offsetHeight})`,
+                    }}
+                  />
                 </ConnectionStateProvider>
               </SnackbarProvider>
             </GuidedTourProvider>
