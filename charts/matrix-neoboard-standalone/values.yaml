@@ -95,3 +95,40 @@ env: []
 # # optional: Link to a non-standalone deployment of the widget, which gets added to the room and will be usable through element
 # - name: REACT_APP_WIDGET_BASE
 #   value: "https://matrix-neoboard-widget.example.com"
+# # optional: An appearance to be shown: neoboard (default) or opendesk. Applies the respective default colors and enables the openDesk banner..
+# - name: REACT_APP_APPEARANCE
+#   value: "opendesk"
+# # optional: Primary palette color for light theme
+# - name: REACT_APP_LIGHT_PRIMARY_COLOR
+#   value: "#e85e10"
+# # optional: Primary palette light color for light theme
+# - name: REACT_APP_LIGHT_PRIMARY_COLOR_LIGHT
+#   value: "#ff8a42"
+# # optional: Primary palette dark color for light theme
+# - name: REACT_APP_LIGHT_PRIMARY_COLOR_DARK
+#   value: "#b52e00"
+# # optional: Background color
+# - name: REACT_APP_LIGHT_BACKGROUND_LOGGED_IN
+#   value: "#fcf9f3"
+# # optional: Dashboard card background color
+# - name: REACT_APP_LIGHT_BACKGROUND_CARD
+#   value: "#fce2cf"
+# # openDesk banner config
+# - name: REACT_APP_OPENDESK_BANNER_ICS_NAVIGATION_JSON_URL
+#   value: "http://ics.nd-support.opendesk.qa/navigation.json"
+# # openDesk banner config
+# - name: REACT_APP_OPENDESK_BANNER_ICS_SILENT_URL
+#   value: "http://ics.nd-support.opendesk.qa/silent"
+# # openDesk banner config
+# - name: REACT_APP_OPENDESK_BANNER_PORTAL_LOGO_SVG_URL
+#   value: "https://portal.nd-support.opendesk.qa/univention/portal/icons/logos/domain.svg"
+# # openDesk banner config
+# - name: REACT_APP_OPENDESK_BANNER_PORTAL_URL
+#   value: "https://portal.nd-support.opendesk.qa/"
+# # optional: openDesk banner config
+# - name: REACT_APP_OPENDESK_BANNER_TEXT_ACTION_ACCENT
+#   value: "#5e27dd"
+# # optional: openDesk banner config
+# - name: REACT_APP_OPENDESK_BANNER_COLOR_TEXT_PRIMARY
+#   value: "#1b1d22"
+# # optional: further variables for neoboard...
