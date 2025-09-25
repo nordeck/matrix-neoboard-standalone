@@ -40,4 +40,4 @@ jobs:
 
       - name: deploy k8s to cluster
         run: |
-          helm upgrade --install matrix-neoboard-standalone ./charts/matrix-neoboard-standalone -f ./valhalla/cluster/neotoolsuite-demo/matrix-neoboard-standalone/values.demo.yaml -n matrix --set image.tag=${{ github.event.inputs.image_tag }}
+          helm upgrade --atomic --install matrix-neoboard-standalone ./charts/matrix-neoboard-standalone -f ./valhalla/cluster/neotoolsuite-demo/matrix-neoboard-standalone/values.demo.yaml -n matrix --set image.tag=${{ github.event.inputs.image_tag }}
