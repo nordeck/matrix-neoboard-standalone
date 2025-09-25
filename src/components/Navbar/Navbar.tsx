@@ -120,12 +120,12 @@ export function Navbar({ config, children }: Props) {
                 />
               </FocusLock>
             )}
-            {children}
           </>
         )
       ) : (
         <SilentLogin onLoggedIn={handleLoggedIn} url={config.ics_silent_url} />
       )}
+      {children}
     </Root>
   );
 }
