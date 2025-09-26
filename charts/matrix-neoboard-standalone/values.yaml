@@ -87,6 +87,8 @@ tolerations: []
 
 affinity: {}
 
+# custom_csp_headers: add_header Content-Security-Policy "default-src 'none'; frame-src ics.sccon.opendesk.eu id.sccon.opendesk.eu; font-src 'self' data: $__CSP_FONT_SRC__; style-src 'self' $__STYLE_CSP_NONCE__ $__CSP_STYLE_SRC__; script-src 'self' $__STYLE_CSP_NONCE__ $__CSP_SCRIPT_SRC__; img-src 'self' data: $__CSP_IMG_SRC__; connect-src 'self' $__CSP_CONNECT_SRC__; manifest-src 'self';";
+
 # Extra env variables to pass to the container
 env: []
 # # optional: Use this homeserver instead of showing an input field on the login screen
