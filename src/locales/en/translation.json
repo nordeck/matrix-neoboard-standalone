@@ -8,7 +8,8 @@
     }
   },
   "app": {
-    "cancel": "Cancel"
+    "cancel": "Cancel",
+    "ok": "OK"
   },
   "boardNotFound": {
     "link": "Go to dashboard",
@@ -72,6 +73,10 @@
   },
   "login": {
     "button": "Log In",
+    "error": {
+      "generic": "Please check your homeserver configuration and try again.",
+      "title": "Login Failed"
+    },
     "homeserver": {
       "label": "Homeserver",
       "placeholder": "e.g. matrix.org"

@@ -8,7 +8,8 @@
     }
   },
   "app": {
-    "cancel": "Abbrechen"
+    "cancel": "Abbrechen",
+    "ok": "OK"
   },
   "boardNotFound": {
     "link": "Zum Dashboard",
@@ -72,6 +73,10 @@
   },
   "login": {
     "button": "Einloggen",
+    "error": {
+      "generic": "Bitte überprüfe deine Homeserver-Konfiguration und versuche es erneut.",
+      "title": "Login Fehlgeschlagen"
+    },
     "homeserver": {
       "label": "Homeserver",
       "placeholder": "z.B. matrix.org"

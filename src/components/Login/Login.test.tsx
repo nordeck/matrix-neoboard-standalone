@@ -26,7 +26,7 @@ vi.mock('@matrix-widget-toolkit/mui', async () => ({
   getEnvironment: vi.fn(),
 }));
 
-describe.skip('<Login />', () => {
+describe('<Login />', () => {
   it('should show the servername field, if there is no homeserver configured', () => {
     render(<Login />);
 
