@@ -89,6 +89,32 @@ affinity: {}
 
 # custom_csp_headers: add_header Content-Security-Policy "default-src 'none'; frame-src ics.sccon.opendesk.eu id.sccon.opendesk.eu; font-src 'self' data: $__CSP_FONT_SRC__; style-src 'self' $__STYLE_CSP_NONCE__ $__CSP_STYLE_SRC__; script-src 'self' $__STYLE_CSP_NONCE__ $__CSP_SCRIPT_SRC__; img-src 'self' data: $__CSP_IMG_SRC__; connect-src 'self' $__CSP_CONNECT_SRC__; manifest-src 'self';";
 
+# opendesk_navigation: |
+#  {
+#    "categories": [
+#      {
+#        "identifier": "od.applications",
+#        "display_name": "Applications",
+#        "entries": []
+#      },
+#    ]
+#  }
+
+# opendesk_silent: |
+#  <!doctype html>
+#  <html lang="en">
+#    <head />
+#    <body>
+#      <p>This is for the Frame for clients to load. Loggend in status: true</p>
+#
+#      <script type="text/javascript">
+#        // TODO: Proper Session Handling: https://openid.net/specs/openid-connect-session-1_0.html
+#        // TODO: Proper security assessment / restrict postmessage target origin as much as possible
+#        parent.postMessage({ loggedIn: true, csrftoken: 'xyz' }, '*');
+#      </script>
+#    </body>
+#  </html>
+
 # Extra env variables to pass to the container
 env: []
 # # optional: Use this homeserver instead of showing an input field on the login screen

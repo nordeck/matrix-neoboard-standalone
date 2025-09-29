@@ -62,6 +62,18 @@ spec:
             subPath: content-security-policy.conf
             readOnly: true
           {{- end }}
+          {{- if .Values.opendesk_navigation }}
+          - name: opendesk-navigation
+            mountPath: /usr/share/nginx/html/navigation.json
+            subPath: navigation.json
+            readOnly: true
+          {{- end }}
+          {{- if .Values.opendesk_silent }}
+          - name: opendesk-navigation
+            mountPath: /usr/share/nginx/html/silent.html
+            subPath: silent.html
+            readOnly: true
+          {{- end }}
       volumes:
       - name: cache-volume
         emptyDir: {}
@@ -71,6 +83,11 @@ spec:
       - name: csp-config
         configMap:
           name: {{ include "app.name" . }}-cm
+      {{- end }}
+      {{- if and .Values.opendesk_navigation .Values.opendesk_silent }}
+      - name: opendesk-navigation
+        configMap:
+          name: {{ include "app.name" . }}-od-cm
       {{- end }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
