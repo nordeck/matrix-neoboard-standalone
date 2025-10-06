@@ -21,7 +21,7 @@ jobs:
       REACT_APP_REACT_SDK_VERSION: 'unset'
       REACT_APP_REACT_SDK_REVISION: 'unset'
     outputs:
-      docker-tag: ${{ steps.meta.outputs.version }}
+      ARGOCD_TAG: ${{ steps.argocd-sha.outputs.ARGOCD_TAG }}
     steps:
       - uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955 # v4
         with:
@@ -103,13 +103,16 @@ jobs:
         uses: docker/setup-buildx-action@e468171a9de216ec08956ac3ada2f0791b6bd435 # v3
 
       - name: get argo-cd type of sha
+        id: argocd-sha
         run: |
           COMMIT_SHA=${{ github.sha }}
           if [[ '${{ github.event_name }}' == 'pull_request' ]]
           then
             COMMIT_SHA=${{ github.event.pull_request.head.sha }}
           fi
-          echo "ARGOCD_SHA=$(echo $COMMIT_SHA | cut -c1-8)" >> $GITHUB_ENV
+          ARGOCD_TAG=argo-$(echo $COMMIT_SHA | cut -c1-8)
+          echo "ARGOCD_TAG=$ARGOCD_TAG" >> $GITHUB_ENV
+          echo "ARGOCD_TAG=$ARGOCD_TAG" >> "$GITHUB_OUTPUT"
 
       - name: Generate Docker metadata
         id: meta
@@ -125,7 +128,7 @@ jobs:
           tags: |
             type=raw,value=latest,enable={{is_default_branch}}
             type=sha,prefix=
-            type=raw,value=argo-${{ env.ARGOCD_SHA }}
+            type=raw,value=${{ env.ARGOCD_TAG }}
 
       # Read the created files into variables
       - name: Read version and revision to be used by docker
@@ -257,9 +260,9 @@ jobs:
 
       - name: deploy k8s to cluster
         run: |
-          helm upgrade --install matrix-neoboard-standalone ./charts/matrix-neoboard-standalone -f ./valhalla/cluster/neotoolsuite-dev/matrix-neoboard-standalone/values.dev.yaml -n matrix
+          helm upgrade --install matrix-neoboard-standalone ./charts/matrix-neoboard-standalone -f ./valhalla/cluster/neotoolsuite-dev/matrix-neoboard-standalone/values.dev.yaml -n matrix --set image.tag=${{ needs.build.outputs.ARGOCD_TAG }}
 
       # inifinite canvas
       - name: deploy k8s to cluster
         run: |
-          helm upgrade --install matrix-neoboard-standalone-infinite-canvas ./charts/matrix-neoboard-standalone -f ./valhalla/cluster/neotoolsuite-dev/matrix-neoboard-standalone/values.infinite-canvas.yaml -n matrix
+          helm upgrade --install matrix-neoboard-standalone-infinite-canvas ./charts/matrix-neoboard-standalone -f ./valhalla/cluster/neotoolsuite-dev/matrix-neoboard-standalone/values.infinite-canvas.yaml -n matrix --set image.tag=${{ needs.build.outputs.ARGOCD_TAG }}
