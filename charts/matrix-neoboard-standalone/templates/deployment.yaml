@@ -62,13 +62,13 @@ spec:
             subPath: content-security-policy.conf
             readOnly: true
           {{- end }}
-          {{- if .Values.opendesk_navigation }}
+          {{- if .Values.customization.opendesk.navigation }}
           - name: opendesk-navigation
             mountPath: /usr/share/nginx/html/navigation.json
             subPath: navigation.json
             readOnly: true
           {{- end }}
-          {{- if .Values.opendesk_silent }}
+          {{- if .Values.customization.opendesk.silent }}
           - name: opendesk-navigation
             mountPath: /usr/share/nginx/html/silent.html
             subPath: silent.html
@@ -84,7 +84,7 @@ spec:
         configMap:
           name: {{ include "app.name" . }}-cm
       {{- end }}
-      {{- if and .Values.opendesk_navigation .Values.opendesk_silent }}
+      {{- if and .Values.customization.opendesk.navigation .Values.customization.opendesk.silent }}
       - name: opendesk-navigation
         configMap:
           name: {{ include "app.name" . }}-od-cm
