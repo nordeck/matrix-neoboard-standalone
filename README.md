@@ -173,4 +173,6 @@ This software is licensed under the [GNU Affero General Public License (AGPL), v
 
 The list of dependencies and their licenses are also available in a machine readable format at `/usr/share/nginx/html/licenses.json` in the container image.
 
+This project uses [REUSE](https://reuse.software) to manage license and copyright annotations.
+
 [@nordeck/matrix-neoboard-react-sdk]: https://github.com/nordeck/matrix-neoboard/tree/main/packages/react-sdk
