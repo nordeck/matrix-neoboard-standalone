@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2025 Nordeck IT + Consulting GmbH
+#
+# SPDX-License-Identifier: CC0-1.0
+
 # These folders will be skipped by prettier
 
 # Ignore artifacts

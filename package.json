@@ -121,7 +121,7 @@
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx}": [
-      "yarn lint",
+      "eslint --max-warnings 0 --no-warn-ignored",
       "bash -c \"yarn tsc --pretty\"",
       "prettier --write"
     ],
