@@ -105,7 +105,7 @@
     "eslint-plugin-react-hooks": "4.6.2",
     "eslint-plugin-testing-library": "6.3.4",
     "eslint-plugin-vitest": "0.5.4",
-    "happy-dom": "15.10.8",
+    "happy-dom": "20.0.2",
     "husky": "9.1.7",
     "i18next-parser": "9.0.2",
     "identity-obj-proxy": "3.0.0",
