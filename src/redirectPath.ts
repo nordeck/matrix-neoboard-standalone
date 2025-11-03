@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 /*
  * Copyright 2025 Nordeck IT + Consulting GmbH
  *

@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 /*
  * Copyright 2024 Nordeck IT + Consulting GmbH
  *
@@ -15,6 +17,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with NeoBoard Standalone. If not, see <https://www.gnu.org/licenses/>.
  */
+
 import { Component } from 'react';
 
 interface ErrorBoundaryProps {
@@ -28,6 +31,7 @@ interface ErrorBoundaryProps {
  * Due to react limitations this MUST be a class component at this time.
  * See https://17.reactjs.org/docs/concurrent-mode-suspense.html#handling-errors
  */
+
 export default class ErrorBoundary extends Component<
   ErrorBoundaryProps,
   { hasError: boolean; error: Error | null }

@@ -1,3 +1,9 @@
+<!--
+SPDX-FileCopyrightText: 2025 Nordeck IT + Consulting GmbH
+
+SPDX-License-Identifier: CC-BY-SA-4.0
+-->
+
 # NeoBoard Standalone
 
 [![CI](https://github.com/nordeck/matrix-neoboard-standalone/actions/workflows/ci.yml/badge.svg)](https://github.com/nordeck/matrix-neoboard-standalone/actions/workflows/ci.yml)
@@ -86,9 +92,9 @@ Synapse with MAS is required to run NeoBoard standalone locally.
 
 It is possible to use the Compose file from [opendesk-widgets-docker-compose](https://github.com/nordeck/opendesk-widgets-docker-compose) to create the environment:
 
-- Add the following to your hosts-file:  
+- Add the following to your hosts-file:
   `127.0.0.1 matrix.internal mas.matrix.internal synapse.matrix.internal`
-- Clone opendesk-widgets-docker-compose:  
+- Clone opendesk-widgets-docker-compose:
   `git clone --recurse-submodules git@github.com:nordeck/opendesk-widgets-docker-compose.git`
 - `cd opendesk-widgets-docker-compose`
 - Start the required containers:
@@ -159,11 +165,14 @@ Specify the impact as `patch`.
 We use [Architecture Decision Records (ADR)s](https://github.com/nordeck/matrix-widget-toolkit/blob/main/docs/adrs/adr001-use-adrs-to-document-decisions.md) to document decisions for our software.
 You can find them at [`/docs/adrs`](./docs/adrs/).
 
-## License
+## Copyright and License
 
-This project is licensed under [GNU Affero General Public License (AGPL), v3.0 or later](./LICENSE).
+Copyright (c) 2024, 2025 Nordeck IT + Consulting GmbH
 
-The disclaimer for other OSS components can be accessed via the `/NOTICE.txt` endpoint.
+This software is licensed under the [GNU Affero General Public License (AGPL), v3.0 or later](./COPYING).
+
 The list of dependencies and their licenses are also available in a machine readable format at `/usr/share/nginx/html/licenses.json` in the container image.
+
+This project uses [REUSE](https://reuse.software) to manage license and copyright annotations.
 
 [@nordeck/matrix-neoboard-react-sdk]: https://github.com/nordeck/matrix-neoboard/tree/main/packages/react-sdk

@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 /*
  * Copyright 2024 Nordeck IT + Consulting GmbH
  *
@@ -15,6 +17,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with NeoBoard Standalone. If not, see <https://www.gnu.org/licenses/>.
  */
+
 /// <reference types="vitest" />
 
 import react from '@vitejs/plugin-react';

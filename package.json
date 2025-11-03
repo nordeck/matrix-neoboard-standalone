@@ -120,8 +120,11 @@
     "yarn-deduplicate": "6.0.2"
   },
   "lint-staged": {
+    "*": [
+      "bash -c \"reuse lint\""
+    ],
     "*.{js,jsx,ts,tsx}": [
-      "yarn lint",
+      "eslint --max-warnings 0 --no-warn-ignored",
       "bash -c \"yarn tsc --pretty\"",
       "prettier --write"
     ],
