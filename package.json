@@ -18,7 +18,7 @@
     "prepare": "husky",
     "depcheck": "depcheck --ignores=@vitest/coverage-v8,@changesets/cli,@swc/core,@testing-library/dom,@testing-library/jest-dom,@testing-library/react,@testing-library/react-hooks,@typescript-eslint/eslint-plugin,@typescript-eslint/parser,prettier-plugin-organize-imports,identity-obj-proxy",
     "deduplicate": "yarn-deduplicate",
-    "translate": "i18next \"src/**/*.{ts,tsx}\"",
+    "translate": "i18next-cli extract --sync-primary",
     "generate-disclaimer": "cp LICENSE ./build/LICENSE.txt && cp NOTICE ./build/NOTICE.txt && yarn licenses generate-disclaimer --prod >> ./build/NOTICE.txt && yarn licenses list --prod --json --no-progress > ./build/licenses.json",
     "docker:build": "sh -c \"${CONTAINER_CLI:-docker} build -t nordeck/matrix-neoboard-standalone .\"",
     "docker:run": "sh -c \"${CONTAINER_CLI:-docker} run -p 8888:8080 --rm --name matrix-neoboard-standalone nordeck/matrix-neoboard-standalone\"",
@@ -107,7 +107,7 @@
     "eslint-plugin-vitest": "0.5.4",
     "happy-dom": "20.0.2",
     "husky": "9.1.7",
-    "i18next-parser": "9.0.2",
+    "i18next-cli": "^1.20.4",
     "identity-obj-proxy": "3.0.0",
     "lint-staged": "15.2.11",
     "prettier": "3.3.3",
@@ -129,7 +129,7 @@
       "bash -c \"yarn depcheck\""
     ],
     "*.{json,js,jsx,ts,tsx}": [
-      "bash -c \"yarn translate --fail-on-update\""
+      "bash -c \"yarn translate --ci --dry-run\""
     ],
     "*.{yaml,yml,json,md}": [
       "prettier --write"

@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Nordeck IT + Consulting GmbH
+ * Copyright 2025 Nordeck IT + Consulting GmbH
  *
  * NeoBoard Standalone is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -15,15 +15,12 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with NeoBoard Standalone. If not, see <https://www.gnu.org/licenses/>.
  */
+import { defineConfig } from 'i18next-cli';
 
-const i18NextParserConfig = {
+export default defineConfig({
   locales: ['en', 'de'],
-  output: 'src/locales/$LOCALE/$NAMESPACE.json',
-  sort: true,
-  resetDefaultValueLocale: 'en',
-  lexers: {
-    tsx: [{ lexer: 'JsxLexer', transSupportBasicHtmlNodes: true }],
+  extract: {
+    input: 'src/**/*.{js,jsx,ts,tsx}',
+    output: 'src/locales/{{language}}/{{namespace}}.json',
   },
-};
-
-export default i18NextParserConfig;
+});
