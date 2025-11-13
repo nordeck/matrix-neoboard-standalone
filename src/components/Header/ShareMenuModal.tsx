@@ -276,6 +276,9 @@ export function ShareMenuModal({
       </DialogContent>
 
       <DialogActions>
+        <Button onClick={onClose} variant="outlined">
+          {t('app.cancel', 'Cancel')}
+        </Button>
         <LoadingButton
           variant="contained"
           color="primary"
@@ -287,9 +290,6 @@ export function ShareMenuModal({
             Invite
           </Trans>
         </LoadingButton>
-        <Button onClick={onClose} variant="outlined">
-          {t('app.cancel', 'Cancel')}
-        </Button>
       </DialogActions>
     </Dialog>
   );

@@ -17,22 +17,29 @@
  */
 /// <reference types="vitest" />
 
-import react from '@vitejs/plugin-react';
-import { defineConfig } from 'vitest/config';
+import { defineConfig } from 'vite';
 
 export default defineConfig({
-  plugins: [react()],
+  resolve: {
+    dedupe: [
+      'react',
+      'react-dom',
+      'react-i18next',
+      'react-use',
+      'react-redux',
+      '@mui/material',
+    ],
+  },
   test: {
     environment: 'happy-dom',
     setupFiles: ['./src/setupTests.ts'],
+    exclude: ['build', 'node_modules'],
     server: {
       deps: {
         inline: [
           '@matrix-widget-toolkit/api',
           '@matrix-widget-toolkit/react',
           '@matrix-widget-toolkit/mui',
-          'react',
-          'react-dom',
           'react-i18next',
         ],
       },

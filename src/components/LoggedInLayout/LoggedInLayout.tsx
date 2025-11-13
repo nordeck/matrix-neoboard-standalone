@@ -18,28 +18,31 @@
 
 import { WidgetParameters } from '@matrix-widget-toolkit/api';
 import { MuiWidgetApiProvider } from '@matrix-widget-toolkit/mui';
+import HomeIcon from '@mui/icons-material/Home';
 import { styled } from '@mui/material';
-import React, { useEffect } from 'react';
+import React, { PropsWithChildren, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
+import { getEnvironmentAppearance } from '../../lib';
 import { useLoggedIn } from '../../state';
 import { useGetAllRoomNameEventsQuery } from '../../store/api/roomNameApi';
 import {
   StandaloneApiImpl,
   StandaloneWidgetApiImpl,
 } from '../../toolkit/standalone';
-import { Header } from '../Header';
+import { Header, HeaderMenu, HeaderTitle } from '../Header';
+import { NeoBoardIcon } from '../Header/NeoBoardIcon.tsx';
 import { useRoomId } from '../RoomIdProvider';
 import { StandaloneWidgetApiProvider } from '../StandaloneWidgetApiProvider';
+import { NavbarBanner } from './NavbarBanner.tsx';
 
 const Wrapper = styled('div')(({ theme }) => ({
-  backgroundColor: theme.palette.background.chrome,
+  backgroundColor: theme.palette.background.loggedIn,
   height: '100vh',
 }));
 
 export const LoggedInLayout: React.FC<React.PropsWithChildren<{}>> = ({
   children,
 }) => {
-  const roomId = useRoomId();
   const { i18n } = useTranslation();
   const {
     homeserverUrl,
@@ -49,12 +52,6 @@ export const LoggedInLayout: React.FC<React.PropsWithChildren<{}>> = ({
     deviceId,
     widgetApiPromise,
   } = useLoggedIn();
-
-  const { data: roomNameState } = useGetAllRoomNameEventsQuery();
-  const title =
-    roomId === undefined
-      ? 'neoboard'
-      : (roomNameState?.entities[roomId]?.content.name ?? 'neoboard');
 
   useEffect(() => {
     /**
@@ -97,12 +94,55 @@ export const LoggedInLayout: React.FC<React.PropsWithChildren<{}>> = ({
 
   return (
     <Wrapper>
-      <Header title={title} roomId={roomId} />
-      <div role="main">
-        <MuiWidgetApiProvider widgetApiPromise={widgetApiPromise}>
-          <StandaloneWidgetApiProvider>{children}</StandaloneWidgetApiProvider>
-        </MuiWidgetApiProvider>
-      </div>
+      <BannerWrapper>
+        <div role="main">
+          <MuiWidgetApiProvider widgetApiPromise={widgetApiPromise}>
+            <StandaloneWidgetApiProvider>
+              {children}
+            </StandaloneWidgetApiProvider>
+          </MuiWidgetApiProvider>
+        </div>
+      </BannerWrapper>
     </Wrapper>
   );
 };
+
+type BannerWrapperProps = PropsWithChildren<{}>;
+
+function BannerWrapper({ children }: BannerWrapperProps) {
+  const appearance = getEnvironmentAppearance();
+
+  const roomId = useRoomId();
+
+  const { data: roomNameState } = useGetAllRoomNameEventsQuery();
+  const title =
+    roomId === undefined
+      ? appearance === 'neoboard'
+        ? 'neoboard'
+        : ''
+      : (roomNameState?.entities[roomId]?.content.name ?? 'neoboard');
+
+  let Banner: React.FC<PropsWithChildren<{}>>;
+  if (appearance === 'neoboard') {
+    Banner = Header;
+  } else if (appearance === 'opendesk') {
+    Banner = NavbarBanner;
+  } else {
+    throw new Error(`unexpected appearance: ${appearance}`);
+  }
+
+  return (
+    <>
+      <Banner>
+        <HeaderTitle
+          title={title}
+          roomId={roomId}
+          homeIcon={appearance === 'neoboard' ? <NeoBoardIcon /> : <HomeIcon />}
+          hasPadding={appearance !== 'neoboard'}
+        />
+        <HeaderMenu roomId={roomId} />
+      </Banner>
+      {children}
+    </>
+  );
+}

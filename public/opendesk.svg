@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Whiteboard" xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 32 32">
+  <!-- Generator: Adobe Illustrator 29.3.1, SVG Export Plug-In . SVG Version: 2.1.0 Build 151)  -->
+  <defs>
+    <style>
+      .st0 {
+        fill: #3a1c99;
+      }
+
+      .st1 {
+        fill: #5e27dd;
+      }
+    </style>
+  </defs>
+  <rect class="st1" x="1.88" y="7.88" width="28" height="16" rx="2" ry="2"/>
+  <rect class="st0" x="9.88" y="1.87" width="12" height="4" rx="2" ry="2"/>
+  <polygon class="st0" points="27.88 31.88 23.88 31.88 20.88 25.88 24.88 25.88 27.88 31.88"/>
+  <polygon class="st0" points="3.79 31.88 7.79 31.88 10.79 25.88 6.79 25.88 3.79 31.88"/>
+</svg>

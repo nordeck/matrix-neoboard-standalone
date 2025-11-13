@@ -2,7 +2,7 @@ apiVersion: v2
 name: matrix-neoboard-standalone
 description: Standalone version of NeoBoard (https://github.com/nordeck/matrix-neoboard) - A collaborative whiteboard widget for Element, based on Matrix.
 type: application
-version: 0.0.6
+version: 0.0.9
 # renovate: image=ghcr.io/nordeck/matrix-neoboard-standalone
 appVersion: '0.0.0'
 home: https://neoboard.io

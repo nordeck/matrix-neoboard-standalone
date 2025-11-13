@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Nordeck IT + Consulting GmbH
+ * Copyright 2025 Nordeck IT + Consulting GmbH
  *
  * NeoBoard Standalone is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -16,14 +16,8 @@
  * along with NeoBoard Standalone. If not, see <https://www.gnu.org/licenses/>.
  */
 
-const i18NextParserConfig = {
-  locales: ['en', 'de'],
-  output: 'src/locales/$LOCALE/$NAMESPACE.json',
-  sort: true,
-  resetDefaultValueLocale: 'en',
-  lexers: {
-    tsx: [{ lexer: 'JsxLexer', transSupportBasicHtmlNodes: true }],
-  },
-};
+import { getEnvironment } from '@matrix-widget-toolkit/mui';
 
-export default i18NextParserConfig;
+export function getEnvironmentAppearance(): string {
+  return getEnvironment('REACT_APP_APPEARANCE', 'neoboard');
+}

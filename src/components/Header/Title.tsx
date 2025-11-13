@@ -30,7 +30,6 @@ const StyledTitle = styled('div')(({ theme }) => ({
   overflow: 'hidden',
   position: 'relative',
   textOverflow: 'ellipsis',
-  top: '-4px',
   whiteSpace: 'nowrap',
 }));
 

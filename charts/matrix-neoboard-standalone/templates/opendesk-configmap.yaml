@@ -1,0 +1,18 @@
+{{- if and .Values.customization.opendesk.navigation .Values.customization.opendesk.silent }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "app.fullname" . }}-od-cm
+  labels:
+{{ include "app.labels" . | indent 4 }}
+    app.kubernetes.io/component: opendesk-config
+data:
+  {{- if .Values.customization.opendesk.navigation }}
+  navigation.json: |
+{{ .Values.customization.opendesk.navigation | indent 4 }}
+  {{- end }}
+  {{- if .Values.customization.opendesk.silent }}
+  silent.html: |
+{{ .Values.customization.opendesk.silent | indent 4 }}
+  {{- end }}
+{{- end }}

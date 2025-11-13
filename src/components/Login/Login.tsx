@@ -16,8 +16,6 @@
  * along with NeoBoard Standalone. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { discoverAndValidateOIDCIssuerWellKnown } from 'matrix-js-sdk';
-import { ensureNoTrailingSlash } from 'matrix-js-sdk/lib/utils';
 import { ChangeEvent, FormEvent, useCallback, useState } from 'react';
 
 import { Typography } from '@mui/material';
@@ -31,8 +29,8 @@ import {
 
 import { getEnvironment } from '@matrix-widget-toolkit/mui';
 import { useTranslation } from 'react-i18next';
-import { discoverClientConfig, fetchAuthIssuer } from '../../lib/discovery';
-import { registerOidcClient, startOidcLogin } from '../../lib/oidc';
+import { isValidServerName } from '../../lib';
+import { startLoginFlow } from '../../lib/oidc';
 
 /**
  * Simple login component demonstrating the login flow.
@@ -40,7 +38,7 @@ import { registerOidcClient, startOidcLogin } from '../../lib/oidc';
 export function Login() {
   const { t } = useTranslation();
   const staticServerName = getEnvironment('REACT_APP_HOMESERVER');
-  const hasStaticServerName = staticServerNameSet(staticServerName);
+  const hasValidServerName = isValidServerName(staticServerName);
   const [serverName, setServerName] = useState('');
   const [message, setMessage] = useState('');
 
@@ -50,35 +48,15 @@ export function Login() {
       setMessage('');
 
       try {
-        // Find the homeserver's base URL
-        const clientConfig = await discoverClientConfig(
-          hasStaticServerName ? staticServerName : serverName,
+        await startLoginFlow(
+          hasValidServerName ? staticServerName : serverName,
         );
-        const rawBaseUrl = clientConfig['m.homeserver'].base_url;
-
-        if (rawBaseUrl === undefined || rawBaseUrl === null) {
-          setMessage('Login failed. Check your homeserver name.');
-          return;
-        }
-
-        const baseUrl = ensureNoTrailingSlash(rawBaseUrl);
-
-        // Fetch the auth issuer, to find out where the actual authentication is performed
-        const { issuer } = await fetchAuthIssuer(baseUrl);
-
-        // Fetch the OIDC configuration from the auth issuer
-        const oidcClientConfig =
-          await discoverAndValidateOIDCIssuerWellKnown(issuer);
-
-        // Register an OIDC client and start the authentication
-        const clientId = await registerOidcClient(oidcClientConfig);
-        startOidcLogin(oidcClientConfig, clientId, baseUrl);
       } catch (error) {
         console.error('Login failed', error);
         setMessage('Login failed. Check your homeserver name.');
       }
     },
-    [hasStaticServerName, serverName, staticServerName],
+    [hasValidServerName, serverName, staticServerName],
   );
 
   const handleServerNameChange = useCallback(
@@ -116,7 +94,7 @@ export function Login() {
         )}
       </Typography>
       <StyledLoginForm onSubmit={handleFormSubmit}>
-        {hasStaticServerName === false && (
+        {hasValidServerName === false && (
           <>
             <StyledFormLabel htmlFor="login-homeserver">
               {t('login.homeserver.label', 'Homeserver')}
@@ -147,10 +125,4 @@ export function Login() {
       </StyledLoginForm>
     </LoginWrapper>
   );
-}
-
-function staticServerNameSet(
-  serverName: string | undefined,
-): serverName is string {
-  return serverName !== undefined && serverName.trim() !== '';
 }

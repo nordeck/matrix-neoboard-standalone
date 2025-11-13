@@ -17,17 +17,9 @@
  */
 
 import { styled } from '@mui/material';
-import { Suspense } from 'react';
-import { useTranslation } from 'react-i18next';
-import { Link } from 'react-router';
-import ErrorBoundary from '../ErrorBoundary';
-import { InvitesMenu } from './InvitesMenu';
-import { NeoBoardIcon } from './NeoBoardIcon';
-import { ShareMenu } from './ShareMenu';
-import { Title } from './Title';
-import { UserMenu } from './UserMenu';
+import { PropsWithChildren } from 'react';
 
-const StyledHeader = styled('nav')(() => ({
+const StyledHeader = styled('nav')(({ theme }) => ({
   alignItems: 'center',
   display: 'flex',
   gap: '16px',
@@ -35,54 +27,11 @@ const StyledHeader = styled('nav')(() => ({
   paddingTop: '34px',
   paddingLeft: '25px',
   paddingRight: '25px',
-  height: '10vh',
+  height: theme.offsetHeight,
 }));
 
-const TitleWrapper = styled('div')(() => ({
-  alignItems: 'center',
-  display: 'flex',
-  flexGrow: 1,
-  gap: '16px',
-}));
+type HeaderProps = PropsWithChildren<{}>;
 
-const MenuWrapper = styled('div')(() => ({
-  display: 'flex',
-  gap: '8px',
-}));
-
-type HeaderProps = {
-  title: string;
-  roomId?: string;
-};
-
-export function Header({ title, roomId }: HeaderProps) {
-  const { t } = useTranslation();
-
-  return (
-    <StyledHeader>
-      <TitleWrapper>
-        <Link to="/dashboard">
-          <div
-            style={{ cursor: 'pointer' }}
-            role="button"
-            aria-label={t('header.dashboard', 'Go back to the dashboard')}
-          >
-            <NeoBoardIcon />
-          </div>
-        </Link>
-        <Title title={title} roomId={roomId} />
-      </TitleWrapper>
-      <MenuWrapper>
-        {roomId && (
-          <ErrorBoundary>
-            <Suspense fallback={null}>
-              <ShareMenu roomId={roomId} />
-            </Suspense>
-          </ErrorBoundary>
-        )}
-        <InvitesMenu />
-        <UserMenu />
-      </MenuWrapper>
-    </StyledHeader>
-  );
+export function Header({ children }: HeaderProps) {
+  return <StyledHeader>{children}</StyledHeader>;
 }

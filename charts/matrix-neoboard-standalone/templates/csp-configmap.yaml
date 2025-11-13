@@ -1,0 +1,12 @@
+{{- if .Values.customization.csp_headers }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "app.fullname" . }}-cm
+  labels:
+{{ include "app.labels" . | indent 4 }}
+    app.kubernetes.io/component: csp-config
+data:
+  content-security-policy.conf: |
+    {{ .Values.customization.csp_headers }}
+{{- end }}

@@ -17,3 +17,5 @@
  */
 
 export { Header } from './Header';
+export { HeaderMenu } from './HeaderMenu';
+export { HeaderTitle } from './HeaderTitle';

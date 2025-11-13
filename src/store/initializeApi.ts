@@ -18,6 +18,7 @@
 
 import { QueryActionCreatorResult } from '@reduxjs/toolkit/query';
 import { powerLevelsApi } from './api/PowerLevelsApi';
+import { roomCreateApi } from './api/roomCreateApi';
 import { roomMemberApi } from './api/roomMemberApi';
 import { roomNameApi } from './api/roomNameApi';
 import { whiteboardApi } from './api/whiteboardApi';
@@ -38,6 +39,9 @@ export async function initializeApi(dispatch: AppDispatch): Promise<void> {
   actions.push(dispatch(roomMemberApi.endpoints.getRoomMembersAll.initiate()));
   actions.push(
     dispatch(powerLevelsApi.endpoints.getAllPowerLevelsEvents.initiate()),
+  );
+  actions.push(
+    dispatch(roomCreateApi.endpoints.getAllRoomCreateEvents.initiate()),
   );
 
   // wait for initial load

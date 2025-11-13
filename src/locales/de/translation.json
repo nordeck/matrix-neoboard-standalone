@@ -8,7 +8,8 @@
     }
   },
   "app": {
-    "cancel": "Abbrechen"
+    "cancel": "Abbrechen",
+    "ok": "OK"
   },
   "boardNotFound": {
     "link": "Zum Dashboard",
@@ -72,6 +73,10 @@
   },
   "login": {
     "button": "Einloggen",
+    "error": {
+      "generic": "Bitte überprüfe deine Homeserver-Konfiguration und versuche es erneut.",
+      "title": "Login Fehlgeschlagen"
+    },
     "homeserver": {
       "label": "Homeserver",
       "placeholder": "z.B. matrix.org"
@@ -83,6 +88,11 @@
   "logOutDialog": {
     "logOut": "Abmelden",
     "title": "Möchtest Du dich wirklich abmelden?"
+  },
+  "navbar": {
+    "portalLogo": "Portal Logo",
+    "showMenu": "Menü anzeigen",
+    "showPortal": "Portal anzeigen"
   },
   "persistingDialog": {
     "error": {

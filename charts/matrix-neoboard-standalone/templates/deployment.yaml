@@ -56,11 +56,39 @@ spec:
             mountPath: /var/cache/nginx
           - name: tmp-volume
             mountPath: /tmp
+          {{- if .Values.custom_csp_headers }}
+          - name: csp-config
+            mountPath: /etc/nginx/conf.d/custom/content-security-policy.conf
+            subPath: content-security-policy.conf
+            readOnly: true
+          {{- end }}
+          {{- if .Values.customization.opendesk.navigation }}
+          - name: opendesk-navigation
+            mountPath: /usr/share/nginx/html/navigation.json
+            subPath: navigation.json
+            readOnly: true
+          {{- end }}
+          {{- if .Values.customization.opendesk.silent }}
+          - name: opendesk-navigation
+            mountPath: /usr/share/nginx/html/silent.html
+            subPath: silent.html
+            readOnly: true
+          {{- end }}
       volumes:
       - name: cache-volume
         emptyDir: {}
       - name: tmp-volume
         emptyDir: {}
+      {{- if .Values.custom_csp_headers }}
+      - name: csp-config
+        configMap:
+          name: {{ include "app.name" . }}-cm
+      {{- end }}
+      {{- if and .Values.customization.opendesk.navigation .Values.customization.opendesk.silent }}
+      - name: opendesk-navigation
+        configMap:
+          name: {{ include "app.name" . }}-od-cm
+      {{- end }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

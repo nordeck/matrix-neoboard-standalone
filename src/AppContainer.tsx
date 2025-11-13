@@ -20,7 +20,9 @@ import {
   WhiteboardManager,
   WhiteboardManagerProvider,
 } from '@nordeck/matrix-neoboard-react-sdk';
+import { useLayoutEffect } from 'react';
 import { App } from './App';
+import { getEnvironmentAppearance } from './lib';
 import { Application } from './state';
 import { ApplicationProvider } from './state/useApplication';
 
@@ -31,6 +33,31 @@ export const AppContainer = ({
   application: Application;
   whiteboardManager: WhiteboardManager;
 }) => {
+  useLayoutEffect(() => {
+    const appearance = getEnvironmentAppearance();
+
+    const logo32 = document.createElement('link');
+    logo32.setAttribute('rel', 'icon');
+    logo32.setAttribute('type', 'image/png');
+    logo32.setAttribute('sizes', '32x32');
+    logo32.setAttribute('href', `/${appearance}-32.png`);
+
+    const logo16 = document.createElement('link');
+    logo16.setAttribute('rel', 'icon');
+    logo16.setAttribute('type', 'image/png');
+    logo16.setAttribute('sizes', '16x16');
+    logo16.setAttribute('href', `/${appearance}-16.png`);
+
+    const appleTouch = document.createElement('link');
+    appleTouch.setAttribute('rel', 'apple-touch-icon');
+    appleTouch.setAttribute('sizes', '180x180');
+    appleTouch.setAttribute('href', `/${appearance}-apple-touch-icon.png`);
+
+    document.head.appendChild(logo32);
+    document.head.appendChild(logo16);
+    document.head.appendChild(appleTouch);
+  }, []);
+
   return (
     <ApplicationProvider application={application}>
       <WhiteboardManagerProvider whiteboardManager={whiteboardManager}>
