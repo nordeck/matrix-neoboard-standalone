@@ -141,10 +141,13 @@ jobs:
           echo $GITHUB_ENV
 
       - name: Build and push
+        id: build_and_push
         uses: docker/build-push-action@263435318d21b8e681c14492fe198d362a7d2c83 # v6
         with:
           push: ${{ github.event_name == 'push' && ( github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/heads/release/') ) || github.event_name == 'pull_request' && secrets.GH_APP_OS_APP_ID != '' || github.event_name == 'workflow_dispatch' }}
           context: ./matrix-neoboard-standalone/
+          build-contexts: |
+            root=./
           tags: |
             ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
@@ -157,6 +160,27 @@ jobs:
             REACT_APP_REACT_SDK_VERSION=${{ env.REACT_APP_REACT_SDK_VERSION }}
             REACT_APP_REACT_SDK_REVISION=${{ env.REACT_APP_REACT_SDK_REVISION }}
             REACT_APP_EMBEDDED=true
+
+      - name: Run Trivy to get an SBOM report of the container
+        if: ${{ success() && steps.build_and_push.outputs.digest }}
+        env:
+          IMAGE_REF: ${{ env.DOCKER_IMAGE }}@${{ steps.build_and_push.outputs.digest }}
+        uses: aquasecurity/trivy-action@0.29.0
+        with:
+          scan-type: 'image'
+          scanners: 'license'
+          format: 'spdx-json'
+          output: 'sbom.spdx.json'
+          image-ref: ${{ env.IMAGE_REF }}
+          github-pat: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload SBOM report as a build artifact
+        if: ${{ success() && steps.build_and_push.outputs.digest }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: sbom-spdx-report
+          path: 'sbom.spdx.json'
+          retention-days: 30
 
       - name: Generate GitHub token
         if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
