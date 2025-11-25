@@ -23,7 +23,7 @@ jobs:
     outputs:
       ARGOCD_TAG: ${{ steps.argocd-sha.outputs.ARGOCD_TAG }}
     steps:
-      - uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955 # v4
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
         with:
           repository: nordeck/matrix-neoboard
           path: matrix-neoboard
@@ -34,7 +34,7 @@ jobs:
           # github actions token but the git token provided via environment variable
           persist-credentials: false
 
-      - uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955 # v4
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
         with:
           path: matrix-neoboard-standalone
           # required for changesets
@@ -180,7 +180,7 @@ jobs:
     needs: build
     steps:
       - name: Checkout
-        uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955 # v4
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
         with:
           fetch-depth: 0 # need main branch to diff against
       - name: Set up Helm
@@ -233,10 +233,10 @@ jobs:
     needs: [build, helm-lint-test]
     steps:
       # Clone repo to get the helm charts
-      - uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955 # v4
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
 
       - name: Checkout valhalla for values
-        uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955 # v4
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
         with:
           ref: dev
           sparse-checkout: |
