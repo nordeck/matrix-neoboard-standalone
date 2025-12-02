@@ -23,7 +23,7 @@ jobs:
     outputs:
       ARGOCD_TAG: ${{ steps.argocd-sha.outputs.ARGOCD_TAG }}
     steps:
-      - uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955 # v4
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
         with:
           repository: nordeck/matrix-neoboard
           path: matrix-neoboard
@@ -34,7 +34,7 @@ jobs:
           # github actions token but the git token provided via environment variable
           persist-credentials: false
 
-      - uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955 # v4
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
         with:
           path: matrix-neoboard-standalone
           # required for changesets
@@ -78,7 +78,7 @@ jobs:
 
       - name: Check Translations
         working-directory: ./matrix-neoboard-standalone/
-        run: yarn translate --fail-on-update
+        run: yarn translate --ci --dry-run
 
       - name: test
         working-directory: ./matrix-neoboard-standalone/
@@ -93,7 +93,7 @@ jobs:
         run: yarn generate-disclaimer
 
       - name: Login to ghcr.io
-        uses: docker/login-action@184bdaa0721073962dff0199f1fb9940f07167d1 # v3
+        uses: docker/login-action@5e57cd118135c172c3672efd75eb46360885c0ef # v3
         with:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
@@ -116,7 +116,7 @@ jobs:
 
       - name: Generate Docker metadata
         id: meta
-        uses: docker/metadata-action@c1e51972afc2121e065aed6d45c65596fe445f3f # v5
+        uses: docker/metadata-action@318604b99e75e41977312d83839a89be02ca4893 # v5
         env:
           DOCKER_METADATA_PR_HEAD_SHA: true
         with:
@@ -180,7 +180,7 @@ jobs:
     needs: build
     steps:
       - name: Checkout
-        uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955 # v4
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
         with:
           fetch-depth: 0 # need main branch to diff against
       - name: Set up Helm
@@ -233,10 +233,10 @@ jobs:
     needs: [build, helm-lint-test]
     steps:
       # Clone repo to get the helm charts
-      - uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955 # v4
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
 
       - name: Checkout valhalla for values
-        uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955 # v4
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
         with:
           ref: dev
           sparse-checkout: |
