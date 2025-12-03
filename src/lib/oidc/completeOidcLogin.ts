@@ -17,7 +17,16 @@
  */
 
 import { completeAuthorizationCodeGrant } from 'matrix-js-sdk';
-import { OidcCodeAndState, OidcCredentials } from './types';
+import {
+  MatrixClientCredentials,
+  OidcCodeAndState,
+  OidcCredentials,
+} from './types';
+
+export type OidcLoginResponse = {
+  matrixClientCredentials: MatrixClientCredentials;
+  oidcCredentials: OidcCredentials;
+};
 
 /**
  * Attempt to complete authorization code flow to get an access token
@@ -30,7 +39,7 @@ import { OidcCodeAndState, OidcCredentials } from './types';
  */
 export const completeOidcLogin = async (
   codeAndState: OidcCodeAndState,
-): Promise<OidcCredentials> => {
+): Promise<OidcLoginResponse> => {
   const {
     homeserverUrl,
     tokenResponse,
@@ -43,12 +52,16 @@ export const completeOidcLogin = async (
   );
 
   return {
-    homeserverUrl,
-    identityServerUrl,
-    accessToken: tokenResponse.access_token,
-    refreshToken: tokenResponse.refresh_token,
-    clientId: oidcClientSettings.clientId,
-    issuer: oidcClientSettings.issuer,
-    idTokenClaims,
+    matrixClientCredentials: {
+      homeserverUrl,
+      identityServerUrl,
+      accessToken: tokenResponse.access_token,
+      refreshToken: tokenResponse.refresh_token,
+    },
+    oidcCredentials: {
+      clientId: oidcClientSettings.clientId,
+      issuer: oidcClientSettings.issuer,
+      idTokenClaims,
+    },
   };
 };

@@ -16,31 +16,20 @@
  * along with NeoBoard Standalone. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { ensureNoTrailingSlash } from 'matrix-js-sdk/lib/utils';
-import { discoverClientConfig, fetchAuthMetadata } from '../discovery';
+import { fetchAuthMetadata } from '../discovery';
 import { registerOidcClient, startOidcLogin } from './';
 
 /**
  * Starts the OIDC login flow for a given homeserver.
  *
- * @param homeserverName - The name of the homeserver to login to
+ * @param homeserverUrl - The homeserver URL to login
  * @throws Error if the login process fails at any step
  */
-export async function startLoginFlow(homeserverName: string): Promise<void> {
-  // Find the homeserver's base URL
-  const clientConfig = await discoverClientConfig(homeserverName);
-  const rawBaseUrl = clientConfig['m.homeserver'].base_url;
-
-  if (rawBaseUrl === undefined || rawBaseUrl === null) {
-    throw new Error('Login failed. Check your homeserver name.');
-  }
-
-  const baseUrl = ensureNoTrailingSlash(rawBaseUrl);
-
+export async function startOidcLoginFlow(homeserverUrl: string): Promise<void> {
   // Fetch the OIDC configuration
-  const oidcClientConfig = await fetchAuthMetadata(baseUrl);
+  const oidcClientConfig = await fetchAuthMetadata(homeserverUrl);
 
   // Register an OIDC client and start the authentication
   const clientId = await registerOidcClient(oidcClientConfig);
-  startOidcLogin(oidcClientConfig, clientId, baseUrl);
+  startOidcLogin(oidcClientConfig, clientId, homeserverUrl);
 }

@@ -20,8 +20,9 @@ import { AccessTokens } from 'matrix-js-sdk';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { Credentials } from '../../state';
 import {
-  createMatrixTestCredentials,
-  createOidcTestCredentials,
+  mockMatrixClientCredentials,
+  mockMatrixCredentials,
+  mockOidcCredentials,
   mockOpenIdConfiguration,
 } from '../testUtils';
 import { TokenRefresher } from './TokenRefresher';
@@ -63,9 +64,11 @@ describe('TokenRefresher', () => {
     });
 
     credentials = new Credentials();
-    const oidcCredentials = createOidcTestCredentials();
+    const matrixClientCredentials = mockMatrixClientCredentials();
+    credentials.setMatrixClientCredentials(matrixClientCredentials);
+    const oidcCredentials = mockOidcCredentials();
     credentials.setOidcCredentials(oidcCredentials);
-    const matrixCredentials = createMatrixTestCredentials();
+    const matrixCredentials = mockMatrixCredentials();
     credentials.setMatrixCredentials(matrixCredentials);
 
     tokenRefresher = await createOidcTokenRefresher(
@@ -82,10 +85,10 @@ describe('TokenRefresher', () => {
     };
     tokenRefresher.persistTokens(newTokens);
 
-    expect(credentials.getOidcCredentials()?.accessToken).toBe(
+    expect(credentials.getMatrixClientCredentials()?.accessToken).toBe(
       'new_access_token',
     );
-    expect(credentials.getOidcCredentials()?.refreshToken).toBe(
+    expect(credentials.getMatrixClientCredentials()?.refreshToken).toBe(
       'new_refresh_token',
     );
   });

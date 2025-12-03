@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Nordeck IT + Consulting GmbH
+ * Copyright 2025 Nordeck IT + Consulting GmbH
  *
  * NeoBoard Standalone is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -15,11 +15,8 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with NeoBoard Standalone. If not, see <https://www.gnu.org/licenses/>.
  */
-
-export { formatTimeAgo } from './formatTimeAgo';
-export { getEnvironmentAppearance } from './getEnvironmentAppearance';
-export { isValidServerName } from './isValidServerName';
-export { isValidUrl } from './isValidUrl';
-export { setLocale } from './locale';
-export { randomString } from './randomString';
-export { startLoginFlow } from './startLoginFlow';
+export { attemptCompleteLegacySsoLogin } from './attemptCompleteLegacySsoLogin';
+export {
+  legacySsoHomeserverUrlStorageKey,
+  startLegacySsoLoginFlow,
+} from './startLegacySsoLoginFlow';

@@ -1,6 +1,6 @@
 # Neoboard Standalone Architecture docs
 
-## Login flow
+## OIDC Login flow
 
 The following sequence diagram shows the a fresh login flow.
 
@@ -26,6 +26,9 @@ sequenceDiagram
   Login ->> Login: discoverClientConfig()
   Login ->> Webserver: /.well-known/matrix/client
   Webserver -->> Login: baseUrl
+  Login ->> Login: fetchSsoLoginFlow()
+  Login ->> Homeserver: /login
+  Homeserver -->> Login: 'm.login.sso' flow with 'org.matrix.msc3824.delegated_oidc_compatibility': true
   Login ->> Login: fetchAuthMetadata(baseUrl)
   Login ->> Homeserver: /_matrix/client/unstable/org.matrix.msc2965/auth_metadata
   Homeserver -->> Login: Auth metadata
@@ -35,14 +38,19 @@ sequenceDiagram
   User ->> MAS: enter credentials
   MAS ->> Application: redirect
   Application ->> Application: start()
-  Application ->> Application: maybeCompleteOidcLogin()
+  Application ->> Application: attemptCompleteOidcLogin()
   Application ->> Homeserver: whoami
   Homeserver -->> Application: userId / deviceId
   Application ->> Credentials: set credentials
   Note over Application: Credentials have been saved to localStorage.<br />From now on, it is the same as<br />when restoring a session from localStorage.
-  Application ->> Application: maybeStartFromStoredSession()
+  Application ->> Application: attemptStartFromStoredSession()
   Application ->> Credentials: get credentials
   Application ->> Application: createOidcTokenRefresher()
   Application ->> Application: createAndStartMatrixclient()
   Application ->> Application: set state to "loggedIn"
 ```
+
+## Legacy API Login Flow
+
+Alternatively, `SSO` is available via `Legacy API` as described
+in [the matrix specification](https://spec.matrix.org/v1.16/client-server-api/#client-login-via-sso).

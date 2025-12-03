@@ -18,17 +18,20 @@
 
 import { beforeEach, describe, expect, it } from 'vitest';
 import {
-  createMatrixTestCredentials,
-  createOidcTestCredentials,
+  mockMatrixClientCredentials,
+  mockMatrixCredentials,
+  mockOidcCredentials,
 } from '../lib/testUtils';
 import {
   Credentials,
+  matrixClientCredentialsStorageKey,
   matrixCredentialsStorageKey,
   oidcCredentialsStorageKey,
 } from './Credentials';
 
-const matrixTestCredentials = createMatrixTestCredentials();
-const oidcTestCredentials = createOidcTestCredentials();
+const matrixCredentials = mockMatrixCredentials();
+const matrixClientCredentials = mockMatrixClientCredentials();
+const oidcCredentials = mockOidcCredentials();
 
 describe('Credentials', () => {
   let credentials: Credentials;
@@ -41,44 +44,44 @@ describe('Credentials', () => {
     it('should restore credentials from localStorage', () => {
       localStorage.setItem(
         matrixCredentialsStorageKey,
-        JSON.stringify(matrixTestCredentials),
+        JSON.stringify(matrixCredentials),
       );
       localStorage.setItem(
         oidcCredentialsStorageKey,
-        JSON.stringify(oidcTestCredentials),
+        JSON.stringify(oidcCredentials),
       );
 
       credentials.start();
 
-      expect(credentials.getMatrixCredentials()).toEqual(matrixTestCredentials);
-      expect(credentials.getOidcCredentials()).toEqual(oidcTestCredentials);
+      expect(credentials.getMatrixCredentials()).toEqual(matrixCredentials);
+      expect(credentials.getOidcCredentials()).toEqual(oidcCredentials);
     });
   });
 
   describe('setMatrixCredentials', () => {
     it('should set the Matrix credentials', () => {
-      credentials.setMatrixCredentials(matrixTestCredentials);
-      expect(credentials.getMatrixCredentials()).toBe(matrixTestCredentials);
+      credentials.setMatrixCredentials(matrixCredentials);
+      expect(credentials.getMatrixCredentials()).toBe(matrixCredentials);
     });
 
     it('should store the Matrix credentials', () => {
-      credentials.setMatrixCredentials(matrixTestCredentials);
+      credentials.setMatrixCredentials(matrixCredentials);
       expect(localStorage.getItem(matrixCredentialsStorageKey)).toEqual(
-        JSON.stringify(matrixTestCredentials),
+        JSON.stringify(matrixCredentials),
       );
     });
   });
 
   describe('setOidcCredentials', () => {
     it('should set the OIDC credentials', () => {
-      credentials.setOidcCredentials(oidcTestCredentials);
-      expect(credentials.getOidcCredentials()).toBe(oidcTestCredentials);
+      credentials.setOidcCredentials(oidcCredentials);
+      expect(credentials.getOidcCredentials()).toBe(oidcCredentials);
     });
 
     it('should store the OIDC credentials', () => {
-      credentials.setOidcCredentials(oidcTestCredentials);
+      credentials.setOidcCredentials(oidcCredentials);
       expect(localStorage.getItem(oidcCredentialsStorageKey)).toEqual(
-        JSON.stringify(oidcTestCredentials),
+        JSON.stringify(oidcCredentials),
       );
     });
   });
@@ -92,26 +95,26 @@ describe('Credentials', () => {
     it('should raise an error if credentials have not yet been initialised', () => {
       expect(() => {
         credentials.updateAccessTokens(newAccessTokens);
-      }).toThrow('tried to update non-existing OIDC credentials');
+      }).toThrow('tried to update non-existing Matrix Client credentials');
     });
 
     it('should update the access tokens', () => {
-      credentials.setOidcCredentials(oidcTestCredentials);
+      credentials.setMatrixClientCredentials(matrixClientCredentials);
       credentials.updateAccessTokens(newAccessTokens);
 
-      expect(credentials.getOidcCredentials()).toEqual({
-        ...oidcTestCredentials,
+      expect(credentials.getMatrixClientCredentials()).toEqual({
+        ...matrixClientCredentials,
         ...newAccessTokens,
       });
     });
 
     it('should store the updated credentials', () => {
-      credentials.setOidcCredentials(oidcTestCredentials);
+      credentials.setMatrixClientCredentials(matrixClientCredentials);
       credentials.updateAccessTokens(newAccessTokens);
 
-      expect(localStorage.getItem(oidcCredentialsStorageKey)).toEqual(
+      expect(localStorage.getItem(matrixClientCredentialsStorageKey)).toEqual(
         JSON.stringify({
-          ...oidcTestCredentials,
+          ...matrixClientCredentials,
           ...newAccessTokens,
         }),
       );

@@ -19,8 +19,8 @@
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { Credentials } from '../../state';
 import {
-  createMatrixTestCredentials,
-  createOidcTestCredentials,
+  mockMatrixCredentials,
+  mockOidcCredentials,
   mockOpenIdConfiguration,
 } from '../testUtils';
 import { TokenRefresher } from './TokenRefresher';
@@ -31,8 +31,8 @@ const fetch = global.fetch as FetchMock;
 
 describe('createOidcTokenRefresher', () => {
   const openIdConfiguration = mockOpenIdConfiguration();
-  const oidcCredentials = createOidcTestCredentials();
-  const matrixCredentials = createMatrixTestCredentials();
+  const oidcCredentials = mockOidcCredentials();
+  const matrixCredentials = mockMatrixCredentials();
   const credentials = new Credentials();
   credentials.setMatrixCredentials(matrixCredentials);
   credentials.setOidcCredentials(oidcCredentials);

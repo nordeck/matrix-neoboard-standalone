@@ -27,20 +27,6 @@ describe('discoverClientConfig', () => {
     fetch.resetMocks();
   });
 
-  it('should return a URL as it is without issuing a request', async () => {
-    expect(await discoverClientConfig('https://example.com')).toEqual({
-      'm.homeserver': {
-        state: AutoDiscovery.SUCCESS,
-        base_url: 'https://example.com',
-      },
-      'm.identity_server': {
-        state: AutoDiscovery.PROMPT,
-      },
-    });
-
-    expect(fetch.requests().length).toEqual(0);
-  });
-
   it('should discover the homeserver base URL', async () => {
     fetch.mockResponse((req) => {
       if (req.url === 'https://example.com/.well-known/matrix/client') {

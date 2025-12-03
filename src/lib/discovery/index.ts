@@ -18,3 +18,4 @@
 
 export { discoverClientConfig } from './discoverClientConfig';
 export { fetchAuthMetadata } from './fetchAuthMetadata';
+export { getHomeserverUrlFromConfig } from './getHomeserverUrlFromConfig';

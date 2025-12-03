@@ -16,12 +16,21 @@
  * along with NeoBoard Standalone. If not, see <https://www.gnu.org/licenses/>.
  */
 
+export { attemptCompleteOidcLogin } from './attemptCompleteOidcLogin';
 export { completeOidcLogin } from './completeOidcLogin';
+export type { OidcLoginResponse } from './completeOidcLogin';
 export { createOidcTokenRefresher } from './createOidcTokenRefresher';
-export { maybeCompleteOidcLogin } from './maybeCompleteOidcLogin';
 export { registerOidcClient } from './registerOidcClient';
-export { startLoginFlow } from './startLoginFlow';
 export { startOidcLogin } from './startOidcLogin';
+export { startOidcLoginFlow } from './startOidcLoginFlow';
 export { TokenRefresher } from './TokenRefresher';
-export { oidcCodeAndStateSchema, oidcCredentialsSchema } from './types';
-export type { OidcCodeAndState, OidcCredentials } from './types';
+export {
+  matrixClientCredentialsSchema,
+  oidcCodeAndStateSchema,
+  oidcCredentialsSchema,
+} from './types';
+export type {
+  MatrixClientCredentials,
+  OidcCodeAndState,
+  OidcCredentials,
+} from './types';

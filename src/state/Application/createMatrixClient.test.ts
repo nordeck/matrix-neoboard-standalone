@@ -20,8 +20,8 @@ import { MatrixClient } from 'matrix-js-sdk';
 import { describe, expect, it, vi } from 'vitest';
 import { TokenRefresher } from '../../lib/oidc';
 import {
-  createMatrixTestCredentials,
-  createOidcTestCredentials,
+  mockMatrixClientCredentials,
+  mockMatrixCredentials,
 } from '../../lib/testUtils';
 import { createMatrixClient } from './createMatrixClient';
 
@@ -30,8 +30,8 @@ vi.mock('matrix-js-sdk', async () => ({
   MatrixClient: vi.fn(),
 }));
 
-const matrixTestCredentials = createMatrixTestCredentials();
-const oidcTestCredentials = createOidcTestCredentials();
+const matrixClientCredentials = mockMatrixClientCredentials();
+const matrixCredentials = mockMatrixCredentials();
 
 describe('createMatrixClient', () => {
   it('should create a MatrixClient', async () => {
@@ -44,8 +44,8 @@ describe('createMatrixClient', () => {
     vi.mocked(MatrixClient).mockReturnValue(clientStub);
 
     await createMatrixClient(
-      oidcTestCredentials,
-      matrixTestCredentials,
+      matrixClientCredentials,
+      matrixCredentials,
       tokenRefresherStub,
     );
 

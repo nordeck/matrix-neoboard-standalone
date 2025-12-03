@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Nordeck IT + Consulting GmbH
+ * Copyright 2025 Nordeck IT + Consulting GmbH
  *
  * NeoBoard Standalone is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -15,11 +15,15 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with NeoBoard Standalone. If not, see <https://www.gnu.org/licenses/>.
  */
+import { ClientConfig } from 'matrix-js-sdk';
+import { ensureNoTrailingSlash } from 'matrix-js-sdk/lib/utils';
 
-export { formatTimeAgo } from './formatTimeAgo';
-export { getEnvironmentAppearance } from './getEnvironmentAppearance';
-export { isValidServerName } from './isValidServerName';
-export { isValidUrl } from './isValidUrl';
-export { setLocale } from './locale';
-export { randomString } from './randomString';
-export { startLoginFlow } from './startLoginFlow';
+export function getHomeserverUrlFromConfig(clientConfig: ClientConfig): string {
+  const rawBaseUrl = clientConfig['m.homeserver'].base_url;
+
+  if (rawBaseUrl === undefined || rawBaseUrl === null) {
+    throw new Error('Could not get homeserver base URL');
+  }
+
+  return ensureNoTrailingSlash(rawBaseUrl);
+}

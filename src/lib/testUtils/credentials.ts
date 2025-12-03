@@ -17,16 +17,21 @@
  */
 
 import { MatrixCredentials } from '../../state';
-import { OidcCredentials } from '../oidc';
+import { MatrixClientCredentials, OidcCredentials } from '../oidc';
 
-export function createOidcTestCredentials(): OidcCredentials {
+export function mockMatrixClientCredentials(): MatrixClientCredentials {
   return {
-    issuer: 'https://example.com',
-    clientId: 'test_client_id',
     accessToken: 'test_access_token',
     refreshToken: 'test_refresh_token',
     homeserverUrl: 'https://matrix.example.com/',
     identityServerUrl: undefined,
+  };
+}
+
+export function mockOidcCredentials(): OidcCredentials {
+  return {
+    issuer: 'https://example.com',
+    clientId: 'test_client_id',
     idTokenClaims: {
       aud: 'test_aud',
       exp: 100000,
@@ -37,7 +42,7 @@ export function createOidcTestCredentials(): OidcCredentials {
   };
 }
 
-export function createMatrixTestCredentials(): MatrixCredentials {
+export function mockMatrixCredentials(): MatrixCredentials {
   return {
     userId: '@test:example.com',
     deviceId: 'test_device_id',
