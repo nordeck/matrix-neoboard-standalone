@@ -116,7 +116,7 @@ export const BoardView = () => {
                   <SnapshotLoadStateDialog />
                   <NeoboardApp
                     layoutProps={{
-                      height: `calc(100% - ${theme.offsetHeight})`,
+                      height: `calc(100vh - ${theme.offsetHeight})`,
                     }}
                   />
                 </ConnectionStateProvider>
