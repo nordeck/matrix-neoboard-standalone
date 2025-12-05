@@ -2,4 +2,4 @@
 '@nordeck/matrix-neoboard-standalone': patch
 ---
 
-Update height expression for frame presentation changes
+Update height expression to fix finite canvas view
