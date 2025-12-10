@@ -44,7 +44,7 @@ export async function startOidcLogin(
   const prompt = isRegistration ? 'create' : undefined;
 
   const authorizationUrl = await generateOidcAuthorizationUrl({
-    metadata: clientConfig.metadata,
+    metadata: clientConfig,
     redirectUri,
     clientId,
     homeserverUrl,
