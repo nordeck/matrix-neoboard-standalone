@@ -21,8 +21,8 @@ import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { Credentials } from '../../state';
 import {
   createMatrixTestCredentials,
-  createOidcTestClientConfig,
   createOidcTestCredentials,
+  mockOpenIdConfiguration,
 } from '../testUtils';
 import { TokenRefresher } from './TokenRefresher';
 
@@ -30,7 +30,7 @@ import type { FetchMock } from 'vitest-fetch-mock';
 import { createOidcTokenRefresher } from './createOidcTokenRefresher';
 const fetch = global.fetch as FetchMock;
 
-const oidcClientConfig = createOidcTestClientConfig();
+const openIdConfiguration = mockOpenIdConfiguration();
 
 describe('TokenRefresher', () => {
   let credentials: Credentials;
@@ -48,9 +48,9 @@ describe('TokenRefresher', () => {
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify(oidcClientConfig.metadata),
+          body: JSON.stringify(openIdConfiguration),
         };
-      } else if (req.url === oidcClientConfig.metadata.jwks_uri!) {
+      } else if (req.url === openIdConfiguration.jwks_uri) {
         return {
           status: 200,
           headers: {

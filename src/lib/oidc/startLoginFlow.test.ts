@@ -16,24 +16,13 @@
  * along with NeoBoard Standalone. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {
-  AutoDiscovery,
-  discoverAndValidateOIDCIssuerWellKnown,
-} from 'matrix-js-sdk';
+import { AutoDiscovery } from 'matrix-js-sdk';
 import { ensureNoTrailingSlash } from 'matrix-js-sdk/lib/utils';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { discoverClientConfig, fetchAuthIssuer } from '../discovery';
-import { createOidcTestClientConfig } from '../testUtils';
+import { discoverClientConfig, fetchAuthMetadata } from '../discovery';
+import { mockOidcClientConfig } from '../testUtils';
 import { registerOidcClient, startOidcLogin } from './';
 import { startLoginFlow } from './startLoginFlow';
-
-vi.mock('matrix-js-sdk', async (importOriginal) => {
-  const actual = await importOriginal<typeof import('matrix-js-sdk')>();
-  return {
-    ...actual,
-    discoverAndValidateOIDCIssuerWellKnown: vi.fn(),
-  };
-});
 
 vi.mock('matrix-js-sdk/lib/utils', () => ({
   ensureNoTrailingSlash: vi.fn(),
@@ -41,7 +30,7 @@ vi.mock('matrix-js-sdk/lib/utils', () => ({
 
 vi.mock('../discovery', () => ({
   discoverClientConfig: vi.fn(),
-  fetchAuthIssuer: vi.fn(),
+  fetchAuthMetadata: vi.fn(),
 }));
 
 vi.mock('./', () => ({
@@ -50,20 +39,16 @@ vi.mock('./', () => ({
 }));
 
 const mockDiscoverClientConfig = vi.mocked(discoverClientConfig);
-const mockFetchAuthIssuer = vi.mocked(fetchAuthIssuer);
-const mockDiscoverAndValidateOIDCIssuerWellKnown = vi.mocked(
-  discoverAndValidateOIDCIssuerWellKnown,
-);
+const mockFetchAuthMetadata = vi.mocked(fetchAuthMetadata);
 const mockEnsureNoTrailingSlash = vi.mocked(ensureNoTrailingSlash);
 const mockRegisterOidcClient = vi.mocked(registerOidcClient);
 const mockStartOidcLogin = vi.mocked(startOidcLogin);
 
-const oidcClientConfig = createOidcTestClientConfig();
+const oidcClientConfig = mockOidcClientConfig();
 
 describe('startLoginFlow', () => {
   const homeserverName = 'matrix.example.com';
   const baseUrl = 'https://matrix.example.com';
-  const issuer = 'https://auth.example.com';
   const clientId = 'test_client_id';
 
   beforeEach(() => {
@@ -77,10 +62,7 @@ describe('startLoginFlow', () => {
       },
     });
     mockEnsureNoTrailingSlash.mockReturnValue(baseUrl);
-    mockFetchAuthIssuer.mockResolvedValue({ issuer });
-    mockDiscoverAndValidateOIDCIssuerWellKnown.mockResolvedValue(
-      oidcClientConfig,
-    );
+    mockFetchAuthMetadata.mockResolvedValue(oidcClientConfig);
     mockRegisterOidcClient.mockResolvedValue(clientId);
     mockStartOidcLogin.mockResolvedValue();
   });
@@ -96,10 +78,7 @@ describe('startLoginFlow', () => {
     expect(mockEnsureNoTrailingSlash).toHaveBeenCalledWith(
       'https://matrix.example.com/',
     );
-    expect(mockFetchAuthIssuer).toHaveBeenCalledWith(baseUrl);
-    expect(mockDiscoverAndValidateOIDCIssuerWellKnown).toHaveBeenCalledWith(
-      issuer,
-    );
+    expect(mockFetchAuthMetadata).toHaveBeenCalledWith(baseUrl);
     expect(mockRegisterOidcClient).toHaveBeenCalledWith(oidcClientConfig);
     expect(mockStartOidcLogin).toHaveBeenCalledWith(
       oidcClientConfig,
@@ -145,39 +124,19 @@ describe('startLoginFlow', () => {
     expect(mockEnsureNoTrailingSlash).not.toHaveBeenCalled();
   });
 
-  it('should handle auth issuer fetch failure', async () => {
-    const error = new Error('Auth issuer fetch failed');
-    mockFetchAuthIssuer.mockRejectedValue(error);
+  it('should handle auth metadata fetch failure', async () => {
+    const error = new Error('Auth metadata fetch failed');
+    mockFetchAuthMetadata.mockRejectedValue(error);
 
     await expect(startLoginFlow(homeserverName)).rejects.toThrow(
-      'Auth issuer fetch failed',
+      'Auth metadata fetch failed',
     );
 
     expect(mockDiscoverClientConfig).toHaveBeenCalledWith(homeserverName);
     expect(mockEnsureNoTrailingSlash).toHaveBeenCalledWith(
       'https://matrix.example.com/',
     );
-    expect(mockFetchAuthIssuer).toHaveBeenCalledWith(baseUrl);
-    expect(mockDiscoverAndValidateOIDCIssuerWellKnown).not.toHaveBeenCalled();
-  });
-
-  it('should handle OIDC configuration discovery failure', async () => {
-    const error = new Error('OIDC configuration discovery failed');
-    mockDiscoverAndValidateOIDCIssuerWellKnown.mockRejectedValue(error);
-
-    await expect(startLoginFlow(homeserverName)).rejects.toThrow(
-      'OIDC configuration discovery failed',
-    );
-
-    expect(mockDiscoverClientConfig).toHaveBeenCalledWith(homeserverName);
-    expect(mockEnsureNoTrailingSlash).toHaveBeenCalledWith(
-      'https://matrix.example.com/',
-    );
-    expect(mockFetchAuthIssuer).toHaveBeenCalledWith(baseUrl);
-    expect(mockDiscoverAndValidateOIDCIssuerWellKnown).toHaveBeenCalledWith(
-      issuer,
-    );
-    expect(mockRegisterOidcClient).not.toHaveBeenCalled();
+    expect(mockFetchAuthMetadata).toHaveBeenCalledWith(baseUrl);
   });
 
   it('should handle OIDC client registration failure', async () => {
@@ -192,10 +151,7 @@ describe('startLoginFlow', () => {
     expect(mockEnsureNoTrailingSlash).toHaveBeenCalledWith(
       'https://matrix.example.com/',
     );
-    expect(mockFetchAuthIssuer).toHaveBeenCalledWith(baseUrl);
-    expect(mockDiscoverAndValidateOIDCIssuerWellKnown).toHaveBeenCalledWith(
-      issuer,
-    );
+    expect(mockFetchAuthMetadata).toHaveBeenCalledWith(baseUrl);
     expect(mockRegisterOidcClient).toHaveBeenCalledWith(oidcClientConfig);
     expect(mockStartOidcLogin).not.toHaveBeenCalled();
   });

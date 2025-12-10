@@ -26,12 +26,9 @@ sequenceDiagram
   Login ->> Login: discoverClientConfig()
   Login ->> Webserver: /.well-known/matrix/client
   Webserver -->> Login: baseUrl
-  Login ->> Login: fetchAuthIssuer(baseUrl)
-  Login ->> Homeserver: /_matrix/client/unstable/org.matrix.msc2965/auth_issuer
-  Homeserver -->> Login: issuer
-  Login ->> Login: discoverAndValidateOIDCIssuerWellKnown(issuer)
-  Login ->> Webserver: /.well-known/openid-configuration
-  Webserver -->> Login: oidcClientConfig
+  Login ->> Login: fetchAuthMetadata(baseUrl)
+  Login ->> Homeserver: /_matrix/client/unstable/org.matrix.msc2965/auth_metadata
+  Homeserver -->> Login: Auth metadata
   Login ->> Login: registerOidcClient(oidcClientConfig)
   Login ->> MAS: redirect
   MAS ->> User: prompt for credentials

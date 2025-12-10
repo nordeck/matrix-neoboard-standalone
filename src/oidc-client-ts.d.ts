@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Nordeck IT + Consulting GmbH
+ * Copyright 2025 Nordeck IT + Consulting GmbH
  *
  * NeoBoard Standalone is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -15,6 +15,11 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with NeoBoard Standalone. If not, see <https://www.gnu.org/licenses/>.
  */
+import 'oidc-client-ts';
 
-export { discoverClientConfig } from './discoverClientConfig';
-export { fetchAuthMetadata } from './fetchAuthMetadata';
+declare module 'oidc-client-ts' {
+  interface OidcMetadata {
+    // Add the missing device_authorization_endpoint field to the OidcMetadata interface
+    device_authorization_endpoint?: string;
+  }
+}

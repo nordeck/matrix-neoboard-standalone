@@ -16,9 +16,8 @@
  * along with NeoBoard Standalone. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { discoverAndValidateOIDCIssuerWellKnown } from 'matrix-js-sdk';
 import { ensureNoTrailingSlash } from 'matrix-js-sdk/lib/utils';
-import { discoverClientConfig, fetchAuthIssuer } from '../discovery';
+import { discoverClientConfig, fetchAuthMetadata } from '../discovery';
 import { registerOidcClient, startOidcLogin } from './';
 
 /**
@@ -38,11 +37,8 @@ export async function startLoginFlow(homeserverName: string): Promise<void> {
 
   const baseUrl = ensureNoTrailingSlash(rawBaseUrl);
 
-  // Fetch the auth issuer, to find out where the actual authentication is performed
-  const { issuer } = await fetchAuthIssuer(baseUrl);
-
-  // Fetch the OIDC configuration from the auth issuer
-  const oidcClientConfig = await discoverAndValidateOIDCIssuerWellKnown(issuer);
+  // Fetch the OIDC configuration
+  const oidcClientConfig = await fetchAuthMetadata(baseUrl);
 
   // Register an OIDC client and start the authentication
   const clientId = await registerOidcClient(oidcClientConfig);

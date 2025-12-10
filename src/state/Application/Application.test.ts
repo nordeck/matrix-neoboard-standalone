@@ -34,8 +34,8 @@ import {
 } from 'vitest';
 import {
   createMatrixTestCredentials,
-  createOidcTestClientConfig,
   createOidcTestCredentials,
+  mockOidcClientConfig,
 } from '../../lib/testUtils';
 import {
   matrixCredentialsStorageKey,
@@ -54,7 +54,7 @@ vi.mock('matrix-js-sdk', async () => ({
   completeAuthorizationCodeGrant: vi.fn(),
 }));
 
-const oidcClientConfig = createOidcTestClientConfig();
+const oidcClientConfig = mockOidcClientConfig();
 const oidcTestCredentials = createOidcTestCredentials();
 const matrixTestCredentials = createMatrixTestCredentials();
 
@@ -74,9 +74,9 @@ describe('Application', () => {
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify(oidcClientConfig.metadata),
+          body: JSON.stringify(oidcClientConfig),
         };
-      } else if (req.url === oidcClientConfig.metadata.jwks_uri!) {
+      } else if (req.url === oidcClientConfig.jwks_uri!) {
         return {
           status: 200,
           headers: {
