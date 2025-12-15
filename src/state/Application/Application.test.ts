@@ -47,6 +47,7 @@ import { Application } from './Application';
 
 import { getEnvironment } from '@matrix-widget-toolkit/mui';
 import type { FetchMock } from 'vitest-fetch-mock';
+import { startLoginFlow } from '../../lib';
 import { legacySsoHomeserverUrlStorageKey } from '../../lib/legacy';
 const fetch = global.fetch as FetchMock;
 
@@ -61,6 +62,11 @@ vi.mock('matrix-js-sdk', async () => ({
 vi.mock('@matrix-widget-toolkit/mui', async () => ({
   ...(await vi.importActual('@matrix-widget-toolkit/mui')),
   getEnvironment: vi.fn(),
+}));
+
+vi.mock('../../lib', async () => ({
+  ...(await vi.importActual('../../lib')),
+  startLoginFlow: vi.fn(),
 }));
 
 const oidcClientConfig = mockOidcClientConfig();
@@ -130,6 +136,23 @@ describe('Application', () => {
 
     const state = application.getStateSubject().getValue();
     expect(state.lifecycleState).toBe('notLoggedIn');
+  });
+
+  it('should start login flow when homeserver and skip login environment variables are set', async () => {
+    vi.mocked(getEnvironment).mockImplementation((name, defaultValue) => {
+      switch (name) {
+        case 'REACT_APP_HOMESERVER':
+          return 'https://matrix.example.com';
+        case 'REACT_APP_SKIP_LOGIN':
+          return 'true';
+        default:
+          return defaultValue;
+      }
+    });
+
+    await application.start();
+
+    expect(startLoginFlow).toHaveBeenCalledWith('https://matrix.example.com');
   });
 
   it('should resume sessions from localStorage for OIDC', async () => {
