@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Nordeck IT + Consulting GmbH
+ * Copyright 2025 Nordeck IT + Consulting GmbH
  *
  * NeoBoard Standalone is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -15,7 +15,21 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with NeoBoard Standalone. If not, see <https://www.gnu.org/licenses/>.
  */
+import { describe, expect, it } from 'vitest';
+import { isValidUrl } from './isValidUrl';
 
-export { discoverClientConfig } from './discoverClientConfig';
-export { fetchAuthMetadata } from './fetchAuthMetadata';
-export { getHomeserverUrlFromConfig } from './getHomeserverUrlFromConfig';
+describe('isValidUrl', () => {
+  it.each(['http://example.com', 'https://example.com'])(
+    'should return true for valid URL: %s',
+    (value) => {
+      expect(isValidUrl(value)).toBe(true);
+    },
+  );
+
+  it.each(['example.com', 'www.example.com', 'other'])(
+    'should return false for invalid URL: %s',
+    (value) => {
+      expect(isValidUrl(value)).toBe(false);
+    },
+  );
+});

@@ -19,10 +19,7 @@
 import Joi from 'joi';
 import { IdTokenClaims } from 'oidc-client-ts';
 
-/**
- * Borrowed from {@link https://github.com/matrix-org/matrix-react-sdk/blob/79c50db00993a97a0b6b8c3df02b8eec4e6cb21a/src/utils/oidc/authorize.ts#L80}
- */
-export type OidcCredentials = {
+export type MatrixClientCredentials = {
   // url of the homeserver selected during login
   homeserverUrl: string;
   // identity server url as discovered during login
@@ -31,6 +28,20 @@ export type OidcCredentials = {
   accessToken: string;
   // refreshToken gained from OIDC token issuer, when falsy token cannot be refreshed
   refreshToken?: string;
+};
+
+export const matrixClientCredentialsSchema =
+  Joi.object<MatrixClientCredentials>({
+    homeserverUrl: Joi.string().uri().required(),
+    identityServerUrl: Joi.string().uri(),
+    accessToken: Joi.string(),
+    refreshToken: Joi.string(),
+  });
+
+/**
+ * Borrowed from {@link https://github.com/matrix-org/matrix-react-sdk/blob/79c50db00993a97a0b6b8c3df02b8eec4e6cb21a/src/utils/oidc/authorize.ts#L80}
+ */
+export type OidcCredentials = {
   // this client's id as registered with the OIDC issuer
   clientId: string;
   // issuer used during authentication
@@ -40,10 +51,6 @@ export type OidcCredentials = {
 };
 
 export const oidcCredentialsSchema = Joi.object<OidcCredentials>({
-  homeserverUrl: Joi.string().uri().required(),
-  identityServerUrl: Joi.string().uri(),
-  accessToken: Joi.string(),
-  refreshToken: Joi.string(),
   clientId: Joi.string().required(),
   issuer: Joi.string().uri().required(),
   idTokenClaims: Joi.object({

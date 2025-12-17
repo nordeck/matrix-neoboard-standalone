@@ -33,17 +33,22 @@ import {
   vi,
 } from 'vitest';
 import {
-  createMatrixTestCredentials,
-  createOidcTestClientConfig,
-  createOidcTestCredentials,
+  mockMatrixClientCredentials,
+  mockMatrixCredentials,
+  mockOidcClientConfig,
+  mockOidcCredentials,
 } from '../../lib/testUtils';
 import {
+  matrixClientCredentialsStorageKey,
   matrixCredentialsStorageKey,
   oidcCredentialsStorageKey,
 } from '../Credentials';
 import { Application } from './Application';
 
+import { getEnvironment } from '@matrix-widget-toolkit/mui';
 import type { FetchMock } from 'vitest-fetch-mock';
+import { startLoginFlow } from '../../lib';
+import { legacySsoHomeserverUrlStorageKey } from '../../lib/legacy';
 const fetch = global.fetch as FetchMock;
 
 vi.mock('matrix-js-sdk', async () => ({
@@ -54,9 +59,20 @@ vi.mock('matrix-js-sdk', async () => ({
   completeAuthorizationCodeGrant: vi.fn(),
 }));
 
-const oidcClientConfig = createOidcTestClientConfig();
-const oidcTestCredentials = createOidcTestCredentials();
-const matrixTestCredentials = createMatrixTestCredentials();
+vi.mock('@matrix-widget-toolkit/mui', async () => ({
+  ...(await vi.importActual('@matrix-widget-toolkit/mui')),
+  getEnvironment: vi.fn(),
+}));
+
+vi.mock('../../lib', async () => ({
+  ...(await vi.importActual('../../lib')),
+  startLoginFlow: vi.fn(),
+}));
+
+const oidcClientConfig = mockOidcClientConfig();
+const matrixClientCredentials = mockMatrixClientCredentials();
+const oidcCredentials = mockOidcCredentials();
+const matrixCredentials = mockMatrixCredentials();
 
 describe('Application', () => {
   let application: Application;
@@ -74,9 +90,9 @@ describe('Application', () => {
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify(oidcClientConfig.metadata),
+          body: JSON.stringify(oidcClientConfig),
         };
-      } else if (req.url === oidcClientConfig.metadata.jwks_uri!) {
+      } else if (req.url === oidcClientConfig.jwks_uri!) {
         return {
           status: 200,
           headers: {
@@ -99,6 +115,11 @@ describe('Application', () => {
       once: vi.fn(),
     } as unknown as MatrixClient;
     vi.mocked(MatrixClient).mockReturnValue(clientMock);
+    vi.mocked(MatrixClient).mockClear();
+
+    vi.mocked(getEnvironment).mockImplementation(
+      (_, defaultValue) => defaultValue,
+    );
 
     application = new Application();
   });
@@ -117,15 +138,36 @@ describe('Application', () => {
     expect(state.lifecycleState).toBe('notLoggedIn');
   });
 
-  it('should resume sessions from localStorage', async () => {
+  it('should start login flow when homeserver and skip login environment variables are set', async () => {
+    vi.mocked(getEnvironment).mockImplementation((name, defaultValue) => {
+      switch (name) {
+        case 'REACT_APP_HOMESERVER':
+          return 'https://matrix.example.com';
+        case 'REACT_APP_SKIP_LOGIN':
+          return 'true';
+        default:
+          return defaultValue;
+      }
+    });
+
+    await application.start();
+
+    expect(startLoginFlow).toHaveBeenCalledWith('https://matrix.example.com');
+  });
+
+  it('should resume sessions from localStorage for OIDC', async () => {
     // Set up credentials in localStorage, so that it is tried to resume a session from there
     localStorage.setItem(
+      matrixClientCredentialsStorageKey,
+      JSON.stringify(matrixClientCredentials),
+    );
+    localStorage.setItem(
       oidcCredentialsStorageKey,
-      JSON.stringify(oidcTestCredentials),
+      JSON.stringify(oidcCredentials),
     );
     localStorage.setItem(
       matrixCredentialsStorageKey,
-      JSON.stringify(matrixTestCredentials),
+      JSON.stringify(matrixCredentials),
     );
 
     // Mock sync prepared
@@ -162,18 +204,66 @@ describe('Application', () => {
     expect(clientMock.startClient).toHaveBeenCalled();
   });
 
+  it('should resume sessions from localStorage for legacy SSO', async () => {
+    // Set up credentials in localStorage, so that it is tried to resume a session from there
+    localStorage.setItem(
+      matrixClientCredentialsStorageKey,
+      JSON.stringify(matrixClientCredentials),
+    );
+    localStorage.setItem(
+      matrixCredentialsStorageKey,
+      JSON.stringify(matrixCredentials),
+    );
+
+    // Mock sync prepared
+    vi.mocked(clientMock).once.mockImplementationOnce((event, listener) => {
+      if (event === ClientEvent.Sync) {
+        (listener as ClientEventHandlerMap[ClientEvent.Sync])(
+          SyncState.Prepared,
+          null,
+        );
+      }
+      return clientMock;
+    });
+
+    await application.start();
+
+    const state = application.getStateSubject().getValue();
+    expect(state.lifecycleState).toBe('loggedIn');
+
+    // Make TypeScript happy
+    if (state.lifecycleState !== 'loggedIn') return;
+
+    // Ensure that the MatrixClient has been created with the stored credentials
+    expect(vi.mocked(MatrixClient)).toHaveBeenCalledWith(
+      expect.objectContaining({
+        accessToken: 'test_access_token',
+        baseUrl: 'https://matrix.example.com/',
+        deviceId: 'test_device_id',
+        fetchFn: expect.any(Function),
+        refreshToken: 'test_refresh_token',
+        userId: '@test:example.com',
+      }),
+    );
+    expect(clientMock.startClient).toHaveBeenCalled();
+  });
+
   it('should log and not explode when resuming a session errors', async () => {
     // Mute console.warn for this test
     vi.mocked(console.warn).mockImplementation(() => {});
 
     // Set up credentials in localStorage, so that it is tried to resume a session from there
     localStorage.setItem(
+      matrixClientCredentialsStorageKey,
+      JSON.stringify(matrixClientCredentials),
+    );
+    localStorage.setItem(
       oidcCredentialsStorageKey,
-      JSON.stringify(oidcTestCredentials),
+      JSON.stringify(oidcCredentials),
     );
     localStorage.setItem(
       matrixCredentialsStorageKey,
-      JSON.stringify(matrixTestCredentials),
+      JSON.stringify(matrixCredentials),
     );
     const matrixClientError = new Error('test_error');
     vi.mocked(clientMock.startClient).mockRejectedValue(matrixClientError);
@@ -196,15 +286,15 @@ describe('Application', () => {
 
     // Mock OIDC related function to prevent mocking a lot of OIDC stuff
     vi.mocked(completeAuthorizationCodeGrant).mockResolvedValue({
-      homeserverUrl: oidcTestCredentials.homeserverUrl,
-      idTokenClaims: oidcTestCredentials.idTokenClaims,
+      homeserverUrl: matrixClientCredentials.homeserverUrl,
+      idTokenClaims: oidcCredentials.idTokenClaims,
       oidcClientSettings: {
-        issuer: oidcTestCredentials.issuer,
-        clientId: oidcTestCredentials.clientId,
+        issuer: oidcCredentials.issuer,
+        clientId: oidcCredentials.clientId,
       },
       tokenResponse: {
-        access_token: oidcTestCredentials.accessToken,
-        refresh_token: oidcTestCredentials.refreshToken,
+        access_token: matrixClientCredentials.accessToken,
+        refresh_token: matrixClientCredentials.refreshToken,
         token_type: 'Bearer',
         scope: 'oidc',
         id_token: 'oidc_test_id_token',
@@ -269,5 +359,66 @@ describe('Application', () => {
       'Error completing OIDC login',
       new TypeError("Cannot read properties of undefined (reading 'user_id')"),
     );
+  });
+
+  it('should complete a legacy SSO login', async () => {
+    // Set credentials to local storage
+    localStorage.setItem(
+      matrixClientCredentialsStorageKey,
+      JSON.stringify(matrixClientCredentials),
+    );
+    localStorage.setItem(
+      matrixCredentialsStorageKey,
+      JSON.stringify(matrixCredentials),
+    );
+
+    // Set homeserver url to local storage
+    localStorage.setItem(
+      legacySsoHomeserverUrlStorageKey,
+      'https://matrix.example.com',
+    );
+
+    // Set the login token after SSO login
+    window.location.href =
+      'https://example.com/?loginToken=syl_QAumUnCcrABBHhTciIwf_3TWbEs';
+
+    // Mock sync prepared
+    vi.mocked(clientMock).once.mockImplementationOnce((event, listener) => {
+      if (event === ClientEvent.Sync) {
+        (listener as ClientEventHandlerMap[ClientEvent.Sync])(
+          SyncState.Prepared,
+          null,
+        );
+      }
+      return clientMock;
+    });
+
+    await application.start();
+
+    const state = application.getStateSubject().getValue();
+    expect(state.lifecycleState).toBe('loggedIn');
+  });
+
+  it('should not explode when completing legacy SSO login with missing login token', async () => {
+    // Don't provide a login token
+    window.location.href = 'https://example.com/';
+
+    await application.start();
+
+    const state = application.getStateSubject().getValue();
+    expect(state.lifecycleState).toBe('notLoggedIn');
+  });
+
+  it('should change state to "loggedOut" on destroy', async () => {
+    application.destroy();
+
+    const state = application.getStateSubject().getValue();
+    expect(state.lifecycleState).toBe('loggedOut');
+  });
+
+  it('should redirect on destroy when logout URL is provided', async () => {
+    application.destroy('https://id.example.com/logout');
+
+    expect(window.location.href).toBe('https://id.example.com/logout');
   });
 });

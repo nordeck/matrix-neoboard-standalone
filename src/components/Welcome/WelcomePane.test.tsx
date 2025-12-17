@@ -17,10 +17,11 @@
  */
 
 import { getEnvironment } from '@matrix-widget-toolkit/mui';
-import { render, screen } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
+import { MatrixClient } from 'matrix-js-sdk';
 import { MemoryRouter } from 'react-router';
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { startLoginFlow } from '../../lib/oidc';
+import { startOidcLoginFlow } from '../../lib/oidc';
 import { WelcomePane } from './WelcomePane';
 
 vi.mock('@matrix-widget-toolkit/mui', async () => ({
@@ -28,8 +29,13 @@ vi.mock('@matrix-widget-toolkit/mui', async () => ({
   getEnvironment: vi.fn(),
 }));
 
+vi.mock('matrix-js-sdk', async () => ({
+  ...(await vi.importActual('matrix-js-sdk')),
+  MatrixClient: vi.fn(),
+}));
+
 vi.mock('../../lib/oidc', () => ({
-  startLoginFlow: vi.fn(),
+  startOidcLoginFlow: vi.fn(),
 }));
 
 vi.mock('../Login/Login', () => ({
@@ -41,7 +47,7 @@ vi.mock('./WelcomeLogo', () => ({
 }));
 
 const mockGetEnvironment = vi.mocked(getEnvironment);
-const mockStartLoginFlow = vi.mocked(startLoginFlow);
+const mockStartOidcLoginFlow = vi.mocked(startOidcLoginFlow);
 
 // Test wrapper to provide router context
 const TestWrapper = ({
@@ -69,11 +75,18 @@ describe('<WelcomePane />', () => {
 
     expect(screen.getByTestId('welcome-logo')).toBeInTheDocument();
     expect(screen.getByTestId('login-component')).toBeInTheDocument();
-    expect(mockStartLoginFlow).not.toHaveBeenCalled();
+    expect(mockStartOidcLoginFlow).not.toHaveBeenCalled();
   });
 
   it('should render the welcome pane when static server is configured but skipLogin is not present', () => {
-    mockGetEnvironment.mockReturnValue('matrix.example.com');
+    mockGetEnvironment.mockImplementation((name, defaultValue) => {
+      switch (name) {
+        case 'REACT_APP_HOMESERVER':
+          return 'matrix.example.com';
+        default:
+          return defaultValue;
+      }
+    });
 
     render(
       <TestWrapper initialEntries={['/login']}>
@@ -83,12 +96,34 @@ describe('<WelcomePane />', () => {
 
     expect(screen.getByTestId('welcome-logo')).toBeInTheDocument();
     expect(screen.getByTestId('login-component')).toBeInTheDocument();
-    expect(mockStartLoginFlow).not.toHaveBeenCalled();
+    expect(mockStartOidcLoginFlow).not.toHaveBeenCalled();
   });
 
-  it('should skip the welcome pane and start login flow when static server is configured and skipLogin is present', () => {
-    mockGetEnvironment.mockReturnValue('matrix.example.com');
-    mockStartLoginFlow.mockResolvedValue();
+  it('should skip the welcome pane and start login flow when static server is configured and skipLogin is present', async () => {
+    const matrixClient = {
+      loginFlows: vi.fn(),
+    } as unknown as MatrixClient;
+
+    vi.mocked(MatrixClient).mockReturnValue(matrixClient);
+
+    vi.mocked(matrixClient.loginFlows).mockResolvedValue({
+      flows: [
+        {
+          type: 'm.login.sso',
+          'org.matrix.msc3824.delegated_oidc_compatibility': true,
+        },
+      ],
+    });
+
+    mockGetEnvironment.mockImplementation((name, defaultValue) => {
+      switch (name) {
+        case 'REACT_APP_HOMESERVER':
+          return 'https://matrix.example.com';
+        default:
+          return defaultValue;
+      }
+    });
+    mockStartOidcLoginFlow.mockResolvedValue();
 
     render(
       <TestWrapper initialEntries={['/login?skipLogin']}>
@@ -98,6 +133,10 @@ describe('<WelcomePane />', () => {
 
     expect(screen.queryByTestId('welcome-logo')).not.toBeInTheDocument();
     expect(screen.queryByTestId('login-component')).not.toBeInTheDocument();
-    expect(mockStartLoginFlow).toHaveBeenCalledWith('matrix.example.com');
+    await waitFor(() =>
+      expect(mockStartOidcLoginFlow).toHaveBeenCalledWith(
+        'https://matrix.example.com',
+      ),
+    );
   });
 });

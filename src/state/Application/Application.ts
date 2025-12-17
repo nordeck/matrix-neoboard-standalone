@@ -17,6 +17,7 @@
  */
 
 import { WidgetApi } from '@matrix-widget-toolkit/api';
+import { getEnvironment } from '@matrix-widget-toolkit/mui';
 import {
   ClientEvent,
   MatrixClient,
@@ -25,12 +26,14 @@ import {
 } from 'matrix-js-sdk';
 import { BehaviorSubject } from 'rxjs';
 import { Credentials, LoggedInState, ObservableBehaviorSubject } from '..';
+import { isValidServerName, startLoginFlow } from '../../lib';
+import { attemptCompleteLegacySsoLogin } from '../../lib/legacy';
 import { fetchWhoami } from '../../lib/matrix';
 import {
-  OidcCredentials,
-  TokenRefresher,
+  attemptCompleteOidcLogin,
   createOidcTokenRefresher,
-  maybeCompleteOidcLogin,
+  OidcLoginResponse,
+  TokenRefresher,
 } from '../../lib/oidc';
 import {
   MatrixStandaloneClient,
@@ -39,6 +42,7 @@ import {
   StandaloneClient,
 } from '../../toolkit/standalone';
 import {
+  matrixClientCredentialsStorageKey,
   matrixCredentialsStorageKey,
   oidcCredentialsStorageKey,
 } from '../Credentials';
@@ -102,36 +106,61 @@ export class Application {
     this.credentials.start();
 
     try {
-      if (await this.maybeStartFromStoredSession()) {
+      if (await this.attemptStartFromStoredSession()) {
         return;
       }
     } catch (error) {
       console.warn('Error starting from stored session', error);
     }
 
-    try {
-      if (await this.maybeCompleteOidcLogin()) {
-        return;
+    const loginToken = new URL(window.location.href).searchParams.get(
+      'loginToken',
+    );
+
+    if (!loginToken) {
+      try {
+        if (await this.attemptCompleteOidcLogin()) {
+          return;
+        }
+      } catch (error) {
+        console.warn('Error completing OIDC login', error);
       }
-    } catch (error) {
-      console.warn('Error completing OIDC login', error);
+    } else {
+      try {
+        if (await this.attemptCompleteLegacySsoLogin()) {
+          return;
+        }
+      } catch (error) {
+        console.warn('Error completing Legacy SSO login', error);
+      }
     }
 
-    this.state.next({ lifecycleState: 'notLoggedIn' });
+    const staticServerName = getEnvironment('REACT_APP_HOMESERVER');
+    const hasValidServerName = isValidServerName(staticServerName);
+    const skipLogin = getEnvironment('REACT_APP_SKIP_LOGIN') === 'true';
+    if (hasValidServerName && skipLogin) {
+      await startLoginFlow(staticServerName);
+    } else {
+      this.state.next({ lifecycleState: 'notLoggedIn' });
+    }
   }
 
   public getStateSubject(): ObservableBehaviorSubject<ApplicationState> {
     return this.state;
   }
 
-  public destroy(): void {
+  public destroy(logoutRedirectUrl?: string): void {
     const state = this.state.getValue();
 
     if (state.lifecycleState === 'loggedIn') {
       state.matrixClient.stopClient();
     }
 
-    this.state.next({ lifecycleState: 'loggedOut' });
+    if (!logoutRedirectUrl) {
+      this.state.next({ lifecycleState: 'loggedOut' });
+    } else {
+      window.location.href = logoutRedirectUrl;
+    }
     this.state.complete();
   }
 
@@ -142,25 +171,26 @@ export class Application {
    *
    * @returns Promise that resolves to true if a session could be restored, else false.
    */
-  private async maybeStartFromStoredSession(): Promise<boolean> {
+  private async attemptStartFromStoredSession(): Promise<boolean> {
+    const matrixClientCredentials =
+      this.credentials.getMatrixClientCredentials();
     const oidcCredentials = this.credentials.getOidcCredentials();
     const matrixCredentials = this.credentials.getMatrixCredentials();
 
-    if (oidcCredentials === null || matrixCredentials === null) {
+    if (matrixClientCredentials === null || matrixCredentials === null) {
       return false;
     }
 
-    this.tokenRefresher = await createOidcTokenRefresher(
-      this.credentials,
-      oidcCredentials,
-      matrixCredentials.deviceId,
-    );
+    if (oidcCredentials) {
+      this.tokenRefresher = await createOidcTokenRefresher(
+        this.credentials,
+        oidcCredentials,
+        matrixCredentials.deviceId,
+      );
+    }
 
     const matrixClient = await createMatrixClient(
-      {
-        ...oidcCredentials,
-        accessToken: oidcCredentials.accessToken,
-      },
+      matrixClientCredentials,
       matrixCredentials,
       this.tokenRefresher ?? undefined,
     );
@@ -181,6 +211,7 @@ export class Application {
       if (matrixError.name === 'M_UNKNOWN_TOKEN') {
         // An invalid token is nothing that can be recover from.
         // Clear the persisted credentials.
+        localStorage.removeItem(matrixClientCredentialsStorageKey);
         localStorage.removeItem(oidcCredentialsStorageKey);
         localStorage.removeItem(matrixCredentialsStorageKey);
 
@@ -197,6 +228,11 @@ export class Application {
       }
     });
 
+    //TODO: MA check if logged out
+    //TODO: MA cleanup
+    // matrixClient.on(HttpApiEvent.SessionLoggedOut, (error) => {
+    // });
+
     await matrixClient.startClient();
 
     // wait for sync with the server
@@ -212,7 +248,7 @@ export class Application {
       state: {
         userId: matrixCredentials.userId,
         deviceId: matrixCredentials.deviceId,
-        homeserverUrl: oidcCredentials.homeserverUrl,
+        homeserverUrl: matrixClientCredentials.homeserverUrl,
         standaloneClient,
         resolveWidgetApi: this.resolveWidgetApi,
         widgetApiPromise: this.widgetApiPromise,
@@ -226,41 +262,69 @@ export class Application {
    * If there is an OIDC login to be completed,
    * find out who we are, store the credentials and start a new session.
    *
-   * @see {@link maybeCompleteOidcLogin}
+   * @see {@link attemptCompleteOidcLogin}
    * @returns Promise that resolves to true if an OIDC login was completed, else false.
    */
-  private async maybeCompleteOidcLogin(): Promise<boolean> {
-    let oidcCredentials: OidcCredentials | null = null;
+  private async attemptCompleteOidcLogin(): Promise<boolean> {
+    let oidcLoginResponse: OidcLoginResponse | null = null;
 
     try {
-      oidcCredentials = await maybeCompleteOidcLogin();
+      oidcLoginResponse = await attemptCompleteOidcLogin();
     } catch (error) {
       console.warn('Completing OIDC login failed', error);
       return false;
     }
 
-    if (oidcCredentials === null) {
+    if (oidcLoginResponse === null) {
       return false;
     }
+
+    const { matrixClientCredentials, oidcCredentials } = oidcLoginResponse;
 
     let whoamiData: Awaited<ReturnType<MatrixClient['whoami']>> | null = null;
 
     try {
       whoamiData = await fetchWhoami(
-        oidcCredentials.homeserverUrl,
-        oidcCredentials.accessToken,
+        matrixClientCredentials.homeserverUrl,
+        matrixClientCredentials.accessToken,
       );
     } catch (error) {
       console.warn('Whoami failed', error);
       return false;
     }
 
+    this.credentials.setMatrixClientCredentials(matrixClientCredentials);
     this.credentials.setOidcCredentials(oidcCredentials);
     this.credentials.setMatrixCredentials({
-      userId: whoamiData!.user_id,
-      deviceId: whoamiData!.device_id!,
+      userId: whoamiData.user_id,
+      deviceId: whoamiData.device_id!,
     });
 
-    return this.maybeStartFromStoredSession();
+    return this.attemptStartFromStoredSession();
+  }
+
+  private async attemptCompleteLegacySsoLogin(): Promise<boolean> {
+    const response = await attemptCompleteLegacySsoLogin();
+
+    if (!response) {
+      return false;
+    }
+
+    const {
+      homeserverUrl,
+      loginResponse: { access_token, refresh_token, user_id, device_id },
+    } = response;
+
+    this.credentials.setMatrixClientCredentials({
+      homeserverUrl,
+      accessToken: access_token,
+      refreshToken: refresh_token, // is undefined because login request has no refresh token parameter
+    });
+    this.credentials.setMatrixCredentials({
+      userId: user_id,
+      deviceId: device_id,
+    });
+
+    return await this.attemptStartFromStoredSession();
   }
 }

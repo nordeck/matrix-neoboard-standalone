@@ -18,9 +18,15 @@
 
 import Joi from 'joi';
 import { AccessTokens } from 'matrix-js-sdk';
-import { OidcCredentials, oidcCredentialsSchema } from '../lib/oidc';
+import {
+  MatrixClientCredentials,
+  matrixClientCredentialsSchema,
+  OidcCredentials,
+  oidcCredentialsSchema,
+} from '../lib/oidc';
 import { tryLoadValidatedFromLocalStorage } from '../lib/storage';
 
+export const matrixClientCredentialsStorageKey = 'nd_matrix_client_credentials';
 export const oidcCredentialsStorageKey = 'nd_oidc_credentials';
 export const matrixCredentialsStorageKey = 'nd_matrix_credentials';
 
@@ -38,6 +44,7 @@ const matrixCredentialsSchema = Joi.object({
  * This class handles the credentials state.
  */
 export class Credentials {
+  private matrixClientCredentials: MatrixClientCredentials | null = null;
   private oidcCredentials: OidcCredentials | null = null;
   private matrixCredentials: MatrixCredentials | null = null;
 
@@ -45,6 +52,10 @@ export class Credentials {
    * Try to restore the credentials from localStorage.
    */
   public start(): void {
+    this.matrixClientCredentials = tryLoadValidatedFromLocalStorage(
+      matrixClientCredentialsStorageKey,
+      matrixClientCredentialsSchema,
+    );
     this.oidcCredentials = tryLoadValidatedFromLocalStorage(
       oidcCredentialsStorageKey,
       oidcCredentialsSchema,
@@ -54,6 +65,17 @@ export class Credentials {
       matrixCredentialsStorageKey,
       matrixCredentialsSchema,
     );
+  }
+
+  public getMatrixClientCredentials(): MatrixClientCredentials | null {
+    return this.matrixClientCredentials;
+  }
+
+  public setMatrixClientCredentials(
+    matrixClientCredentials: MatrixClientCredentials,
+  ): void {
+    this.matrixClientCredentials = matrixClientCredentials;
+    this.store();
   }
 
   public getOidcCredentials(): OidcCredentials | null {
@@ -78,15 +100,15 @@ export class Credentials {
    * Update the access and refresh token.
    *
    * @param accessTokens - Access tokens to update
-   * @throws Error if trying to update unset OIDC credentials
+   * @throws Error if trying to update unset MatrixClient credentials
    */
   public updateAccessTokens(accessTokens: AccessTokens): void {
-    if (!this.oidcCredentials) {
-      throw new Error('tried to update non-existing OIDC credentials');
+    if (!this.matrixClientCredentials) {
+      throw new Error('tried to update non-existing Matrix Client credentials');
     }
 
-    this.oidcCredentials = {
-      ...this.oidcCredentials,
+    this.matrixClientCredentials = {
+      ...this.matrixClientCredentials,
       accessToken: accessTokens.accessToken,
       refreshToken: accessTokens.refreshToken,
     };
@@ -94,6 +116,10 @@ export class Credentials {
   }
 
   private store(): void {
+    localStorage.setItem(
+      matrixClientCredentialsStorageKey,
+      JSON.stringify(this.matrixClientCredentials),
+    );
     localStorage.setItem(
       oidcCredentialsStorageKey,
       JSON.stringify(this.oidcCredentials),

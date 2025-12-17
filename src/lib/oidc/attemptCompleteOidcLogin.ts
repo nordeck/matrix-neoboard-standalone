@@ -16,12 +16,8 @@
  * along with NeoBoard Standalone. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { completeOidcLogin } from './completeOidcLogin';
-import {
-  OidcCodeAndState,
-  OidcCredentials,
-  oidcCodeAndStateSchema,
-} from './types';
+import { completeOidcLogin, OidcLoginResponse } from './completeOidcLogin';
+import { OidcCodeAndState, oidcCodeAndStateSchema } from './types';
 
 /**
  * Try to complete an OIDC login if the "code" and "state" query params are set.
@@ -29,7 +25,7 @@ import {
  * @returns Promise that resolves to OidcCredentials on success or
  *          null if "code" or "state" are not set.
  */
-export async function maybeCompleteOidcLogin(): Promise<OidcCredentials | null> {
+export async function attemptCompleteOidcLogin(): Promise<OidcLoginResponse | null> {
   const codeAndState = parseValidatedCodeAndStateFromQueryParams(
     new URL(window.location.href).searchParams,
   );

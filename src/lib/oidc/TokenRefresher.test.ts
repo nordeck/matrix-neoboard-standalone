@@ -20,9 +20,10 @@ import { AccessTokens } from 'matrix-js-sdk';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { Credentials } from '../../state';
 import {
-  createMatrixTestCredentials,
-  createOidcTestClientConfig,
-  createOidcTestCredentials,
+  mockMatrixClientCredentials,
+  mockMatrixCredentials,
+  mockOidcCredentials,
+  mockOpenIdConfiguration,
 } from '../testUtils';
 import { TokenRefresher } from './TokenRefresher';
 
@@ -30,7 +31,7 @@ import type { FetchMock } from 'vitest-fetch-mock';
 import { createOidcTokenRefresher } from './createOidcTokenRefresher';
 const fetch = global.fetch as FetchMock;
 
-const oidcClientConfig = createOidcTestClientConfig();
+const openIdConfiguration = mockOpenIdConfiguration();
 
 describe('TokenRefresher', () => {
   let credentials: Credentials;
@@ -48,9 +49,9 @@ describe('TokenRefresher', () => {
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify(oidcClientConfig.metadata),
+          body: JSON.stringify(openIdConfiguration),
         };
-      } else if (req.url === oidcClientConfig.metadata.jwks_uri!) {
+      } else if (req.url === openIdConfiguration.jwks_uri) {
         return {
           status: 200,
           headers: {
@@ -63,9 +64,11 @@ describe('TokenRefresher', () => {
     });
 
     credentials = new Credentials();
-    const oidcCredentials = createOidcTestCredentials();
+    const matrixClientCredentials = mockMatrixClientCredentials();
+    credentials.setMatrixClientCredentials(matrixClientCredentials);
+    const oidcCredentials = mockOidcCredentials();
     credentials.setOidcCredentials(oidcCredentials);
-    const matrixCredentials = createMatrixTestCredentials();
+    const matrixCredentials = mockMatrixCredentials();
     credentials.setMatrixCredentials(matrixCredentials);
 
     tokenRefresher = await createOidcTokenRefresher(
@@ -82,10 +85,10 @@ describe('TokenRefresher', () => {
     };
     tokenRefresher.persistTokens(newTokens);
 
-    expect(credentials.getOidcCredentials()?.accessToken).toBe(
+    expect(credentials.getMatrixClientCredentials()?.accessToken).toBe(
       'new_access_token',
     );
-    expect(credentials.getOidcCredentials()?.refreshToken).toBe(
+    expect(credentials.getMatrixClientCredentials()?.refreshToken).toBe(
       'new_refresh_token',
     );
   });

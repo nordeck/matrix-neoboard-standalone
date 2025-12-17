@@ -16,24 +16,26 @@
  * along with NeoBoard Standalone. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { OidcClientConfig } from 'matrix-js-sdk';
+import { OidcClientConfig, ValidatedAuthMetadata } from 'matrix-js-sdk';
 
-export function createOidcTestClientConfig(): OidcClientConfig {
+export function mockOidcClientConfig(): OidcClientConfig {
   return {
-    authorizationEndpoint: 'https://auth.example.com/auth',
-    tokenEndpoint: 'https://auth.example.com/token',
-    registrationEndpoint: 'https://auth.exmple.com/register',
-    metadata: {
-      authorization_endpoint: 'https://auth.example.com/auth',
-      code_challenge_methods_supported: ['S256'],
-      grant_types_supported: ['authorization_code', 'refresh_token'],
-      issuer: 'https://example.com',
-      registration_endpoint: 'https://auth.example.com/register',
-      response_types_supported: ['code'],
-      revocation_endpoint: 'https://auth.example.com/revoke',
-      token_endpoint: 'https://auth.example.com/token',
-      jwks_uri: 'https://auth.example.com/jwks',
-      device_authorization_endpoint: 'https://auth.example.com/device',
-    },
+    ...mockOpenIdConfiguration(),
+    signingKeys: null,
+  };
+}
+
+export function mockOpenIdConfiguration(): ValidatedAuthMetadata {
+  return {
+    authorization_endpoint: 'https://auth.example.com/auth',
+    code_challenge_methods_supported: ['S256'],
+    grant_types_supported: ['authorization_code', 'refresh_token'],
+    issuer: 'https://example.com',
+    registration_endpoint: 'https://auth.example.com/register',
+    response_types_supported: ['code'],
+    revocation_endpoint: 'https://auth.example.com/revoke',
+    token_endpoint: 'https://auth.example.com/token',
+    jwks_uri: 'https://auth.example.com/jwks',
+    device_authorization_endpoint: 'https://auth.example.com/device',
   };
 }
