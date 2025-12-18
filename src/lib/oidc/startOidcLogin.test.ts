@@ -17,13 +17,14 @@
  */
 
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
-import { createOidcTestClientConfig } from '../testUtils';
+import { mockOidcClientConfig, mockOpenIdConfiguration } from '../testUtils';
 import { startOidcLogin } from './startOidcLogin';
 
 import type { FetchMock } from 'vitest-fetch-mock';
 const fetch = global.fetch as FetchMock;
 
-const oidcClientConfig = createOidcTestClientConfig();
+const openIdConfiguration = mockOpenIdConfiguration();
+const oidcClientConfig = mockOidcClientConfig();
 
 describe('startOidcLogin', () => {
   beforeAll(() => {
@@ -40,7 +41,7 @@ describe('startOidcLogin', () => {
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify(oidcClientConfig.metadata),
+          body: JSON.stringify(openIdConfiguration),
         };
       }
       return '';
