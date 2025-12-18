@@ -260,9 +260,9 @@ jobs:
 
       - name: deploy k8s to cluster
         run: |
-          helm upgrade --install matrix-neoboard-standalone ./charts/matrix-neoboard-standalone -f ./valhalla/cluster/neotoolsuite-dev/matrix-neoboard-standalone/values.dev.yaml -n matrix --set image.tag=${{ needs.build.outputs.ARGOCD_TAG }}
+          helm upgrade --rollback-on-failure --install matrix-neoboard-standalone ./charts/matrix-neoboard-standalone -f ./valhalla/cluster/neotoolsuite-dev/matrix-neoboard-standalone/values.dev.yaml -n matrix --set image.tag=${{ needs.build.outputs.ARGOCD_TAG }}
 
       # inifinite canvas
       - name: deploy k8s to cluster
         run: |
-          helm upgrade --install matrix-neoboard-standalone-infinite-canvas ./charts/matrix-neoboard-standalone -f ./valhalla/cluster/neotoolsuite-dev/matrix-neoboard-standalone/values.infinite-canvas.yaml -n matrix --set image.tag=${{ needs.build.outputs.ARGOCD_TAG }}
+          helm upgrade --rollback-on-failure --install matrix-neoboard-standalone-infinite-canvas ./charts/matrix-neoboard-standalone -f ./valhalla/cluster/neotoolsuite-dev/matrix-neoboard-standalone/values.infinite-canvas.yaml -n matrix --set image.tag=${{ needs.build.outputs.ARGOCD_TAG }}
