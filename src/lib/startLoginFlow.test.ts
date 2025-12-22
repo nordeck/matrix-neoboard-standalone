@@ -70,8 +70,8 @@ describe('startLoginFlow', () => {
   it('should start oidc login flow from homeserver name', async () => {
     vi.mocked(discoverClientConfig).mockResolvedValue({
       'm.homeserver': {
-        base_url: 'https://matrix.example.com/',
         state: AutoDiscovery.SUCCESS,
+        base_url: 'https://matrix.example.com/',
       },
       'm.identity_server': {
         state: AutoDiscovery.PROMPT,
@@ -94,6 +94,34 @@ describe('startLoginFlow', () => {
     );
   });
 
+  it('should start oidc login flow from homeserver name when client config cannot be discovered', async () => {
+    vi.mocked(discoverClientConfig).mockResolvedValue({
+      'm.homeserver': {
+        state: AutoDiscovery.FAIL_PROMPT,
+        base_url: null,
+        error: AutoDiscovery.ERROR_INVALID,
+      },
+      'm.identity_server': {
+        state: AutoDiscovery.PROMPT,
+        base_url: null,
+        error: null,
+      },
+    });
+
+    vi.mocked(matrixClient.loginFlows).mockResolvedValue({
+      flows: [
+        {
+          type: 'm.login.sso',
+          'org.matrix.msc3824.delegated_oidc_compatibility': true,
+        },
+      ],
+    });
+
+    await startLoginFlow('example.com');
+
+    expect(startOidcLoginFlow).toHaveBeenCalledWith('https://example.com');
+  });
+
   it('should start legacy sso login flow from homeserver URL', async () => {
     vi.mocked(matrixClient.loginFlows).mockResolvedValue({
       flows: [
@@ -113,8 +141,8 @@ describe('startLoginFlow', () => {
   it('should start legacy sso login flow from homeserver name', async () => {
     vi.mocked(discoverClientConfig).mockResolvedValue({
       'm.homeserver': {
-        base_url: 'https://matrix.example.com/',
         state: AutoDiscovery.SUCCESS,
+        base_url: 'https://matrix.example.com/',
       },
       'm.identity_server': {
         state: AutoDiscovery.PROMPT,
@@ -136,6 +164,33 @@ describe('startLoginFlow', () => {
     );
   });
 
+  it('should start legacy login flow from homeserver name when client config cannot be discovered', async () => {
+    vi.mocked(discoverClientConfig).mockResolvedValue({
+      'm.homeserver': {
+        state: AutoDiscovery.FAIL_PROMPT,
+        base_url: null,
+        error: AutoDiscovery.ERROR_INVALID,
+      },
+      'm.identity_server': {
+        state: AutoDiscovery.PROMPT,
+        base_url: null,
+        error: null,
+      },
+    });
+
+    vi.mocked(matrixClient.loginFlows).mockResolvedValue({
+      flows: [
+        {
+          type: 'm.login.sso',
+        },
+      ],
+    });
+
+    await startLoginFlow('example.com');
+
+    expect(startLegacySsoLoginFlow).toHaveBeenCalledWith('https://example.com');
+  });
+
   it('should fail if no sso authentication type', async () => {
     vi.mocked(matrixClient.loginFlows).mockResolvedValue({
       flows: [
@@ -150,27 +205,22 @@ describe('startLoginFlow', () => {
     );
   });
 
-  it.each([
-    { value: undefined, description: 'undefined' },
-    { value: null, description: 'null' },
-  ])(
-    'should fail when client config is incorrect: base_url is $description',
-    async ({ value }) => {
-      vi.mocked(discoverClientConfig).mockResolvedValue({
-        'm.homeserver': {
-          base_url: value,
-          state: AutoDiscovery.SUCCESS,
-        },
-        'm.identity_server': {
-          state: AutoDiscovery.PROMPT,
-        },
-      });
+  it('should fail for a wrong homeserver name', async () => {
+    vi.mocked(discoverClientConfig).mockResolvedValue({
+      'm.homeserver': {
+        state: AutoDiscovery.FAIL_PROMPT,
+        base_url: null,
+        error: AutoDiscovery.ERROR_INVALID,
+      },
+      'm.identity_server': {
+        state: AutoDiscovery.PROMPT,
+        base_url: null,
+        error: null,
+      },
+    });
 
-      await expect(startLoginFlow('example.com')).rejects.toThrow(
-        'Could not get homeserver base URL',
-      );
-
-      expect(discoverClientConfig).toHaveBeenCalledWith('example.com');
-    },
-  );
+    await expect(startLoginFlow('a wrong name')).rejects.toThrow(
+      'Could not get homeserver base URL',
+    );
+  });
 });

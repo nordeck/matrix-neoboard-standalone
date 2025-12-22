@@ -15,8 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with NeoBoard Standalone. If not, see <https://www.gnu.org/licenses/>.
  */
-import { discoverClientConfig, getHomeserverUrlFromConfig } from './discovery';
-import { isValidUrl } from './isValidUrl';
+import { discoverHomeserverUrl } from './discoverHomeserverUrl.ts';
 import { startLegacySsoLoginFlow } from './legacy';
 import { fetchSsoLoginFlow } from './matrix/fetchSsoLoginFlow';
 import { startOidcLoginFlow } from './oidc';
@@ -29,12 +28,9 @@ import { startOidcLoginFlow } from './oidc';
  */
 export async function startLoginFlow(homeserverName: string): Promise<void> {
   // Determine homeserver url
-  let homeserverUrl: string;
-  if (isValidUrl(homeserverName)) {
-    homeserverUrl = homeserverName;
-  } else {
-    const clientConfig = await discoverClientConfig(homeserverName);
-    homeserverUrl = getHomeserverUrlFromConfig(clientConfig);
+  const homeserverUrl = await discoverHomeserverUrl(homeserverName);
+  if (!homeserverUrl) {
+    throw new Error('Could not get homeserver base URL');
   }
 
   const ssoFlow = await fetchSsoLoginFlow(homeserverUrl);

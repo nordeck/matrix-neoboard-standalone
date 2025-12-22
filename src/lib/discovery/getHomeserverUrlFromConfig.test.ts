@@ -25,8 +25,8 @@ describe('getHomeserverUrlFromConfig', () => {
     expect(
       getHomeserverUrlFromConfig({
         'm.homeserver': {
-          base_url: 'https://matrix.example.com',
           state: AutoDiscovery.SUCCESS,
+          base_url: 'https://matrix.example.com',
         },
         'm.identity_server': {
           state: AutoDiscovery.PROMPT,
@@ -39,8 +39,8 @@ describe('getHomeserverUrlFromConfig', () => {
     expect(
       getHomeserverUrlFromConfig({
         'm.homeserver': {
-          base_url: 'https://matrix.example.com/',
           state: AutoDiscovery.SUCCESS,
+          base_url: 'https://matrix.example.com/',
         },
         'm.identity_server': {
           state: AutoDiscovery.PROMPT,
@@ -49,8 +49,25 @@ describe('getHomeserverUrlFromConfig', () => {
     ).toBe('https://matrix.example.com');
   });
 
-  it('should fail if base_url not found in the config', () => {
-    expect(() =>
+  it('should return undefined when client config cannot be discovered', () => {
+    expect(
+      getHomeserverUrlFromConfig({
+        'm.homeserver': {
+          state: AutoDiscovery.FAIL_PROMPT,
+          base_url: null,
+          error: AutoDiscovery.ERROR_INVALID,
+        },
+        'm.identity_server': {
+          state: AutoDiscovery.PROMPT,
+          base_url: null,
+          error: null,
+        },
+      }),
+    ).toBeUndefined();
+  });
+
+  it('should return undefined when base_url is not found in the client config', () => {
+    expect(
       getHomeserverUrlFromConfig({
         'm.homeserver': {
           state: AutoDiscovery.SUCCESS,
@@ -59,6 +76,6 @@ describe('getHomeserverUrlFromConfig', () => {
           state: AutoDiscovery.PROMPT,
         },
       }),
-    ).toThrow('Could not get homeserver base URL');
+    ).toBeUndefined();
   });
 });

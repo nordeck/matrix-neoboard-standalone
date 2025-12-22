@@ -18,11 +18,18 @@
 import { ClientConfig } from 'matrix-js-sdk';
 import { ensureNoTrailingSlash } from 'matrix-js-sdk/lib/utils';
 
-export function getHomeserverUrlFromConfig(clientConfig: ClientConfig): string {
+/**
+ * Gets a homeserver URL from the client config
+ * @param clientConfig
+ * @returns Homeserver URL or undefined
+ */
+export function getHomeserverUrlFromConfig(
+  clientConfig: ClientConfig,
+): string | undefined {
   const rawBaseUrl = clientConfig['m.homeserver'].base_url;
 
   if (rawBaseUrl === undefined || rawBaseUrl === null) {
-    throw new Error('Could not get homeserver base URL');
+    return undefined;
   }
 
   return ensureNoTrailingSlash(rawBaseUrl);

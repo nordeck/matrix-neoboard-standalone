@@ -19,7 +19,7 @@
 import { AutoDiscovery, ClientConfig } from 'matrix-js-sdk';
 
 /**
- * Discover the client config, i.e. the homeserver base URL.
+ * Discover the client config.
  *
  * @param domain - The homeserver domain to discover the config
  * @returns The client configuration
