@@ -16,24 +16,28 @@
  * along with NeoBoard Standalone. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { afterAll, beforeAll, describe, expect, it } from 'vitest';
-import { mockOidcClientConfig, mockOpenIdConfiguration } from '../testUtils';
-import { startOidcLogin } from './startOidcLogin';
+import { afterEach, beforeEach, describe, expect, it } from 'vitest';
+import {
+  mockMatrixCredentials,
+  mockOidcCredentials,
+  mockOpenIdConfiguration,
+} from '../../lib/testUtils';
+import { Credentials } from '../../state';
+import { TokenRefresher } from './TokenRefresher';
+import { createOidcTokenRefresher } from './createOidcTokenRefresher';
 
 import type { FetchMock } from 'vitest-fetch-mock';
 const fetch = global.fetch as FetchMock;
 
-const openIdConfiguration = mockOpenIdConfiguration();
-const oidcClientConfig = mockOidcClientConfig();
+describe('createOidcTokenRefresher', () => {
+  const openIdConfiguration = mockOpenIdConfiguration();
+  const oidcCredentials = mockOidcCredentials();
+  const matrixCredentials = mockMatrixCredentials();
+  const credentials = new Credentials();
+  credentials.setMatrixCredentials(matrixCredentials);
+  credentials.setOidcCredentials(oidcCredentials);
 
-describe('startOidcLogin', () => {
-  beforeAll(() => {
-    // Add a path and a query param
-    Object.defineProperty(window, 'location', {
-      value: new URL('http://example.com/oidc_callback/?lang=en'),
-      configurable: true,
-    });
-
+  beforeEach(() => {
     fetch.mockResponse((req) => {
       if (req.url === 'https://example.com/.well-known/openid-configuration') {
         return {
@@ -43,25 +47,30 @@ describe('startOidcLogin', () => {
           },
           body: JSON.stringify(openIdConfiguration),
         };
+      } else if (req.url === openIdConfiguration.jwks_uri) {
+        return {
+          status: 200,
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ keys: [] }),
+        };
       }
       return '';
     });
   });
 
-  afterAll(() => {
+  afterEach(() => {
     fetch.resetMocks();
   });
 
-  it('should redirect to the authorisation URL', async () => {
-    await startOidcLogin(
-      oidcClientConfig,
-      'test_client_id',
-      'https://matrix.example.com',
-    );
-
-    // The redirect_uri should include the path but not the query params
-    expect(window.location.href).toMatch(
-      /^https:\/\/auth\.example\.com\/auth\?client_id=test_client_id&redirect_uri=http%3A%2F%2Fexample\.com%2Foidc_callback%2F&response_type=code&scope=openid\+urn%3Amatrix%3Aorg\.matrix\.msc2967\.client%3Aapi%3A\*\+urn%3Amatrix%3Aorg\.matrix\.msc2967\.client%3Adevice%3A.+&nonce=.+&state=.+&code_challenge=.+&code_challenge_method=S256&response_mode=query/,
-    );
+  it('should create a TokenRefresher', async () => {
+    expect(
+      await createOidcTokenRefresher(
+        credentials,
+        oidcCredentials,
+        matrixCredentials.deviceId,
+      ),
+    ).toBeInstanceOf(TokenRefresher);
   });
 });

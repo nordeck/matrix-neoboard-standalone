@@ -18,7 +18,7 @@
 
 import { MatrixClient } from 'matrix-js-sdk';
 import { describe, expect, it, vi } from 'vitest';
-import { TokenRefresher } from '../../lib/oidc';
+import { TokenRefresher } from '../../auth';
 import {
   mockMatrixClientCredentials,
   mockMatrixCredentials,

@@ -17,7 +17,7 @@
  */
 
 import { MatrixClient, MatrixScheduler, MemoryStore } from 'matrix-js-sdk';
-import { MatrixClientCredentials, TokenRefresher } from '../../lib/oidc';
+import { MatrixClientCredentials, TokenRefresher } from '../../auth';
 import { MatrixCredentials } from '../Credentials';
 
 export async function createMatrixClient(

@@ -17,11 +17,11 @@
  */
 import { AutoDiscovery } from 'matrix-js-sdk';
 import { describe, expect, it, vi } from 'vitest';
+import { discoverClientConfig } from '../lib/discovery';
 import { discoverHomeserverUrl } from './discoverHomeserverUrl';
-import { discoverClientConfig } from './discovery';
 
-vi.mock('./discovery', async () => ({
-  ...(await vi.importActual('./discovery')),
+vi.mock('../lib/discovery', async () => ({
+  ...(await vi.importActual('../lib/discovery')),
   discoverClientConfig: vi.fn(),
 }));
 

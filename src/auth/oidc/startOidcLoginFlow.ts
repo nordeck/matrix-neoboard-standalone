@@ -15,15 +15,21 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with NeoBoard Standalone. If not, see <https://www.gnu.org/licenses/>.
  */
-import { OidcLoginResponse } from '../../auth';
-import {
-  mockMatrixClientCredentials,
-  mockOidcCredentials,
-} from './credentials';
 
-export function mockOidcLoginResponse(): OidcLoginResponse {
-  return {
-    matrixClientCredentials: mockMatrixClientCredentials(),
-    oidcCredentials: mockOidcCredentials(),
-  };
+import { fetchAuthMetadata } from '../../lib/discovery';
+import { registerOidcClient, startOidcLogin } from './';
+
+/**
+ * Starts the OIDC login flow for a given homeserver.
+ *
+ * @param homeserverUrl - The homeserver URL to login
+ * @throws Error if the login process fails at any step
+ */
+export async function startOidcLoginFlow(homeserverUrl: string): Promise<void> {
+  // Fetch the OIDC configuration
+  const oidcClientConfig = await fetchAuthMetadata(homeserverUrl);
+
+  // Register an OIDC client and start the authentication
+  const clientId = await registerOidcClient(oidcClientConfig);
+  startOidcLogin(oidcClientConfig, clientId, homeserverUrl);
 }

@@ -15,8 +15,11 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with NeoBoard Standalone. If not, see <https://www.gnu.org/licenses/>.
  */
-import { discoverClientConfig, getHomeserverUrlFromConfig } from './discovery';
-import { isValidUrl } from './isValidUrl';
+import { isValidUrl } from '../lib';
+import {
+  discoverClientConfig,
+  getHomeserverUrlFromConfig,
+} from '../lib/discovery';
 
 /**
  * Discovers a homeserver URL

@@ -18,13 +18,13 @@
 
 import { AccessTokens } from 'matrix-js-sdk';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
-import { Credentials } from '../../state';
 import {
   mockMatrixClientCredentials,
   mockMatrixCredentials,
   mockOidcCredentials,
   mockOpenIdConfiguration,
-} from '../testUtils';
+} from '../../lib/testUtils';
+import { Credentials } from '../../state';
 import { TokenRefresher } from './TokenRefresher';
 
 import type { FetchMock } from 'vitest-fetch-mock';

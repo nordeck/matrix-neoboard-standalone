@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Nordeck IT + Consulting GmbH
+ * Copyright 2025 Nordeck IT + Consulting GmbH
  *
  * NeoBoard Standalone is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -15,8 +15,6 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with NeoBoard Standalone. If not, see <https://www.gnu.org/licenses/>.
  */
-
-export { calculateWhiteboardPermissions } from './calculateWhiteboardPermissions';
-export type { WhiteboardPermissions } from './calculateWhiteboardPermissions';
-export { fetchSsoLoginFlow } from './fetchSsoLoginFlow';
-export { fetchWhoami } from './fetchWhoami';
+export * from './legacy';
+export * from './oidc';
+export { startLoginFlow } from './startLoginFlow';

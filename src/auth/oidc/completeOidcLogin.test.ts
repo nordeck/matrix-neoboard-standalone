@@ -22,7 +22,7 @@ import {
   mockMatrixClientCredentials,
   mockOidcCredentials,
   mockOidcLoginResponse,
-} from '../testUtils';
+} from '../../lib/testUtils';
 import { completeOidcLogin } from './completeOidcLogin';
 import { OidcCodeAndState } from './types';
 

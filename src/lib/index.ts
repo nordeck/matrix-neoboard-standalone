@@ -22,4 +22,3 @@ export { isValidServerName } from './isValidServerName';
 export { isValidUrl } from './isValidUrl';
 export { setLocale } from './locale';
 export { randomString } from './randomString';
-export { startLoginFlow } from './startLoginFlow';

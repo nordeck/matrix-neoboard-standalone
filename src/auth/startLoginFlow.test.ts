@@ -17,7 +17,7 @@
  */
 import { AutoDiscovery, MatrixClient } from 'matrix-js-sdk';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { discoverClientConfig } from './discovery';
+import { discoverClientConfig } from '../lib/discovery';
 import { startLegacySsoLoginFlow } from './legacy';
 import { startOidcLoginFlow } from './oidc';
 import { startLoginFlow } from './startLoginFlow';
@@ -27,8 +27,8 @@ vi.mock('matrix-js-sdk', async () => ({
   MatrixClient: vi.fn(),
 }));
 
-vi.mock('./discovery', async () => ({
-  ...(await vi.importActual('./discovery')),
+vi.mock('../lib/discovery', async () => ({
+  ...(await vi.importActual('../lib/discovery')),
   discoverClientConfig: vi.fn(),
 }));
 

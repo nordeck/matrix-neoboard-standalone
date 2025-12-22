@@ -17,7 +17,7 @@
  */
 
 import { describe, expect, it, vi } from 'vitest';
-import { mockOidcLoginResponse } from '../testUtils';
+import { mockOidcLoginResponse } from '../../lib/testUtils';
 import { attemptCompleteOidcLogin } from './attemptCompleteOidcLogin';
 import { completeOidcLogin } from './completeOidcLogin';
 

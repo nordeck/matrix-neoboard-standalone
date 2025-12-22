@@ -17,18 +17,20 @@
  */
 
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { fetchAuthMetadata } from '../discovery';
-import { mockOidcClientConfig } from '../testUtils';
+import { fetchAuthMetadata } from '../../lib/discovery';
+import { mockOidcClientConfig } from '../../lib/testUtils';
 import { registerOidcClient, startOidcLogin } from './';
 import { startOidcLoginFlow } from './startOidcLoginFlow';
 
-vi.mock('../discovery', async () => ({
-  ...(await vi.importActual('../discovery')),
+vi.mock('../../lib/discovery', async () => ({
+  ...(await vi.importActual('../../lib/discovery')),
   fetchAuthMetadata: vi.fn(),
 }));
 
-vi.mock('./', () => ({
+vi.mock('./registerOidcClient', () => ({
   registerOidcClient: vi.fn(),
+}));
+vi.mock('./startOidcLogin', () => ({
   startOidcLogin: vi.fn(),
 }));
 

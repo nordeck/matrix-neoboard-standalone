@@ -47,7 +47,7 @@ import { Application } from './Application';
 
 import { getEnvironment } from '@matrix-widget-toolkit/mui';
 import type { FetchMock } from 'vitest-fetch-mock';
-import { legacySsoHomeserverUrlStorageKey } from '../../lib/legacy';
+import { legacySsoHomeserverUrlStorageKey } from '../../auth';
 const fetch = global.fetch as FetchMock;
 
 vi.mock('matrix-js-sdk', async () => ({

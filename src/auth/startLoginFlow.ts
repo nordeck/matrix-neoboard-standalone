@@ -15,9 +15,9 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with NeoBoard Standalone. If not, see <https://www.gnu.org/licenses/>.
  */
+import { fetchSsoLoginFlow } from '../lib/matrix';
 import { discoverHomeserverUrl } from './discoverHomeserverUrl.ts';
 import { startLegacySsoLoginFlow } from './legacy';
-import { fetchSsoLoginFlow } from './matrix/fetchSsoLoginFlow';
 import { startOidcLoginFlow } from './oidc';
 
 /**

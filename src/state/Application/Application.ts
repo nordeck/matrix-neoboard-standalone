@@ -25,14 +25,14 @@ import {
 } from 'matrix-js-sdk';
 import { BehaviorSubject } from 'rxjs';
 import { Credentials, LoggedInState, ObservableBehaviorSubject } from '..';
-import { attemptCompleteLegacySsoLogin } from '../../lib/legacy';
-import { fetchWhoami } from '../../lib/matrix';
 import {
+  attemptCompleteLegacySsoLogin,
   attemptCompleteOidcLogin,
   createOidcTokenRefresher,
   OidcLoginResponse,
   TokenRefresher,
-} from '../../lib/oidc';
+} from '../../auth';
+import { fetchWhoami } from '../../lib/matrix';
 import {
   MatrixStandaloneClient,
   StandaloneApi,

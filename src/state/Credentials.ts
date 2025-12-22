@@ -23,7 +23,7 @@ import {
   matrixClientCredentialsSchema,
   OidcCredentials,
   oidcCredentialsSchema,
-} from '../lib/oidc';
+} from '../auth';
 import { tryLoadValidatedFromLocalStorage } from '../lib/storage';
 
 export const matrixClientCredentialsStorageKey = 'nd_matrix_client_credentials';
