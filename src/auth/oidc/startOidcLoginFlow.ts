@@ -17,7 +17,8 @@
  */
 
 import { fetchAuthMetadata } from '../../lib/discovery';
-import { registerOidcClient, startOidcLogin } from './';
+import { registerOidcClient } from './registerOidcClient';
+import { startOidcLogin } from './startOidcLogin';
 
 /**
  * Starts the OIDC login flow for a given homeserver.
@@ -31,5 +32,5 @@ export async function startOidcLoginFlow(homeserverUrl: string): Promise<void> {
 
   // Register an OIDC client and start the authentication
   const clientId = await registerOidcClient(oidcClientConfig);
-  startOidcLogin(oidcClientConfig, clientId, homeserverUrl);
+  await startOidcLogin(oidcClientConfig, clientId, homeserverUrl);
 }

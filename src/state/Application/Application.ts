@@ -24,7 +24,6 @@ import {
   SyncState,
 } from 'matrix-js-sdk';
 import { BehaviorSubject } from 'rxjs';
-import { Credentials, LoggedInState, ObservableBehaviorSubject } from '..';
 import {
   attemptCompleteLegacySsoLogin,
   attemptCompleteOidcLogin,
@@ -40,10 +39,12 @@ import {
   StandaloneClient,
 } from '../../toolkit/standalone';
 import {
+  Credentials,
   matrixClientCredentialsStorageKey,
   matrixCredentialsStorageKey,
   oidcCredentialsStorageKey,
 } from '../Credentials';
+import { LoggedInState, ObservableBehaviorSubject } from '../types';
 import { createMatrixClient } from './createMatrixClient';
 
 export type LifecycleState =

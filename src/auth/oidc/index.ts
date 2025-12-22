@@ -17,11 +17,8 @@
  */
 
 export { attemptCompleteOidcLogin } from './attemptCompleteOidcLogin';
-export { completeOidcLogin } from './completeOidcLogin';
 export type { OidcLoginResponse } from './completeOidcLogin';
 export { createOidcTokenRefresher } from './createOidcTokenRefresher';
-export { registerOidcClient } from './registerOidcClient';
-export { startOidcLogin } from './startOidcLogin';
 export { startOidcLoginFlow } from './startOidcLoginFlow';
 export { TokenRefresher } from './TokenRefresher';
 export {

@@ -16,7 +16,7 @@
  * along with NeoBoard Standalone. If not, see <https://www.gnu.org/licenses/>.
  */
 import { fetchSsoLoginFlow } from '../lib/matrix';
-import { discoverHomeserverUrl } from './discoverHomeserverUrl.ts';
+import { discoverHomeserverUrl } from './discoverHomeserverUrl';
 import { startLegacySsoLoginFlow } from './legacy';
 import { startOidcLoginFlow } from './oidc';
 

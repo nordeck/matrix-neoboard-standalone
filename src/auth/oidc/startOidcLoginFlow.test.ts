@@ -19,7 +19,8 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { fetchAuthMetadata } from '../../lib/discovery';
 import { mockOidcClientConfig } from '../../lib/testUtils';
-import { registerOidcClient, startOidcLogin } from './';
+import { registerOidcClient } from './registerOidcClient';
+import { startOidcLogin } from './startOidcLogin';
 import { startOidcLoginFlow } from './startOidcLoginFlow';
 
 vi.mock('../../lib/discovery', async () => ({
