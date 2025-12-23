@@ -15,9 +15,10 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with NeoBoard Standalone. If not, see <https://www.gnu.org/licenses/>.
  */
-import { AutoDiscovery, MatrixClient } from 'matrix-js-sdk';
+import { AutoDiscovery, MatrixClient, MatrixError } from 'matrix-js-sdk';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { discoverClientConfig } from '../lib/discovery';
+import { discoverClientConfig, fetchAuthMetadata } from '../lib/discovery';
+import { mockOidcClientConfig } from '../lib/testUtils';
 import { startLegacySsoLoginFlow } from './legacy';
 import { startOidcLoginFlow } from './oidc';
 import { startLoginFlow } from './startLoginFlow';
@@ -29,6 +30,7 @@ vi.mock('matrix-js-sdk', async () => ({
 
 vi.mock('../lib/discovery', async () => ({
   ...(await vi.importActual('../lib/discovery')),
+  fetchAuthMetadata: vi.fn(),
   discoverClientConfig: vi.fn(),
 }));
 
@@ -36,6 +38,8 @@ vi.mock('./oidc');
 vi.mock('./legacy');
 
 describe('startLoginFlow', () => {
+  const oidcClientConfig = mockOidcClientConfig();
+
   let matrixClient: MatrixClient;
 
   beforeEach(() => {
@@ -51,19 +55,21 @@ describe('startLoginFlow', () => {
   });
 
   it('should start oidc login flow from homeserver URL', async () => {
-    vi.mocked(matrixClient.loginFlows).mockResolvedValue({
-      flows: [
-        {
-          type: 'm.login.sso',
-          'org.matrix.msc3824.delegated_oidc_compatibility': true,
-        },
-      ],
-    });
+    vi.mocked(fetchAuthMetadata).mockResolvedValue(oidcClientConfig);
 
     await startLoginFlow('https://matrix.example.com');
 
     expect(startOidcLoginFlow).toHaveBeenCalledWith(
       'https://matrix.example.com',
+      oidcClientConfig,
+    );
+  });
+
+  it('should fail to start oidc login when unexpected error happens during authorization server metadata discovery', async () => {
+    vi.mocked(fetchAuthMetadata).mockRejectedValue(new Error());
+
+    await expect(startLoginFlow('https://matrix.example.com')).rejects.toThrow(
+      'Could not determine if homeserver supports OAuth 2.0 API',
     );
   });
 
@@ -78,19 +84,13 @@ describe('startLoginFlow', () => {
       },
     });
 
-    vi.mocked(matrixClient.loginFlows).mockResolvedValue({
-      flows: [
-        {
-          type: 'm.login.sso',
-          'org.matrix.msc3824.delegated_oidc_compatibility': true,
-        },
-      ],
-    });
+    vi.mocked(fetchAuthMetadata).mockResolvedValue(oidcClientConfig);
 
     await startLoginFlow('example.com');
 
     expect(startOidcLoginFlow).toHaveBeenCalledWith(
       'https://matrix.example.com',
+      oidcClientConfig,
     );
   });
 
@@ -108,21 +108,26 @@ describe('startLoginFlow', () => {
       },
     });
 
-    vi.mocked(matrixClient.loginFlows).mockResolvedValue({
-      flows: [
-        {
-          type: 'm.login.sso',
-          'org.matrix.msc3824.delegated_oidc_compatibility': true,
-        },
-      ],
-    });
+    vi.mocked(fetchAuthMetadata).mockResolvedValue(oidcClientConfig);
 
     await startLoginFlow('example.com');
 
-    expect(startOidcLoginFlow).toHaveBeenCalledWith('https://example.com');
+    expect(startOidcLoginFlow).toHaveBeenCalledWith(
+      'https://example.com',
+      oidcClientConfig,
+    );
   });
 
   it('should start legacy sso login flow from homeserver URL', async () => {
+    vi.mocked(fetchAuthMetadata).mockRejectedValue(
+      new MatrixError(
+        {
+          errcode: 'M_UNRECOGNIZED',
+        },
+        404,
+      ),
+    );
+
     vi.mocked(matrixClient.loginFlows).mockResolvedValue({
       flows: [
         {
@@ -148,6 +153,15 @@ describe('startLoginFlow', () => {
         state: AutoDiscovery.PROMPT,
       },
     });
+
+    vi.mocked(fetchAuthMetadata).mockRejectedValue(
+      new MatrixError(
+        {
+          errcode: 'M_UNRECOGNIZED',
+        },
+        404,
+      ),
+    );
 
     vi.mocked(matrixClient.loginFlows).mockResolvedValue({
       flows: [
@@ -178,6 +192,15 @@ describe('startLoginFlow', () => {
       },
     });
 
+    vi.mocked(fetchAuthMetadata).mockRejectedValue(
+      new MatrixError(
+        {
+          errcode: 'M_UNRECOGNIZED',
+        },
+        404,
+      ),
+    );
+
     vi.mocked(matrixClient.loginFlows).mockResolvedValue({
       flows: [
         {
@@ -191,17 +214,41 @@ describe('startLoginFlow', () => {
     expect(startLegacySsoLoginFlow).toHaveBeenCalledWith('https://example.com');
   });
 
-  it('should fail if no sso authentication type', async () => {
-    vi.mocked(matrixClient.loginFlows).mockResolvedValue({
-      flows: [
+  it('should fail to start legacy sso login when unexpected error during login flows fetching', async () => {
+    vi.mocked(fetchAuthMetadata).mockRejectedValue(
+      new MatrixError(
         {
-          type: 'm.login.password',
+          errcode: 'M_UNRECOGNIZED',
         },
-      ],
+        404,
+      ),
+    );
+
+    vi.mocked(matrixClient.loginFlows).mockRejectedValue(
+      new Error('Unexpected error'),
+    );
+
+    await expect(startLoginFlow('https://matrix.example.com')).rejects.toThrow(
+      'Unexpected error',
+    );
+  });
+
+  it('should fail to start legacy sso login when sso is not supported', async () => {
+    vi.mocked(fetchAuthMetadata).mockRejectedValue(
+      new MatrixError(
+        {
+          errcode: 'M_UNRECOGNIZED',
+        },
+        404,
+      ),
+    );
+
+    vi.mocked(matrixClient.loginFlows).mockResolvedValue({
+      flows: [],
     });
 
     await expect(startLoginFlow('https://matrix.example.com')).rejects.toThrow(
-      'Homeserver "m.login.sso" authentication type is not configured',
+      'OAuth 2.0 and Legacy SSO APIs are not supported by the homeserver',
     );
   });
 

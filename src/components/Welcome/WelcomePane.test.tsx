@@ -18,7 +18,6 @@
 
 import { getEnvironment } from '@matrix-widget-toolkit/mui';
 import { render, screen } from '@testing-library/react';
-import { MatrixClient } from 'matrix-js-sdk';
 import { ComponentType, PropsWithChildren } from 'react';
 import { MemoryRouter } from 'react-router';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
@@ -28,11 +27,6 @@ import { WelcomePane } from './WelcomePane';
 vi.mock('@matrix-widget-toolkit/mui', async () => ({
   ...(await vi.importActual('@matrix-widget-toolkit/mui')),
   getEnvironment: vi.fn(),
-}));
-
-vi.mock('matrix-js-sdk', async () => ({
-  ...(await vi.importActual('matrix-js-sdk')),
-  MatrixClient: vi.fn(),
 }));
 
 vi.mock('../../auth', async () => ({
@@ -91,21 +85,6 @@ describe('<WelcomePane />', () => {
   });
 
   it('should skip the welcome pane and start login flow when homeserver name is configured and skipLogin is present', async () => {
-    const matrixClient = {
-      loginFlows: vi.fn(),
-    } as unknown as MatrixClient;
-
-    vi.mocked(MatrixClient).mockReturnValue(matrixClient);
-
-    vi.mocked(matrixClient.loginFlows).mockResolvedValue({
-      flows: [
-        {
-          type: 'm.login.sso',
-          'org.matrix.msc3824.delegated_oidc_compatibility': true,
-        },
-      ],
-    });
-
     vi.mocked(getEnvironment).mockImplementation((name, defaultValue) => {
       switch (name) {
         case 'REACT_APP_HOMESERVER':

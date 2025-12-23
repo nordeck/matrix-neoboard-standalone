@@ -26,9 +26,6 @@ sequenceDiagram
   Login ->> Login: discoverClientConfig()
   Login ->> Webserver: /.well-known/matrix/client
   Webserver -->> Login: baseUrl
-  Login ->> Login: fetchSsoLoginFlow()
-  Login ->> Homeserver: /login
-  Homeserver -->> Login: 'm.login.sso' flow with 'org.matrix.msc3824.delegated_oidc_compatibility': true
   Login ->> Login: fetchAuthMetadata(baseUrl)
   Login ->> Homeserver: /_matrix/client/unstable/org.matrix.msc2965/auth_metadata
   Homeserver -->> Login: Auth metadata
@@ -50,7 +47,7 @@ sequenceDiagram
   Application ->> Application: set state to "loggedIn"
 ```
 
-## Legacy API Login Flow
+## Legacy API SSO Login Flow
 
 Alternatively, `SSO` is available via `Legacy API` as described
 in [the matrix specification](https://spec.matrix.org/v1.16/client-server-api/#client-login-via-sso).

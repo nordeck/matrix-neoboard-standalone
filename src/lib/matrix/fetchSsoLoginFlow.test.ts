@@ -53,7 +53,9 @@ describe('fetchSsoLoginFlow', () => {
       ],
     });
 
-    expect(await fetchSsoLoginFlow(homeserverUrl)).toEqual({});
+    expect(await fetchSsoLoginFlow(homeserverUrl)).toEqual({
+      type: 'm.login.sso',
+    });
   });
 
   it('should fetch sso login flow with delegated oidc compatibility', async () => {
@@ -73,7 +75,8 @@ describe('fetchSsoLoginFlow', () => {
     });
 
     expect(await fetchSsoLoginFlow(homeserverUrl)).toEqual({
-      delegatedOidcCompatibility: true,
+      type: 'm.login.sso',
+      'org.matrix.msc3824.delegated_oidc_compatibility': true,
     });
   });
 
@@ -91,26 +94,4 @@ describe('fetchSsoLoginFlow', () => {
 
     expect(await fetchSsoLoginFlow(homeserverUrl)).toBeUndefined();
   });
-
-  it.each(['true', 'false', {}])(
-    'should fetch undefined when wrong value for delegated_oidc_compatibility: %s',
-    async (value: unknown) => {
-      vi.mocked(matrixClient.loginFlows).mockResolvedValue({
-        flows: [
-          {
-            type: 'm.login.password',
-          },
-          {
-            type: 'm.login.sso',
-            'org.matrix.msc3824.delegated_oidc_compatibility': value as boolean,
-          },
-          {
-            type: 'm.login.token',
-          },
-        ],
-      });
-
-      expect(await fetchSsoLoginFlow(homeserverUrl)).toBeUndefined();
-    },
-  );
 });

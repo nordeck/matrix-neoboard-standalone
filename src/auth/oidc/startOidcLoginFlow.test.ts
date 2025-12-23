@@ -17,16 +17,10 @@
  */
 
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { fetchAuthMetadata } from '../../lib/discovery';
 import { mockOidcClientConfig } from '../../lib/testUtils';
 import { registerOidcClient } from './registerOidcClient';
 import { startOidcLogin } from './startOidcLogin';
 import { startOidcLoginFlow } from './startOidcLoginFlow';
-
-vi.mock('../../lib/discovery', async () => ({
-  ...(await vi.importActual('../../lib/discovery')),
-  fetchAuthMetadata: vi.fn(),
-}));
 
 vi.mock('./registerOidcClient', () => ({
   registerOidcClient: vi.fn(),
@@ -35,14 +29,12 @@ vi.mock('./startOidcLogin', () => ({
   startOidcLogin: vi.fn(),
 }));
 
-const oidcClientConfig = mockOidcClientConfig();
-
 describe('startOidcLoginFlow', () => {
   const homeserverUrl = 'https://matrix.example.com';
   const clientId = 'test_client_id';
+  const oidcClientConfig = mockOidcClientConfig();
 
   beforeEach(() => {
-    vi.mocked(fetchAuthMetadata).mockResolvedValue(oidcClientConfig);
     vi.mocked(registerOidcClient).mockResolvedValue(clientId);
     vi.mocked(startOidcLogin).mockResolvedValue();
   });
@@ -52,9 +44,8 @@ describe('startOidcLoginFlow', () => {
   });
 
   it('should start the login flow', async () => {
-    await startOidcLoginFlow(homeserverUrl);
+    await startOidcLoginFlow(homeserverUrl, oidcClientConfig);
 
-    expect(fetchAuthMetadata).toHaveBeenCalledWith(homeserverUrl);
     expect(registerOidcClient).toHaveBeenCalledWith(oidcClientConfig);
     expect(startOidcLogin).toHaveBeenCalledWith(
       oidcClientConfig,
@@ -63,26 +54,14 @@ describe('startOidcLoginFlow', () => {
     );
   });
 
-  it('should handle auth metadata fetch failure', async () => {
-    const error = new Error('Auth metadata fetch failed');
-    vi.mocked(fetchAuthMetadata).mockRejectedValue(error);
-
-    await expect(startOidcLoginFlow(homeserverUrl)).rejects.toThrow(
-      'Auth metadata fetch failed',
-    );
-
-    expect(fetchAuthMetadata).toHaveBeenCalledWith(homeserverUrl);
-  });
-
   it('should handle OIDC client registration failure', async () => {
     const error = new Error('OIDC client registration failed');
     vi.mocked(registerOidcClient).mockRejectedValue(error);
 
-    await expect(startOidcLoginFlow(homeserverUrl)).rejects.toThrow(
-      'OIDC client registration failed',
-    );
+    await expect(
+      startOidcLoginFlow(homeserverUrl, oidcClientConfig),
+    ).rejects.toThrow('OIDC client registration failed');
 
-    expect(fetchAuthMetadata).toHaveBeenCalledWith(homeserverUrl);
     expect(registerOidcClient).toHaveBeenCalledWith(oidcClientConfig);
     expect(startOidcLogin).not.toHaveBeenCalled();
   });

@@ -15,30 +15,16 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with NeoBoard Standalone. If not, see <https://www.gnu.org/licenses/>.
  */
-import {
-  DELEGATED_OIDC_COMPATIBILITY,
-  ILoginFlow,
-  ISSOFlow,
-  MatrixClient,
-} from 'matrix-js-sdk';
-import { isProvided } from 'matrix-js-sdk/lib/extensible_events_v1/utilities';
+import { ILoginFlow, ISSOFlow, MatrixClient } from 'matrix-js-sdk';
 
 /**
- * A `SSO` authentication types supported by the homeserver.
- */
-type SsoFlow = {
-  delegatedOidcCompatibility?: boolean;
-};
-
-/**
- * Use `/login` endpoint to fetch `m.login.sso` authentication type
- * and check if `delegated_oidc_compatibility` is supported.
+ * Use `/login` endpoint to fetch `m.login.sso` authentication type.
  * @param homeserverUrl homeserver URL
- * @returns SsoFlow or undefined
+ * @returns ISSOFlow or undefined
  */
 export async function fetchSsoLoginFlow(
   homeserverUrl: string,
-): Promise<SsoFlow | undefined> {
+): Promise<ISSOFlow | undefined> {
   const matrixClient = new MatrixClient({
     baseUrl: homeserverUrl,
   });
@@ -51,20 +37,7 @@ export async function fetchSsoLoginFlow(
     return undefined;
   }
 
-  const delegatedOidcCompatibility =
-    DELEGATED_OIDC_COMPATIBILITY.findIn(ssoLoginFlow);
-
-  if (
-    isProvided(delegatedOidcCompatibility) &&
-    typeof delegatedOidcCompatibility !== 'boolean'
-  ) {
-    // return undefined if invalid
-    return undefined;
-  }
-
-  return {
-    delegatedOidcCompatibility,
-  };
+  return ssoLoginFlow;
 }
 
 function isISSOFlow(loginFlow: ILoginFlow): loginFlow is ISSOFlow {

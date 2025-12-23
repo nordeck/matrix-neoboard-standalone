@@ -15,15 +15,15 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with NeoBoard Standalone. If not, see <https://www.gnu.org/licenses/>.
  */
+import { MatrixError, OidcClientConfig } from 'matrix-js-sdk';
+import { fetchAuthMetadata } from '../lib/discovery';
 import { fetchSsoLoginFlow } from '../lib/matrix';
 import { discoverHomeserverUrl } from './discoverHomeserverUrl';
 import { startLegacySsoLoginFlow } from './legacy';
 import { startOidcLoginFlow } from './oidc';
 
 /**
- * Start a login flow to homeserver.
- * Uses a `/login` endpoint to get a supported `SSO` authentication type that
- * can be a next gen auth OIDC or Legacy API.
+ * Start a login flow to homeserver. Can be a next gen auth OIDC or Legacy API SSO.
  * @param homeserverName Either a domain name to discover matrix client configuration or homeserver URL.
  */
 export async function startLoginFlow(homeserverName: string): Promise<void> {
@@ -33,15 +33,34 @@ export async function startLoginFlow(homeserverName: string): Promise<void> {
     throw new Error('Could not get homeserver base URL');
   }
 
-  const ssoFlow = await fetchSsoLoginFlow(homeserverUrl);
+  // Fetch the OIDC configuration
+  let oidcClientConfig: OidcClientConfig | undefined;
+  try {
+    oidcClientConfig = await fetchAuthMetadata(homeserverUrl);
+  } catch (e) {
+    if (
+      e instanceof MatrixError &&
+      e.httpStatus === 404 &&
+      e.errcode === 'M_UNRECOGNIZED'
+    ) {
+      oidcClientConfig = undefined;
+    } else {
+      throw new Error(
+        'Could not determine if homeserver supports OAuth 2.0 API',
+      );
+    }
+  }
 
-  if (ssoFlow && ssoFlow.delegatedOidcCompatibility) {
-    await startOidcLoginFlow(homeserverUrl);
-  } else if (ssoFlow) {
-    await startLegacySsoLoginFlow(homeserverUrl);
+  if (oidcClientConfig) {
+    await startOidcLoginFlow(homeserverUrl, oidcClientConfig);
   } else {
-    throw new Error(
-      `Homeserver "m.login.sso" authentication type is not configured`,
-    );
+    const ssoFlow = await fetchSsoLoginFlow(homeserverUrl);
+    if (ssoFlow) {
+      await startLegacySsoLoginFlow(homeserverUrl);
+    } else {
+      throw new Error(
+        'OAuth 2.0 and Legacy SSO APIs are not supported by the homeserver',
+      );
+    }
   }
 }
