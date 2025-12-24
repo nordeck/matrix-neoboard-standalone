@@ -18,8 +18,6 @@
 
 import { AccessTokens } from 'matrix-js-sdk';
 import {
-  MatrixClientCredentials,
-  matrixClientCredentialsSchema,
   MatrixCredentials,
   matrixCredentialsSchema,
   OidcCredentials,
@@ -27,7 +25,6 @@ import {
 } from '../auth';
 import { tryLoadValidatedFromLocalStorage } from '../lib/storage';
 
-export const matrixClientCredentialsStorageKey = 'nd_matrix_client_credentials';
 export const oidcCredentialsStorageKey = 'nd_oidc_credentials';
 export const matrixCredentialsStorageKey = 'nd_matrix_credentials';
 
@@ -35,7 +32,6 @@ export const matrixCredentialsStorageKey = 'nd_matrix_credentials';
  * This class handles the credentials state.
  */
 export class Credentials {
-  private matrixClientCredentials: MatrixClientCredentials | null = null;
   private oidcCredentials: OidcCredentials | null = null;
   private matrixCredentials: MatrixCredentials | null = null;
 
@@ -43,30 +39,14 @@ export class Credentials {
    * Try to restore the credentials from localStorage.
    */
   public start(): void {
-    this.matrixClientCredentials = tryLoadValidatedFromLocalStorage(
-      matrixClientCredentialsStorageKey,
-      matrixClientCredentialsSchema,
-    );
     this.oidcCredentials = tryLoadValidatedFromLocalStorage(
       oidcCredentialsStorageKey,
       oidcCredentialsSchema,
     );
-
     this.matrixCredentials = tryLoadValidatedFromLocalStorage(
       matrixCredentialsStorageKey,
       matrixCredentialsSchema,
     );
-  }
-
-  public getMatrixClientCredentials(): MatrixClientCredentials | null {
-    return this.matrixClientCredentials;
-  }
-
-  public setMatrixClientCredentials(
-    matrixClientCredentials: MatrixClientCredentials,
-  ): void {
-    this.matrixClientCredentials = matrixClientCredentials;
-    this.store();
   }
 
   public getOidcCredentials(): OidcCredentials | null {
@@ -94,12 +74,12 @@ export class Credentials {
    * @throws Error if trying to update unset MatrixClient credentials
    */
   public updateAccessTokens(accessTokens: AccessTokens): void {
-    if (!this.matrixClientCredentials) {
+    if (!this.matrixCredentials) {
       throw new Error('tried to update non-existing Matrix Client credentials');
     }
 
-    this.matrixClientCredentials = {
-      ...this.matrixClientCredentials,
+    this.matrixCredentials = {
+      ...this.matrixCredentials,
       accessToken: accessTokens.accessToken,
       refreshToken: accessTokens.refreshToken,
     };
@@ -107,10 +87,6 @@ export class Credentials {
   }
 
   private store(): void {
-    localStorage.setItem(
-      matrixClientCredentialsStorageKey,
-      JSON.stringify(this.matrixClientCredentials),
-    );
     localStorage.setItem(
       oidcCredentialsStorageKey,
       JSON.stringify(this.oidcCredentials),

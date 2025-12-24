@@ -16,10 +16,6 @@
  * along with NeoBoard Standalone. If not, see <https://www.gnu.org/licenses/>.
  */
 
-export {
-  mockMatrixClientCredentials,
-  mockMatrixCredentials,
-  mockOidcCredentials,
-} from './credentials';
+export { mockMatrixCredentials, mockOidcCredentials } from './credentials';
 export { mockOidcClientConfig, mockOpenIdConfiguration } from './oidc';
 export { mockOidcLoginResponse } from './oidcLoginResponse';

@@ -17,20 +17,14 @@
  */
 
 import { beforeEach, describe, expect, it } from 'vitest';
-import {
-  mockMatrixClientCredentials,
-  mockMatrixCredentials,
-  mockOidcCredentials,
-} from '../lib/testUtils';
+import { mockMatrixCredentials, mockOidcCredentials } from '../lib/testUtils';
 import {
   Credentials,
-  matrixClientCredentialsStorageKey,
   matrixCredentialsStorageKey,
   oidcCredentialsStorageKey,
 } from './Credentials';
 
 const matrixCredentials = mockMatrixCredentials();
-const matrixClientCredentials = mockMatrixClientCredentials();
 const oidcCredentials = mockOidcCredentials();
 
 describe('Credentials', () => {
@@ -99,22 +93,22 @@ describe('Credentials', () => {
     });
 
     it('should update the access tokens', () => {
-      credentials.setMatrixClientCredentials(matrixClientCredentials);
+      credentials.setMatrixCredentials(matrixCredentials);
       credentials.updateAccessTokens(newAccessTokens);
 
-      expect(credentials.getMatrixClientCredentials()).toEqual({
-        ...matrixClientCredentials,
+      expect(credentials.getMatrixCredentials()).toEqual({
+        ...matrixCredentials,
         ...newAccessTokens,
       });
     });
 
     it('should store the updated credentials', () => {
-      credentials.setMatrixClientCredentials(matrixClientCredentials);
+      credentials.setMatrixCredentials(matrixCredentials);
       credentials.updateAccessTokens(newAccessTokens);
 
-      expect(localStorage.getItem(matrixClientCredentialsStorageKey)).toEqual(
+      expect(localStorage.getItem(matrixCredentialsStorageKey)).toEqual(
         JSON.stringify({
-          ...matrixClientCredentials,
+          ...matrixCredentials,
           ...newAccessTokens,
         }),
       );

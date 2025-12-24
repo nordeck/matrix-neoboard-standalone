@@ -16,14 +16,21 @@
  * along with NeoBoard Standalone. If not, see <https://www.gnu.org/licenses/>.
  */
 import { OidcLoginResponse } from '../../auth';
-import {
-  mockMatrixClientCredentials,
-  mockOidcCredentials,
-} from './credentials';
 
 export function mockOidcLoginResponse(): OidcLoginResponse {
   return {
-    ...mockMatrixClientCredentials(),
-    ...mockOidcCredentials(),
+    accessToken: 'test_access_token',
+    refreshToken: 'test_refresh_token',
+    homeserverUrl: 'https://matrix.example.com/',
+    identityServerUrl: undefined,
+    issuer: 'https://example.com',
+    clientId: 'test_client_id',
+    idTokenClaims: {
+      aud: 'test_aud',
+      exp: 100000,
+      iat: 200000,
+      iss: 'https://example.com',
+      sub: 'test_sub',
+    },
   };
 }

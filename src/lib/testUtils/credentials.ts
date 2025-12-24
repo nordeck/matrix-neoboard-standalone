@@ -16,20 +16,7 @@
  * along with NeoBoard Standalone. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {
-  MatrixClientCredentials,
-  MatrixCredentials,
-  OidcCredentials,
-} from '../../auth';
-
-export function mockMatrixClientCredentials(): MatrixClientCredentials {
-  return {
-    accessToken: 'test_access_token',
-    refreshToken: 'test_refresh_token',
-    homeserverUrl: 'https://matrix.example.com/',
-    identityServerUrl: undefined,
-  };
-}
+import { MatrixCredentials, OidcCredentials } from '../../auth';
 
 export function mockOidcCredentials(): OidcCredentials {
   return {
@@ -47,6 +34,10 @@ export function mockOidcCredentials(): OidcCredentials {
 
 export function mockMatrixCredentials(): MatrixCredentials {
   return {
+    accessToken: 'test_access_token',
+    refreshToken: 'test_refresh_token',
+    homeserverUrl: 'https://matrix.example.com/',
+    identityServerUrl: undefined,
     userId: '@test:example.com',
     deviceId: 'test_device_id',
   };

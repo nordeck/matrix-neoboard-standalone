@@ -19,7 +19,6 @@
 import { useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
-  matrixClientCredentialsStorageKey,
   matrixCredentialsStorageKey,
   oidcCredentialsStorageKey,
 } from '../../state/Credentials';
@@ -38,7 +37,6 @@ export function LogoutDialog({ open, onClose }: ExportDialogProps) {
   const handleConfirm = useCallback(() => {
     // This should be replaced by proper lifecycle functions or something similar
     application.destroy();
-    localStorage.removeItem(matrixClientCredentialsStorageKey);
     localStorage.removeItem(oidcCredentialsStorageKey);
     localStorage.removeItem(matrixCredentialsStorageKey);
     application.start();

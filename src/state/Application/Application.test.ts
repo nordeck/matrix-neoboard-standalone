@@ -33,13 +33,11 @@ import {
   vi,
 } from 'vitest';
 import {
-  mockMatrixClientCredentials,
   mockMatrixCredentials,
   mockOidcClientConfig,
   mockOidcCredentials,
 } from '../../lib/testUtils';
 import {
-  matrixClientCredentialsStorageKey,
   matrixCredentialsStorageKey,
   oidcCredentialsStorageKey,
 } from '../Credentials';
@@ -64,7 +62,6 @@ vi.mock('@matrix-widget-toolkit/mui', async () => ({
 }));
 
 const oidcClientConfig = mockOidcClientConfig();
-const matrixClientCredentials = mockMatrixClientCredentials();
 const oidcCredentials = mockOidcCredentials();
 const matrixCredentials = mockMatrixCredentials();
 
@@ -135,10 +132,6 @@ describe('Application', () => {
   it('should resume sessions from localStorage for OIDC', async () => {
     // Set up credentials in localStorage, so that it is tried to resume a session from there
     localStorage.setItem(
-      matrixClientCredentialsStorageKey,
-      JSON.stringify(matrixClientCredentials),
-    );
-    localStorage.setItem(
       oidcCredentialsStorageKey,
       JSON.stringify(oidcCredentials),
     );
@@ -184,10 +177,6 @@ describe('Application', () => {
   it('should resume sessions from localStorage for legacy SSO', async () => {
     // Set up credentials in localStorage, so that it is tried to resume a session from there
     localStorage.setItem(
-      matrixClientCredentialsStorageKey,
-      JSON.stringify(matrixClientCredentials),
-    );
-    localStorage.setItem(
       matrixCredentialsStorageKey,
       JSON.stringify(matrixCredentials),
     );
@@ -231,10 +220,6 @@ describe('Application', () => {
 
     // Set up credentials in localStorage, so that it is tried to resume a session from there
     localStorage.setItem(
-      matrixClientCredentialsStorageKey,
-      JSON.stringify(matrixClientCredentials),
-    );
-    localStorage.setItem(
       oidcCredentialsStorageKey,
       JSON.stringify(oidcCredentials),
     );
@@ -263,15 +248,15 @@ describe('Application', () => {
 
     // Mock OIDC related function to prevent mocking a lot of OIDC stuff
     vi.mocked(completeAuthorizationCodeGrant).mockResolvedValue({
-      homeserverUrl: matrixClientCredentials.homeserverUrl,
+      homeserverUrl: matrixCredentials.homeserverUrl,
       idTokenClaims: oidcCredentials.idTokenClaims,
       oidcClientSettings: {
         issuer: oidcCredentials.issuer,
         clientId: oidcCredentials.clientId,
       },
       tokenResponse: {
-        access_token: matrixClientCredentials.accessToken,
-        refresh_token: matrixClientCredentials.refreshToken,
+        access_token: matrixCredentials.accessToken,
+        refresh_token: matrixCredentials.refreshToken,
         token_type: 'Bearer',
         scope: 'oidc',
         id_token: 'oidc_test_id_token',
@@ -340,10 +325,6 @@ describe('Application', () => {
 
   it('should complete a legacy SSO login', async () => {
     // Set credentials to local storage
-    localStorage.setItem(
-      matrixClientCredentialsStorageKey,
-      JSON.stringify(matrixClientCredentials),
-    );
     localStorage.setItem(
       matrixCredentialsStorageKey,
       JSON.stringify(matrixCredentials),

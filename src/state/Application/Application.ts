@@ -40,7 +40,6 @@ import {
 } from '../../toolkit/standalone';
 import {
   Credentials,
-  matrixClientCredentialsStorageKey,
   matrixCredentialsStorageKey,
   oidcCredentialsStorageKey,
 } from '../Credentials';
@@ -160,12 +159,10 @@ export class Application {
    * @returns Promise that resolves to true if a session could be restored, else false.
    */
   private async attemptStartFromStoredSession(): Promise<boolean> {
-    const matrixClientCredentials =
-      this.credentials.getMatrixClientCredentials();
     const oidcCredentials = this.credentials.getOidcCredentials();
     const matrixCredentials = this.credentials.getMatrixCredentials();
 
-    if (matrixClientCredentials === null || matrixCredentials === null) {
+    if (matrixCredentials === null) {
       return false;
     }
 
@@ -178,7 +175,6 @@ export class Application {
     }
 
     const matrixClient = await createMatrixClient(
-      matrixClientCredentials,
       matrixCredentials,
       this.tokenRefresher ?? undefined,
     );
@@ -199,7 +195,6 @@ export class Application {
       if (matrixError.name === 'M_UNKNOWN_TOKEN') {
         // An invalid token is nothing that can be recover from.
         // Clear the persisted credentials.
-        localStorage.removeItem(matrixClientCredentialsStorageKey);
         localStorage.removeItem(oidcCredentialsStorageKey);
         localStorage.removeItem(matrixCredentialsStorageKey);
 
@@ -236,7 +231,7 @@ export class Application {
       state: {
         userId: matrixCredentials.userId,
         deviceId: matrixCredentials.deviceId,
-        homeserverUrl: matrixClientCredentials.homeserverUrl,
+        homeserverUrl: matrixCredentials.homeserverUrl,
         standaloneClient,
         resolveWidgetApi: this.resolveWidgetApi,
         widgetApiPromise: this.widgetApiPromise,
@@ -286,18 +281,16 @@ export class Application {
       return false;
     }
 
-    this.credentials.setMatrixClientCredentials({
-      homeserverUrl,
-      identityServerUrl,
-      accessToken,
-      refreshToken,
-    });
     this.credentials.setOidcCredentials({
       clientId,
       issuer,
       idTokenClaims,
     });
     this.credentials.setMatrixCredentials({
+      homeserverUrl,
+      identityServerUrl,
+      accessToken,
+      refreshToken,
       userId: whoamiData.user_id,
       deviceId: whoamiData.device_id!,
     });
@@ -317,12 +310,10 @@ export class Application {
       loginResponse: { access_token, refresh_token, user_id, device_id },
     } = response;
 
-    this.credentials.setMatrixClientCredentials({
+    this.credentials.setMatrixCredentials({
       homeserverUrl,
       accessToken: access_token,
       refreshToken: refresh_token, // is undefined because login request has no refresh token parameter
-    });
-    this.credentials.setMatrixCredentials({
       userId: user_id,
       deviceId: device_id,
     });

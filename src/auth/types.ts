@@ -17,31 +17,26 @@
  */
 import Joi from 'joi';
 
-export type MatrixClientCredentials = {
+export type MatrixCredentials = {
   // url of the homeserver selected during login
   homeserverUrl: string;
   // identity server url as discovered during login
   identityServerUrl?: string;
-  // accessToken gained from OIDC token issuer
+  // accessToken
   accessToken: string;
-  // refreshToken gained from OIDC token issuer, when falsy token cannot be refreshed
+  // refreshToken, when falsy token cannot be refreshed
   refreshToken?: string;
-};
-
-export const matrixClientCredentialsSchema =
-  Joi.object<MatrixClientCredentials>({
-    homeserverUrl: Joi.string().uri().required(),
-    identityServerUrl: Joi.string().uri(),
-    accessToken: Joi.string(),
-    refreshToken: Joi.string(),
-  });
-
-export type MatrixCredentials = {
+  // User Id
   userId: string;
+  // Device Id
   deviceId: string;
 };
 
 export const matrixCredentialsSchema = Joi.object({
+  homeserverUrl: Joi.string().uri().required(),
+  identityServerUrl: Joi.string().uri(),
+  accessToken: Joi.string(),
+  refreshToken: Joi.string(),
   deviceId: Joi.string().required(),
   userId: Joi.string().required(),
 });
