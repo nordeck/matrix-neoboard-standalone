@@ -17,20 +17,14 @@
  */
 
 import { completeAuthorizationCodeGrant } from 'matrix-js-sdk';
-import { MatrixClientCredentials } from '../types';
-import { OidcCodeAndState, OidcCredentials } from './types';
-
-export type OidcLoginResponse = {
-  matrixClientCredentials: MatrixClientCredentials;
-  oidcCredentials: OidcCredentials;
-};
+import { OidcCodeAndState, OidcLoginResponse } from './types';
 
 /**
  * Attempt to complete authorization code flow to get an access token
  *
  * Borrowed from {@link https://github.com/matrix-org/matrix-react-sdk/blob/79c50db00993a97a0b6b8c3df02b8eec4e6cb21a/src/utils/oidc/authorize.ts#L102}
  *
- * @param queryParams the query-parameters extracted from the real query-string of the starting URI.
+ * @param codeAndState the query-parameters extracted from the real query-string of the starting URI.
  * @returns Promise that resolves with a CompleteOidcLoginResponse when login was successful
  * @throws When we failed to get a valid access token
  */
@@ -49,16 +43,12 @@ export const completeOidcLogin = async (
   );
 
   return {
-    matrixClientCredentials: {
-      homeserverUrl,
-      identityServerUrl,
-      accessToken: tokenResponse.access_token,
-      refreshToken: tokenResponse.refresh_token,
-    },
-    oidcCredentials: {
-      clientId: oidcClientSettings.clientId,
-      issuer: oidcClientSettings.issuer,
-      idTokenClaims,
-    },
+    homeserverUrl,
+    identityServerUrl,
+    accessToken: tokenResponse.access_token,
+    refreshToken: tokenResponse.refresh_token,
+    clientId: oidcClientSettings.clientId,
+    issuer: oidcClientSettings.issuer,
+    idTokenClaims,
   };
 };

@@ -16,8 +16,12 @@
  * along with NeoBoard Standalone. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { completeOidcLogin, OidcLoginResponse } from './completeOidcLogin';
-import { OidcCodeAndState, oidcCodeAndStateSchema } from './types';
+import { completeOidcLogin } from './completeOidcLogin';
+import {
+  OidcCodeAndState,
+  oidcCodeAndStateSchema,
+  OidcLoginResponse,
+} from './types';
 
 /**
  * Try to complete an OIDC login if the "code" and "state" query params are set.

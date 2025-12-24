@@ -267,22 +267,36 @@ export class Application {
       return false;
     }
 
-    const { matrixClientCredentials, oidcCredentials } = oidcLoginResponse;
+    const {
+      homeserverUrl,
+      identityServerUrl,
+      accessToken,
+      refreshToken,
+      clientId,
+      issuer,
+      idTokenClaims,
+    } = oidcLoginResponse;
 
     let whoamiData: Awaited<ReturnType<MatrixClient['whoami']>> | null = null;
 
     try {
-      whoamiData = await fetchWhoami(
-        matrixClientCredentials.homeserverUrl,
-        matrixClientCredentials.accessToken,
-      );
+      whoamiData = await fetchWhoami(homeserverUrl, accessToken);
     } catch (error) {
       console.warn('Whoami failed', error);
       return false;
     }
 
-    this.credentials.setMatrixClientCredentials(matrixClientCredentials);
-    this.credentials.setOidcCredentials(oidcCredentials);
+    this.credentials.setMatrixClientCredentials({
+      homeserverUrl,
+      identityServerUrl,
+      accessToken,
+      refreshToken,
+    });
+    this.credentials.setOidcCredentials({
+      clientId,
+      issuer,
+      idTokenClaims,
+    });
     this.credentials.setMatrixCredentials({
       userId: whoamiData.user_id,
       deviceId: whoamiData.device_id!,

@@ -17,9 +17,12 @@
  */
 
 export { attemptCompleteOidcLogin } from './attemptCompleteOidcLogin';
-export type { OidcLoginResponse } from './completeOidcLogin';
 export { createOidcTokenRefresher } from './createOidcTokenRefresher';
 export { startOidcLoginFlow } from './startOidcLoginFlow';
 export { TokenRefresher } from './TokenRefresher';
 export { oidcCodeAndStateSchema, oidcCredentialsSchema } from './types';
-export type { OidcCodeAndState, OidcCredentials } from './types';
+export type {
+  OidcCodeAndState,
+  OidcCredentials,
+  OidcLoginResponse,
+} from './types';

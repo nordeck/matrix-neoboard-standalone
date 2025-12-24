@@ -41,6 +41,26 @@ export const oidcCredentialsSchema = Joi.object<OidcCredentials>({
   }).required(),
 });
 
+/**
+ * Borrowed from {@link https://github.com/matrix-org/matrix-react-sdk/blob/79c50db00993a97a0b6b8c3df02b8eec4e6cb21a/src/utils/oidc/authorize.ts#L80}
+ */
+export type OidcLoginResponse = {
+  // url of the homeserver selected during login
+  homeserverUrl: string;
+  // identity server url as discovered during login
+  identityServerUrl?: string;
+  // accessToken gained from OIDC token issuer
+  accessToken: string;
+  // refreshToken gained from OIDC token issuer, when falsy token cannot be refreshed
+  refreshToken?: string;
+  // this client's id as registered with the OIDC issuer
+  clientId: string;
+  // issuer used during authentication
+  issuer: string;
+  // claims of the given access token; used during token refresh to validate new tokens
+  idTokenClaims: IdTokenClaims;
+};
+
 export type OidcCodeAndState = {
   code: string;
   state: string;

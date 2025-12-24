@@ -23,7 +23,7 @@ import {
 
 export function mockOidcLoginResponse(): OidcLoginResponse {
   return {
-    matrixClientCredentials: mockMatrixClientCredentials(),
-    oidcCredentials: mockOidcCredentials(),
+    ...mockMatrixClientCredentials(),
+    ...mockOidcCredentials(),
   };
 }
