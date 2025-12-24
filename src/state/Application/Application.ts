@@ -211,11 +211,6 @@ export class Application {
       }
     });
 
-    //TODO: MA check if logged out
-    //TODO: MA cleanup
-    // matrixClient.on(HttpApiEvent.SessionLoggedOut, (error) => {
-    // });
-
     await matrixClient.startClient();
 
     // wait for sync with the server
