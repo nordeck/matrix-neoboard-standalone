@@ -17,11 +17,8 @@
  */
 
 import { completeAuthorizationCodeGrant } from 'matrix-js-sdk';
-import {
-  MatrixClientCredentials,
-  OidcCodeAndState,
-  OidcCredentials,
-} from './types';
+import { MatrixClientCredentials } from '../types';
+import { OidcCodeAndState, OidcCredentials } from './types';
 
 export type OidcLoginResponse = {
   matrixClientCredentials: MatrixClientCredentials;

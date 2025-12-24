@@ -16,8 +16,11 @@
  * along with NeoBoard Standalone. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { MatrixClientCredentials, OidcCredentials } from '../../auth';
-import { MatrixCredentials } from '../../state';
+import {
+  MatrixClientCredentials,
+  MatrixCredentials,
+  OidcCredentials,
+} from '../../auth';
 
 export function mockMatrixClientCredentials(): MatrixClientCredentials {
   return {

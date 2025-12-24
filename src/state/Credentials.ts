@@ -16,11 +16,12 @@
  * along with NeoBoard Standalone. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import Joi from 'joi';
 import { AccessTokens } from 'matrix-js-sdk';
 import {
   MatrixClientCredentials,
   matrixClientCredentialsSchema,
+  MatrixCredentials,
+  matrixCredentialsSchema,
   OidcCredentials,
   oidcCredentialsSchema,
 } from '../auth';
@@ -29,16 +30,6 @@ import { tryLoadValidatedFromLocalStorage } from '../lib/storage';
 export const matrixClientCredentialsStorageKey = 'nd_matrix_client_credentials';
 export const oidcCredentialsStorageKey = 'nd_oidc_credentials';
 export const matrixCredentialsStorageKey = 'nd_matrix_credentials';
-
-export type MatrixCredentials = {
-  userId: string;
-  deviceId: string;
-};
-
-const matrixCredentialsSchema = Joi.object({
-  deviceId: Joi.string().required(),
-  userId: Joi.string().required(),
-});
 
 /**
  * This class handles the credentials state.

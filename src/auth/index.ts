@@ -18,3 +18,8 @@
 export * from './legacy';
 export * from './oidc';
 export { startLoginFlow } from './startLoginFlow';
+export {
+  matrixClientCredentialsSchema,
+  matrixCredentialsSchema,
+} from './types';
+export type { MatrixClientCredentials, MatrixCredentials } from './types';

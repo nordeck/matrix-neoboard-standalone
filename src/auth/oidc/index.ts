@@ -21,13 +21,5 @@ export type { OidcLoginResponse } from './completeOidcLogin';
 export { createOidcTokenRefresher } from './createOidcTokenRefresher';
 export { startOidcLoginFlow } from './startOidcLoginFlow';
 export { TokenRefresher } from './TokenRefresher';
-export {
-  matrixClientCredentialsSchema,
-  oidcCodeAndStateSchema,
-  oidcCredentialsSchema,
-} from './types';
-export type {
-  MatrixClientCredentials,
-  OidcCodeAndState,
-  OidcCredentials,
-} from './types';
+export { oidcCodeAndStateSchema, oidcCredentialsSchema } from './types';
+export type { OidcCodeAndState, OidcCredentials } from './types';

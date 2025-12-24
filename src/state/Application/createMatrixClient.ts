@@ -17,8 +17,11 @@
  */
 
 import { MatrixClient, MatrixScheduler, MemoryStore } from 'matrix-js-sdk';
-import { MatrixClientCredentials, TokenRefresher } from '../../auth';
-import { MatrixCredentials } from '../Credentials';
+import {
+  MatrixClientCredentials,
+  MatrixCredentials,
+  TokenRefresher,
+} from '../../auth';
 
 export async function createMatrixClient(
   matrixClientCredentials: MatrixClientCredentials,
