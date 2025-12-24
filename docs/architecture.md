@@ -50,4 +50,4 @@ sequenceDiagram
 ## Legacy API SSO Login Flow
 
 Alternatively, `SSO` is available via `Legacy API` as described
-in [the matrix specification](https://spec.matrix.org/v1.16/client-server-api/#client-login-via-sso).
+in [the Matrix Specification](https://spec.matrix.org/v1.16/client-server-api/#client-login-via-sso).
