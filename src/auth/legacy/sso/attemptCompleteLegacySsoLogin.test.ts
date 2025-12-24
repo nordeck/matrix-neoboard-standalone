@@ -52,6 +52,8 @@ describe('attemptCompleteLegacySsoLogin', () => {
     vi.mocked(completeLegacySsoLogin).mockResolvedValue(loginResponse);
 
     expect(await attemptCompleteLegacySsoLogin()).toEqual(response);
+
+    expect(localStorage.getItem(legacySsoHomeserverUrlStorageKey)).toBeNull();
   });
 
   it('should return undefined if no loginToken set', async () => {

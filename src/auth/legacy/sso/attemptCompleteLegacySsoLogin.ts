@@ -45,6 +45,9 @@ export async function attemptCompleteLegacySsoLogin(): Promise<
   // Delete authentication params
   window.history.replaceState(null, '', window.location.pathname);
 
+  // Delete homeserver URL stored
+  localStorage.removeItem(legacySsoHomeserverUrlStorageKey);
+
   const loginResponse = await completeLegacySsoLogin({
     homeserverUrl,
     loginToken,
