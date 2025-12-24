@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Nordeck IT + Consulting GmbH
+ * Copyright 2025 Nordeck IT + Consulting GmbH
  *
  * NeoBoard Standalone is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -15,7 +15,22 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with NeoBoard Standalone. If not, see <https://www.gnu.org/licenses/>.
  */
+import { OidcLoginResponse } from '../../auth';
 
-export { discoverClientConfig } from './discoverClientConfig';
-export { fetchAuthMetadata } from './fetchAuthMetadata';
-export { getHomeserverUrlFromConfig } from './getHomeserverUrlFromConfig';
+export function mockOidcLoginResponse(): OidcLoginResponse {
+  return {
+    accessToken: 'test_access_token',
+    refreshToken: 'test_refresh_token',
+    homeserverUrl: 'https://matrix.example.com/',
+    identityServerUrl: undefined,
+    issuer: 'https://example.com',
+    clientId: 'test_client_id',
+    idTokenClaims: {
+      aud: 'test_aud',
+      exp: 100000,
+      iat: 200000,
+      iss: 'https://example.com',
+      sub: 'test_sub',
+    },
+  };
+}

@@ -17,37 +17,37 @@
  */
 
 import { describe, expect, it, vi } from 'vitest';
-import { createOidcTestCredentials } from '../testUtils';
+import { mockOidcLoginResponse } from '../../lib/testUtils';
+import { attemptCompleteOidcLogin } from './attemptCompleteOidcLogin';
 import { completeOidcLogin } from './completeOidcLogin';
-import { maybeCompleteOidcLogin } from './maybeCompleteOidcLogin';
 
 vi.mock('./completeOidcLogin');
 
-const oidcTestCredentials = createOidcTestCredentials();
+const oidcLoginResponse = mockOidcLoginResponse();
 
-describe('maybeCompleteOidcLogin', () => {
+describe('attemptCompleteOidcLogin', () => {
   it('should return null if no query params are set', async () => {
     window.location.href = 'https://example.com/';
-    expect(await maybeCompleteOidcLogin()).toBeNull();
+    expect(await attemptCompleteOidcLogin()).toBeNull();
   });
 
   it('should return null if only the "code" query params is set', async () => {
     window.location.href = 'https://example.com/?code=test_code';
-    expect(await maybeCompleteOidcLogin()).toBeNull();
+    expect(await attemptCompleteOidcLogin()).toBeNull();
   });
 
   it('should return null if only the "state" query params is set', async () => {
     window.location.href = 'https://example.com/?state=test_state';
-    expect(await maybeCompleteOidcLogin()).toBeNull();
+    expect(await attemptCompleteOidcLogin()).toBeNull();
   });
 
   it('should return complete the login if the "code" and "state" query params are set', async () => {
     window.location.href =
       'https://example.com/?code=test_code&state=test_state';
 
-    vi.mocked(completeOidcLogin).mockResolvedValue(oidcTestCredentials);
+    vi.mocked(completeOidcLogin).mockResolvedValue(oidcLoginResponse);
 
-    expect(await maybeCompleteOidcLogin()).toBe(oidcTestCredentials);
+    expect(await attemptCompleteOidcLogin()).toBe(oidcLoginResponse);
     expect(completeOidcLogin).toHaveBeenCalledWith({
       code: 'test_code',
       state: 'test_state',

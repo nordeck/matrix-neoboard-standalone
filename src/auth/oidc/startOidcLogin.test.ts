@@ -17,7 +17,10 @@
  */
 
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
-import { mockOidcClientConfig, mockOpenIdConfiguration } from '../testUtils';
+import {
+  mockOidcClientConfig,
+  mockOpenIdConfiguration,
+} from '../../lib/testUtils';
 import { startOidcLogin } from './startOidcLogin';
 
 import type { FetchMock } from 'vitest-fetch-mock';

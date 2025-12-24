@@ -17,7 +17,7 @@
  */
 
 import { OidcClientConfig, generateOidcAuthorizationUrl } from 'matrix-js-sdk';
-import { randomString } from '..';
+import { randomString } from '../../lib';
 
 /**
  * Start OIDC authorization code flow

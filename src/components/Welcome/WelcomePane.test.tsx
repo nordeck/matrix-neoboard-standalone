@@ -18,9 +18,10 @@
 
 import { getEnvironment } from '@matrix-widget-toolkit/mui';
 import { render, screen } from '@testing-library/react';
+import { ComponentType, PropsWithChildren } from 'react';
 import { MemoryRouter } from 'react-router';
-import { afterEach, describe, expect, it, vi } from 'vitest';
-import { startLoginFlow } from '../../lib/oidc';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { startLoginFlow } from '../../auth';
 import { WelcomePane } from './WelcomePane';
 
 vi.mock('@matrix-widget-toolkit/mui', async () => ({
@@ -28,11 +29,12 @@ vi.mock('@matrix-widget-toolkit/mui', async () => ({
   getEnvironment: vi.fn(),
 }));
 
-vi.mock('../../lib/oidc', () => ({
+vi.mock('../../auth', async () => ({
+  ...(await vi.importActual('../../auth')),
   startLoginFlow: vi.fn(),
 }));
 
-vi.mock('../Login/Login', () => ({
+vi.mock('../Login', () => ({
   Login: () => <div data-testid="login-component">Login Component</div>,
 }));
 
@@ -40,64 +42,72 @@ vi.mock('./WelcomeLogo', () => ({
   WelcomeLogo: () => <div data-testid="welcome-logo">Welcome Logo</div>,
 }));
 
-const mockGetEnvironment = vi.mocked(getEnvironment);
-const mockStartLoginFlow = vi.mocked(startLoginFlow);
-
-// Test wrapper to provide router context
-const TestWrapper = ({
-  children,
-  initialEntries = ['/login'],
-}: {
-  children: React.ReactNode;
-  initialEntries?: string[];
-}) => <MemoryRouter initialEntries={initialEntries}>{children}</MemoryRouter>;
-
 describe('<WelcomePane />', () => {
+  let Wrapper: ComponentType<PropsWithChildren<{}>>;
+
+  beforeEach(() => {
+    Wrapper = ({ children }: PropsWithChildren<{}>) => (
+      <MemoryRouter initialEntries={['/login']}>{children}</MemoryRouter>
+    );
+  });
+
   afterEach(() => {
-    vi.clearAllMocks();
-    vi.clearAllTimers();
+    vi.resetAllMocks();
   });
 
-  it('should render the welcome pane when no static server is configured', () => {
-    mockGetEnvironment.mockReturnValue('');
-
-    render(
-      <TestWrapper>
-        <WelcomePane />
-      </TestWrapper>,
-    );
+  it('should render the welcome pane', () => {
+    render(<WelcomePane />, {
+      wrapper: Wrapper,
+    });
 
     expect(screen.getByTestId('welcome-logo')).toBeInTheDocument();
     expect(screen.getByTestId('login-component')).toBeInTheDocument();
-    expect(mockStartLoginFlow).not.toHaveBeenCalled();
+    expect(startLoginFlow).not.toHaveBeenCalled();
   });
 
-  it('should render the welcome pane when static server is configured but skipLogin is not present', () => {
-    mockGetEnvironment.mockReturnValue('matrix.example.com');
+  it('should render the welcome pane when homeserver name is configured', () => {
+    vi.mocked(getEnvironment).mockImplementation((name, defaultValue) => {
+      switch (name) {
+        case 'REACT_APP_HOMESERVER':
+          return 'matrix.example.com';
+        default:
+          return defaultValue;
+      }
+    });
 
-    render(
-      <TestWrapper initialEntries={['/login']}>
-        <WelcomePane />
-      </TestWrapper>,
-    );
+    render(<WelcomePane />, {
+      wrapper: Wrapper,
+    });
 
     expect(screen.getByTestId('welcome-logo')).toBeInTheDocument();
     expect(screen.getByTestId('login-component')).toBeInTheDocument();
-    expect(mockStartLoginFlow).not.toHaveBeenCalled();
+    expect(startLoginFlow).not.toHaveBeenCalled();
   });
 
-  it('should skip the welcome pane and start login flow when static server is configured and skipLogin is present', () => {
-    mockGetEnvironment.mockReturnValue('matrix.example.com');
-    mockStartLoginFlow.mockResolvedValue();
+  it('should skip the welcome pane and start login flow when homeserver name is configured and skipLogin is present', async () => {
+    vi.mocked(getEnvironment).mockImplementation((name, defaultValue) => {
+      switch (name) {
+        case 'REACT_APP_HOMESERVER':
+          return 'https://matrix.example.com';
+        default:
+          return defaultValue;
+      }
+    });
 
-    render(
-      <TestWrapper initialEntries={['/login?skipLogin']}>
-        <WelcomePane />
-      </TestWrapper>,
+    vi.mocked(startLoginFlow).mockResolvedValue();
+
+    Wrapper = ({ children }: PropsWithChildren<{}>) => (
+      <MemoryRouter initialEntries={['/login?skipLogin']}>
+        {children}
+      </MemoryRouter>
     );
+
+    render(<WelcomePane />, {
+      wrapper: Wrapper,
+    });
 
     expect(screen.queryByTestId('welcome-logo')).not.toBeInTheDocument();
     expect(screen.queryByTestId('login-component')).not.toBeInTheDocument();
-    expect(mockStartLoginFlow).toHaveBeenCalledWith('matrix.example.com');
+    expect(startLoginFlow).toHaveBeenCalledWith('https://matrix.example.com');
   });
 });

@@ -18,4 +18,5 @@
 
 export { calculateWhiteboardPermissions } from './calculateWhiteboardPermissions';
 export type { WhiteboardPermissions } from './calculateWhiteboardPermissions';
+export { fetchSsoLoginFlow } from './fetchSsoLoginFlow';
 export { fetchWhoami } from './fetchWhoami';

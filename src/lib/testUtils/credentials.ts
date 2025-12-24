@@ -16,17 +16,12 @@
  * along with NeoBoard Standalone. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { MatrixCredentials } from '../../state';
-import { OidcCredentials } from '../oidc';
+import { MatrixCredentials, OidcCredentials } from '../../auth';
 
-export function createOidcTestCredentials(): OidcCredentials {
+export function mockOidcCredentials(): OidcCredentials {
   return {
     issuer: 'https://example.com',
     clientId: 'test_client_id',
-    accessToken: 'test_access_token',
-    refreshToken: 'test_refresh_token',
-    homeserverUrl: 'https://matrix.example.com/',
-    identityServerUrl: undefined,
     idTokenClaims: {
       aud: 'test_aud',
       exp: 100000,
@@ -37,8 +32,12 @@ export function createOidcTestCredentials(): OidcCredentials {
   };
 }
 
-export function createMatrixTestCredentials(): MatrixCredentials {
+export function mockMatrixCredentials(): MatrixCredentials {
   return {
+    accessToken: 'test_access_token',
+    refreshToken: 'test_refresh_token',
+    homeserverUrl: 'https://matrix.example.com/',
+    identityServerUrl: undefined,
     userId: '@test:example.com',
     deviceId: 'test_device_id',
   };
