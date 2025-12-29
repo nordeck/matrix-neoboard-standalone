@@ -55,7 +55,7 @@ export class Credentials {
 
   public setOidcCredentials(oidcCredentials: OidcCredentials): void {
     this.oidcCredentials = oidcCredentials;
-    this.store();
+    this.storeOidcCredentials();
   }
 
   public getMatrixCredentials(): MatrixCredentials | null {
@@ -64,7 +64,7 @@ export class Credentials {
 
   public setMatrixCredentials(matrixCredentials: MatrixCredentials): void {
     this.matrixCredentials = matrixCredentials;
-    this.store();
+    this.storeMatrixCredentials();
   }
 
   /**
@@ -83,14 +83,17 @@ export class Credentials {
       accessToken: accessTokens.accessToken,
       refreshToken: accessTokens.refreshToken,
     };
-    this.store();
+    this.storeMatrixCredentials();
   }
 
-  private store(): void {
+  private storeOidcCredentials(): void {
     localStorage.setItem(
       oidcCredentialsStorageKey,
       JSON.stringify(this.oidcCredentials),
     );
+  }
+
+  private storeMatrixCredentials(): void {
     localStorage.setItem(
       matrixCredentialsStorageKey,
       JSON.stringify(this.matrixCredentials),
