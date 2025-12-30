@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Nordeck IT + Consulting GmbH
+ * Copyright 2025 Nordeck IT + Consulting GmbH
  *
  * NeoBoard Standalone is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -15,11 +15,25 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with NeoBoard Standalone. If not, see <https://www.gnu.org/licenses/>.
  */
+import { getEnvironment } from '@matrix-widget-toolkit/mui';
+import { isValidUrl } from './isValidUrl';
 
-export { formatTimeAgo } from './formatTimeAgo';
-export { getEnvironmentAppearance } from './getEnvironmentAppearance';
-export { getEnvironmentUrl } from './getEnvironmentUrl';
-export { isValidServerName } from './isValidServerName';
-export { isValidUrl } from './isValidUrl';
-export { setLocale } from './locale';
-export { randomString } from './randomString';
+/**
+ * Reads the environment variable and return the value if is a valid URL
+ * @param name variable name
+ * @returns URL or undefined if missing or not valid
+ */
+export function getEnvironmentUrl(name: string): string | undefined {
+  const value = getEnvironment(name);
+
+  if (!value) {
+    return undefined;
+  }
+
+  if (!isValidUrl(value)) {
+    console.warn(`Environment variable "${name}" value is invalid: "${value}"`);
+    return undefined;
+  }
+
+  return value;
+}

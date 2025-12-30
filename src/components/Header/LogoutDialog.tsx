@@ -18,6 +18,7 @@
 
 import { useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
+import { getEnvironmentUrl } from '../../lib';
 import {
   matrixCredentialsStorageKey,
   oidcCredentialsStorageKey,
@@ -33,14 +34,17 @@ type ExportDialogProps = {
 export function LogoutDialog({ open, onClose }: ExportDialogProps) {
   const application = useApplication();
   const { t } = useTranslation();
+  const logoutRedirectUrl = getEnvironmentUrl('REACT_APP_LOGOUT_REDIRECT_URL');
 
   const handleConfirm = useCallback(() => {
     // This should be replaced by proper lifecycle functions or something similar
-    application.destroy();
+    application.destroy(logoutRedirectUrl);
     localStorage.removeItem(oidcCredentialsStorageKey);
     localStorage.removeItem(matrixCredentialsStorageKey);
-    application.start();
-  }, [application]);
+    if (!logoutRedirectUrl) {
+      application.start();
+    }
+  }, [application, logoutRedirectUrl]);
 
   return (
     <ConfirmDialog

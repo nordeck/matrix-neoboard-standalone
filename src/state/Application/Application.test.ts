@@ -388,4 +388,17 @@ describe('Application', () => {
     const state = application.getStateSubject().getValue();
     expect(state.lifecycleState).toBe('notLoggedIn');
   });
+
+  it('should change state to "loggedOut" on destroy', async () => {
+    application.destroy();
+
+    const state = application.getStateSubject().getValue();
+    expect(state.lifecycleState).toBe('loggedOut');
+  });
+
+  it('should redirect on destroy when logout URL is provided', async () => {
+    application.destroy('https://id.example.com/logout');
+
+    expect(window.location.href).toBe('https://id.example.com/logout');
+  });
 });
