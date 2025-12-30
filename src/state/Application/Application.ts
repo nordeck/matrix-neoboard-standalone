@@ -150,14 +150,18 @@ export class Application {
     return this.state;
   }
 
-  public destroy(): void {
+  public destroy(logoutRedirectUrl?: string): void {
     const state = this.state.getValue();
 
     if (state.lifecycleState === 'loggedIn') {
       state.matrixClient.stopClient();
     }
 
-    this.state.next({ lifecycleState: 'loggedOut' });
+    if (!logoutRedirectUrl) {
+      this.state.next({ lifecycleState: 'loggedOut' });
+    } else {
+      window.location.href = logoutRedirectUrl;
+    }
     this.state.complete();
   }
 
