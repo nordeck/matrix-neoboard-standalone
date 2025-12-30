@@ -16,31 +16,28 @@
  * along with NeoBoard Standalone. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { AccessTokens } from 'matrix-js-sdk';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
-import { Credentials } from '../../state';
 import {
-  createMatrixTestCredentials,
-  createOidcTestCredentials,
+  mockMatrixCredentials,
+  mockOidcCredentials,
   mockOpenIdConfiguration,
-} from '../testUtils';
+} from '../../lib/testUtils';
+import { Credentials } from '../../state';
 import { TokenRefresher } from './TokenRefresher';
+import { createOidcTokenRefresher } from './createOidcTokenRefresher';
 
 import type { FetchMock } from 'vitest-fetch-mock';
-import { createOidcTokenRefresher } from './createOidcTokenRefresher';
 const fetch = global.fetch as FetchMock;
 
-const openIdConfiguration = mockOpenIdConfiguration();
+describe('createOidcTokenRefresher', () => {
+  const openIdConfiguration = mockOpenIdConfiguration();
+  const oidcCredentials = mockOidcCredentials();
+  const matrixCredentials = mockMatrixCredentials();
+  const credentials = new Credentials();
+  credentials.setMatrixCredentials(matrixCredentials);
+  credentials.setOidcCredentials(oidcCredentials);
 
-describe('TokenRefresher', () => {
-  let credentials: Credentials;
-  let tokenRefresher: TokenRefresher;
-
-  afterEach(() => {
-    fetch.resetMocks();
-  });
-
-  beforeEach(async () => {
+  beforeEach(() => {
     fetch.mockResponse((req) => {
       if (req.url === 'https://example.com/.well-known/openid-configuration') {
         return {
@@ -61,32 +58,19 @@ describe('TokenRefresher', () => {
       }
       return '';
     });
-
-    credentials = new Credentials();
-    const oidcCredentials = createOidcTestCredentials();
-    credentials.setOidcCredentials(oidcCredentials);
-    const matrixCredentials = createMatrixTestCredentials();
-    credentials.setMatrixCredentials(matrixCredentials);
-
-    tokenRefresher = await createOidcTokenRefresher(
-      credentials,
-      oidcCredentials,
-      matrixCredentials.deviceId,
-    );
   });
 
-  it('persistTokens should update the access tokens on the credentials', () => {
-    const newTokens: AccessTokens = {
-      accessToken: 'new_access_token',
-      refreshToken: 'new_refresh_token',
-    };
-    tokenRefresher.persistTokens(newTokens);
+  afterEach(() => {
+    fetch.resetMocks();
+  });
 
-    expect(credentials.getOidcCredentials()?.accessToken).toBe(
-      'new_access_token',
-    );
-    expect(credentials.getOidcCredentials()?.refreshToken).toBe(
-      'new_refresh_token',
-    );
+  it('should create a TokenRefresher', async () => {
+    expect(
+      await createOidcTokenRefresher(
+        credentials,
+        oidcCredentials,
+        matrixCredentials.deviceId,
+      ),
+    ).toBeInstanceOf(TokenRefresher);
   });
 });

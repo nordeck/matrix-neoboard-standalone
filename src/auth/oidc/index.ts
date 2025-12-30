@@ -16,6 +16,13 @@
  * along with NeoBoard Standalone. If not, see <https://www.gnu.org/licenses/>.
  */
 
-export { discoverClientConfig } from './discoverClientConfig';
-export { fetchAuthMetadata } from './fetchAuthMetadata';
-export { getHomeserverUrlFromConfig } from './getHomeserverUrlFromConfig';
+export { attemptCompleteOidcLogin } from './attemptCompleteOidcLogin';
+export { createOidcTokenRefresher } from './createOidcTokenRefresher';
+export { startOidcLoginFlow } from './startOidcLoginFlow';
+export { TokenRefresher } from './TokenRefresher';
+export { oidcCodeAndStateSchema, oidcCredentialsSchema } from './types';
+export type {
+  OidcCodeAndState,
+  OidcCredentials,
+  OidcLoginResponse,
+} from './types';

@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Nordeck IT + Consulting GmbH
+ * Copyright 2025 Nordeck IT + Consulting GmbH
  *
  * NeoBoard Standalone is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -15,13 +15,4 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with NeoBoard Standalone. If not, see <https://www.gnu.org/licenses/>.
  */
-
-export { completeOidcLogin } from './completeOidcLogin';
-export { createOidcTokenRefresher } from './createOidcTokenRefresher';
-export { maybeCompleteOidcLogin } from './maybeCompleteOidcLogin';
-export { registerOidcClient } from './registerOidcClient';
-export { startLoginFlow } from './startLoginFlow';
-export { startOidcLogin } from './startOidcLogin';
-export { TokenRefresher } from './TokenRefresher';
-export { oidcCodeAndStateSchema, oidcCredentialsSchema } from './types';
-export type { OidcCodeAndState, OidcCredentials } from './types';
+export { Login } from './Login.tsx';

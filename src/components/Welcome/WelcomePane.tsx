@@ -28,9 +28,9 @@ import {
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSearchParams } from 'react-router';
+import { startLoginFlow } from '../../auth';
 import { isValidServerName } from '../../lib';
-import { startLoginFlow } from '../../lib/oidc';
-import { Login } from '../Login/Login';
+import { Login } from '../Login';
 import { WelcomeLogo } from './WelcomeLogo';
 import WelcomeSymbols from './WelcomeSymbols';
 import {

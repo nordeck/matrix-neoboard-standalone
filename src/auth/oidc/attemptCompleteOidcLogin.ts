@@ -19,8 +19,8 @@
 import { completeOidcLogin } from './completeOidcLogin';
 import {
   OidcCodeAndState,
-  OidcCredentials,
   oidcCodeAndStateSchema,
+  OidcLoginResponse,
 } from './types';
 
 /**
@@ -29,7 +29,7 @@ import {
  * @returns Promise that resolves to OidcCredentials on success or
  *          null if "code" or "state" are not set.
  */
-export async function maybeCompleteOidcLogin(): Promise<OidcCredentials | null> {
+export async function attemptCompleteOidcLogin(): Promise<OidcLoginResponse | null> {
   const codeAndState = parseValidatedCodeAndStateFromQueryParams(
     new URL(window.location.href).searchParams,
   );
