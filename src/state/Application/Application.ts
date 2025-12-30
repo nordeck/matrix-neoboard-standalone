@@ -17,6 +17,7 @@
  */
 
 import { WidgetApi } from '@matrix-widget-toolkit/api';
+import { getEnvironment } from '@matrix-widget-toolkit/mui';
 import {
   ClientEvent,
   MatrixClient,
@@ -29,8 +30,10 @@ import {
   attemptCompleteOidcLogin,
   createOidcTokenRefresher,
   OidcLoginResponse,
+  startLoginFlow,
   TokenRefresher,
 } from '../../auth';
+import { isValidServerName } from '../../lib';
 import { fetchWhoami } from '../../lib/matrix';
 import {
   MatrixStandaloneClient,
@@ -133,7 +136,14 @@ export class Application {
       }
     }
 
-    this.state.next({ lifecycleState: 'notLoggedIn' });
+    const staticServerName = getEnvironment('REACT_APP_HOMESERVER');
+    const hasValidServerName = isValidServerName(staticServerName);
+    const skipLogin = getEnvironment('REACT_APP_SKIP_LOGIN') === 'true';
+    if (hasValidServerName && skipLogin) {
+      await startLoginFlow(staticServerName);
+    } else {
+      this.state.next({ lifecycleState: 'notLoggedIn' });
+    }
   }
 
   public getStateSubject(): ObservableBehaviorSubject<ApplicationState> {
