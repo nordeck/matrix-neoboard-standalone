@@ -100,7 +100,7 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@e468171a9de216ec08956ac3ada2f0791b6bd435 # v3
+        uses: docker/setup-buildx-action@8d2750c68a42422c14e847fe6c8ac0403b4cbd6f # v3
 
       - name: get argo-cd type of sha
         id: argocd-sha
@@ -260,9 +260,9 @@ jobs:
 
       - name: deploy k8s to cluster
         run: |
-          helm upgrade --install matrix-neoboard-standalone ./charts/matrix-neoboard-standalone -f ./valhalla/cluster/neotoolsuite-dev/matrix-neoboard-standalone/values.dev.yaml -n matrix --set image.tag=${{ needs.build.outputs.ARGOCD_TAG }}
+          helm upgrade --rollback-on-failure --install matrix-neoboard-standalone ./charts/matrix-neoboard-standalone -f ./valhalla/cluster/neotoolsuite-dev/matrix-neoboard-standalone/values.dev.yaml -n matrix --set image.tag=${{ needs.build.outputs.ARGOCD_TAG }}
 
       # inifinite canvas
       - name: deploy k8s to cluster
         run: |
-          helm upgrade --install matrix-neoboard-standalone-infinite-canvas ./charts/matrix-neoboard-standalone -f ./valhalla/cluster/neotoolsuite-dev/matrix-neoboard-standalone/values.infinite-canvas.yaml -n matrix --set image.tag=${{ needs.build.outputs.ARGOCD_TAG }}
+          helm upgrade --rollback-on-failure --install matrix-neoboard-standalone-infinite-canvas ./charts/matrix-neoboard-standalone -f ./valhalla/cluster/neotoolsuite-dev/matrix-neoboard-standalone/values.infinite-canvas.yaml -n matrix --set image.tag=${{ needs.build.outputs.ARGOCD_TAG }}
