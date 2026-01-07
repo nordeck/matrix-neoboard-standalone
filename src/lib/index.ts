@@ -19,5 +19,6 @@
 export { formatTimeAgo } from './formatTimeAgo';
 export { getEnvironmentAppearance } from './getEnvironmentAppearance';
 export { isValidServerName } from './isValidServerName';
+export { isValidUrl } from './isValidUrl';
 export { setLocale } from './locale';
 export { randomString } from './randomString';

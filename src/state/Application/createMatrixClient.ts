@@ -17,22 +17,20 @@
  */
 
 import { MatrixClient, MatrixScheduler, MemoryStore } from 'matrix-js-sdk';
-import { OidcCredentials, TokenRefresher } from '../../lib/oidc';
-import { MatrixCredentials } from '../Credentials';
+import { MatrixCredentials, TokenRefresher } from '../../auth';
 
 export async function createMatrixClient(
-  oidcCredentials: OidcCredentials,
   matrixCredentials: MatrixCredentials,
   tokenRefresher?: TokenRefresher,
 ): Promise<MatrixClient> {
   return new MatrixClient({
-    baseUrl: oidcCredentials.homeserverUrl,
-    accessToken: oidcCredentials.accessToken,
+    baseUrl: matrixCredentials.homeserverUrl,
+    accessToken: matrixCredentials.accessToken,
     // use native fetch API
     fetchFn: fetch.bind(window),
     userId: matrixCredentials.userId,
     deviceId: matrixCredentials.deviceId,
-    refreshToken: oidcCredentials.refreshToken,
+    refreshToken: matrixCredentials.refreshToken,
     tokenRefreshFunction:
       tokenRefresher?.doRefreshAccessToken.bind(tokenRefresher),
     // create a store to save sync data to be requested by the api endpoints

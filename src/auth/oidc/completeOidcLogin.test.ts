@@ -18,7 +18,11 @@
 
 import { completeAuthorizationCodeGrant } from 'matrix-js-sdk';
 import { describe, expect, it, vi } from 'vitest';
-import { createOidcTestCredentials } from '../testUtils';
+import {
+  mockMatrixCredentials,
+  mockOidcCredentials,
+  mockOidcLoginResponse,
+} from '../../lib/testUtils';
 import { completeOidcLogin } from './completeOidcLogin';
 import { OidcCodeAndState } from './types';
 
@@ -27,7 +31,9 @@ vi.mock('matrix-js-sdk', async () => ({
   completeAuthorizationCodeGrant: vi.fn(),
 }));
 
-const oidcTestCredentials = createOidcTestCredentials();
+const matrixCredentials = mockMatrixCredentials();
+const oidcTestCredentials = mockOidcCredentials();
+const oidcLoginResponse = mockOidcLoginResponse();
 
 describe('completeOidcLogin', () => {
   it('should forward the call to the Matrix JS SDK', async () => {
@@ -37,22 +43,22 @@ describe('completeOidcLogin', () => {
     };
 
     vi.mocked(completeAuthorizationCodeGrant).mockResolvedValue({
-      homeserverUrl: oidcTestCredentials.homeserverUrl,
+      homeserverUrl: matrixCredentials.homeserverUrl,
       idTokenClaims: oidcTestCredentials.idTokenClaims,
       oidcClientSettings: {
         issuer: oidcTestCredentials.issuer,
         clientId: oidcTestCredentials.clientId,
       },
       tokenResponse: {
-        access_token: oidcTestCredentials.accessToken,
-        refresh_token: oidcTestCredentials.refreshToken,
+        access_token: matrixCredentials.accessToken,
+        refresh_token: matrixCredentials.refreshToken,
         token_type: 'Bearer',
         scope: 'oidc',
         id_token: 'oidc_test_id_token',
       },
     });
 
-    expect(await completeOidcLogin(codeAndState)).toEqual(oidcTestCredentials);
+    expect(await completeOidcLogin(codeAndState)).toEqual(oidcLoginResponse);
     expect(completeAuthorizationCodeGrant).toHaveBeenCalledWith(
       codeAndState.code,
       codeAndState.state,

@@ -17,7 +17,7 @@
  */
 
 import { OidcClientConfig, generateOidcAuthorizationUrl } from 'matrix-js-sdk';
-import { randomString } from '..';
+import { randomString } from '../../lib';
 
 /**
  * Start OIDC authorization code flow
@@ -44,7 +44,7 @@ export async function startOidcLogin(
   const prompt = isRegistration ? 'create' : undefined;
 
   const authorizationUrl = await generateOidcAuthorizationUrl({
-    metadata: clientConfig.metadata,
+    metadata: clientConfig,
     redirectUri,
     clientId,
     homeserverUrl,

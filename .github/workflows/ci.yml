@@ -23,7 +23,7 @@ jobs:
     outputs:
       ARGOCD_TAG: ${{ steps.argocd-sha.outputs.ARGOCD_TAG }}
     steps:
-      - uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955 # v4
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
         with:
           repository: nordeck/matrix-neoboard
           path: matrix-neoboard
@@ -34,7 +34,7 @@ jobs:
           # github actions token but the git token provided via environment variable
           persist-credentials: false
 
-      - uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955 # v4
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
         with:
           path: matrix-neoboard-standalone
           # required for changesets
@@ -93,14 +93,14 @@ jobs:
         run: yarn generate-disclaimer
 
       - name: Login to ghcr.io
-        uses: docker/login-action@184bdaa0721073962dff0199f1fb9940f07167d1 # v3
+        uses: docker/login-action@5e57cd118135c172c3672efd75eb46360885c0ef # v3
         with:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@e468171a9de216ec08956ac3ada2f0791b6bd435 # v3
+        uses: docker/setup-buildx-action@8d2750c68a42422c14e847fe6c8ac0403b4cbd6f # v3
 
       - name: get argo-cd type of sha
         id: argocd-sha
@@ -116,7 +116,7 @@ jobs:
 
       - name: Generate Docker metadata
         id: meta
-        uses: docker/metadata-action@c1e51972afc2121e065aed6d45c65596fe445f3f # v5
+        uses: docker/metadata-action@c299e40c65443455700f0fdfc63efafe5b349051 # v5
         env:
           DOCKER_METADATA_PR_HEAD_SHA: true
         with:
@@ -204,7 +204,7 @@ jobs:
     needs: build
     steps:
       - name: Checkout
-        uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955 # v4
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
         with:
           fetch-depth: 0 # need main branch to diff against
       - name: Set up Helm
@@ -257,10 +257,10 @@ jobs:
     needs: [build, helm-lint-test]
     steps:
       # Clone repo to get the helm charts
-      - uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955 # v4
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
 
       - name: Checkout valhalla for values
-        uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955 # v4
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
         with:
           ref: dev
           sparse-checkout: |
@@ -284,9 +284,9 @@ jobs:
 
       - name: deploy k8s to cluster
         run: |
-          helm upgrade --install matrix-neoboard-standalone ./charts/matrix-neoboard-standalone -f ./valhalla/cluster/neotoolsuite-dev/matrix-neoboard-standalone/values.dev.yaml -n matrix --set image.tag=${{ needs.build.outputs.ARGOCD_TAG }}
+          helm upgrade --rollback-on-failure --install matrix-neoboard-standalone ./charts/matrix-neoboard-standalone -f ./valhalla/cluster/neotoolsuite-dev/matrix-neoboard-standalone/values.dev.yaml -n matrix --set image.tag=${{ needs.build.outputs.ARGOCD_TAG }}
 
       # inifinite canvas
       - name: deploy k8s to cluster
         run: |
-          helm upgrade --install matrix-neoboard-standalone-infinite-canvas ./charts/matrix-neoboard-standalone -f ./valhalla/cluster/neotoolsuite-dev/matrix-neoboard-standalone/values.infinite-canvas.yaml -n matrix --set image.tag=${{ needs.build.outputs.ARGOCD_TAG }}
+          helm upgrade --rollback-on-failure --install matrix-neoboard-standalone-infinite-canvas ./charts/matrix-neoboard-standalone -f ./valhalla/cluster/neotoolsuite-dev/matrix-neoboard-standalone/values.infinite-canvas.yaml -n matrix --set image.tag=${{ needs.build.outputs.ARGOCD_TAG }}

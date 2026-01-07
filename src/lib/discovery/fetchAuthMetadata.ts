@@ -1,5 +1,7 @@
+import { MatrixClient, OidcClientConfig } from 'matrix-js-sdk';
+
 /*
- * Copyright 2024 Nordeck IT + Consulting GmbH
+ * Copyright 2025 Nordeck IT + Consulting GmbH
  *
  * NeoBoard Standalone is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -15,7 +17,15 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with NeoBoard Standalone. If not, see <https://www.gnu.org/licenses/>.
  */
-
-export { discoverClientConfig } from './discoverClientConfig';
-export { fetchAuthMetadata } from './fetchAuthMetadata';
-export { getHomeserverUrlFromConfig } from './getHomeserverUrlFromConfig';
+/**
+ *  OAuth 2.0 server metadata for the homeserver
+ * @param homeserverUrl
+ */
+export async function fetchAuthMetadata(
+  homeserverUrl: string,
+): Promise<OidcClientConfig> {
+  const matrixClient = new MatrixClient({
+    baseUrl: homeserverUrl,
+  });
+  return await matrixClient.getAuthMetadata();
+}

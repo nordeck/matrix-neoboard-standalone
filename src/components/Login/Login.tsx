@@ -29,8 +29,8 @@ import {
 
 import { getEnvironment } from '@matrix-widget-toolkit/mui';
 import { useTranslation } from 'react-i18next';
+import { startLoginFlow } from '../../auth';
 import { isValidServerName } from '../../lib';
-import { startLoginFlow } from '../../lib/oidc';
 
 /**
  * Simple login component demonstrating the login flow.

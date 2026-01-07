@@ -17,19 +17,23 @@
  */
 
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
-import { createOidcTestClientConfig } from '../testUtils';
+import {
+  mockOidcClientConfig,
+  mockOpenIdConfiguration,
+} from '../../lib/testUtils';
 import { registerOidcClient } from './registerOidcClient';
 
 import type { FetchMock } from 'vitest-fetch-mock';
 const fetch = global.fetch as FetchMock;
 
-const oidcClientConfig = createOidcTestClientConfig();
+const openIdConfiguration = mockOpenIdConfiguration();
+const oidcClientConfig = mockOidcClientConfig();
 
 describe('registerOidcClient', () => {
   beforeEach(() => {
     fetch.mockResponse((req) => {
       if (req.url === 'https://example.com/.well-known/openid-configuration') {
-        return JSON.stringify(oidcClientConfig.metadata);
+        return JSON.stringify(openIdConfiguration);
       }
       return '';
     });
@@ -42,7 +46,7 @@ describe('registerOidcClient', () => {
   it('should register an OIDC client', async () => {
     fetch.mockResponse((req) => {
       if (
-        req.url === 'https://auth.exmple.com/register' &&
+        req.url === 'https://auth.example.com/register' &&
         req.method === 'POST' &&
         req.headers.get('Content-Type') === 'application/json'
       ) {

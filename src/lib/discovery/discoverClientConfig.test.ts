@@ -17,31 +17,32 @@
  */
 
 import { AutoDiscovery } from 'matrix-js-sdk';
-import { afterEach, describe, expect, it } from 'vitest';
+import {
+  afterEach,
+  beforeEach,
+  describe,
+  expect,
+  it,
+  MockInstance,
+  vi,
+} from 'vitest';
 import type { FetchMock } from 'vitest-fetch-mock';
 import { discoverClientConfig } from './discoverClientConfig';
 const fetch = global.fetch as FetchMock;
 
 describe('discoverClientConfig', () => {
+  let consoleErrorSpy: MockInstance;
+
+  beforeEach(() => {
+    consoleErrorSpy = vi.spyOn(console, 'error');
+  });
+
   afterEach(() => {
+    consoleErrorSpy.mockRestore();
     fetch.resetMocks();
   });
 
-  it('should return a URL as it is without issuing a request', async () => {
-    expect(await discoverClientConfig('https://example.com')).toEqual({
-      'm.homeserver': {
-        state: AutoDiscovery.SUCCESS,
-        base_url: 'https://example.com',
-      },
-      'm.identity_server': {
-        state: AutoDiscovery.PROMPT,
-      },
-    });
-
-    expect(fetch.requests().length).toEqual(0);
-  });
-
-  it('should discover the homeserver base URL', async () => {
+  it('should discover the client config', async () => {
     fetch.mockResponse((req) => {
       if (req.url === 'https://example.com/.well-known/matrix/client') {
         return JSON.stringify({
@@ -60,6 +61,23 @@ describe('discoverClientConfig', () => {
         state: AutoDiscovery.SUCCESS,
         base_url: 'https://matrix.example.com',
         error: null,
+      },
+      'm.identity_server': {
+        state: AutoDiscovery.PROMPT,
+        base_url: null,
+        error: null,
+      },
+    });
+  });
+
+  it('should return invalid discovery response if client config cannot be discovered', async () => {
+    vi.mocked(console.error).mockImplementation(() => {});
+
+    expect(await discoverClientConfig('example.com')).toEqual({
+      'm.homeserver': {
+        state: AutoDiscovery.FAIL_PROMPT,
+        base_url: null,
+        error: AutoDiscovery.ERROR_INVALID,
       },
       'm.identity_server': {
         state: AutoDiscovery.PROMPT,
