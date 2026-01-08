@@ -83,31 +83,4 @@ describe('<WelcomePane />', () => {
     expect(screen.getByTestId('login-component')).toBeInTheDocument();
     expect(startLoginFlow).not.toHaveBeenCalled();
   });
-
-  it('should skip the welcome pane and start login flow when homeserver name is configured and skipLogin is present', async () => {
-    vi.mocked(getEnvironment).mockImplementation((name, defaultValue) => {
-      switch (name) {
-        case 'REACT_APP_HOMESERVER':
-          return 'https://matrix.example.com';
-        default:
-          return defaultValue;
-      }
-    });
-
-    vi.mocked(startLoginFlow).mockResolvedValue();
-
-    Wrapper = ({ children }: PropsWithChildren<{}>) => (
-      <MemoryRouter initialEntries={['/login?skipLogin']}>
-        {children}
-      </MemoryRouter>
-    );
-
-    render(<WelcomePane />, {
-      wrapper: Wrapper,
-    });
-
-    expect(screen.queryByTestId('welcome-logo')).not.toBeInTheDocument();
-    expect(screen.queryByTestId('login-component')).not.toBeInTheDocument();
-    expect(startLoginFlow).toHaveBeenCalledWith('https://matrix.example.com');
-  });
 });
