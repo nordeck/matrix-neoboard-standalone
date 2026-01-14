@@ -989,7 +989,7 @@
   resolved "https://registry.yarnpkg.com/@matrix-org/matrix-sdk-crypto-wasm/-/matrix-sdk-crypto-wasm-15.3.0.tgz#141fd041ae382b793369bcee4394b0b577bdea0c"
   integrity sha512-QyxHvncvkl7nf+tnn92PjQ54gMNV8hMSpiukiDgNrqF6IYwgySTlcSdkPYdw8QjZJ0NR6fnVrNzMec0OohM3wA==
 
-"@matrix-widget-toolkit/api@5.0.3", "@matrix-widget-toolkit/api@^5.0.2", "@matrix-widget-toolkit/api@^5.0.3":
+"@matrix-widget-toolkit/api@5.0.3", "@matrix-widget-toolkit/api@^5.0.3":
   version "5.0.3"
   resolved "https://registry.yarnpkg.com/@matrix-widget-toolkit/api/-/api-5.0.3.tgz#e8757aa6c432a22c61c449f6ad963b65c7433d1b"
   integrity sha512-9ceQPnqRuuZVYcWHXSquWIdIk5yAh2q1J5chyI2H9D3cFJZcZMa+g/XY9sBAGl/gxpgCr7qWJgrfUNPjHImEew==
@@ -999,7 +999,7 @@
     qs "^6.14.1"
     rxjs "^7.8.2"
 
-"@matrix-widget-toolkit/mui@2.2.1", "@matrix-widget-toolkit/mui@^2.2.0":
+"@matrix-widget-toolkit/mui@2.2.1", "@matrix-widget-toolkit/mui@^2.2.1":
   version "2.2.1"
   resolved "https://registry.yarnpkg.com/@matrix-widget-toolkit/mui/-/mui-2.2.1.tgz#5bd35809f17824316620badd937e7e9d3f9a3200"
   integrity sha512-KNCZzyS61SBNsaOOOMn5/SLPC4tpFCB9x9qcP4gqw+Z/kSgY6R6kfapz2CGQdZtsS2qaAJ555xKytrQ4R4DW5Q==
@@ -1020,7 +1020,7 @@
     react-i18next "^15.7.4"
     react-use "^17.6.0"
 
-"@matrix-widget-toolkit/react@2.1.1", "@matrix-widget-toolkit/react@^2.1.0", "@matrix-widget-toolkit/react@^2.1.1":
+"@matrix-widget-toolkit/react@2.1.1", "@matrix-widget-toolkit/react@^2.1.1":
   version "2.1.1"
   resolved "https://registry.yarnpkg.com/@matrix-widget-toolkit/react/-/react-2.1.1.tgz#19e1332fe4ff9ff9e82f1085e6027819517632a3"
   integrity sha512-C2baCjWgx2Hm5sekwicEfQkfQ2fxt6mM3MqD7PUFK9VmEZ5C91Tb5lg9KoS5dXr6+X85J4X4IG41nXTjHlXfnQ==
