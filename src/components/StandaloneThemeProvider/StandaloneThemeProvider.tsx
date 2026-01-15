@@ -30,7 +30,9 @@ import { standaloneLightTheme } from './theme';
 export function StandaloneThemeProvider({ children }: PropsWithChildren<{}>) {
   return (
     <MuiThemeProvider>
-      <ApplyStandaloneThemeProvider>{children}</ApplyStandaloneThemeProvider>{' '}
+      <ApplyStandaloneThemeProvider>
+        {children}
+      </ApplyStandaloneThemeProvider>{' '}
     </MuiThemeProvider>
   );
 }
