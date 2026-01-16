@@ -165,7 +165,7 @@ jobs:
         if: ${{ success() && steps.build_and_push.outputs.digest }}
         env:
           IMAGE_REF: ${{ env.DOCKER_IMAGE }}@${{ steps.build_and_push.outputs.digest }}
-        uses: aquasecurity/trivy-action@0.29.0
+        uses: aquasecurity/trivy-action@18f2510ee396bbf400402947b394f2dd8c87dbb0 # 0.29.0
         with:
           scan-type: 'image'
           scanners: 'license'
@@ -176,7 +176,7 @@ jobs:
 
       - name: Upload SBOM report as a build artifact
         if: ${{ success() && steps.build_and_push.outputs.digest }}
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: sbom-spdx-report
           path: 'sbom.spdx.json'
