@@ -161,6 +161,16 @@ Specify the impact as `patch`.
 We use [Architecture Decision Records (ADR)s](https://github.com/nordeck/matrix-widget-toolkit/blob/main/docs/adrs/adr001-use-adrs-to-document-decisions.md) to document decisions for our software.
 You can find them at [`/docs/adrs`](./docs/adrs/).
 
+## Deployment
+
+We provide a [HELM chart](./charts/).
+
+Install via OCI Registry:
+
+```sh
+helm install matrix-neoboard-standalone oci://ghcr.io/nordeck/chart/matrix-neoboard-standalone
+```
+
 ## Supply Chain Security
 
 To ensure transparency and security in our software supply chain, we provide comprehensive Software Bill of Materials (SBOM) reports for this project and signed container images.
@@ -171,6 +181,19 @@ We provide SBOM reports within the widget container and as a release artifact.
 
 - The generated SBOM report is available alongside the hosted widget assets, and can be found at `<DEPLOYMENT-URL>/sbom.spdx.json`, or via the filesystem at `/usr/share/nginx/html/sbom.spdx.json`
 - Each GitHub release has a corresponding image SBOM scan report file attached as a release asset
+
+### Signed Container Images
+
+The container images releases are signed by [cosign](https://github.com/sigstore/cosign) using identity-based ("keyless") signing and transparency.
+
+Execute the following command to verify the signature of a chart container image (example for version: `@nordeck/helm-matrix-neoboard-standalone-0.0.9`):
+
+```sh
+cosign verify \
+--certificate-identity-regexp https://github.com/nordeck/matrix-neoboard-standalone/.github/workflows/helm-release.yml@refs/tags/@nordeck/helm-matrix-neoboard-standalone-0.0.9 \
+--certificate-oidc-issuer https://token.actions.githubusercontent.com \
+ghcr.io/nordeck/chart/matrix-neoboard-standalone:0.0.9 | jq
+```
 
 ## License
 
