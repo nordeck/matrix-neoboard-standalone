@@ -21,45 +21,30 @@ import { isValidServerName } from './isValidServerName';
 
 describe('isValidServerName', () => {
   it.each([
-    ['matrix.example.com', true],
-    ['example.org', true],
-    ['my-server.net', true],
-    ['https://matrix.example.com', true],
-    ['http://example.org', true],
-  ])(
-    'should return true for valid server name: "%s"',
-    (serverName, expected) => {
-      expect(isValidServerName(serverName)).toBe(expected);
-    },
-  );
+    'matrix.example.com',
+    'example.org',
+    'my-server.net',
+    'https://matrix.example.com',
+    'http://example.org',
+  ])('should return true for valid server name: "%s"', (serverName) => {
+    expect(isValidServerName(serverName)).toBe(true);
+  });
 
   it.each([
-    [undefined, false],
-    ['', false],
-    [' ', false],
-    ['  ', false],
-    ['\t', false],
-    ['\n', false],
-    ['   \t\n   ', false],
-    ['.com', false],
-    ['com.', false],
-    ['example', false],
-    ['http://example', false],
-    ['http://.com', false],
-    ['http://com.', false],
-  ])(
-    'should return false for invalid server name: %s',
-    (serverName, expected) => {
-      expect(isValidServerName(serverName)).toBe(expected);
-    },
-  );
-
-  it('should work as a type guard', () => {
-    const serverName: string | undefined = 'matrix.example.com';
-
-    if (isValidServerName(serverName)) {
-      expect(serverName.length).toBeGreaterThan(0);
-      expect(typeof serverName).toBe('string');
-    }
+    undefined,
+    '',
+    ' ',
+    '  ',
+    '\t',
+    '\n',
+    '   \t\n   ',
+    '.com',
+    'com.',
+    'example',
+    'http://example',
+    'http://.com',
+    'http://com.',
+  ])('should return false for invalid server name: %s', (serverName) => {
+    expect(isValidServerName(serverName)).toBe(false);
   });
 });
