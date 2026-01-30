@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 Nordeck IT + Consulting GmbH
+ * Copyright 2026 Nordeck IT + Consulting GmbH
  *
  * NeoBoard Standalone is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -21,6 +21,7 @@ import { Suspense } from 'react';
 import ErrorBoundary from '../ErrorBoundary.tsx';
 import { InvitesMenu } from './InvitesMenu.tsx';
 import { ShareMenu } from './ShareMenu.tsx';
+import { MembersMenu } from './MembersMenu.tsx';
 import { UserMenu } from './UserMenu.tsx';
 
 const MenuWrapper = styled('div')(() => ({
@@ -43,6 +44,7 @@ export function HeaderMenu({ roomId }: Props) {
         </ErrorBoundary>
       )}
       <InvitesMenu />
+      <MembersMenu roomId={roomId} />
       <UserMenu />
     </MenuWrapper>
   );
