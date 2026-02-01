@@ -213,6 +213,16 @@ export class Application {
 
     await matrixClient.startClient();
 
+    //try {
+    await matrixClient.store.startup();
+    await matrixClient.initRustCrypto({
+      storageKey: undefined,
+      storagePassword: 'my_secure_password',
+    });
+    //} catch (error) {
+    //  console.error("Error initializing Rust crypto:", error);
+    //}
+
     // wait for sync with the server
     await this.standaloneApiPromise;
 
