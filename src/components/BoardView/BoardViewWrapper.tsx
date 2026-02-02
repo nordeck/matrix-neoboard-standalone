@@ -18,22 +18,39 @@
 
 import { isEqual } from 'lodash';
 import { useMemo } from 'react';
+import { useLoggedIn } from '../../state';
 import { makeSelectWhiteboard, useAppSelector } from '../../store';
+import { makeSelectInvites } from '../../store/api/selectors/selectInvites';
 import { useOpenedRoomId } from '../RoomIdProvider';
+import { BoardInvite } from './BoardInvite';
 import { BoardNotFound } from './BoardNotFound';
 import { BoardView } from './BoardView';
 
 export const BoardViewWrapper = () => {
   const roomId = useOpenedRoomId();
+  const { userId } = useLoggedIn();
   const selectWhiteboard = useMemo(
     () => makeSelectWhiteboard(roomId),
     [roomId],
   );
+  const selectInvites = useMemo(() => makeSelectInvites(userId), [userId]);
 
   const whiteboard = useAppSelector(
     (state) => selectWhiteboard(state),
     isEqual,
   );
+  const invites = useAppSelector((state) => selectInvites(state), isEqual);
+  const invite = useMemo(
+    () => invites.find((entry) => entry.roomId === roomId),
+    [invites, roomId],
+  );
+  if (whiteboard) {
+    return <BoardView />;
+  }
 
-  return whiteboard ? <BoardView /> : <BoardNotFound />;
+  if (invite) {
+    return <BoardInvite invite={invite} />;
+  }
+
+  return <BoardNotFound />;
 };
