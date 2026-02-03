@@ -259,8 +259,6 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
-        with:
-          token: ${{ secrets.SERVICE_TOKEN }}
 
       - name: Login to ghcr.io
         uses: docker/login-action@v3
@@ -310,11 +308,20 @@ jobs:
 
           echo "result=$RESULT" >> $GITHUB_OUTPUT
 
+      - name: Generate GitHub token
+        if: ${{ steps.chart-exists.outputs.result == 'false' }}
+        id: generate_token
+        uses: tibdex/github-app-token@3beb63f4bd073e61482598c45c71c1019b59b73a # @v2.1.0
+        with:
+          app_id: ${{ secrets.GH_APP_OS_APP_ID }}
+          private_key: ${{ secrets.GH_APP_OS_PRIVATE_KEY }}
+
       - name: Create tag
         if: ${{ steps.chart-exists.outputs.result == 'false' }}
         env:
           CHART_NAME: ${{ env.CHART_NAME }}
           CHART_VERSION: ${{ steps.vars.outputs.chart_version }}
+          GITHUB_TOKEN: ${{ steps.generate_token.outputs.token }}
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
