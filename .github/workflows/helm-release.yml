@@ -46,8 +46,6 @@ jobs:
       - name: Run Helm package and push
         id: build_and_push
         env:
-          REPOSITORY: ${{ env.REPOSITORY }}
-          CHART_NAME: ${{ env.CHART_NAME }}
           CHART_VERSION: ${{ steps.vars.outputs.chart_version }}
         run: |
           helm package ./charts/$CHART_NAME
@@ -71,15 +69,12 @@ jobs:
 
       - name: Sign the images with GitHub OIDC Token
         env:
-          REPOSITORY: ${{ env.REPOSITORY }}
-          CHART_NAME: ${{ env.CHART_NAME }}
           DIGEST: ${{ steps.build_and_push.outputs.digest }}
         run: cosign sign --yes "$REPOSITORY/$CHART_NAME@$DIGEST"
 
       - name: Create release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          CHART_NAME: ${{ env.CHART_NAME }}
           CHART_VERSION: ${{ steps.vars.outputs.chart_version }}
           CHART_FILE_NAME: ${{ steps.build_and_push.outputs.chart_file_name }}
         run: |

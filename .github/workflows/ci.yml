@@ -284,8 +284,6 @@ jobs:
       - name: Check if helm chart exists in OCI registry
         id: chart-exists
         env:
-          REPOSITORY: ${{ env.REPOSITORY }}
-          CHART_NAME: ${{ env.CHART_NAME }}
           CHART_VERSION: ${{ steps.vars.outputs.chart_version }}
         run: |
           # don't fail the action if the 'helm show chart' call exits with 1.
@@ -319,7 +317,6 @@ jobs:
       - name: Create tag
         if: ${{ steps.chart-exists.outputs.result == 'false' }}
         env:
-          CHART_NAME: ${{ env.CHART_NAME }}
           CHART_VERSION: ${{ steps.vars.outputs.chart_version }}
           GITHUB_TOKEN: ${{ steps.generate_token.outputs.token }}
         run: |
