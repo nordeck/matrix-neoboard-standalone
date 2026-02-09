@@ -13,8 +13,8 @@ jobs:
       packages: write
       id-token: write
     env:
+      REPOSITORY: ghcr.io/nordeck/chart
       CHART_NAME: matrix-neoboard-standalone
-      CHART_IMAGE: ghcr.io/nordeck/chart/matrix-neoboard-standalone
     steps:
       - name: Checkout
         uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
@@ -46,13 +46,14 @@ jobs:
       - name: Run Helm package and push
         id: build_and_push
         env:
+          REPOSITORY: ${{ env.REPOSITORY }}
           CHART_NAME: ${{ env.CHART_NAME }}
           CHART_VERSION: ${{ steps.vars.outputs.chart_version }}
         run: |
           helm package ./charts/$CHART_NAME
 
           CHART_FILE_NAME="$CHART_NAME-$CHART_VERSION.tgz"
-          OUTPUT=$(helm push $CHART_FILE_NAME oci://ghcr.io/nordeck/chart 2>&1)
+          OUTPUT=$(helm push $CHART_FILE_NAME oci://$REPOSITORY 2>&1)
 
           echo "$OUTPUT"
 
@@ -70,9 +71,10 @@ jobs:
 
       - name: Sign the images with GitHub OIDC Token
         env:
-          CHART_IMAGE: ${{ env.CHART_IMAGE }}
+          REPOSITORY: ${{ env.REPOSITORY }}
+          CHART_NAME: ${{ env.CHART_NAME }}
           DIGEST: ${{ steps.build_and_push.outputs.digest }}
-        run: cosign sign --yes "$CHART_IMAGE@$DIGEST"
+        run: cosign sign --yes "$REPOSITORY/$CHART_NAME@$DIGEST"
 
       - name: Create release
         env:
