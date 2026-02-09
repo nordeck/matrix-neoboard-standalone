@@ -15,7 +15,6 @@ This is a short explanation of what the Helm CI is doing.
 2. The chart-testing CLI checks if there have been changes in the chart. (See more at <https://github.com/helm/chart-testing/blob/main/doc/ct_list-changed.md>)
 
 3. Decide the next step
-
    - **A)** If there are no changes, we skip the rest of the steps.
 
    - **B)** If there are changes, we move on.

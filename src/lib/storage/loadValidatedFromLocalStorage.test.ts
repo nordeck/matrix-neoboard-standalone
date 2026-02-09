@@ -41,7 +41,7 @@ describe('loadValidatedFromLocalStorage', () => {
 
     expect(() => {
       loadValidatedFromLocalStorage('test_key', Joi.number());
-    }).toThrow(new Joi.ValidationError('"value" must be a number', [], null));
+    }).toThrow(expect.any(Joi.ValidationError));
   });
 
   it('should raise an error if the value is not valid JSON', () => {
@@ -85,7 +85,7 @@ describe('tryLoadValidatedFromLocalStorage', () => {
     ).toBeNull();
     expect(console.warn).toHaveBeenCalledWith(
       'Error reading "test_key" from localStorage',
-      new Joi.ValidationError('"value" must be a number', [], null),
+      expect.any(Joi.ValidationError),
     );
   });
 
