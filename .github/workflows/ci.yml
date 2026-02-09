@@ -254,7 +254,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: build
     env:
-      REPOSITORY: ghcr.io/nordeck/chart
+      REPOSITORY: ghcr.io/nordeck/charts
       CHART_NAME: matrix-neoboard-standalone
     steps:
       - name: Checkout

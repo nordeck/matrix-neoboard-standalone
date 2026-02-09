@@ -168,7 +168,7 @@ We provide a [HELM chart](./charts/).
 Install via OCI Registry:
 
 ```sh
-helm install matrix-neoboard-standalone oci://ghcr.io/nordeck/chart/matrix-neoboard-standalone
+helm install matrix-neoboard-standalone oci://ghcr.io/nordeck/charts/matrix-neoboard-standalone
 ```
 
 ## Supply Chain Security
@@ -192,7 +192,7 @@ Execute the following command to verify the signature of a chart container image
 cosign verify \
 --certificate-identity-regexp https://github.com/nordeck/matrix-neoboard-standalone/.github/workflows/helm-release.yml@refs/tags/@nordeck/helm-matrix-neoboard-standalone-0.0.9 \
 --certificate-oidc-issuer https://token.actions.githubusercontent.com \
-ghcr.io/nordeck/chart/matrix-neoboard-standalone:0.0.9 | jq
+ghcr.io/nordeck/charts/matrix-neoboard-standalone:0.0.9 | jq
 ```
 
 ## License

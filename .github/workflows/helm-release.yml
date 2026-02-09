@@ -13,7 +13,7 @@ jobs:
       packages: write
       id-token: write
     env:
-      REPOSITORY: ghcr.io/nordeck/chart
+      REPOSITORY: ghcr.io/nordeck/charts
       CHART_NAME: matrix-neoboard-standalone
     steps:
       - name: Checkout
