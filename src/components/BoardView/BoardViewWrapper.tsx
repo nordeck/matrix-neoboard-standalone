@@ -39,10 +39,9 @@ export const BoardViewWrapper = () => {
     (state) => selectWhiteboard(state),
     isEqual,
   );
-  const invites = useAppSelector((state) => selectInvites(state), isEqual);
-  const invite = useMemo(
-    () => invites.find((entry) => entry.roomId === roomId),
-    [invites, roomId],
+  const invite = useAppSelector(
+    (state) => selectInvites(state)?.find((entry) => entry.roomId === roomId),
+    isEqual,
   );
   if (whiteboard) {
     return <BoardView />;

@@ -25,7 +25,7 @@ import {
   Typography,
   useTheme,
 } from '@mui/material';
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLoggedIn } from '../../state';
 import { InviteEntry } from '../../store/api/selectors/selectInvites';
@@ -53,7 +53,7 @@ export const BoardInvite: React.FC<BoardInviteProps> = ({ invite }) => {
   const roomName = invite.roomName ?? t('dashboard.untitled', 'Untitled');
   const inviter = invite.senderDisplayName ?? invite.senderUserId;
 
-  const handleAcceptInvite = async () => {
+  const handleAcceptInvite = useCallback(async () => {
     setHasPendingAction(true);
     setError(false);
     try {
@@ -64,9 +64,9 @@ export const BoardInvite: React.FC<BoardInviteProps> = ({ invite }) => {
     } finally {
       setHasPendingAction(false);
     }
-  };
+  }, [invite.roomId, standaloneClient]);
 
-  const handleRejectInvite = async () => {
+  const handleRejectInvite = useCallback(async () => {
     setHasPendingAction(true);
     setError(false);
     try {
@@ -77,7 +77,7 @@ export const BoardInvite: React.FC<BoardInviteProps> = ({ invite }) => {
     } finally {
       setHasPendingAction(false);
     }
-  };
+  }, [invite.roomId, standaloneClient]);
 
   return (
     <BoardInviteContainer>
@@ -87,18 +87,18 @@ export const BoardInvite: React.FC<BoardInviteProps> = ({ invite }) => {
       <Typography
         variant="h1"
         color="textSecondary"
-        sx={{ marginBottom: '16px', marginTop: '16px' }}
+        sx={{ marginBottom: 2, marginTop: 2 }}
       >
         {t('boardInvite.title', 'You have been invited to this board')}
       </Typography>
-      <Typography variant="h4" sx={{ marginBottom: '8px' }}>
+      <Typography variant="h4" sx={{ marginBottom: 1 }}>
         {roomName}
       </Typography>
-      <Typography color="textSecondary" sx={{ marginBottom: '32px' }}>
+      <Typography color="textSecondary" sx={{ marginBottom: 3 }}>
         {t('boardInvite.invitedBy', 'Invited by {{name}}', { name: inviter })}
       </Typography>
       {error && (
-        <Typography color="error" sx={{ marginBottom: '16px' }}>
+        <Typography color="error" sx={{ marginBottom: 2 }}>
           {t('boardInvite.actionFailed', 'Action failed')}
         </Typography>
       )}
