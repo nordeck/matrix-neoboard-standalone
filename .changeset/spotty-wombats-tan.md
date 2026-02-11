@@ -2,4 +2,4 @@
 '@nordeck/matrix-neoboard-standalone': patch
 ---
 
-Replace UserMenu avatar with ElementAvatar component
+Upload helm chart to OCI Registry, release helm chart
