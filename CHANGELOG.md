@@ -1,5 +1,11 @@
 # @nordeck/matrix-neoboard-standalone
 
+## 0.1.1
+
+### Patch Changes
+
+- 8613421: Upload helm chart to OCI Registry, release helm chart
+
 ## 0.1.0
 
 ### Minor Changes
