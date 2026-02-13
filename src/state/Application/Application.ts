@@ -67,6 +67,7 @@ export type ApplicationState =
       lifecycleState: 'loggedIn';
       matrixClient: MatrixClient;
       state: LoggedInState;
+      membersPaneOpen?: boolean;
     };
 
 /**
