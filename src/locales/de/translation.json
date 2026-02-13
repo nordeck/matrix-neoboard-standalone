@@ -11,6 +11,11 @@
     "cancel": "Abbrechen",
     "ok": "OK"
   },
+  "boardInvite": {
+    "actionFailed": "Fehler",
+    "invitedBy": "Eingeladen von {{name}}",
+    "title": "Du wurdest zu diesem Board eingeladen"
+  },
   "boardNotFound": {
     "link": "Zum Dashboard",
     "message": "Board nicht gefunden"
