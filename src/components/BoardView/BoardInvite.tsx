@@ -25,10 +25,9 @@ import {
   Typography,
   useTheme,
 } from '@mui/material';
-import React, { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useLoggedIn } from '../../state';
-import { InviteEntry } from '../../store/api/selectors/selectInvites';
+import { useInviteActionsWithRedirect } from '../../hooks/useInviteActionsWithRedirect';
+import { InviteEntry } from '../../store/api/selectors/selectInvites.ts';
 
 const BoardInviteContainer = styled(Container)({
   alignItems: 'center',
@@ -45,39 +44,12 @@ type BoardInviteProps = {
 export const BoardInvite: React.FC<BoardInviteProps> = ({ invite }) => {
   const { t } = useTranslation();
   const theme = useTheme();
-  const { standaloneClient } = useLoggedIn();
 
-  const [error, setError] = useState(false);
-  const [hasPendingAction, setHasPendingAction] = useState(false);
+  const { handleAcceptInvite, handleRejectInvite, hasPendingAction, error } =
+    useInviteActionsWithRedirect(invite);
 
   const roomName = invite.roomName ?? t('dashboard.untitled', 'Untitled');
   const inviter = invite.senderDisplayName ?? invite.senderUserId;
-
-  const handleAcceptInvite = useCallback(async () => {
-    setHasPendingAction(true);
-    setError(false);
-    try {
-      await standaloneClient.joinRoom(invite.roomId);
-    } catch (err) {
-      console.error(err);
-      setError(true);
-    } finally {
-      setHasPendingAction(false);
-    }
-  }, [invite.roomId, standaloneClient]);
-
-  const handleRejectInvite = useCallback(async () => {
-    setHasPendingAction(true);
-    setError(false);
-    try {
-      await standaloneClient.leaveRoom(invite.roomId);
-    } catch (err) {
-      console.error(err);
-      setError(true);
-    } finally {
-      setHasPendingAction(false);
-    }
-  }, [invite.roomId, standaloneClient]);
 
   return (
     <BoardInviteContainer>
@@ -89,7 +61,7 @@ export const BoardInvite: React.FC<BoardInviteProps> = ({ invite }) => {
         color="textSecondary"
         sx={{ marginBottom: 2, marginTop: 2 }}
       >
-        {t('boardInvite.title', 'You have been invited to this board')}
+        {t('boardInvite.title', 'You have been invited to the following board')}
       </Typography>
       <Typography variant="h4" sx={{ marginBottom: 1 }}>
         {roomName}

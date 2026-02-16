@@ -35,17 +35,6 @@ vi.mock('../../state', () => ({
   }),
 }));
 
-vi.mock('react-i18next', () => ({
-  useTranslation: () => ({
-    t: (key: string, defaultValue?: string, options?: { name?: string }) => {
-      if (typeof defaultValue === 'string' && options?.name) {
-        return defaultValue.replace('{{name}}', options.name);
-      }
-      return defaultValue ?? key;
-    },
-  }),
-}));
-
 describe('BoardInvite', () => {
   beforeEach(() => {
     vi.clearAllMocks();

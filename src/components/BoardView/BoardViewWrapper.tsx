@@ -29,27 +29,24 @@ import { BoardView } from './BoardView';
 export const BoardViewWrapper = () => {
   const roomId = useOpenedRoomId();
   const { userId } = useLoggedIn();
+  const selectInvites = useMemo(() => makeSelectInvites(userId), [userId]);
   const selectWhiteboard = useMemo(
     () => makeSelectWhiteboard(roomId),
     [roomId],
-  );
-  const selectInvites = useMemo(() => makeSelectInvites(userId), [userId]);
-
-  const whiteboard = useAppSelector(
-    (state) => selectWhiteboard(state),
-    isEqual,
   );
   const invite = useAppSelector(
     (state) => selectInvites(state)?.find((entry) => entry.roomId === roomId),
     isEqual,
   );
-  if (whiteboard) {
-    return <BoardView />;
-  }
-
+  const whiteboard = useAppSelector(
+    (state) => selectWhiteboard(state),
+    isEqual,
+  );
   if (invite) {
     return <BoardInvite invite={invite} />;
   }
-
+  if (whiteboard) {
+    return <BoardView />;
+  }
   return <BoardNotFound />;
 };

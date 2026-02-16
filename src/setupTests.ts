@@ -41,10 +41,7 @@ beforeAll(() => {
   vi.stubGlobal('IS_REACT_ACT_ENVIRONMENT', true);
 
   // Force React to use the same copy throughout tests
-  vi.mock('react', async () => {
-    const actual = await vi.importActual('react');
-    return actual;
-  });
+  vi.mock('react', async () => await vi.importActual('react'));
 });
 
 // Set up parts of the crypto API needed for the tests
@@ -67,6 +64,21 @@ Object.defineProperty(window, 'location', {
 // Mock the fetch API
 const fetchMocker = createFetchMock(vi);
 fetchMocker.enableMocks();
+
+// Provide a lightweight mock for react-i18next so tests don't have to initialize
+// i18next explicitly. This replicates the minimal behaviour used in tests: the
+// `useTranslation` hook returning a `t` function that falls back to the default
+// value or the key and replaces `{{name}}` when provided.
+vi.mock('react-i18next', () => ({
+  useTranslation: () => ({
+    t: (key: string, defaultValue?: string, options?: { name?: string }) => {
+      if (typeof defaultValue === 'string' && options?.name) {
+        return defaultValue.replace('{{name}}', options.name);
+      }
+      return defaultValue ?? key;
+    },
+  }),
+}));
 
 afterEach(() => {
   cleanup();
