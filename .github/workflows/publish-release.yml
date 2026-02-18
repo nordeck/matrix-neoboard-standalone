@@ -5,7 +5,7 @@ name: Release Package
 on:
   push:
     tags:
-      - '@nordeck/matrix-neoboard-standalone@*'
+      - 'v*' # https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax#filter-pattern-cheat-sheet
 
 jobs:
   build:
@@ -37,7 +37,7 @@ jobs:
             org.opencontainers.image.description=A collaborative whiteboard
             org.opencontainers.image.vendor=Nordeck IT + Consulting GmbH
           tags: |
-            type=match,pattern=@nordeck/matrix-neoboard-standalone@(.+),group=1
+            type=semver,pattern={{version}}
 
       - name: Generate Dockerfile
         env:
