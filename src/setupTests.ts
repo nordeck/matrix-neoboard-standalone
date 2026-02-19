@@ -65,21 +65,6 @@ Object.defineProperty(window, 'location', {
 const fetchMocker = createFetchMock(vi);
 fetchMocker.enableMocks();
 
-// Provide a lightweight mock for react-i18next so tests don't have to initialize
-// i18next explicitly. This replicates the minimal behaviour used in tests: the
-// `useTranslation` hook returning a `t` function that falls back to the default
-// value or the key and replaces `{{name}}` when provided.
-vi.mock('react-i18next', () => ({
-  useTranslation: () => ({
-    t: (key: string, defaultValue?: string, options?: { name?: string }) => {
-      if (typeof defaultValue === 'string' && options?.name) {
-        return defaultValue.replace('{{name}}', options.name);
-      }
-      return defaultValue ?? key;
-    },
-  }),
-}));
-
 afterEach(() => {
   cleanup();
 });
