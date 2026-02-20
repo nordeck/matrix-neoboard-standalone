@@ -83,6 +83,10 @@ export class MatrixStandaloneClient implements StandaloneClient {
     );
   }
 
+  async removeMember(roomId: string, userId: string, reason?: string): Promise<void> {
+    await this.matrixClient.kick(roomId, userId, reason);
+  }
+
   async invite(roomId: string, userId: string): Promise<void> {
     await this.matrixClient.invite(roomId, userId);
   }
