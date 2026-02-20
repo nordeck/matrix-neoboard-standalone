@@ -11,6 +11,11 @@
     "cancel": "Cancel",
     "ok": "OK"
   },
+  "boardInvite": {
+    "actionFailed": "Action failed",
+    "invitedBy": "Invited by {{name}}",
+    "title": "You have been invited to the following board"
+  },
   "boardNotFound": {
     "link": "Go to dashboard",
     "message": "Board not found"
@@ -57,6 +62,7 @@
   "invitesDialog": {
     "accept": "Accept invite",
     "actionFailed": "Action failed",
+    "inviteDeclined": "You declined the invitation to the board “{{roomName}}” and no longer have access. You will now be redirected to the dashboard.",
     "numberOfPendingInvites_zero": "No pending invites",
     "numberOfPendingInvites_one": "One pending invite",
     "numberOfPendingInvites_other": "{{count}} pending invites",

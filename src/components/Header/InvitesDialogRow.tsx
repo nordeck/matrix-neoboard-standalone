@@ -19,9 +19,8 @@
 import CheckIcon from '@mui/icons-material/Check';
 import CloseIcon from '@mui/icons-material/Close';
 import { IconButton, ListItem, ListItemText, Typography } from '@mui/material';
-import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useLoggedIn } from '../../state';
+import { useInviteActionsWithRedirect } from '../../hooks/useInviteActionsWithRedirect';
 import { InviteEntry } from '../../store/api/selectors/selectInvites';
 
 type InvitesDialogRowProps = {
@@ -33,37 +32,13 @@ export const InvitesDialogRow: React.FC<InvitesDialogRowProps> = ({
 }) => {
   const { t } = useTranslation();
 
-  const [error, setError] = useState(false);
-  const [hasPendingAction, setHasPendingAction] = useState(false);
-  const [success, setSuccess] = useState(false);
-
-  const { standaloneClient } = useLoggedIn();
-
-  const handleAcceptInvite = async () => {
-    setHasPendingAction(true);
-    try {
-      await standaloneClient.joinRoom(invite.roomId);
-      setSuccess(true);
-    } catch (error) {
-      console.error(error);
-      setError(true);
-    } finally {
-      setHasPendingAction(false);
-    }
-  };
-
-  const handleRejectInvite = async () => {
-    setHasPendingAction(true);
-    try {
-      await standaloneClient.leaveRoom(invite.roomId);
-      setSuccess(true);
-    } catch (error) {
-      console.error(error);
-      setError(true);
-    } finally {
-      setHasPendingAction(false);
-    }
-  };
+  const {
+    handleAcceptInvite,
+    handleRejectInvite,
+    hasPendingAction,
+    error,
+    success,
+  } = useInviteActionsWithRedirect(invite);
 
   if (success) {
     return;
