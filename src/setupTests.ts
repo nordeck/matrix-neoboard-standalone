@@ -80,3 +80,20 @@ window.Promise.withResolvers = function () {
   });
   return { promise, resolve: res, reject: rej };
 };
+
+// Provide a lightweight mock for react-i18next so tests don't have to initialize
+// a full i18next instance. It returns a simple `t` function that falls back to
+// the defaultValue or the key and replaces `{{name}}` when provided.
+vi.mock('react-i18next', () => ({
+  useTranslation: () => ({
+    t: (key: string, defaultValue?: string, options?: { name?: string }) => {
+      if (typeof defaultValue === 'string' && options?.name) {
+        return defaultValue.replace('{{name}}', options.name);
+      }
+      return defaultValue ?? key;
+    },
+  }),
+  // Simple no-op components used in some components/tests
+  Trans: ({ children }: { children: React.ReactNode }) => children,
+  I18nextProvider: ({ children }: { children: React.ReactNode }) => children,
+}));
