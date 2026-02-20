@@ -16,24 +16,53 @@
  * along with NeoBoard Standalone. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { render, screen } from '@testing-library/react';
+import { SnackbarProvider } from '@nordeck/matrix-neoboard-react-sdk';
+import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { ComponentType, PropsWithChildren } from 'react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { LoggedInProvider, LoggedInState } from '../../state';
+import { StandaloneClient } from '../../toolkit/standalone';
 import { BoardInvite } from './BoardInvite';
 
-const mocks = vi.hoisted(() => ({
-  joinRoom: vi.fn(),
-  leaveRoom: vi.fn(),
-}));
+const mockNavigate = vi.fn();
 
-vi.mock('../../state', () => ({
-  useLoggedIn: () => ({
-    standaloneClient: {
-      joinRoom: mocks.joinRoom,
-      leaveRoom: mocks.leaveRoom,
-    },
-  }),
-}));
+vi.mock('react-router', async () => {
+  const actual = await vi.importActual('react-router');
+  return {
+    ...actual,
+    useNavigate: () => mockNavigate,
+  };
+});
+const renderWithProviders = (ui: React.ReactElement) => {
+  const client = {
+    joinRoom: vi.fn().mockResolvedValue(undefined),
+    leaveRoom: vi.fn().mockResolvedValue(undefined),
+  };
+
+  const loggedInState: LoggedInState = {
+    userId: '@alice:example.org',
+    deviceId: 'device-1',
+    homeserverUrl: 'https://example.org',
+    standaloneClient: client as unknown as StandaloneClient,
+    resolveWidgetApi: vi.fn(),
+    widgetApiPromise: new Promise(() => {}),
+  };
+
+  const Wrapper: ComponentType<PropsWithChildren> = ({ children }) => (
+    <LoggedInProvider loggedInState={loggedInState}>
+      <SnackbarProvider>{children}</SnackbarProvider>
+    </LoggedInProvider>
+  );
+
+  const utils = render(ui, { wrapper: Wrapper });
+
+  return {
+    ...utils,
+    client,
+    mockNavigate,
+  };
+};
 
 describe('BoardInvite', () => {
   beforeEach(() => {
@@ -41,7 +70,7 @@ describe('BoardInvite', () => {
   });
 
   it('accepts the invite when clicking accept', async () => {
-    render(
+    const { client } = renderWithProviders(
       <BoardInvite
         invite={{
           roomId: 'room-1',
@@ -55,11 +84,11 @@ describe('BoardInvite', () => {
       screen.getByRole('button', { name: 'Accept invite' }),
     );
 
-    expect(mocks.joinRoom).toHaveBeenCalledWith('room-1');
+    expect(client.joinRoom).toHaveBeenCalledWith('room-1');
   });
 
-  it('rejects the invite when clicking reject', async () => {
-    render(
+  it('rejects the invite when clicking reject and navigates', async () => {
+    const { client, mockNavigate } = renderWithProviders(
       <BoardInvite
         invite={{
           roomId: 'room-1',
@@ -72,7 +101,12 @@ describe('BoardInvite', () => {
     await userEvent.click(
       screen.getByRole('button', { name: 'Reject invite' }),
     );
-
-    expect(mocks.leaveRoom).toHaveBeenCalledWith('room-1');
+    expect(client.leaveRoom).toHaveBeenCalledWith('room-1');
+    await waitFor(() => {
+      expect(mockNavigate).toHaveBeenCalledWith('/dashboard', {
+        state: { inviteDeclined: true },
+        replace: true,
+      });
+    });
   });
 });
