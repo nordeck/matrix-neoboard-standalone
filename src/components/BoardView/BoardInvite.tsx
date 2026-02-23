@@ -27,7 +27,7 @@ import {
 } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { useInviteActionsWithRedirect } from '../../hooks/useInviteActionsWithRedirect';
-import { InviteEntry } from '../../store/api/selectors/selectInvites.ts';
+import { InviteEntry } from '../../store';
 
 const BoardInviteContainer = styled(Container)({
   alignItems: 'center',

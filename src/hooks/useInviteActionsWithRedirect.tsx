@@ -23,7 +23,7 @@ import {
 import { useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';
-import type { InviteEntry } from '../store/api/selectors/selectInvites';
+import type { InviteEntry } from '../store';
 import { useInviteActions } from './useInviteActions';
 
 export function useInviteActionsWithRedirect(invite: InviteEntry) {

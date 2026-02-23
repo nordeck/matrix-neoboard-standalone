@@ -19,8 +19,11 @@
 import { isEqual } from 'lodash';
 import { useMemo } from 'react';
 import { useLoggedIn } from '../../state';
-import { makeSelectWhiteboard, useAppSelector } from '../../store';
-import { makeSelectInvites } from '../../store/api/selectors/selectInvites';
+import {
+  makeSelectInvites,
+  makeSelectWhiteboard,
+  useAppSelector,
+} from '../../store';
 import { useOpenedRoomId } from '../RoomIdProvider';
 import { BoardInvite } from './BoardInvite';
 import { BoardNotFound } from './BoardNotFound';

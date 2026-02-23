@@ -21,7 +21,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import { IconButton, ListItem, ListItemText, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { useInviteActionsWithRedirect } from '../../hooks/useInviteActionsWithRedirect';
-import { InviteEntry } from '../../store/api/selectors/selectInvites';
+import { InviteEntry } from '../../store';
 
 type InvitesDialogRowProps = {
   invite: InviteEntry;

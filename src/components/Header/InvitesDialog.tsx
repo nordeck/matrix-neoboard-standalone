@@ -21,8 +21,7 @@ import { isEqual } from 'lodash';
 import { useEffect, useId, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLoggedIn } from '../../state';
-import { useAppSelector } from '../../store';
-import { makeSelectInvites } from '../../store/api/selectors/selectInvites';
+import { makeSelectInvites, useAppSelector } from '../../store';
 import { InvitesDialogRow } from './InvitesDialogRow';
 
 type InvitesDialogProps = {

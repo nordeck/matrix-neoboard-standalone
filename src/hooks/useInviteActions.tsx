@@ -18,7 +18,7 @@
 
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useLoggedIn } from '../state';
-import type { InviteEntry } from '../store/api/selectors/selectInvites';
+import type { InviteEntry } from '../store';
 
 type UseInviteActionsOptions = {
   onAcceptSuccess?: () => void;
