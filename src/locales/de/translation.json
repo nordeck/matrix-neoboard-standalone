@@ -11,6 +11,11 @@
     "cancel": "Abbrechen",
     "ok": "OK"
   },
+  "boardInvite": {
+    "actionFailed": "Fehler",
+    "invitedBy": "Eingeladen von {{name}}",
+    "title": "Du wurdest zu folgendem Board eingeladen"
+  },
   "boardNotFound": {
     "link": "Zum Dashboard",
     "message": "Board nicht gefunden"
@@ -57,6 +62,7 @@
   "invitesDialog": {
     "accept": "Einladung annehmen",
     "actionFailed": "Fehler",
+    "inviteDeclined": "Du hast die Einladung zum Board „{{roomName}}\" abgelehnt und hast deshalb keinen Zugriff mehr. Du wirst nun zum Dashboard weitergeleitet.",
     "numberOfPendingInvites_zero": "Keine ausstehenden Einladungen",
     "numberOfPendingInvites_one": "Eine ausstehende Einladung",
     "numberOfPendingInvites_other": "{{count}} ausstehende Einladungen",
