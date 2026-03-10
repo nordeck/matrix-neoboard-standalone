@@ -25,8 +25,6 @@ import {
   GuidedTourProvider,
   LayoutStateProvider,
   App as NeoboardApp,
-  Snackbar,
-  SnackbarProvider,
   WhiteboardHotkeysProvider,
   powerLevelsApi,
   roomNameApi,
@@ -109,18 +107,15 @@ export const BoardView = () => {
         <LayoutStateProvider>
           <WhiteboardHotkeysProvider>
             <GuidedTourProvider>
-              <SnackbarProvider>
-                <Snackbar />
-                <ConnectionStateProvider>
-                  <ConnectionStateDialog />
-                  <SnapshotLoadStateDialog />
-                  <NeoboardApp
-                    layoutProps={{
-                      height: `calc(100vh - ${theme.offsetHeight})`,
-                    }}
-                  />
-                </ConnectionStateProvider>
-              </SnackbarProvider>
+              <ConnectionStateProvider>
+                <ConnectionStateDialog />
+                <SnapshotLoadStateDialog />
+                <NeoboardApp
+                  layoutProps={{
+                    height: `calc(100vh - ${theme.offsetHeight})`,
+                  }}
+                />
+              </ConnectionStateProvider>
             </GuidedTourProvider>
           </WhiteboardHotkeysProvider>
         </LayoutStateProvider>
