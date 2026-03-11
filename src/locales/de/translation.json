@@ -13,8 +13,8 @@
   },
   "boardInvite": {
     "actionFailed": "Fehler",
-    "invitedBy": "Eingeladen von {{name}}",
-    "title": "Du wurdest zu folgendem Board eingeladen"
+    "invitedBy": "Eingeladen von",
+    "title": "Du wurdest zu folgendem Board eingeladen:"
   },
   "boardNotFound": {
     "link": "Zum Dashboard",

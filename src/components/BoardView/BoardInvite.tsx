@@ -16,9 +16,11 @@
  * along with NeoBoard Standalone. If not, see <https://www.gnu.org/licenses/>.
  */
 
+import { ElementAvatar } from '@matrix-widget-toolkit/mui';
 import MarkEmailUnreadIcon from '@mui/icons-material/MarkEmailUnread';
 import {
   Button,
+  Chip,
   Container,
   Stack,
   styled,
@@ -49,7 +51,6 @@ export const BoardInvite: React.FC<BoardInviteProps> = ({ invite }) => {
     useInviteActionsWithRedirect(invite);
 
   const roomName = invite.roomName ?? t('dashboard.untitled', 'Untitled');
-  const inviter = invite.senderDisplayName ?? invite.senderUserId;
 
   return (
     <BoardInviteContainer>
@@ -57,17 +58,32 @@ export const BoardInvite: React.FC<BoardInviteProps> = ({ invite }) => {
         style={{ color: theme.palette.text.secondary, fontSize: 128 }}
       />
       <Typography
-        variant="h1"
+        variant="h2"
         color="textSecondary"
         sx={{ marginBottom: 2, marginTop: 2 }}
       >
-        {t('boardInvite.title', 'You have been invited to the following board')}
+        {t(
+          'boardInvite.title',
+          'You have been invited to the following board:',
+        )}
       </Typography>
-      <Typography variant="h4" sx={{ marginBottom: 1 }}>
+      <Typography variant="h2" sx={{ marginBottom: 1 }}>
         {roomName}
       </Typography>
       <Typography color="textSecondary" sx={{ marginBottom: 3 }}>
-        {t('boardInvite.invitedBy', 'Invited by {{name}}', { name: inviter })}
+        {t('boardInvite.invitedBy', 'Invited by')}{' '}
+        <Chip
+          key={invite.senderUserId}
+          avatar={
+            <ElementAvatar
+              userId={invite.senderUserId}
+              displayName={invite.senderDisplayName ?? invite.senderUserId}
+            >
+              {invite.senderDisplayName?.substring(0, 1)}
+            </ElementAvatar>
+          }
+          label={invite.senderDisplayName}
+        />
       </Typography>
       {error && (
         <Typography color="error" sx={{ marginBottom: 2 }}>
