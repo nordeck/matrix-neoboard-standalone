@@ -4446,10 +4446,18 @@ matrix-js-sdk@^39.4.0:
     unhomoglyph "^1.0.6"
     uuid "13"
 
-matrix-widget-api@^1.13.1, matrix-widget-api@^1.14.0, matrix-widget-api@^1.15.0:
+matrix-widget-api@^1.13.1, matrix-widget-api@^1.14.0:
   version "1.16.1"
   resolved "https://registry.yarnpkg.com/matrix-widget-api/-/matrix-widget-api-1.16.1.tgz#a447f28f0af07e1bdc960881971de7d1ec9e6464"
   integrity sha512-oCfTV4xNPo02qIgveqdkIyKQjOPpsjhF3bmJBotHrhr8TsrhVa7kx8PtuiUPnQTjz0tdBle7falR2Fw8VKsedw==
+  dependencies:
+    "@types/events" "^3.0.0"
+    events "^3.2.0"
+
+matrix-widget-api@^1.17.0:
+  version "1.17.0"
+  resolved "https://registry.yarnpkg.com/matrix-widget-api/-/matrix-widget-api-1.17.0.tgz#2336de2186fe70d8bd741c1603c162f60b2099c2"
+  integrity sha512-5FHoo3iEP3Bdlv5jsYPWOqj+pGdFQNLWnJLiB0V7Ygne7bb+Gsj3ibyFyHWC6BVw+Z+tSW4ljHpO17I9TwStwQ==
   dependencies:
     "@types/events" "^3.0.0"
     events "^3.2.0"
@@ -5764,10 +5772,10 @@ swc-walk@1.0.1:
   dependencies:
     acorn-walk "^8.3.4"
 
-swr@^2.3.8:
-  version "2.3.8"
-  resolved "https://registry.yarnpkg.com/swr/-/swr-2.3.8.tgz#aa15596321a34e575226a60576bade0b57adf7bf"
-  integrity sha512-gaCPRVoMq8WGDcWj9p4YWzCMPHzE0WNl6W8ADIx9c3JBEIdMkJGMzW+uzXvxHMltwcYACr9jP+32H8/hgwMR7w==
+swr@^2.4.1:
+  version "2.4.1"
+  resolved "https://registry.yarnpkg.com/swr/-/swr-2.4.1.tgz#c9e48abff6bf4b04846342e2f1f6be108a078cf6"
+  integrity sha512-2CC6CiKQtEwaEeNiqWTAw9PGykW8SR5zZX8MZk6TeAvEAnVS7Visz8WzphqgtQ8v2xz/4Q5K+j+SeMaKXeeQIA==
   dependencies:
     dequal "^2.0.3"
     use-sync-external-store "^1.6.0"
