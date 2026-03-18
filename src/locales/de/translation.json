@@ -12,9 +12,16 @@
     "ok": "OK"
   },
   "boardInvite": {
-    "actionFailed": "Fehler",
     "invitedBy": "Eingeladen von",
     "title": "Du wurdest zu folgendem Board eingeladen:"
+  },
+  "boardInviteDialog": {
+    "reject": "Einladung ablehnen",
+    "text": "Wenn du diese Einladung ablehnst, kannst du dieses Board nicht beitreten und mit anderen Nutzern nicht zusammenarbeiten.",
+    "title": "Möchtest Du die Einladung zu diesem Board wirklich ablehnen?"
+  },
+  "boardNoAccess": {
+    "message": "kein Zugriff auf diesem Board"
   },
   "boardNotFound": {
     "link": "Zum Dashboard",
@@ -62,7 +69,6 @@
   "invitesDialog": {
     "accept": "Einladung annehmen",
     "actionFailed": "Fehler",
-    "inviteDeclined": "Du hast die Einladung zum Board „{{roomName}}\" abgelehnt und hast deshalb keinen Zugriff mehr. Du wirst nun zum Dashboard weitergeleitet.",
     "numberOfPendingInvites_zero": "Keine ausstehenden Einladungen",
     "numberOfPendingInvites_one": "Eine ausstehende Einladung",
     "numberOfPendingInvites_other": "{{count}} ausstehende Einladungen",

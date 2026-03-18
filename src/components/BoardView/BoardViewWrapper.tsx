@@ -26,6 +26,7 @@ import {
 } from '../../store';
 import { useOpenedRoomId } from '../RoomIdProvider';
 import { BoardInvite } from './BoardInvite';
+import { BoardNoAccess } from './BoardNoAccess.tsx';
 import { BoardNotFound } from './BoardNotFound';
 import { BoardView } from './BoardView';
 
@@ -45,11 +46,32 @@ export const BoardViewWrapper = () => {
     (state) => selectWhiteboard(state),
     isEqual,
   );
-  if (invite) {
-    return <BoardInvite invite={invite} />;
-  }
+
+  const declined = useMemo(() => {
+    try {
+      if (!userId || !roomId) return false;
+      const key = `neoboard:declinedInvites:${userId}`;
+      const raw = localStorage.getItem(key);
+      const list = raw ? (JSON.parse(raw) ?? []) : [];
+      return Array.isArray(list) && list.includes(roomId);
+    } catch (e) {
+      console.error('Failed to read declined invites from localStorage', e);
+      return false;
+    }
+  }, [userId, roomId]);
+
   if (whiteboard) {
     return <BoardView />;
   }
+
+  // Only show invite if user hasn't already accepted (no whiteboard yet loading)
+  if (invite && !declined) {
+    return <BoardInvite invite={invite} />;
+  }
+
+  if (declined) {
+    return <BoardNoAccess />;
+  }
+
   return <BoardNotFound />;
 };
