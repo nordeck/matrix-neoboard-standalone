@@ -16,7 +16,6 @@
  * along with NeoBoard Standalone. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { Snackbar, SnackbarProvider } from '@nordeck/matrix-neoboard-react-sdk';
 import { useEffect, useRef, useState } from 'react';
 import {
   BrowserRouter,
@@ -48,23 +47,20 @@ export const App = () => {
   return (
     <StandaloneThemeProvider>
       <BrowserRouter>
-        <SnackbarProvider>
-          <Snackbar />
-          <Routes>
-            {/* Protected Routes for Logged In Users */}
-            <Route element={<ProtectedRoutes />}>
-              <Route path="/dashboard" element={<DashboardWithRedirect />} />
-              <Route path="/board/:roomId" element={<BoardViewWrapper />} />
-              <Route path="*" element={<Navigate to="/dashboard" replace />} />
-            </Route>
-            {['notLoggedIn', 'loggedOut'].includes(lifecycleState) && (
-              <>
-                <Route path="/login" element={<WelcomePane />} />
-                <Route path="*" element={<Navigate to="/login" replace />} />
-              </>
-            )}
-          </Routes>
-        </SnackbarProvider>
+        <Routes>
+          {/* Protected Routes for Logged In Users */}
+          <Route element={<ProtectedRoutes />}>
+            <Route path="/dashboard" element={<DashboardWithRedirect />} />
+            <Route path="/board/:roomId" element={<BoardViewWrapper />} />
+            <Route path="*" element={<Navigate to="/dashboard" replace />} />
+          </Route>
+          {['notLoggedIn', 'loggedOut'].includes(lifecycleState) && (
+            <>
+              <Route path="/login" element={<WelcomePane />} />
+              <Route path="*" element={<Navigate to="/login" replace />} />
+            </>
+          )}
+        </Routes>
       </BrowserRouter>
     </StandaloneThemeProvider>
   );
