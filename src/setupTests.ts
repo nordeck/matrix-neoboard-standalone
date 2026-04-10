@@ -44,6 +44,75 @@ beforeAll(() => {
   vi.mock('react', async () => await vi.importActual('react'));
 });
 
+// Use a different configuration for i18next during tests
+vi.mock('react-i18next', async () => {
+  const i18n = await vi.importActual<typeof import('i18next')>('i18next');
+  const { initReactI18next } =
+    await vi.importActual<typeof import('react-i18next')>('react-i18next');
+
+  await i18n.use(initReactI18next).init({
+    fallbackLng: 'en',
+    interpolation: {
+      escapeValue: false,
+    },
+    resources: { en: {} },
+  });
+
+  // Force language to 'en' for tests so i18n.language is defined synchronously
+  await i18n.changeLanguage('en');
+
+  // Return the real react-i18next exports so named hooks like `useTranslation` are present.
+  const actual =
+    await vi.importActual<typeof import('react-i18next')>('react-i18next');
+  return {
+    __esModule: true,
+    ...actual,
+  };
+});
+
+// --- Global test helpers / mocks -------------------------------------------------
+// Mock the react-sdk used across the app. Provide matrixRtcMode and safe exports used at import time.
+vi.mock('@nordeck/matrix-neoboard-react-sdk', () => ({
+  __esModule: true,
+  matrixRtcMode: false,
+  STATE_EVENT_RTC_MEMBER: 'org.neoboard.rtc.member',
+  STATE_EVENT_WHITEBOARD_SESSIONS: 'org.neoboard.whiteboard.sessions',
+  ROOM_EVENT_DOCUMENT_CREATE: 'org.neoboard.room.event.document.create',
+  STATE_EVENT_WHITEBOARD: 'org.neoboard.whiteboard',
+  useUserDetails: () => ({
+    getUserAvatarUrl: (_userId: string) => null,
+  }),
+}));
+
+// Provide a basic in-memory localStorage mock for the test environment
+const __localStorage: Record<string, string> = {};
+const localStorageMock: Storage = {
+  getItem: (key: string) =>
+    Object.prototype.hasOwnProperty.call(__localStorage, key)
+      ? __localStorage[key]
+      : null,
+  setItem: (key: string, value: string) => {
+    __localStorage[key] = String(value);
+  },
+  removeItem: (key: string) => {
+    delete __localStorage[key];
+  },
+  clear: () => {
+    Object.keys(__localStorage).forEach((k) => delete __localStorage[k]);
+  },
+  key: (index: number) => Object.keys(__localStorage)[index] ?? null,
+  get length() {
+    return Object.keys(__localStorage).length;
+  },
+};
+global.localStorage = localStorageMock;
+window.localStorage = localStorageMock;
+
+// Clear the in-memory storage between tests automatically
+afterEach(() => {
+  localStorageMock.clear();
+});
+
 // Set up parts of the crypto API needed for the tests
 Object.defineProperty(global.self, 'crypto', {
   value: {

@@ -126,7 +126,11 @@ export const BoardInvite: React.FC<BoardInviteProps> = ({ invite }) => {
         <Typography variant="h2" sx={{ marginBottom: 1 }}>
           {roomName}
         </Typography>
-        <Typography color="textSecondary" sx={{ marginBottom: 3 }}>
+        <Typography
+          color="textSecondary"
+          sx={{ marginBottom: 3 }}
+          component="div"
+        >
           {t('boardInvite.invitedBy', 'Invited by')}{' '}
           <Chip
             key={invite.senderUserId}
