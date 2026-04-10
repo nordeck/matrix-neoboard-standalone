@@ -64,8 +64,7 @@ export const BoardViewWrapper = () => {
     return <BoardView />;
   }
 
-  // Only show invite if user hasn't already accepted (no whiteboard yet loading)
-  if (invite && !declined) {
+  if (invite) {
     return <BoardInvite invite={invite} />;
   }
 
