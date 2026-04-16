@@ -72,17 +72,22 @@ vi.mock('react-i18next', async () => {
 
 // --- Global test helpers / mocks -------------------------------------------------
 // Mock the react-sdk used across the app. Provide matrixRtcMode and safe exports used at import time.
-vi.mock('@nordeck/matrix-neoboard-react-sdk', () => ({
-  __esModule: true,
-  matrixRtcMode: false,
-  STATE_EVENT_RTC_MEMBER: 'org.neoboard.rtc.member',
-  STATE_EVENT_WHITEBOARD_SESSIONS: 'org.neoboard.whiteboard.sessions',
-  ROOM_EVENT_DOCUMENT_CREATE: 'org.neoboard.room.event.document.create',
-  STATE_EVENT_WHITEBOARD: 'org.neoboard.whiteboard',
-  useUserDetails: () => ({
-    getUserAvatarUrl: (_userId: string) => null,
-  }),
-}));
+vi.mock('@nordeck/matrix-neoboard-react-sdk', async () => {
+  const actual = await vi.importActual<
+    typeof import('@nordeck/matrix-neoboard-react-sdk')
+  >('@nordeck/matrix-neoboard-react-sdk');
+  return {
+    ...actual,
+    matrixRtcMode: false,
+    STATE_EVENT_RTC_MEMBER: 'org.neoboard.rtc.member',
+    STATE_EVENT_WHITEBOARD_SESSIONS: 'org.neoboard.whiteboard.sessions',
+    ROOM_EVENT_DOCUMENT_CREATE: 'org.neoboard.room.event.document.create',
+    STATE_EVENT_WHITEBOARD: 'org.neoboard.whiteboard',
+    useUserDetails: () => ({
+      getUserAvatarUrl: (_userId: string) => null,
+    }),
+  };
+});
 
 // Provide a basic in-memory localStorage mock for the test environment
 const __localStorage: Record<string, string> = {};

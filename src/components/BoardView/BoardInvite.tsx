@@ -33,6 +33,7 @@ import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';
 import { useLoggedIn } from '../../state';
 import { InviteEntry } from '../../store';
+import { getDeclinedInvitesKey } from '../../utils/declinedInvites.ts';
 import { ConfirmDialog } from '../ConfirmDialog';
 
 const BoardInviteContainer = styled(Container)({
@@ -61,7 +62,7 @@ export const BoardInvite: React.FC<BoardInviteProps> = ({ invite }) => {
     try {
       await standaloneClient.joinRoom(invite.roomId);
       if (userId) {
-        const key = `neoboard:declinedInvites:${userId}`;
+        const key = getDeclinedInvitesKey(userId);
         const stored = localStorage.getItem(key);
         const declinedRooms: string[] = stored ? JSON.parse(stored) : [];
 
@@ -83,7 +84,7 @@ export const BoardInvite: React.FC<BoardInviteProps> = ({ invite }) => {
     try {
       await standaloneClient.leaveRoom(invite.roomId);
       if (userId) {
-        const key = `neoboard:declinedInvites:${userId}`;
+        const key = getDeclinedInvitesKey(userId);
         const raw = localStorage.getItem(key);
         const list: string[] = raw ? JSON.parse(raw) : [];
 
