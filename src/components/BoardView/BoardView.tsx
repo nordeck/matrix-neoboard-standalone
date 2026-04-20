@@ -124,7 +124,7 @@ export const BoardView = () => {
                     slidesMigrationDialogAdditionalButtons={
                       <Link to="/dashboard">
                         <Button variant="outlined">
-                          {t('boardNotFound.link', 'Go to dashboard')}
+                          {t('common.goToDashboard', 'Go to dashboard')}
                         </Button>
                       </Link>
                     }
