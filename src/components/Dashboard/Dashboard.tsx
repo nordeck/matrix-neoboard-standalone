@@ -20,9 +20,10 @@ import { useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useStore } from 'react-redux';
 import { useNavigate } from 'react-router';
+import { defer, firstValueFrom, from, Observable, switchMap } from 'rxjs';
 import { STATE_EVENT_SESSION } from '../../model';
 import { useLoggedIn } from '../../state';
-import { makeSelectWhiteboard, RootState } from '../../store';
+import { makeSelectWhiteboards, RootState } from '../../store';
 import { DashboardContainer } from './DashboardContainer.tsx';
 import { createWhiteboard } from './createWhiteboard.ts';
 import { useDashboardList } from './useDashboardList.ts';
@@ -30,7 +31,7 @@ import { useDashboardView } from './useDashboardView.tsx';
 
 export function Dashboard() {
   const { t } = useTranslation();
-  const { standaloneClient } = useLoggedIn();
+  const { standaloneClient, userId, deviceId } = useLoggedIn();
   const dashboardItems = useDashboardList();
   const DashboardView = useDashboardView();
   const navigate = useNavigate();
@@ -47,30 +48,40 @@ export function Dashboard() {
       },
     });
 
-    // create a promise that will be resolved when whiteboard data is in store
-    let promiseResolve: (value: unknown) => void;
-    const promise = new Promise((resolve) => {
-      promiseResolve = resolve;
-    });
+    const createAndWaitForBoard$ = defer(() =>
+      from(createWhiteboard(standaloneClient, roomId)),
+    ).pipe(
+      switchMap(
+        () =>
+          new Observable<void>((subscriber) => {
+            const unsubscribe = store.subscribe(() => {
+              const state = store.getState();
+              const whiteboardEntries = makeSelectWhiteboards(
+                userId,
+                deviceId,
+                undefined,
+              )(state);
+              const entry = whiteboardEntries.find(
+                (e) => e.whiteboard.room_id === roomId,
+              );
+              if (
+                entry &&
+                entry.roomName &&
+                entry.whiteboard &&
+                entry.powerLevels
+              ) {
+                subscriber.next();
+                subscriber.complete();
+              }
+            });
+            return unsubscribe;
+          }),
+      ),
+    );
 
-    const selectWhiteboard = makeSelectWhiteboard(roomId);
-    const unsubscribe = store.subscribe(() => {
-      const state = store.getState();
-
-      const whiteboard = selectWhiteboard(state);
-      if (whiteboard) {
-        promiseResolve(undefined);
-      }
-    });
-
-    // create a whiteboard in the room
-    await createWhiteboard(standaloneClient, roomId);
-
-    await promise;
-    unsubscribe();
-
+    await firstValueFrom(createAndWaitForBoard$);
     navigate(`/board/${roomId}`);
-  }, [standaloneClient, t, navigate, store]);
+  }, [standaloneClient, t, navigate, store, userId, deviceId]);
 
   return (
     <DashboardContainer>
