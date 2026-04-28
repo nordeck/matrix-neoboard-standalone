@@ -11,6 +11,18 @@
     "cancel": "Abbrechen",
     "ok": "OK"
   },
+  "boardInvite": {
+    "invitedBy": "Eingeladen von",
+    "title": "Du wurdest zu folgendem Board eingeladen:"
+  },
+  "boardInviteDialog": {
+    "reject": "Einladung ablehnen",
+    "text": "Wenn du diese Einladung ablehnst, kannst du dieses Board nicht beitreten und mit anderen Nutzern nicht zusammenarbeiten.",
+    "title": "Möchtest Du die Einladung zu diesem Board wirklich ablehnen?"
+  },
+  "boardNoAccess": {
+    "message": "kein Zugriff auf diesem Board"
+  },
   "boardNotFound": {
     "link": "Zum Dashboard",
     "message": "Board nicht gefunden"

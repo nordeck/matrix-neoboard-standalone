@@ -11,6 +11,18 @@
     "cancel": "Cancel",
     "ok": "OK"
   },
+  "boardInvite": {
+    "invitedBy": "Invited by",
+    "title": "You have been invited to the following board:"
+  },
+  "boardInviteDialog": {
+    "reject": "Reject invite",
+    "text": "Rejecting this invite means you will not be able to join and collaborate with other users on this board.",
+    "title": "Are you sure you want to reject this invite?"
+  },
+  "boardNoAccess": {
+    "message": "Can't access board"
+  },
   "boardNotFound": {
     "link": "Go to dashboard",
     "message": "Board not found"
