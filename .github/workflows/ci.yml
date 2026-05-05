@@ -27,7 +27,7 @@ jobs:
         with:
           repository: nordeck/matrix-neoboard
           path: matrix-neoboard
-          ref: ${{ github.events.inputs.neoboard_ref }}
+          ref: nic/feat/NEO-1694-migrate-slides-to-frames
           # required for changesets
           fetch-depth: '0'
           # don't persist the credentials so the changesets action doesn't use the
