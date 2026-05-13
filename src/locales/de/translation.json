@@ -12,8 +12,10 @@
     "ok": "OK"
   },
   "boardNotFound": {
-    "link": "Zum Dashboard",
     "message": "Board nicht gefunden"
+  },
+  "common": {
+    "goToDashboard": "Zum Dashboard"
   },
   "copyableTextButton": {
     "copy-to-clipboard": "In die Zwischenablage kopieren"

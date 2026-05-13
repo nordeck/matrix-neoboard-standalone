@@ -16,7 +16,7 @@
  * along with NeoBoard Standalone. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { useTheme } from '@mui/material';
+import { Button, useTheme } from '@mui/material';
 import {
   ConnectionStateDialog,
   ConnectionStateProvider,
@@ -35,6 +35,8 @@ import {
 } from '@nordeck/matrix-neoboard-react-sdk';
 import loglevel from 'loglevel';
 import { useCallback, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
+import { Link } from 'react-router';
 import { useAppDispatch } from '../../store';
 import { useSaveOnLeave } from '../LoggedInLayout/useSaveOnLeave.tsx';
 import { useOpenedRoomId } from '../RoomIdProvider';
@@ -42,6 +44,7 @@ import { SnapshotLoadStateDialog } from '../SnapshotLoadStateDialog/SnapshotLoad
 import { useStandaloneWidgetApi } from '../StandaloneWidgetApiProvider';
 
 export const BoardView = () => {
+  const { t } = useTranslation();
   const theme = useTheme();
   const dispatch = useAppDispatch();
   const roomId = useOpenedRoomId();
@@ -118,6 +121,13 @@ export const BoardView = () => {
                     layoutProps={{
                       height: `calc(100vh - ${theme.offsetHeight})`,
                     }}
+                    slidesMigrationDialogAdditionalButtons={
+                      <Link to="/dashboard">
+                        <Button variant="outlined">
+                          {t('common.goToDashboard', 'Go to dashboard')}
+                        </Button>
+                      </Link>
+                    }
                   />
                 </ConnectionStateProvider>
               </SnackbarProvider>
