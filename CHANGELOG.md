@@ -1,5 +1,14 @@
 # @nordeck/matrix-neoboard-standalone
 
+## 0.1.1
+
+### Patch Changes
+
+- 2655124: Pin trivy version to 0.69.3
+  Pin trivy-action to v0.35.0
+- d7fe69d: Update lodash to 4.18.1 for CVEs: `CVE-2026-2950`, `CVE-2026-4800`
+- 8613421: Upload helm chart to OCI Registry, release helm chart
+
 ## 0.1.0
 
 ### Minor Changes
