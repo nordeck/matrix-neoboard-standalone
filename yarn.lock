@@ -3606,7 +3606,7 @@ i18next-browser-languagedetector@^8.2.0, i18next-browser-languagedetector@^8.2.1
   dependencies:
     "@babel/runtime" "^7.23.2"
 
-i18next-cli@^1.51.7:
+i18next-cli@1.51.7:
   version "1.51.7"
   resolved "https://registry.yarnpkg.com/i18next-cli/-/i18next-cli-1.51.7.tgz#4c98c7bee14cb7ca57926002cf0ba8a4a1d6f5c3"
   integrity sha512-Mf9cjzVqCTJLNFwRBYDzico1LydEbdFaYKmR8yoGegBeYhDPtMZrPYFtFnPHaUOnW91cyVB617QTzJL8v44goA==
