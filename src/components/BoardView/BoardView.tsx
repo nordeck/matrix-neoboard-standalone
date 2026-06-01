@@ -121,7 +121,7 @@ export const BoardView = () => {
                     layoutProps={{
                       height: `calc(100vh - ${theme.offsetHeight})`,
                     }}
-                    slidesMigrationDialogAdditionalButtons={
+                    whiteboardUpdateDialogAdditionalButtons={
                       <Link to="/dashboard">
                         <Button variant="outlined">
                           {t('common.goToDashboard', 'Go to dashboard')}
