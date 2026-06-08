@@ -49,7 +49,7 @@ export const BoardNotFound: React.FC = () => {
 
       <Link to="/dashboard">
         <Button variant="contained">
-          {t('boardNotFound.link', 'Go to dashboard')}
+          {t('common.goToDashboard', 'Go to dashboard')}
         </Button>
       </Link>
     </BoardNotFoundContainer>
