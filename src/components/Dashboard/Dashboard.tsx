@@ -47,27 +47,35 @@ export function Dashboard() {
       },
     });
 
-    // create a promise that will be resolved when whiteboard data is in store
-    let promiseResolve: (value: unknown) => void;
-    const promise = new Promise((resolve) => {
-      promiseResolve = resolve;
-    });
-
     const selectWhiteboard = makeSelectWhiteboard(roomId);
-    const unsubscribe = store.subscribe(() => {
-      const state = store.getState();
 
-      const whiteboard = selectWhiteboard(state);
-      if (whiteboard) {
-        promiseResolve(undefined);
+    // Wait for the whiteboard state event to arrive in the store, with a
+    // timeout so a network failure doesn't leave the UI hung indefinitely.
+    let unsubscribe: (() => void) | undefined;
+    const whiteboardReady = new Promise<void>((resolve, reject) => {
+      // Check immediately in case the event already arrived
+      if (selectWhiteboard(store.getState())) {
+        resolve();
+        return;
       }
-    });
+
+      unsubscribe = store.subscribe(() => {
+        if (selectWhiteboard(store.getState())) resolve();
+      });
+
+      setTimeout(
+        () =>
+          reject(
+            new Error(t('dashboard.createTimeout', 'Board creation timed out')),
+          ),
+        30_000,
+      );
+    }).finally(() => unsubscribe?.());
 
     // create a whiteboard in the room
     await createWhiteboard(standaloneClient, roomId);
 
-    await promise;
-    unsubscribe();
+    await whiteboardReady;
 
     navigate(`/board/${roomId}`);
   }, [standaloneClient, t, navigate, store]);

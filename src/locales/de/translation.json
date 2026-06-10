@@ -35,6 +35,7 @@
     "createBoardTile": {
       "createBoard": "Neues Board erstellen"
     },
+    "createTimeout": "Zeitüberschreitung bei der Board-Erstellung",
     "sortBy": {
       "alphabetical": "Alphabetisch",
       "button": "Sortieren nach:",
