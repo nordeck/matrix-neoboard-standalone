@@ -28,7 +28,7 @@ import {
   WhiteboardManager,
   WhiteboardManagerProvider,
 } from '@nordeck/matrix-neoboard-react-sdk';
-import { first } from 'lodash';
+import first from 'lodash/first';
 import React, { useEffect, useState } from 'react';
 import { useStore } from 'react-redux';
 import { useLoggedIn } from '../../state';

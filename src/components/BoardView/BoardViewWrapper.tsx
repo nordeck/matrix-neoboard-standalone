@@ -16,7 +16,7 @@
  * along with NeoBoard Standalone. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { isEqual } from 'lodash';
+import isEqual from 'lodash/isEqual';
 import { useMemo } from 'react';
 import { makeSelectWhiteboard, useAppSelector } from '../../store';
 import { useOpenedRoomId } from '../RoomIdProvider';

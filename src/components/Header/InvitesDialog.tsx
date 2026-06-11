@@ -17,7 +17,7 @@
  */
 
 import { Dialog, DialogContent, DialogTitle, List } from '@mui/material';
-import { isEqual } from 'lodash';
+import isEqual from 'lodash/isEqual';
 import { useEffect, useId, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLoggedIn } from '../../state';
