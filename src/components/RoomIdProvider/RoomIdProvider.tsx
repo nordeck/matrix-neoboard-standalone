@@ -16,7 +16,7 @@
  * along with NeoBoard Standalone. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { createContext, PropsWithChildren } from 'react';
+import { createContext, PropsWithChildren, useMemo } from 'react';
 import { useParams } from 'react-router';
 
 type RoomIdContextType = {
@@ -29,10 +29,9 @@ export const RoomIdContext = createContext<RoomIdContextType | undefined>(
 
 export function RoomIdProvider({ children }: PropsWithChildren<{}>) {
   const { roomId } = useParams();
+  const ctx = useMemo(() => ({ roomId }), [roomId]);
 
   return (
-    <RoomIdContext.Provider value={{ roomId }}>
-      {children}
-    </RoomIdContext.Provider>
+    <RoomIdContext.Provider value={ctx}>{children}</RoomIdContext.Provider>
   );
 }
