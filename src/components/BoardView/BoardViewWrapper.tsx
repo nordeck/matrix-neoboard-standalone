@@ -26,10 +26,10 @@ import {
 } from '../../store';
 import { useOpenedRoomId } from '../RoomIdProvider';
 import { BoardInvite } from './BoardInvite';
-import { BoardNoAccess } from './BoardNoAccess.tsx';
+import { BoardNoAccess } from './BoardNoAccess';
 import { BoardNotFound } from './BoardNotFound';
 import { BoardView } from './BoardView';
-import { useDeclinedInvite } from './useDeclinedInvite.ts';
+import { useDeclinedInvite } from './useDeclinedInvite';
 
 export const BoardViewWrapper = () => {
   const roomId = useOpenedRoomId();
@@ -49,11 +49,6 @@ export const BoardViewWrapper = () => {
   );
 
   const declined = useDeclinedInvite(userId, roomId);
-
-  // ✅ The order here is intentional and important:
-  // 1. A new invite always overrides a previous decline (users can be re-invited)
-  // 2. Whiteboard access takes priority over declined state
-  // 3. Declined is only shown when there's no active invite and no access
 
   if (invite) {
     return <BoardInvite invite={invite} />;

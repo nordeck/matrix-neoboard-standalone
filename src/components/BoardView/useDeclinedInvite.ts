@@ -16,29 +16,25 @@
  * along with NeoBoard Standalone. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { useEffect, useState } from 'react';
+import { useMemo } from 'react';
 import { getDeclinedInvitesKey } from '../../utils/declinedInvites';
 
 export function useDeclinedInvite(userId: string, roomId: string): boolean {
-  const [isDeclined, setIsDeclined] = useState<boolean>(false);
-
-  useEffect(() => {
+  return useMemo(() => {
+    if (!userId || !roomId) return false;
     try {
-      if (!userId || !roomId) {
-        setIsDeclined(false);
-        return;
-      }
-
       const key = getDeclinedInvitesKey(userId);
-      const raw = localStorage.getItem(key);
-      const list = raw ? (JSON.parse(raw) ?? []) : [];
-
-      setIsDeclined(Array.isArray(list) && list.includes(roomId));
+      const declinedInvites = localStorage.getItem(key);
+      const declinedInvitesList = declinedInvites
+        ? JSON.parse(declinedInvites)
+        : [];
+      return (
+        Array.isArray(declinedInvitesList) &&
+        declinedInvitesList.includes(roomId)
+      );
     } catch (e) {
       console.error('Failed to read declined invites from localStorage', e);
-      setIsDeclined(false);
+      return false;
     }
   }, [userId, roomId]);
-
-  return isDeclined;
 }

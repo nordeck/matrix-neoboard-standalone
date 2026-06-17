@@ -17,7 +17,7 @@
  */
 
 import { NoMeetingRoom } from '@mui/icons-material';
-import { Button, Container, styled, Typography, useTheme } from '@mui/material';
+import { Button, Container, styled, Typography } from '@mui/material';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router';
@@ -31,18 +31,15 @@ const BoardNoAccessContainer = styled(Container)({
 
 export const BoardNoAccess: React.FC = () => {
   const { t } = useTranslation();
-  const theme = useTheme();
 
   return (
     <BoardNoAccessContainer>
-      <NoMeetingRoom
-        style={{ color: theme.palette.text.secondary, fontSize: 128 }}
-      />
+      <NoMeetingRoom sx={{ color: 'text.secondary', fontSize: 128 }} />
 
       <Typography
         variant="h1"
         color="textSecondary"
-        sx={{ marginBottom: '64px', marginTop: '16px' }}
+        sx={{ marginBottom: 8, marginTop: 2 }}
       >
         {t('boardNoAccess.message', "Can't access board")}
       </Typography>
