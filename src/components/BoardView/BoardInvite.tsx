@@ -25,15 +25,14 @@ import {
   Stack,
   styled,
   Typography,
-  useTheme,
 } from '@mui/material';
 import { useUserDetails } from '@nordeck/matrix-neoboard-react-sdk';
-import React, { useCallback } from 'react';
+import { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';
 import { useLoggedIn } from '../../state';
 import { InviteEntry } from '../../store';
-import { getDeclinedInvitesKey } from '../../utils/declinedInvites.ts';
+import { getDeclinedInvitesKey } from '../../utils/declinedInvites';
 import { ConfirmDialog } from '../ConfirmDialog';
 
 const BoardInviteContainer = styled(Container)({
@@ -48,12 +47,11 @@ type BoardInviteProps = {
   invite: InviteEntry;
 };
 
-export const BoardInvite: React.FC<BoardInviteProps> = ({ invite }) => {
+export const BoardInvite = ({ invite }: BoardInviteProps) => {
   const { t } = useTranslation();
-  const theme = useTheme();
   const navigate = useNavigate();
   const { standaloneClient, userId } = useLoggedIn();
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = useState(false);
   const roomName = invite.roomName ?? t('dashboard.untitled', 'Untitled');
   const { getUserAvatarUrl } = useUserDetails();
   const avatarUrl = getUserAvatarUrl(invite.senderUserId);
@@ -100,20 +98,14 @@ export const BoardInvite: React.FC<BoardInviteProps> = ({ invite }) => {
     navigate('/dashboard', { state: { inviteDeclined: true }, replace: true });
   }, [invite.roomId, standaloneClient, userId, navigate]);
 
-  const handleRejectClick = useCallback(() => {
-    setOpen(true);
-  }, [setOpen]);
-
-  const onclose = useCallback(() => {
+  const handleClose = useCallback(() => {
     setOpen(false);
-  }, [setOpen]);
+  }, []);
 
   return (
     <>
       <BoardInviteContainer>
-        <MarkEmailUnreadIcon
-          style={{ color: theme.palette.text.secondary, fontSize: 128 }}
-        />
+        <MarkEmailUnreadIcon sx={{ color: 'text.secondary', fontSize: 128 }} />
         <Typography
           variant="h2"
           color="textSecondary"
@@ -134,12 +126,11 @@ export const BoardInvite: React.FC<BoardInviteProps> = ({ invite }) => {
         >
           {t('boardInvite.invitedBy', 'Invited by')}{' '}
           <Chip
-            key={invite.senderUserId}
             avatar={
               <ElementAvatar
                 userId={invite.senderUserId}
                 displayName={invite.senderDisplayName ?? invite.senderUserId}
-                src={avatarUrl ?? ''}
+                src={avatarUrl}
               >
                 {invite.senderDisplayName?.substring(0, 1)}
               </ElementAvatar>
@@ -151,14 +142,14 @@ export const BoardInvite: React.FC<BoardInviteProps> = ({ invite }) => {
           <Button variant="contained" onClick={handleAcceptInvite}>
             {t('invitesDialog.accept', 'Accept Invite')}
           </Button>
-          <Button variant="outlined" onClick={handleRejectClick}>
+          <Button variant="outlined" onClick={() => setOpen(true)}>
             {t('invitesDialog.reject', 'Reject Invite')}
           </Button>
         </Stack>
       </BoardInviteContainer>
       <ConfirmDialog
         confirmActionLabel={t('boardInviteDialog.reject', 'Reject invite')}
-        onClose={onclose}
+        onClose={handleClose}
         onConfirm={handleRejectInvite}
         open={open}
         title={t(
