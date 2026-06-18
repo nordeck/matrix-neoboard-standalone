@@ -26,7 +26,7 @@ import {
   isValidCreateEventSchema,
   isValidPowerLevelStateEvent,
 } from '@matrix-widget-toolkit/api';
-import { last } from 'lodash';
+import last from 'lodash/last';
 import {
   ClientEvent,
   Direction,
