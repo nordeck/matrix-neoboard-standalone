@@ -49,6 +49,7 @@ type BoardInviteProps = {
 
 export const BoardInvite = ({ invite }: BoardInviteProps) => {
   const { t } = useTranslation();
+  const [error, setError] = useState(false);
   const navigate = useNavigate();
   const { standaloneClient, userId } = useLoggedIn();
   const [open, setOpen] = useState(false);
@@ -73,8 +74,9 @@ export const BoardInvite = ({ invite }: BoardInviteProps) => {
           localStorage.removeItem(key);
         }
       }
-    } catch (err) {
-      console.error(err);
+    } catch (error) {
+      console.error(error);
+      setError(true);
     }
   }, [invite.roomId, standaloneClient, userId]);
 
@@ -93,6 +95,7 @@ export const BoardInvite = ({ invite }: BoardInviteProps) => {
       }
     } catch (err) {
       console.error(err);
+      setError(true);
     }
 
     navigate('/dashboard', { state: { inviteDeclined: true }, replace: true });
@@ -145,6 +148,11 @@ export const BoardInvite = ({ invite }: BoardInviteProps) => {
           <Button variant="outlined" onClick={() => setOpen(true)}>
             {t('invitesDialog.reject', 'Reject Invite')}
           </Button>
+          {error && (
+            <Typography color="red">
+              {t('invitesDialog.actionFailed', 'Action failed')}
+            </Typography>
+          )}
         </Stack>
       </BoardInviteContainer>
       <ConfirmDialog

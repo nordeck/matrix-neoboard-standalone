@@ -35,6 +35,15 @@ vi.mock('react-router', async () => ({
   useNavigate: vi.fn(),
 }));
 
+vi.mock('@nordeck/matrix-neoboard-react-sdk', async () => ({
+  ...(await vi.importActual<
+    typeof import('@nordeck/matrix-neoboard-react-sdk')
+  >('@nordeck/matrix-neoboard-react-sdk')),
+  useUserDetails: () => ({
+    getUserAvatarUrl: () => null,
+  }),
+}));
+
 describe('<BoardInvite />', () => {
   let Wrapper: ComponentType<PropsWithChildren>;
   let client: MockStandaloneClient;
