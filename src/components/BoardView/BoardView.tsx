@@ -38,6 +38,7 @@ import { useCallback, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router';
 import { useAppDispatch } from '../../store';
+import { savePreviewSvg } from '../Dashboard/boardPreviewCache.ts';
 import { useSaveOnLeave } from '../LoggedInLayout/useSaveOnLeave.tsx';
 import { useOpenedRoomId } from '../RoomIdProvider';
 import { SnapshotLoadStateDialog } from '../SnapshotLoadStateDialog/SnapshotLoadStateDialog';
@@ -100,9 +101,19 @@ export const BoardView = () => {
     };
 
     return () => {
+      const svgElement = document.querySelector(
+        '[data-guided-tour-target="canvas"] svg',
+      );
+      if (svgElement) {
+        const svgHtml = svgElement.outerHTML.replace(
+          /\s(?:href|xlink:href)="blob:[^"]*"/g,
+          '',
+        );
+        void savePreviewSvg(roomId, svgHtml);
+      }
       handleClear();
     };
-  }, [whiteboardManager, persist, clearWhiteboard]);
+  }, [whiteboardManager, persist, clearWhiteboard, roomId]);
 
   return (
     <>
