@@ -1,0 +1,30 @@
+{{- if .Values.httproute.enabled -}}
+{{- $fullName := include "app.fullname" . -}}
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: "{{ $fullName }}"
+  labels:
+    {{- include "app.labels" . | nindent 4 }}
+  {{- with .Values.httproute.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  hostnames:
+  {{- range .Values.httproute.hosts }}
+    - host: {{ .host | quote }}
+  {{- end }}
+  parentRefs:
+  {{- range .Values.httproute.parentRefs }}
+    - name: {{ .name | quote }}
+      namespace: {{ .namespace | quote }}
+  {{- end }}
+  rules:
+    - backendRef:
+        name: {{ $fullName }}
+        port: 8080
+      timeouts:
+        request: {{ .Values.httproute.requestTimeout | quote }}
+        backendRequest: {{ .Values.httproute.backendRequestTimeout | quote }}
+{{- end }}

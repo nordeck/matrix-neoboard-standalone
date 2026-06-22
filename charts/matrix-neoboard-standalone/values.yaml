@@ -61,6 +61,18 @@ ingress:
   #  - secretName: neoboard-standalone-tls
   #    hosts:
   #      - neoboard.example.com
+
+httproute:
+  enabled: false
+  annotations: {}
+  hosts:
+    - neoboard.example.com
+  parentRefs:
+    - name: example-gateway
+      namespace: default
+  requestTimeout: 30s
+  backendRequestTimeout: 30s
+
 extraConfigs: {}
 
 resources:
