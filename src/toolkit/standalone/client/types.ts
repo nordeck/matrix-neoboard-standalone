@@ -66,6 +66,11 @@ export type StandaloneClient = Pick<
   invite(roomId: string, userId: string): Promise<void>;
 
   /**
+   * Remove a member from a room.
+   */
+  removeMember(roomId: string, userId: string, reason?: string): Promise<void>;
+
+  /**
    * Search for users in the user directory.
    *
    * @param searchTerm - The search term to search for.
