@@ -98,6 +98,31 @@ export function makeSelectWhiteboards(
        */
       const seenRooms = new Set<string>();
 
+      // Pre-index the latest session event per room for this user (O(M) pre-pass)
+      const stateKey = matrixRtcMode ? `_${userId}_${deviceId}` : userId;
+      const latestSessionByRoom = Object.values(
+        whiteboardSessionsEvents,
+      ).reduce<Record<string, StateEvent<WhiteboardSessionsEvent>>>(
+        (acc, ev) => {
+          if (
+            ev.state_key === stateKey &&
+            (acc[ev.room_id] === undefined ||
+              acc[ev.room_id].origin_server_ts < ev.origin_server_ts)
+          ) {
+            acc[ev.room_id] = ev;
+          }
+          return acc;
+        },
+        {},
+      );
+
+      // Pre-index rooms where the current user is a member (O(M) pre-pass)
+      const memberRooms = new Set(
+        Object.values(roomMemberEvents)
+          .filter((e) => e?.state_key === userId)
+          .map((e) => e!.room_id),
+      );
+
       const boards: WhiteboardEntry[] = whiteboards.flatMap((whiteboard) => {
         const { room_id } = whiteboard;
 
@@ -109,38 +134,16 @@ export function makeSelectWhiteboards(
 
         const roomName = roomNameEvents[room_id]?.content.name;
 
-        let latestOwnWhiteboardSessionsEvent:
-          | StateEvent<WhiteboardSessionsEvent>
-          | undefined = undefined;
-
-        // Find latest whiteboardSessions for the whiteboard room and the current user
-        const stateKey = matrixRtcMode ? `_${userId}_${deviceId}` : userId;
-        Object.values(whiteboardSessionsEvents).forEach(
-          (whiteboardSessionsEvent) => {
-            if (
-              whiteboardSessionsEvent.room_id === whiteboard.room_id &&
-              whiteboardSessionsEvent.state_key === stateKey &&
-              (latestOwnWhiteboardSessionsEvent === undefined ||
-                latestOwnWhiteboardSessionsEvent.origin_server_ts <
-                  whiteboardSessionsEvent.origin_server_ts)
-            ) {
-              latestOwnWhiteboardSessionsEvent = whiteboardSessionsEvent;
-            }
-          },
-        );
-
         if (
           roomName &&
           // select rooms where user is a member (invited or joined, filters out leave membership)
-          Object.values(roomMemberEvents).some(
-            (e) => e && e.room_id === room_id && e.state_key === userId,
-          )
+          memberRooms.has(room_id)
         ) {
           return [
             {
               roomName,
               whiteboard,
-              whiteboardSessions: latestOwnWhiteboardSessionsEvent,
+              whiteboardSessions: latestSessionByRoom[room_id],
               powerLevels: powerLevelsEvents[room_id],
               roomCreateEvent: roomCreateEvents[room_id],
               preview: undefined,
