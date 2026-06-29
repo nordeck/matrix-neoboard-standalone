@@ -29,11 +29,11 @@ import { BoardInvite } from './BoardInvite';
 import { BoardNoAccess } from './BoardNoAccess';
 import { BoardNotFound } from './BoardNotFound';
 import { BoardView } from './BoardView';
-import { useDeclinedInvite } from './useDeclinedInvite';
+import { getDeclinedRooms } from './declinedRoom';
 
 export const BoardViewWrapper = () => {
-  const roomId = useOpenedRoomId();
   const { userId } = useLoggedIn();
+  const roomId = useOpenedRoomId();
   const selectInvites = useMemo(() => makeSelectInvites(userId), [userId]);
   const selectWhiteboard = useMemo(
     () => makeSelectWhiteboard(roomId),
@@ -47,8 +47,10 @@ export const BoardViewWrapper = () => {
     (state) => selectWhiteboard(state),
     isEqual,
   );
-
-  const declined = useDeclinedInvite(userId, roomId);
+  const declined = useMemo(
+    () => getDeclinedRooms(userId).includes(roomId),
+    [userId, roomId],
+  );
 
   if (invite) {
     return <BoardInvite invite={invite} />;

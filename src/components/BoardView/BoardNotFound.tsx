@@ -17,24 +17,18 @@
  */
 
 import WebAssetOffIcon from '@mui/icons-material/WebAssetOff';
-import { Button, Container, styled, Typography, useTheme } from '@mui/material';
+import { Button, Typography, useTheme } from '@mui/material';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router';
-
-const BoardNotFoundContainer = styled(Container)({
-  alignItems: 'center',
-  display: 'flex',
-  flexDirection: 'column',
-  marginTop: '15vh',
-});
+import { MessageContainer } from './MessageContainer';
 
 export const BoardNotFound: React.FC = () => {
   const { t } = useTranslation();
   const theme = useTheme();
 
   return (
-    <BoardNotFoundContainer>
+    <MessageContainer>
       <WebAssetOffIcon
         style={{ color: theme.palette.text.secondary, fontSize: 128 }}
       />
@@ -52,6 +46,6 @@ export const BoardNotFound: React.FC = () => {
           {t('common.goToDashboard', 'Go to dashboard')}
         </Button>
       </Link>
-    </BoardNotFoundContainer>
+    </MessageContainer>
   );
 };

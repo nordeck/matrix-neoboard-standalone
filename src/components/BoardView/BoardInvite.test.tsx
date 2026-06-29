@@ -18,37 +18,32 @@
 
 import { render, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { ComponentType, PropsWithChildren, useMemo } from 'react';
+import { ComponentType, PropsWithChildren, useState } from 'react';
+import { Provider } from 'react-redux';
 import { useNavigate } from 'react-router';
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { LoggedInProvider, LoggedInState } from '../../state';
-import { StandaloneClient } from '../../toolkit/standalone';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { mockLoggedInApis } from '../../lib/testUtils';
+import { LoggedInProvider } from '../../state';
+import { createStore, initializeStore, InviteEntry } from '../../store';
+import {
+  MockedStandaloneClient,
+  mockStandaloneClient,
+} from '../../toolkit/standalone/client/mockStandaloneClient';
 import { BoardInvite } from './BoardInvite';
-
-interface MockStandaloneClient extends Partial<StandaloneClient> {
-  joinRoom: ReturnType<typeof vi.fn>;
-  leaveRoom: ReturnType<typeof vi.fn>;
-}
 
 vi.mock('react-router', async () => ({
   ...(await vi.importActual<typeof import('react-router')>('react-router')),
   useNavigate: vi.fn(),
 }));
 
-vi.mock('@nordeck/matrix-neoboard-react-sdk', async () => ({
-  ...(await vi.importActual<
-    typeof import('@nordeck/matrix-neoboard-react-sdk')
-  >('@nordeck/matrix-neoboard-react-sdk')),
-  useUserDetails: () => ({
-    getUserAvatarUrl: () => null,
-  }),
-}));
+const userId = '@alice:example.com';
+
+let standaloneClient: MockedStandaloneClient;
+let mockNavigate: ReturnType<typeof vi.fn>;
 
 describe('<BoardInvite />', () => {
   let Wrapper: ComponentType<PropsWithChildren>;
-  let client: MockStandaloneClient;
-  let userId: string;
-  let mockNavigate: ReturnType<typeof vi.fn>;
+  let invite: InviteEntry;
 
   beforeEach(() => {
     vi.clearAllMocks();
@@ -57,121 +52,102 @@ describe('<BoardInvite />', () => {
     mockNavigate = vi.fn();
     vi.mocked(useNavigate).mockReturnValue(mockNavigate);
 
-    userId = '@bob:example.org';
-    client = {
-      joinRoom: vi.fn().mockResolvedValue(undefined),
-      leaveRoom: vi.fn().mockResolvedValue(undefined),
-    };
+    const roomId = '!room-id:example.org';
+
+    standaloneClient = mockStandaloneClient();
+    const { standaloneApi, widgetApi, loggedInState } = mockLoggedInApis({
+      userId,
+      roomId,
+      standaloneClient,
+    });
 
     Wrapper = ({ children }: PropsWithChildren) => {
-      const loggedInState = useMemo(
-        () => ({
-          userId,
-          deviceId: 'device-1',
-          homeserverUrl: 'https://example.org',
-          standaloneClient: client as unknown as StandaloneClient,
-          resolveWidgetApi: vi.fn(),
-          widgetApiPromise: new Promise<never>(() => {}),
-        }),
-        [],
-      );
+      const [store] = useState(() => {
+        const store = createStore({
+          standaloneApi,
+          widgetApi,
+        });
+        initializeStore(store);
+        return store;
+      });
 
       return (
-        <LoggedInProvider
-          loggedInState={loggedInState as unknown as LoggedInState}
-        >
-          {children}
-        </LoggedInProvider>
+        <Provider store={store}>
+          <LoggedInProvider loggedInState={loggedInState}>
+            {children}
+          </LoggedInProvider>
+        </Provider>
       );
+    };
+
+    invite = {
+      roomId,
+      roomName: 'Test Board',
+      senderUserId: '@user-id:example.com',
+      senderDisplayName: 'User',
     };
   });
 
-  afterEach(() => {
-    vi.restoreAllMocks();
-  });
+  it('should render invite', async () => {
+    render(<BoardInvite invite={invite} />, { wrapper: Wrapper });
 
-  const defaultInvite = {
-    roomId: 'room-1',
-    roomName: 'Test Board',
-    senderUserId: '@alice:example.org',
-    senderDisplayName: 'Alice',
-  };
+    expect(
+      await screen.findByText('You have been invited to the following board:'),
+    ).toBeInTheDocument();
+    expect(screen.getByText('Test Board')).toBeInTheDocument();
 
-  describe('rendering', () => {
-    it('should render the invite card', () => {
-      render(<BoardInvite invite={defaultInvite} />, { wrapper: Wrapper });
-
-      expect(
-        screen.getByText('You have been invited to the following board:'),
-      ).toBeInTheDocument();
-      expect(screen.getByText('Test Board')).toBeInTheDocument();
-
-      expect(
-        screen.getByRole('button', { name: 'Accept Invite' }),
-      ).toBeInTheDocument();
-      expect(
-        screen.getByRole('button', { name: 'Reject Invite' }),
-      ).toBeInTheDocument();
-    });
+    expect(
+      screen.getByRole('button', { name: 'Accept Invite' }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: 'Reject Invite' }),
+    ).toBeInTheDocument();
   });
 
   describe('accept invite', () => {
     it('should join the room when clicking accept', async () => {
-      render(<BoardInvite invite={defaultInvite} />, { wrapper: Wrapper });
+      render(<BoardInvite invite={invite} />, { wrapper: Wrapper });
 
       await userEvent.click(
         screen.getByRole('button', { name: 'Accept Invite' }),
       );
 
       await waitFor(() => {
-        expect(client.joinRoom).toHaveBeenCalledWith('room-1');
+        expect(standaloneClient.joinRoom).toHaveBeenCalledWith(
+          '!room-id:example.org',
+        );
       });
     });
 
-    it('should remove room from declined invites when accepting', async () => {
-      const key = `neoboard:declinedInvites:${userId}`;
+    it('should remove room from declined rooms when accepting', async () => {
+      const key = `neoboard-declined-rooms-${userId}`;
 
       // Pre-populate localStorage with declined rooms
-      window.localStorage.setItem(key, JSON.stringify(['room-1', 'room-2']));
+      window.localStorage.setItem(
+        key,
+        JSON.stringify(['!room-id:example.org', '!room-id-1:example.org']),
+      );
 
-      render(<BoardInvite invite={defaultInvite} />, { wrapper: Wrapper });
+      render(<BoardInvite invite={invite} />, { wrapper: Wrapper });
 
       await userEvent.click(
         screen.getByRole('button', { name: 'Accept Invite' }),
       );
 
       await waitFor(() => {
-        expect(client.joinRoom).toHaveBeenCalledWith('room-1');
+        expect(standaloneClient.joinRoom).toHaveBeenCalledWith(
+          '!room-id:example.org',
+        );
       });
 
       const stored = window.localStorage.getItem(key);
-      expect(stored).toBe(JSON.stringify(['room-2']));
-    });
-
-    it('should clear localStorage entry if no declined rooms remain', async () => {
-      const key = `neoboard:declinedInvites:${userId}`;
-
-      // Pre-populate with only this room
-      window.localStorage.setItem(key, JSON.stringify(['room-1']));
-
-      render(<BoardInvite invite={defaultInvite} />, { wrapper: Wrapper });
-
-      await userEvent.click(
-        screen.getByRole('button', { name: 'Accept Invite' }),
-      );
-
-      await waitFor(() => {
-        expect(client.joinRoom).toHaveBeenCalledWith('room-1');
-      });
-
-      // localStorage entry should be removed entirely
-      expect(window.localStorage.getItem(key)).toBeNull();
+      expect(stored).toBe(JSON.stringify(['!room-id-1:example.org']));
     });
   });
 
   describe('reject invite', () => {
     it('should open confirmation dialog when clicking reject', async () => {
-      render(<BoardInvite invite={defaultInvite} />, { wrapper: Wrapper });
+      render(<BoardInvite invite={invite} />, { wrapper: Wrapper });
 
       await userEvent.click(
         screen.getByRole('button', { name: 'Reject Invite' }),
@@ -190,7 +166,7 @@ describe('<BoardInvite />', () => {
     });
 
     it('should cancel rejection and close dialog', async () => {
-      render(<BoardInvite invite={defaultInvite} />, { wrapper: Wrapper });
+      render(<BoardInvite invite={invite} />, { wrapper: Wrapper });
 
       await userEvent.click(
         screen.getByRole('button', { name: 'Reject Invite' }),
@@ -210,7 +186,7 @@ describe('<BoardInvite />', () => {
     });
 
     it('should leave the room and save to localStorage on confirmation', async () => {
-      render(<BoardInvite invite={defaultInvite} />, { wrapper: Wrapper });
+      render(<BoardInvite invite={invite} />, { wrapper: Wrapper });
 
       await userEvent.click(
         screen.getByRole('button', { name: 'Reject Invite' }),
@@ -225,15 +201,19 @@ describe('<BoardInvite />', () => {
       );
 
       await waitFor(() => {
-        expect(client.leaveRoom).toHaveBeenCalledWith('room-1');
+        expect(standaloneClient.leaveRoom).toHaveBeenCalledWith(
+          '!room-id:example.org',
+        );
       });
 
-      const key = `neoboard:declinedInvites:${userId}`;
-      expect(window.localStorage.getItem(key)).toBe(JSON.stringify(['room-1']));
+      const key = `neoboard-declined-rooms-${userId}`;
+      expect(window.localStorage.getItem(key)).toBe(
+        JSON.stringify(['!room-id:example.org']),
+      );
     });
 
     it('should navigate to dashboard after rejection', async () => {
-      render(<BoardInvite invite={defaultInvite} />, { wrapper: Wrapper });
+      render(<BoardInvite invite={invite} />, { wrapper: Wrapper });
 
       await userEvent.click(
         screen.getByRole('button', { name: 'Reject Invite' }),
@@ -255,13 +235,15 @@ describe('<BoardInvite />', () => {
       });
     });
 
-    it('should not duplicate room in declined invites list', async () => {
-      const key = `neoboard:declinedInvites:${userId}`;
+    it('should not duplicate room in declined rooms list', async () => {
+      const key = `neoboard-declined-rooms-${userId}`;
 
-      // Pre-populate with the same room
-      window.localStorage.setItem(key, JSON.stringify(['room-1']));
+      window.localStorage.setItem(
+        key,
+        JSON.stringify(['!room-id:example.org']),
+      );
 
-      render(<BoardInvite invite={defaultInvite} />, { wrapper: Wrapper });
+      render(<BoardInvite invite={invite} />, { wrapper: Wrapper });
 
       await userEvent.click(
         screen.getByRole('button', { name: 'Reject Invite' }),
@@ -276,12 +258,13 @@ describe('<BoardInvite />', () => {
       );
 
       await waitFor(() => {
-        expect(client.leaveRoom).toHaveBeenCalledWith('room-1');
+        expect(standaloneClient.leaveRoom).toHaveBeenCalledWith(
+          '!room-id:example.org',
+        );
       });
 
-      // Should still be ['room-1'], not ['room-1', 'room-1']
       const stored = window.localStorage.getItem(key);
-      expect(stored).toBe(JSON.stringify(['room-1']));
+      expect(stored).toBe(JSON.stringify(['!room-id:example.org']));
     });
   });
 });

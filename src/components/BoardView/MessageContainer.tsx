@@ -16,5 +16,11 @@
  * along with NeoBoard Standalone. If not, see <https://www.gnu.org/licenses/>.
  */
 
-export const getDeclinedInvitesKey = (userId: string) =>
-  `neoboard:declinedInvites:${userId}`;
+import { Container, styled } from '@mui/material';
+
+export const MessageContainer = styled(Container)({
+  alignItems: 'center',
+  display: 'flex',
+  flexDirection: 'column',
+  marginTop: '15vh',
+});

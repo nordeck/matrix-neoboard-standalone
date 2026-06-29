@@ -32,6 +32,9 @@ const whiteboardSessionsEventEntityAdapter = createEntityAdapter({
   selectId: (event: StateEvent<WhiteboardSessionsEvent>) => event.event_id,
 });
 
+const adapterInitialState =
+  whiteboardSessionsEventEntityAdapter.getInitialState();
+
 export const whiteboardSessionsApi = neoboardBaseApi.injectEndpoints({
   endpoints: (builder) => ({
     getAllWhiteboardSessionsEvents: builder.query<
@@ -48,7 +51,7 @@ export const whiteboardSessionsApi = neoboardBaseApi.injectEndpoints({
 
         return {
           data: whiteboardSessionsEventEntityAdapter.upsertMany(
-            whiteboardSessionsEventEntityAdapter.getInitialState(),
+            adapterInitialState,
             events.filter(isValidWhiteboardSessionsEvent),
           ),
         };
@@ -94,6 +97,6 @@ export const { selectEntities: selectAllWhiteboardSessionsEventEntities } =
   whiteboardSessionsEventEntityAdapter.getSelectors((rootState: RootState) => {
     return (
       getWhiteboardSessionsEventsSelectors(rootState).data ??
-      whiteboardSessionsEventEntityAdapter.getInitialState()
+      adapterInitialState
     );
   });

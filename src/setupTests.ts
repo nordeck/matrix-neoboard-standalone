@@ -70,35 +70,6 @@ vi.mock('react-i18next', async () => {
   };
 });
 
-// Provide a basic in-memory localStorage mock for the test environment
-const __localStorage: Record<string, string> = {};
-const localStorageMock: Storage = {
-  getItem: (key: string) =>
-    Object.prototype.hasOwnProperty.call(__localStorage, key)
-      ? __localStorage[key]
-      : null,
-  setItem: (key: string, value: string) => {
-    __localStorage[key] = String(value);
-  },
-  removeItem: (key: string) => {
-    delete __localStorage[key];
-  },
-  clear: () => {
-    Object.keys(__localStorage).forEach((k) => delete __localStorage[k]);
-  },
-  key: (index: number) => Object.keys(__localStorage)[index] ?? null,
-  get length() {
-    return Object.keys(__localStorage).length;
-  },
-};
-global.localStorage = localStorageMock;
-window.localStorage = localStorageMock;
-
-// Clear the in-memory storage between tests automatically
-afterEach(() => {
-  localStorageMock.clear();
-});
-
 // Set up parts of the crypto API needed for the tests
 Object.defineProperty(global.self, 'crypto', {
   value: {

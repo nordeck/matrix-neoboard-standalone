@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 Nordeck IT + Consulting GmbH
+ * Copyright 2026 Nordeck IT + Consulting GmbH
  *
  * NeoBoard Standalone is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -17,23 +17,17 @@
  */
 
 import { NoMeetingRoom } from '@mui/icons-material';
-import { Button, Container, styled, Typography } from '@mui/material';
+import { Button, Typography } from '@mui/material';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router';
-
-const BoardNoAccessContainer = styled(Container)({
-  alignItems: 'center',
-  display: 'flex',
-  flexDirection: 'column',
-  marginTop: '15vh',
-});
+import { MessageContainer } from './MessageContainer';
 
 export const BoardNoAccess: React.FC = () => {
   const { t } = useTranslation();
 
   return (
-    <BoardNoAccessContainer>
+    <MessageContainer>
       <NoMeetingRoom sx={{ color: 'text.secondary', fontSize: 128 }} />
 
       <Typography
@@ -49,6 +43,6 @@ export const BoardNoAccess: React.FC = () => {
           {t('common.goToDashboard', 'Go to dashboard')}
         </Button>
       </Link>
-    </BoardNoAccessContainer>
+    </MessageContainer>
   );
 };

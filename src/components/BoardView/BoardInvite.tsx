@@ -18,28 +18,19 @@
 
 import { ElementAvatar } from '@matrix-widget-toolkit/mui';
 import MarkEmailUnreadIcon from '@mui/icons-material/MarkEmailUnread';
-import {
-  Button,
-  Chip,
-  Container,
-  Stack,
-  styled,
-  Typography,
-} from '@mui/material';
+import { Button, Chip, Stack, styled, Typography } from '@mui/material';
 import { useUserDetails } from '@nordeck/matrix-neoboard-react-sdk';
+import { isEqual } from 'lodash';
 import { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';
 import { useLoggedIn } from '../../state';
 import { InviteEntry } from '../../store';
-import { getDeclinedInvitesKey } from '../../utils/declinedInvites';
 import { ConfirmDialog } from '../ConfirmDialog';
+import { getDeclinedRooms, setDeclinedRooms } from './declinedRoom.ts';
+import { MessageContainer } from './MessageContainer';
 
-const BoardInviteContainer = styled(Container)({
-  alignItems: 'center',
-  display: 'flex',
-  flexDirection: 'column',
-  marginTop: '15vh',
+const BoardInviteContainer = styled(MessageContainer)({
   textAlign: 'center',
 });
 
@@ -47,51 +38,40 @@ type BoardInviteProps = {
   invite: InviteEntry;
 };
 
-export const BoardInvite = ({ invite }: BoardInviteProps) => {
+export const BoardInvite = ({
+  invite: { roomId, roomName, senderUserId, senderDisplayName },
+}: BoardInviteProps) => {
   const { t } = useTranslation();
-  const [error, setError] = useState(false);
   const navigate = useNavigate();
   const { standaloneClient, userId } = useLoggedIn();
-  const [open, setOpen] = useState(false);
-  const roomName = invite.roomName ?? t('dashboard.untitled', 'Untitled');
   const { getUserAvatarUrl } = useUserDetails();
-  const avatarUrl = getUserAvatarUrl(invite.senderUserId);
+  const avatarUrl = getUserAvatarUrl(senderUserId);
+
+  const [open, setOpen] = useState(false);
+  const [error, setError] = useState(false);
 
   const handleAcceptInvite = useCallback(async () => {
     try {
-      await standaloneClient.joinRoom(invite.roomId);
-      if (userId) {
-        const key = getDeclinedInvitesKey(userId);
-        const stored = localStorage.getItem(key);
-        const declinedRooms: string[] = stored ? JSON.parse(stored) : [];
-
-        const updated = declinedRooms.filter(
-          (id: string) => id !== invite.roomId,
-        );
-        if (updated.length > 0) {
-          localStorage.setItem(key, JSON.stringify(updated));
-        } else {
-          localStorage.removeItem(key);
-        }
+      await standaloneClient.joinRoom(roomId);
+      const roomIds = getDeclinedRooms(userId);
+      const updatedRoomIds = roomIds.filter((id: string) => id !== roomId);
+      if (!isEqual(updatedRoomIds, roomIds)) {
+        setDeclinedRooms(userId, updatedRoomIds);
       }
     } catch (error) {
       console.error(error);
       setError(true);
     }
-  }, [invite.roomId, standaloneClient, userId]);
+  }, [roomId, standaloneClient, userId]);
 
   const handleRejectInvite = useCallback(async () => {
     try {
-      await standaloneClient.leaveRoom(invite.roomId);
-      if (userId) {
-        const key = getDeclinedInvitesKey(userId);
-        const raw = localStorage.getItem(key);
-        const list: string[] = raw ? JSON.parse(raw) : [];
+      await standaloneClient.leaveRoom(roomId);
 
-        if (!list.includes(invite.roomId)) {
-          list.push(invite.roomId);
-          localStorage.setItem(key, JSON.stringify(list));
-        }
+      const roomIds = getDeclinedRooms(userId);
+      if (!roomIds.includes(roomId)) {
+        roomIds.push(roomId);
+        setDeclinedRooms(userId, roomIds);
       }
     } catch (err) {
       console.error(err);
@@ -99,7 +79,7 @@ export const BoardInvite = ({ invite }: BoardInviteProps) => {
     }
 
     navigate('/dashboard', { state: { inviteDeclined: true }, replace: true });
-  }, [invite.roomId, standaloneClient, userId, navigate]);
+  }, [roomId, standaloneClient, userId, navigate]);
 
   const handleClose = useCallback(() => {
     setOpen(false);
@@ -111,6 +91,7 @@ export const BoardInvite = ({ invite }: BoardInviteProps) => {
         <MarkEmailUnreadIcon sx={{ color: 'text.secondary', fontSize: 128 }} />
         <Typography
           variant="h2"
+          component="h1"
           color="textSecondary"
           sx={{ marginBottom: 2, marginTop: 2 }}
         >
@@ -120,7 +101,7 @@ export const BoardInvite = ({ invite }: BoardInviteProps) => {
           )}
         </Typography>
         <Typography variant="h2" sx={{ marginBottom: 1 }}>
-          {roomName}
+          {roomName ?? t('dashboard.untitled', 'Untitled')}
         </Typography>
         <Typography
           color="textSecondary"
@@ -131,14 +112,12 @@ export const BoardInvite = ({ invite }: BoardInviteProps) => {
           <Chip
             avatar={
               <ElementAvatar
-                userId={invite.senderUserId}
-                displayName={invite.senderDisplayName ?? invite.senderUserId}
+                userId={senderUserId}
+                displayName={senderDisplayName ?? undefined}
                 src={avatarUrl}
-              >
-                {invite.senderDisplayName?.substring(0, 1)}
-              </ElementAvatar>
+              />
             }
-            label={invite.senderDisplayName}
+            label={senderDisplayName}
           />
         </Typography>
         <Stack direction="row" spacing={2}>
