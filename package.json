@@ -54,7 +54,7 @@
     "react-dom": "^18.3.1",
     "react-focus-lock": "^2.13.6",
     "react-i18next": "link:../matrix-neoboard/node_modules/react-i18next",
-    "react-redux": "^9.2.0",
+    "react-redux": "^9.3.0",
     "react-router": "^7.13.2",
     "react-use": "^17.5.1",
     "redux": "^5.0.1",
