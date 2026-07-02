@@ -18,7 +18,7 @@
 
 import { StateEvent } from '@matrix-widget-toolkit/api';
 import { Whiteboard } from '@nordeck/matrix-neoboard-react-sdk';
-import { isEqual } from 'lodash';
+import isEqual from 'lodash/isEqual';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { formatTimeAgo } from '../../lib';
 import {
