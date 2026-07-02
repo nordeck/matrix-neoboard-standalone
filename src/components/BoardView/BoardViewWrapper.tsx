@@ -18,22 +18,51 @@
 
 import isEqual from 'lodash/isEqual';
 import { useMemo } from 'react';
-import { makeSelectWhiteboard, useAppSelector } from '../../store';
+import { useLoggedIn } from '../../state';
+import {
+  makeSelectInvites,
+  makeSelectWhiteboard,
+  useAppSelector,
+} from '../../store';
 import { useOpenedRoomId } from '../RoomIdProvider';
+import { BoardInvite } from './BoardInvite';
+import { BoardNoAccess } from './BoardNoAccess';
 import { BoardNotFound } from './BoardNotFound';
 import { BoardView } from './BoardView';
+import { getDeclinedRooms } from './declinedRoom';
 
 export const BoardViewWrapper = () => {
+  const { userId } = useLoggedIn();
   const roomId = useOpenedRoomId();
+  const selectInvites = useMemo(() => makeSelectInvites(userId), [userId]);
   const selectWhiteboard = useMemo(
     () => makeSelectWhiteboard(roomId),
     [roomId],
   );
-
+  const invite = useAppSelector(
+    (state) => selectInvites(state)?.find((entry) => entry.roomId === roomId),
+    isEqual,
+  );
   const whiteboard = useAppSelector(
     (state) => selectWhiteboard(state),
     isEqual,
   );
+  const declined = useMemo(
+    () => getDeclinedRooms(userId).includes(roomId),
+    [userId, roomId],
+  );
 
-  return whiteboard ? <BoardView /> : <BoardNotFound />;
+  if (invite) {
+    return <BoardInvite invite={invite} />;
+  }
+
+  if (whiteboard) {
+    return <BoardView />;
+  }
+
+  if (declined) {
+    return <BoardNoAccess />;
+  }
+
+  return <BoardNotFound />;
 };

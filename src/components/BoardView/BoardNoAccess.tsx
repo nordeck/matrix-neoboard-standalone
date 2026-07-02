@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 Nordeck IT + Consulting GmbH
+ * Copyright 2026 Nordeck IT + Consulting GmbH
  *
  * NeoBoard Standalone is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -16,29 +16,26 @@
  * along with NeoBoard Standalone. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import WebAssetOffIcon from '@mui/icons-material/WebAssetOff';
-import { Button, Typography, useTheme } from '@mui/material';
+import { NoMeetingRoom } from '@mui/icons-material';
+import { Button, Typography } from '@mui/material';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router';
 import { MessageContainer } from './MessageContainer';
 
-export const BoardNotFound: React.FC = () => {
+export const BoardNoAccess: React.FC = () => {
   const { t } = useTranslation();
-  const theme = useTheme();
 
   return (
     <MessageContainer>
-      <WebAssetOffIcon
-        style={{ color: theme.palette.text.secondary, fontSize: 128 }}
-      />
+      <NoMeetingRoom sx={{ color: 'text.secondary', fontSize: 128 }} />
 
       <Typography
         variant="h1"
         color="textSecondary"
-        sx={{ marginBottom: '64px', marginTop: '16px' }}
+        sx={{ marginBottom: 8, marginTop: 2 }}
       >
-        {t('boardNotFound.message', 'Board not found')}
+        {t('boardNoAccess.message', "Can't access board")}
       </Typography>
 
       <Link to="/dashboard">

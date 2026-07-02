@@ -41,10 +41,33 @@ beforeAll(() => {
   vi.stubGlobal('IS_REACT_ACT_ENVIRONMENT', true);
 
   // Force React to use the same copy throughout tests
-  vi.mock('react', async () => {
-    const actual = await vi.importActual('react');
-    return actual;
+  vi.mock('react', async () => await vi.importActual('react'));
+});
+
+// Use a different configuration for i18next during tests
+vi.mock('react-i18next', async () => {
+  const i18n = await vi.importActual<typeof import('i18next')>('i18next');
+  const { initReactI18next } =
+    await vi.importActual<typeof import('react-i18next')>('react-i18next');
+
+  await i18n.use(initReactI18next).init({
+    fallbackLng: 'en',
+    interpolation: {
+      escapeValue: false,
+    },
+    resources: { en: {} },
   });
+
+  // Force language to 'en' for tests so i18n.language is defined synchronously
+  await i18n.changeLanguage('en');
+
+  // Return the real react-i18next exports so named hooks like `useTranslation` are present.
+  const actual =
+    await vi.importActual<typeof import('react-i18next')>('react-i18next');
+  return {
+    __esModule: true,
+    ...actual,
+  };
 });
 
 // Set up parts of the crypto API needed for the tests

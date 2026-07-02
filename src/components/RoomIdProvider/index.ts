@@ -16,6 +16,6 @@
  * along with NeoBoard Standalone. If not, see <https://www.gnu.org/licenses/>.
  */
 
-export { RoomIdProvider } from './RoomIdProvider';
+export { RoomIdMockProvider, RoomIdProvider } from './RoomIdProvider';
 export { useOpenedRoomId } from './useOpenedRoomId';
 export { useRoomId } from './useRoomId';

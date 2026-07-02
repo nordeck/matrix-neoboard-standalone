@@ -119,10 +119,8 @@ export const whiteboardApi = neoboardBaseApi.injectEndpoints({
 
 const getWhiteboardsAllSelectors =
   whiteboardApi.endpoints.getWhiteboardsAll.select();
+const emptyWhiteboardsState = whiteboardsEntityAdapter.getInitialState();
 export const { selectAll: selectAllWhiteboards } =
   whiteboardsEntityAdapter.getSelectors((rootState: RootState) => {
-    return (
-      getWhiteboardsAllSelectors(rootState).data ??
-      whiteboardsEntityAdapter.getInitialState()
-    );
+    return getWhiteboardsAllSelectors(rootState).data ?? emptyWhiteboardsState;
   });

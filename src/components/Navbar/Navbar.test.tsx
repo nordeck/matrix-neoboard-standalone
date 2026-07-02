@@ -61,7 +61,7 @@ describe('Navbar', () => {
     fireEvent(window, messageEvent);
     await waitFor(() =>
       expect(window.fetch).toHaveBeenCalledWith(
-        'https://example.com/navigation.json?language=undefined',
+        'https://example.com/navigation.json?language=en',
         { credentials: 'include' },
       ),
     );

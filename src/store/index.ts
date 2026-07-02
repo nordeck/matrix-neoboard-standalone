@@ -17,6 +17,7 @@
  */
 
 export * from './api/selectors/selectInvitedOrJoinedRoomMembers';
+export * from './api/selectors/selectInvites';
 export * from './api/selectors/selectWhiteboards';
 export {
   selectSortBy,

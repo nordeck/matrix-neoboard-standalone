@@ -24,20 +24,22 @@ export type MockedStandaloneClient = Mocked<StandaloneClient>;
 
 export function mockStandaloneClient(): MockedStandaloneClient {
   return {
+    invite: vi.fn(),
+    searchUsers: vi.fn().mockResolvedValue([]),
     createRoom: vi.fn(),
     joinRoom: vi.fn(),
     leaveRoom: vi.fn(),
     closeRoom: vi.fn(),
     eventsObservable: vi.fn().mockReturnValue(new Observable()),
     toDeviceMessagesObservable: vi.fn().mockReturnValue(new Observable()),
-    // @ts-expect-error - T doesn't matter here
-    receiveStateEvents: vi.fn(),
+    receiveStateEvents: vi.fn().mockResolvedValue([]),
+    getPowerLevelEvent: vi.fn(),
+    getRoomCreateEvent: vi.fn(),
     sendStateEvent: vi.fn(),
     sendDelayedStateEvent: vi
       .fn()
       .mockResolvedValue('syd_bcooaGNyKtyFbIGjGMQR'),
-    // @ts-expect-error - T doesn't matter here
-    receiveRoomEvents: vi.fn(),
+    receiveRoomEvents: vi.fn().mockResolvedValue([]),
     sendRoomEvent: vi.fn(),
     sendDelayedRoomEvent: vi.fn().mockResolvedValue('syd_wlGAStYmBRRdjnWiHSDA'),
     updateDelayedEvent: vi.fn().mockResolvedValue(undefined),
@@ -48,5 +50,6 @@ export function mockStandaloneClient(): MockedStandaloneClient {
     uploadFile: vi.fn(),
     downloadFile: vi.fn(),
     sendToDeviceMessage: vi.fn(),
+    requestOpenIDConnectToken: vi.fn(),
   };
 }

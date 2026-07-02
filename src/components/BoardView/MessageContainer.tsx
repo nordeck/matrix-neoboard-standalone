@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 Nordeck IT + Consulting GmbH
+ * Copyright 2026 Nordeck IT + Consulting GmbH
  *
  * NeoBoard Standalone is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -16,24 +16,11 @@
  * along with NeoBoard Standalone. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { createContext, PropsWithChildren, useMemo } from 'react';
-import { useParams } from 'react-router';
+import { Container, styled } from '@mui/material';
 
-type RoomIdContextType = {
-  roomId: string | undefined;
-};
-
-export const RoomIdContext = createContext<RoomIdContextType | undefined>(
-  undefined,
-);
-
-export function RoomIdProvider({ children }: PropsWithChildren<{}>) {
-  const { roomId } = useParams();
-  const ctx = useMemo(() => ({ roomId }), [roomId]);
-
-  return (
-    <RoomIdContext.Provider value={ctx}>{children}</RoomIdContext.Provider>
-  );
-}
-
-export const RoomIdMockProvider = RoomIdContext.Provider;
+export const MessageContainer = styled(Container)({
+  alignItems: 'center',
+  display: 'flex',
+  flexDirection: 'column',
+  marginTop: '15vh',
+});
