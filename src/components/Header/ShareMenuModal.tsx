@@ -31,7 +31,7 @@ import Dialog from '@mui/material/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';
 import { styled } from '@mui/material/styles';
 import Typography from '@mui/material/Typography';
-import { isEqual } from 'lodash';
+import isEqual from 'lodash/isEqual';
 import {
   FocusEvent,
   MouseEvent,

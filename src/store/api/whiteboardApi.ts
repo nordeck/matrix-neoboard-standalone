@@ -24,7 +24,8 @@ import {
   Whiteboard,
 } from '@nordeck/matrix-neoboard-react-sdk';
 import { createEntityAdapter, EntityState } from '@reduxjs/toolkit';
-import { isEqual, isError } from 'lodash';
+import isEqual from 'lodash/isEqual';
+import isError from 'lodash/isError';
 import { Symbols } from 'matrix-widget-api';
 import { bufferTime, filter } from 'rxjs';
 import { RootState, ThunkExtraArgument } from '../store';

@@ -18,7 +18,7 @@
 
 import Notifications from '@mui/icons-material/Notifications';
 import { Badge, IconButton, Tooltip } from '@mui/material';
-import { isEqual } from 'lodash';
+import isEqual from 'lodash/isEqual';
 import { useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLoggedIn } from '../../state';
