@@ -22,8 +22,7 @@ import { isEqual } from 'lodash';
 import { useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLoggedIn } from '../../state';
-import { useAppSelector } from '../../store';
-import { makeSelectInvites } from '../../store/api/selectors/selectInvites';
+import { makeSelectInvites, useAppSelector } from '../../store';
 import { InvitesDialog } from './InvitesDialog';
 
 export const InvitesMenu: React.FC = () => {

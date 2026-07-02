@@ -22,7 +22,7 @@ import { IconButton, ListItem, ListItemText, Typography } from '@mui/material';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLoggedIn } from '../../state';
-import { InviteEntry } from '../../store/api/selectors/selectInvites';
+import { InviteEntry } from '../../store';
 
 type InvitesDialogRowProps = {
   invite: InviteEntry;

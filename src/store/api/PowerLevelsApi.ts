@@ -32,6 +32,8 @@ const powerLevelsEventEntityAdapter = createEntityAdapter({
   selectId: (event: StateEvent<PowerLevelsStateEvent>) => event.room_id,
 });
 
+const adapterInitialState = powerLevelsEventEntityAdapter.getInitialState();
+
 export const powerLevelsApi = neoboardBaseApi.injectEndpoints({
   endpoints: (builder) => ({
     getAllPowerLevelsEvents: builder.query<
@@ -48,7 +50,7 @@ export const powerLevelsApi = neoboardBaseApi.injectEndpoints({
 
         return {
           data: powerLevelsEventEntityAdapter.upsertMany(
-            powerLevelsEventEntityAdapter.getInitialState(),
+            adapterInitialState,
             events.filter(isValidPowerLevelStateEvent),
           ),
         };
@@ -92,8 +94,5 @@ const getPowerLevelsEventsSelectors =
   powerLevelsApi.endpoints.getAllPowerLevelsEvents.select();
 export const { selectEntities: selectAllPowerLevelsEventEntities } =
   powerLevelsEventEntityAdapter.getSelectors((rootState: RootState) => {
-    return (
-      getPowerLevelsEventsSelectors(rootState).data ??
-      powerLevelsEventEntityAdapter.getInitialState()
-    );
+    return getPowerLevelsEventsSelectors(rootState).data ?? adapterInitialState;
   });

@@ -36,3 +36,5 @@ export function RoomIdProvider({ children }: PropsWithChildren<{}>) {
     </RoomIdContext.Provider>
   );
 }
+
+export const RoomIdMockProvider = RoomIdContext.Provider;

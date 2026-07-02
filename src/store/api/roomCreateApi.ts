@@ -32,6 +32,8 @@ const roomCreateEventEntityAdapter = createEntityAdapter({
   selectId: (event: StateEvent<StateEventCreateContent>) => event.room_id,
 });
 
+const adapterInitialState = roomCreateEventEntityAdapter.getInitialState();
+
 export const roomCreateApi = neoboardBaseApi.injectEndpoints({
   endpoints: (builder) => ({
     getAllRoomCreateEvents: builder.query<
@@ -48,7 +50,7 @@ export const roomCreateApi = neoboardBaseApi.injectEndpoints({
 
         return {
           data: roomCreateEventEntityAdapter.upsertMany(
-            roomCreateEventEntityAdapter.getInitialState(),
+            adapterInitialState,
             events.filter(isValidCreateEventSchema),
           ),
         };
@@ -91,8 +93,5 @@ const getRoomCreateEventsSelectors =
   roomCreateApi.endpoints.getAllRoomCreateEvents.select();
 export const { selectEntities: selectAllRoomCreateEventEntities } =
   roomCreateEventEntityAdapter.getSelectors((rootState: RootState) => {
-    return (
-      getRoomCreateEventsSelectors(rootState).data ??
-      roomCreateEventEntityAdapter.getInitialState()
-    );
+    return getRoomCreateEventsSelectors(rootState).data ?? adapterInitialState;
   });
