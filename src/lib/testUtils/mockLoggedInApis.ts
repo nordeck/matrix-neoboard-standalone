@@ -56,7 +56,7 @@ export function mockLoggedInApis({
   };
 
   const widgetApi = new StandaloneWidgetApiImpl(
-    new StandaloneApiImpl(standaloneClient),
+    standaloneApi,
     'widgetId',
     widgetParameters,
   );

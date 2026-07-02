@@ -70,18 +70,21 @@ export const BoardInvite = ({
 
       const roomIds = getDeclinedRooms(userId);
       if (!roomIds.includes(roomId)) {
-        roomIds.push(roomId);
-        setDeclinedRooms(userId, roomIds);
+        setDeclinedRooms(userId, [...roomIds, roomId]);
       }
+      navigate('/dashboard', {
+        state: { inviteDeclined: true },
+        replace: true,
+      });
     } catch (err) {
       console.error(err);
       setError(true);
+      setOpen(false);
     }
-
-    navigate('/dashboard', { state: { inviteDeclined: true }, replace: true });
   }, [roomId, standaloneClient, userId, navigate]);
 
   const handleClose = useCallback(() => {
+    setError(false);
     setOpen(false);
   }, []);
 
@@ -117,7 +120,7 @@ export const BoardInvite = ({
                 src={avatarUrl}
               />
             }
-            label={senderDisplayName}
+            label={senderDisplayName ?? senderUserId}
           />
         </Typography>
         <Stack direction="row" spacing={2}>
@@ -128,7 +131,7 @@ export const BoardInvite = ({
             {t('invitesDialog.reject', 'Reject Invite')}
           </Button>
           {error && (
-            <Typography color="red">
+            <Typography color="error">
               {t('invitesDialog.actionFailed', 'Action failed')}
             </Typography>
           )}

@@ -107,7 +107,7 @@ export const InvitesDialogRow: React.FC<InvitesDialogRowProps> = ({
         }
       />
       {error && (
-        <Typography color="red">
+        <Typography color="error">
           {t('invitesDialog.actionFailed', 'Action failed')}
         </Typography>
       )}
