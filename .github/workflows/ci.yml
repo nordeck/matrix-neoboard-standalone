@@ -12,9 +12,111 @@ on:
         description: 'NeoBoard Git ref to check out'
 
 jobs:
-  build:
+  checks:
     runs-on: ubuntu-latest
     timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        check:
+          - name: depcheck
+            run: yarn depcheck
+          - name: prettier:check
+            run: yarn prettier:check
+          - name: Check Linting Rules
+            run: yarn lint
+          - name: type checking and declarations
+            run: yarn tsc
+          - name: Check Translations
+            run: yarn translate --ci --dry-run
+          - name: test
+            run: yarn run test:all
+    steps:
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6
+        with:
+          repository: nordeck/matrix-neoboard
+          path: matrix-neoboard
+          ref: ${{ github.events.inputs.neoboard_ref }}
+          persist-credentials: false
+
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6
+        with:
+          path: matrix-neoboard-standalone
+          persist-credentials: false
+
+      - name: Setup Node.js
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version-file: 'matrix-neoboard-standalone/package.json'
+          cache: 'yarn'
+          cache-dependency-path: |
+            matrix-neoboard-standalone/yarn.lock
+            matrix-neoboard/yarn.lock
+
+      - name: yarn install neoboard
+        working-directory: ./matrix-neoboard/
+        run: yarn install --frozen-lockfile
+
+      - name: yarn install neoboard standalone
+        working-directory: ./matrix-neoboard-standalone/
+        run: yarn install --frozen-lockfile
+
+      - name: ${{ matrix.check.name }}
+        working-directory: ./matrix-neoboard-standalone/
+        run: ${{ matrix.check.run }}
+
+  build-app:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6
+        with:
+          repository: nordeck/matrix-neoboard
+          path: matrix-neoboard
+          ref: ${{ github.events.inputs.neoboard_ref }}
+          persist-credentials: false
+
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6
+        with:
+          path: matrix-neoboard-standalone
+          persist-credentials: false
+
+      - name: Setup Node.js
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version-file: 'matrix-neoboard-standalone/package.json'
+          cache: 'yarn'
+          cache-dependency-path: |
+            matrix-neoboard-standalone/yarn.lock
+            matrix-neoboard/yarn.lock
+
+      - name: yarn install neoboard
+        working-directory: ./matrix-neoboard/
+        run: yarn install --frozen-lockfile
+
+      - name: yarn install neoboard standalone
+        working-directory: ./matrix-neoboard-standalone/
+        run: yarn install --frozen-lockfile
+
+      - name: build
+        working-directory: ./matrix-neoboard-standalone/
+        run: yarn build && yarn version:info
+
+      - name: generate disclaimer
+        working-directory: ./matrix-neoboard-standalone/
+        run: yarn generate-disclaimer
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-build
+          path: matrix-neoboard-standalone/build
+          retention-days: 1
+
+  docker:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    needs: [checks, build-app]
     env:
       ARGOCD_SHA: ''
       DOCKER_IMAGE: ghcr.io/nordeck/matrix-neoboard-standalone
@@ -60,37 +162,11 @@ jobs:
         working-directory: ./matrix-neoboard-standalone/
         run: yarn install --frozen-lockfile
 
-      - name: depcheck
-        working-directory: ./matrix-neoboard-standalone/
-        run: yarn depcheck
-
-      - name: prettier:check
-        working-directory: ./matrix-neoboard-standalone/
-        run: yarn prettier:check
-
-      - name: Check Linting Rules
-        working-directory: ./matrix-neoboard-standalone/
-        run: yarn lint
-
-      - name: type checking and declarations
-        working-directory: ./matrix-neoboard-standalone/
-        run: yarn tsc
-
-      - name: Check Translations
-        working-directory: ./matrix-neoboard-standalone/
-        run: yarn translate --ci --dry-run
-
-      - name: test
-        working-directory: ./matrix-neoboard-standalone/
-        run: yarn run test:all
-
-      - name: build
-        working-directory: ./matrix-neoboard-standalone/
-        run: yarn build && yarn version:info
-
-      - name: generate disclaimer
-        working-directory: ./matrix-neoboard-standalone/
-        run: yarn generate-disclaimer
+      - name: Download build artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: app-build
+          path: matrix-neoboard-standalone/build
 
       - name: Login to ghcr.io
         uses: docker/login-action@c94ce9fb468520275223c153574b00df6fe4bcc9 # v3
@@ -201,7 +277,7 @@ jobs:
 
   helm-lint-test:
     runs-on: ubuntu-latest
-    needs: build
+    needs: docker
     steps:
       - name: Checkout
         uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6
@@ -252,7 +328,7 @@ jobs:
   create-chart-tag:
     if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
     runs-on: ubuntu-latest
-    needs: build
+    needs: docker
     env:
       REPOSITORY: ghcr.io/nordeck/charts
       CHART_NAME: matrix-neoboard-standalone
@@ -334,7 +410,7 @@ jobs:
     name: Deploy to Dev
     runs-on: ubuntu-latest
     timeout-minutes: 5
-    needs: [build, helm-lint-test]
+    needs: [docker, helm-lint-test]
     steps:
       # Clone repo to get the helm charts
       - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6
@@ -364,9 +440,9 @@ jobs:
 
       - name: deploy k8s to cluster
         run: |
-          helm upgrade --rollback-on-failure --install matrix-neoboard-standalone ./charts/matrix-neoboard-standalone -f ./valhalla/cluster/neotoolsuite-dev/matrix-neoboard-standalone/values.dev.yaml -n matrix --set image.tag=${{ needs.build.outputs.ARGOCD_TAG }}
+          helm upgrade --rollback-on-failure --install matrix-neoboard-standalone ./charts/matrix-neoboard-standalone -f ./valhalla/cluster/neotoolsuite-dev/matrix-neoboard-standalone/values.dev.yaml -n matrix --set image.tag=${{ needs.docker.outputs.ARGOCD_TAG }}
 
       # inifinite canvas
       - name: deploy k8s to cluster
         run: |
-          helm upgrade --rollback-on-failure --install matrix-neoboard-standalone-infinite-canvas ./charts/matrix-neoboard-standalone -f ./valhalla/cluster/neotoolsuite-dev/matrix-neoboard-standalone/values.infinite-canvas.yaml -n matrix --set image.tag=${{ needs.build.outputs.ARGOCD_TAG }}
+          helm upgrade --rollback-on-failure --install matrix-neoboard-standalone-infinite-canvas ./charts/matrix-neoboard-standalone -f ./valhalla/cluster/neotoolsuite-dev/matrix-neoboard-standalone/values.infinite-canvas.yaml -n matrix --set image.tag=${{ needs.docker.outputs.ARGOCD_TAG }}
