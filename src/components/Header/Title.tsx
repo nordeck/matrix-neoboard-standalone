@@ -17,7 +17,7 @@
  */
 
 import { styled, Tooltip } from '@mui/material';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useDashboardList } from '../Dashboard/useDashboardList';
 import { RenameDialog } from '../RenameDialog';
@@ -58,16 +58,18 @@ type TitleProps = {
 export function Title({ title, roomId }: TitleProps) {
   const { t } = useTranslation();
   const [renameDialogOpen, setRenameDialogOpen] = useState(false);
+  const [prevRoomId, setPrevRoomId] = useState(roomId);
+  if (prevRoomId !== roomId) {
+    setPrevRoomId(roomId);
+    setRenameDialogOpen(false);
+  }
+
   const dashboardList = useDashboardList();
   const roomItem = useMemo(
     () => dashboardList.find((item) => item.roomId === roomId),
     [dashboardList, roomId],
   );
   const canEditName = !!roomItem?.permissions.canChangeName;
-
-  useEffect(() => {
-    setRenameDialogOpen(false);
-  }, [roomId]);
 
   const handleOpenRenameDialog = useCallback(
     () => setRenameDialogOpen(true),
