@@ -45,6 +45,14 @@ export function Dashboard() {
           [STATE_EVENT_SESSION]: 0,
         },
       },
+      initial_state: [
+        {
+          type: 'm.room.encryption',
+          content: {
+            algorithm: 'm.megolm.v1.aes-sha2',
+          },
+        },
+      ],
     });
 
     // create a promise that will be resolved when whiteboard data is in store
