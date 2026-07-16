@@ -33,30 +33,64 @@ import React, { useEffect, useState } from 'react';
 import { useStore } from 'react-redux';
 import { useLoggedIn } from '../../state';
 import { RootState } from '../../store';
+import { getPreviewSvg } from './boardPreviewCache.ts';
 import { NoBoardPreview } from './NoBoardPreview.tsx';
+import { useLazyLoad } from './useLazyLoad.ts';
 
 interface BoardPreviewProps {
   whiteboard: StateEvent<Whiteboard>;
 }
 
 export const BoardPreview: React.FC<BoardPreviewProps> = ({ whiteboard }) => {
+  const [cachedSvg, setCachedSvg] = useState<string | null | 'loading'>(
+    'loading',
+  );
+
+  useEffect(() => {
+    getPreviewSvg(whiteboard.room_id)
+      .then(setCachedSvg)
+      .catch(() => setCachedSvg(null));
+  }, [whiteboard.room_id]);
+
+  if (cachedSvg === 'loading') return <SlideSkeleton />;
+
+  if (cachedSvg !== null) {
+    return (
+      <img
+        src={`data:image/svg+xml;charset=utf-8,${encodeURIComponent(cachedSvg)}`}
+        style={{ width: '100%', height: '100%', objectFit: 'contain' }}
+        alt=""
+      />
+    );
+  }
+
+  return <LazyFullBoardPreview whiteboard={whiteboard} />;
+};
+
+function LazyFullBoardPreview({
+  whiteboard,
+}: {
+  whiteboard: StateEvent<Whiteboard>;
+}) {
+  const { ref, hasBeenVisible } = useLazyLoad();
   const store = useStore<RootState>();
   const { userId, widgetApiPromise } = useLoggedIn();
-
   const [whiteboardManager, setWhiteboardManager] =
     useState<WhiteboardManager>();
 
   useEffect(() => {
+    if (!hasBeenVisible) return;
     const manager = createWhiteboardManager(store, widgetApiPromise, true);
     manager.selectActiveWhiteboardInstance(whiteboard, userId);
     setWhiteboardManager(manager);
     return () => {
       manager.clear();
+      setWhiteboardManager(undefined);
     };
-  }, [store, userId, widgetApiPromise, whiteboard]);
+  }, [hasBeenVisible, store, userId, widgetApiPromise, whiteboard]);
 
   return (
-    <>
+    <div ref={ref} style={{ width: '100%', height: '100%' }}>
       {whiteboardManager ? (
         <WhiteboardManagerProvider whiteboardManager={whiteboardManager}>
           <BoardSlidePreview />
@@ -64,9 +98,9 @@ export const BoardPreview: React.FC<BoardPreviewProps> = ({ whiteboard }) => {
       ) : (
         <SlideSkeleton />
       )}
-    </>
+    </div>
   );
-};
+}
 
 export function BoardSlidePreview() {
   const slideIds = useActiveWhiteboardInstanceSlideIds();
