@@ -1,5 +1,23 @@
 # @nordeck/matrix-neoboard-standalone
 
+## 0.2.0
+
+### Minor Changes
+
+- b0a1826: Show invite dialog when invited to a board via link
+- 267f88c: Add 'Go to dashboard' button into slides migration dialog
+
+### Patch Changes
+
+- 2655124: Pin trivy version to 0.69.3
+  Pin trivy-action to v0.35.0
+- d7fe69d: Update lodash to 4.18.1 for CVEs: `CVE-2026-2950`, `CVE-2026-4800`
+- fc11a7d: Replace O(N×M) loops in whiteboard selector with indexed lookups
+- 920050d: Stabilize RoomIdProvider context value with useMemo
+- 97b4a7d: Switch lodash imports to per-function entry points
+- 95bebf1: Replace roomId-change effect in Title with inline guard
+- 8613421: Upload helm chart to OCI Registry, release helm chart
+
 ## 0.1.0
 
 ### Minor Changes
