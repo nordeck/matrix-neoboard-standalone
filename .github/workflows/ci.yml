@@ -25,18 +25,54 @@ jobs:
     steps:
       - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
         with:
-          repository: nordeck/matrix-neoboard
-          path: matrix-neoboard
-          ref: ${{ github.events.inputs.neoboard_ref }}
+          path: matrix-neoboard-standalone
           # required for changesets
           fetch-depth: '0'
           # don't persist the credentials so the changesets action doesn't use the
           # github actions token but the git token provided via environment variable
           persist-credentials: false
 
+      - name: Update SDK commit pin
+        # Refresh on push to main (track latest upstream main) or on a manual
+        # workflow_dispatch run (track the given neoboard_ref instead, if any).
+        # Skipped for PR/other builds so they stay reproducible against
+        # whatever commit is actually checked into sdk.version.
+        if: ${{ (github.event_name == 'push' && github.ref == 'refs/heads/main') || github.event_name == 'workflow_dispatch' }}
+        working-directory: ./matrix-neoboard-standalone/
+        env:
+          NEOBOARD_REF: ${{ github.event.inputs.neoboard_ref }}
+        run: |
+          if [[ -n "$NEOBOARD_REF" ]]; then
+            RESOLVED_SHA=$(git ls-remote https://github.com/nordeck/matrix-neoboard.git "$NEOBOARD_REF" | cut -f1)
+            if [[ -z "$RESOLVED_SHA" ]]; then
+              # Not a named branch/tag on the remote - assume it's already a commit SHA.
+              RESOLVED_SHA="$NEOBOARD_REF"
+            fi
+          else
+            RESOLVED_SHA=$(git ls-remote https://github.com/nordeck/matrix-neoboard.git main | cut -f1)
+          fi
+
+          CURRENT_SHA=$(cat sdk.version)
+
+          if [[ "$RESOLVED_SHA" == "$CURRENT_SHA" ]]; then
+            echo "SDK pin is already up to date ($CURRENT_SHA)."
+          else
+            echo "$RESOLVED_SHA" > sdk.version
+            echo "Updated sdk.version to $RESOLVED_SHA (was $CURRENT_SHA)."
+          fi
+
+      - name: Read pinned SDK commit
+        id: sdk-pin
+        working-directory: ./matrix-neoboard-standalone/
+        run: echo "sha=$(cat sdk.version)" >> "$GITHUB_OUTPUT"
+
       - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
         with:
-          path: matrix-neoboard-standalone
+          repository: nordeck/matrix-neoboard
+          path: matrix-neoboard
+          # sdk.version already reflects neoboard_ref when one was provided
+          # (resolved to a commit SHA by the "Update SDK commit pin" step above)
+          ref: ${{ steps.sdk-pin.outputs.sha }}
           # required for changesets
           fetch-depth: '0'
           # don't persist the credentials so the changesets action doesn't use the
@@ -191,6 +227,7 @@ jobs:
           private_key: ${{ secrets.GH_APP_OS_PRIVATE_KEY }}
 
       - name: Create Release Pull Request or Publish Packages
+        # The changesets/action will also include the updated sdk.version file
         if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
         uses: changesets/action@a45c4d594aa4e2c509dc14a9f2b3b67ba3780d0d # v1.9.0
         with:
