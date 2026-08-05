@@ -43,22 +43,34 @@ jobs:
           NEOBOARD_REF: ${{ github.event.inputs.neoboard_ref }}
         run: |
           if [[ -n "$NEOBOARD_REF" ]]; then
+            # Explicit manual override always wins, regardless of changeset state.
             RESOLVED_SHA=$(git ls-remote https://github.com/nordeck/matrix-neoboard.git "$NEOBOARD_REF" | cut -f1)
             if [[ -z "$RESOLVED_SHA" ]]; then
               # Not a named branch/tag on the remote - assume it's already a commit SHA.
               RESOLVED_SHA="$NEOBOARD_REF"
             fi
-          else
-            RESOLVED_SHA=$(git ls-remote https://github.com/nordeck/matrix-neoboard.git main | cut -f1)
+            echo "$RESOLVED_SHA" > sdk.version
+            echo "Manual override via neoboard_ref: using $RESOLVED_SHA."
+            exit 0
           fi
 
+          # Detects if we are building a merged Release PR ("Version Packages").
+          # Such PR will not have any changeset files, compared to regular feature merges to 'main', where 
+          # it is expected to have a changet that describes what was done in the merge request.
+          PENDING_CHANGESETS=$(find .changeset -maxdepth 1 -name '*.md' ! -name 'README.md' | wc -l)
+          if [[ "$PENDING_CHANGESETS" -eq 0 ]]; then
+            echo "No pending changesets - building from the already-committed sdk.version ($(cat sdk.version))."
+            exit 0
+          fi
+
+          LATEST_SHA=$(git ls-remote https://github.com/nordeck/matrix-neoboard.git main | cut -f1)
           CURRENT_SHA=$(cat sdk.version)
 
-          if [[ "$RESOLVED_SHA" == "$CURRENT_SHA" ]]; then
+          if [[ "$LATEST_SHA" == "$CURRENT_SHA" ]]; then
             echo "SDK pin is already up to date ($CURRENT_SHA)."
           else
-            echo "$RESOLVED_SHA" > sdk.version
-            echo "Updated sdk.version to $RESOLVED_SHA (was $CURRENT_SHA)."
+            echo "$LATEST_SHA" > sdk.version
+            echo "Updated sdk.version to $LATEST_SHA (was $CURRENT_SHA)."
           fi
 
       - name: Read pinned SDK commit
@@ -227,7 +239,12 @@ jobs:
           private_key: ${{ secrets.GH_APP_OS_PRIVATE_KEY }}
 
       - name: Create Release Pull Request or Publish Packages
-        # The changesets/action will also include the updated sdk.version file
+        # This action creates/updates the "Version Packages" pull request.
+        # It has 2 outcomes depending if the workspace contains any changeset files and packaje.json version.
+        #   changeset files exist (version): Creates/updates the "Version packages" pull request.
+        #                          Bumps the package.json version.
+        #                          Previously updated `sdk.version` file will also be added to the PR.
+        #   no changeset files (publish): tags the current commit with the new semver.
         if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
         uses: changesets/action@a45c4d594aa4e2c509dc14a9f2b3b67ba3780d0d # v1.9.0
         with:
