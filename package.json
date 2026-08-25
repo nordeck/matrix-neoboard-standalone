@@ -41,7 +41,7 @@
     "@mui/utils": "^6.4.9",
     "@nordeck/matrix-neoboard-react-sdk": "link:../matrix-neoboard/packages/react-sdk",
     "@reduxjs/toolkit": "^2.11.2",
-    "@testing-library/user-event": "^14.6.1",
+    "@testing-library/user-event": "^14.6.4",
     "i18next": "link:../matrix-neoboard/node_modules/i18next",
     "i18next-browser-languagedetector": "^8.2.1",
     "joi": "^17.13.4",
