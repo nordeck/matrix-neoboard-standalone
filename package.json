@@ -31,6 +31,10 @@
     "node": ">=20.0.0",
     "yarn": "^1.22.1"
   },
+  "resolutions": {
+    "@types/react": "18.3.26",
+    "csstype": "3.2.3"
+  },
   "dependencies": {
     "@matrix-widget-toolkit/api": "^5.1.0",
     "@matrix-widget-toolkit/mui": "^2.2.2",
