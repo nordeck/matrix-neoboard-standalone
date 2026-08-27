@@ -150,6 +150,8 @@ jobs:
 
       - name: get argo-cd type of sha
         id: argocd-sha
+        env:
+          SDK_SHA: ${{ steps.sdk-pin.outputs.sha }}
         run: |
           COMMIT_SHA=${{ github.sha }}
           if [[ '${{ github.event_name }}' == 'pull_request' ]]
@@ -157,8 +159,10 @@ jobs:
             COMMIT_SHA=${{ github.event.pull_request.head.sha }}
           fi
           ARGOCD_TAG=argo-$(echo $COMMIT_SHA | cut -c1-8)
+          COMPOSITE_TAG=standalone-${COMMIT_SHA}-sdk-${SDK_SHA}
           echo "ARGOCD_TAG=$ARGOCD_TAG" >> $GITHUB_ENV
           echo "ARGOCD_TAG=$ARGOCD_TAG" >> "$GITHUB_OUTPUT"
+          echo "COMPOSITE_TAG=$COMPOSITE_TAG" >> "$GITHUB_OUTPUT"
 
       - name: Generate Docker metadata
         id: meta
@@ -175,6 +179,7 @@ jobs:
             type=raw,value=latest,enable={{is_default_branch}}
             type=sha,prefix=
             type=raw,value=${{ env.ARGOCD_TAG }}
+            type=raw,value=${{ steps.argocd-sha.outputs.COMPOSITE_TAG }}
 
       # Read the created files into variables
       - name: Read version and revision to be used by docker

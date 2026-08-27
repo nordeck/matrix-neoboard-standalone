@@ -19,6 +19,8 @@ jobs:
     env:
       DOCKER_IMAGE: ghcr.io/nordeck/matrix-neoboard-standalone
     steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+
       - name: Generate Docker metadata of the existing image
         id: meta-existing-tag
         uses: docker/metadata-action@c299e40c65443455700f0fdfc63efafe5b349051 # v5
@@ -26,6 +28,19 @@ jobs:
           images: ${{ env.DOCKER_IMAGE }}
           tags: |
             type=sha,prefix=
+
+      - name: Generate composite release tag
+        id: composite-tag
+        run: |
+          STANDALONE_VERSION=$(node -p "require('./package.json').version")
+          SDK_SHA=$(tr -d '[:space:]' < sdk.version)
+
+          if [[ ! "$SDK_SHA" =~ ^[0-9a-fA-F]{40}$ ]]; then
+            echo "::error::SDK revision must be a full 40-character commit SHA, got '$SDK_SHA'."
+            exit 1
+          fi
+
+          echo "tag=standalone-${STANDALONE_VERSION}-sdk-${SDK_SHA}" >> "$GITHUB_OUTPUT"
 
       - name: Generate Docker metadata of the new image
         id: meta-new-tags
@@ -38,6 +53,7 @@ jobs:
             org.opencontainers.image.vendor=Nordeck IT + Consulting GmbH
           tags: |
             type=semver,pattern={{version}}
+            type=raw,value=${{ steps.composite-tag.outputs.tag }}
 
       - name: Generate Dockerfile
         env:
