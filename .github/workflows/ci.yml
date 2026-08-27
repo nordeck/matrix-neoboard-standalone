@@ -11,6 +11,10 @@ on:
       neoboard_ref:
         description: 'NeoBoard Git ref to check out'
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -25,18 +29,60 @@ jobs:
     steps:
       - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
         with:
-          repository: nordeck/matrix-neoboard
-          path: matrix-neoboard
-          ref: ${{ github.events.inputs.neoboard_ref }}
+          path: matrix-neoboard-standalone
           # required for changesets
           fetch-depth: '0'
           # don't persist the credentials so the changesets action doesn't use the
           # github actions token but the git token provided via environment variable
           persist-credentials: false
 
+      - name: Resolve SDK commit pin
+        id: sdk-pin
+        # Refresh on push to main (track latest upstream main) or on a manual
+        # workflow_dispatch run (track the given neoboard_ref instead, if any).
+        # Skipped for PR/other builds so they stay reproducible against
+        # whatever commit is actually checked into sdk.version.
+        working-directory: ./matrix-neoboard-standalone/
+        env:
+          NEOBOARD_REF: ${{ github.event.inputs.neoboard_ref }}
+        run: |
+          RESOLVED_SHA=$(tr -d '[:space:]' < sdk.version)
+
+          if [[ -n "$NEOBOARD_REF" ]]; then
+            # Explicit manual override always wins, regardless of changeset state.
+            RESOLVED_SHA=$(git ls-remote https://github.com/nordeck/matrix-neoboard.git "$NEOBOARD_REF" "$NEOBOARD_REF^{}" | awk 'END { print $1 }')
+            if [[ -z "$RESOLVED_SHA" ]]; then
+              # Not a named branch/tag on the remote - validate it as a commit SHA.
+              RESOLVED_SHA="$NEOBOARD_REF"
+            fi
+            echo "Manual override via neoboard_ref: using $RESOLVED_SHA."
+          elif [[ "${{ github.event_name }}" == "push" && "${{ github.ref }}" == "refs/heads/main" ]]; then
+            # A release PR merge has no pending changesets and must build from
+            # the pin committed in that release commit. Feature merges track
+            # the latest SDK and persist the resolved SHA in the release PR.
+            PENDING_CHANGESETS=$(find .changeset -maxdepth 1 -name '*.md' ! -name 'README.md' | wc -l)
+            if [[ "$PENDING_CHANGESETS" -gt 0 ]]; then
+              RESOLVED_SHA=$(git ls-remote https://github.com/nordeck/matrix-neoboard.git refs/heads/main | cut -f1)
+              echo "Pending changesets found: using matrix-neoboard main at $RESOLVED_SHA."
+            else
+              echo "No pending changesets: using committed SDK pin $RESOLVED_SHA."
+            fi
+          else
+            echo "Using committed SDK pin $RESOLVED_SHA."
+          fi
+
+          if [[ ! "$RESOLVED_SHA" =~ ^[0-9a-fA-F]{40}$ ]]; then
+            echo "::error::SDK revision must be a full 40-character commit SHA, got '$RESOLVED_SHA'."
+            exit 1
+          fi
+
+          echo "sha=$RESOLVED_SHA" >> "$GITHUB_OUTPUT"
+
       - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
         with:
-          path: matrix-neoboard-standalone
+          repository: nordeck/matrix-neoboard
+          path: matrix-neoboard
+          ref: ${{ steps.sdk-pin.outputs.sha }}
           # required for changesets
           fetch-depth: '0'
           # don't persist the credentials so the changesets action doesn't use the
@@ -104,6 +150,8 @@ jobs:
 
       - name: get argo-cd type of sha
         id: argocd-sha
+        env:
+          SDK_SHA: ${{ steps.sdk-pin.outputs.sha }}
         run: |
           COMMIT_SHA=${{ github.sha }}
           if [[ '${{ github.event_name }}' == 'pull_request' ]]
@@ -111,8 +159,10 @@ jobs:
             COMMIT_SHA=${{ github.event.pull_request.head.sha }}
           fi
           ARGOCD_TAG=argo-$(echo $COMMIT_SHA | cut -c1-8)
+          COMPOSITE_TAG=standalone-${COMMIT_SHA}-sdk-${SDK_SHA}
           echo "ARGOCD_TAG=$ARGOCD_TAG" >> $GITHUB_ENV
           echo "ARGOCD_TAG=$ARGOCD_TAG" >> "$GITHUB_OUTPUT"
+          echo "COMPOSITE_TAG=$COMPOSITE_TAG" >> "$GITHUB_OUTPUT"
 
       - name: Generate Docker metadata
         id: meta
@@ -129,6 +179,7 @@ jobs:
             type=raw,value=latest,enable={{is_default_branch}}
             type=sha,prefix=
             type=raw,value=${{ env.ARGOCD_TAG }}
+            type=raw,value=${{ steps.argocd-sha.outputs.COMPOSITE_TAG }}
 
       # Read the created files into variables
       - name: Read version and revision to be used by docker
@@ -191,13 +242,21 @@ jobs:
           private_key: ${{ secrets.GH_APP_OS_PRIVATE_KEY }}
 
       - name: Create Release Pull Request or Publish Packages
+        # This action creates/updates the "Version Packages" pull request.
+        # It has 2 outcomes depending if the workspace contains any changeset files and package.json version.
+        #   changeset files exist (version): Creates/updates the "Version packages" pull request.
+        #                          Bumps the package.json version.
+        #                          Writes the SDK used by this build to sdk.version.
+        #   no changeset files (publish): tags the current commit with the new semver.
         if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
         uses: changesets/action@a45c4d594aa4e2c509dc14a9f2b3b67ba3780d0d # v1.9.0
         with:
+          version: yarn changeset:version
           publish: yarn changeset tag
           cwd: ./matrix-neoboard-standalone/
         env:
           GITHUB_TOKEN: ${{ steps.generate_token.outputs.token }}
+          NEOBOARD_SDK_SHA: ${{ steps.sdk-pin.outputs.sha }}
 
   helm-lint-test:
     runs-on: ubuntu-latest
