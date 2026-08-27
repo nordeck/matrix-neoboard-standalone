@@ -51,7 +51,6 @@ describe('assertValidOpenDeskModuleConfig', () => {
           banner: {
             ics_navigation_json_url: 'https://example.com/navigation.json',
             ics_silent_url: 'https://example.com/silent',
-            portal_logo_svg_url: 'https://example.com/logo.svg',
             portal_url: 'https://example.com',
           },
           ...patch,
@@ -69,22 +68,12 @@ describe('assertValidOpenDeskModuleConfig', () => {
     { ics_silent_url: null },
     { ics_silent_url: 123 },
     { ics_silent_url: 'no-uri' },
-    { portal_logo_svg_url: undefined },
-    { portal_logo_svg_url: null },
-    { portal_logo_svg_url: 123 },
-    { portal_logo_svg_url: 'no-uri' },
-    { portal_url: undefined },
-    { portal_url: null },
-    { portal_url: 123 },
-    { portal_url: 'no-uri' },
   ])('should reject wrong banner configuration %j', (patch) => {
     expect(() =>
       assertValidOpenDeskModuleConfig({
         banner: {
           ics_navigation_json_url: 'https://example.com/navigation.json',
           ics_silent_url: 'https://example.com/silent',
-          portal_logo_svg_url: 'https://example.com/logo.svg',
-          portal_url: 'https://example.com',
           ...patch,
         },
       }),

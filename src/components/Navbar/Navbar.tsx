@@ -34,8 +34,8 @@ import { NavigationJson, assertValidNavigationJson } from './navigationJson';
 import { SilentLogin } from './SilentLogin';
 
 const Root = styled('nav')(({ theme }) => ({
-  backgroundColor: theme.navbar.color.bgCanvasDefault,
-  borderBottom: '1px solid rgba(27, 29, 34, 0.1)',
+  backgroundColor: theme.navbar.color.backgroundColor,
+  borderBottom: theme.navbar.borderBottom,
   display: 'flex',
   alignItems: 'center',
   height: theme.navbar.height,
@@ -97,12 +97,15 @@ export function Navbar({ config, children }: Props) {
 
   return (
     <Root>
-      <Logo
-        alt={t('navbar.portalLogo', 'Portal logo')}
-        ariaLabel={t('navbar.showPortal', 'Show portal')}
-        href={config.portal_url}
-        src={config.portal_logo_svg_url}
-      />
+      {config.portal_logo_svg_url && config.portal_url && (
+        <Logo
+          alt={t('navbar.portalLogo', 'Portal logo')}
+          ariaLabel={t('navbar.showPortal', 'Show portal')}
+          href={config.portal_url}
+          src={config.portal_logo_svg_url}
+          width={config.portal_logo_width}
+        />
+      )}
       {loggedIn ? (
         navigationJson && (
           <>

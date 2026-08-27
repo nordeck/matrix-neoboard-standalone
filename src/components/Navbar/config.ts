@@ -38,6 +38,12 @@ export type BannerConfig = {
   portal_logo_svg_url: string;
 
   /**
+   * The URL of the portal logo.svg file.
+   * @example `https://example.com/logo.svg`
+   */
+  portal_logo_width: string;
+
+  /**
    * The URL of the portal.
    * @example `https://example.com`
    */
@@ -55,8 +61,6 @@ const openDeskModuleConfigSchema = Joi.object<OpenDeskModuleConfig, true>({
   banner: Joi.object<BannerConfig>({
     ics_navigation_json_url: Joi.string().uri().required(),
     ics_silent_url: Joi.string().uri().required(),
-    portal_logo_svg_url: Joi.string().uri().required(),
-    portal_url: Joi.string().uri().required(),
   })
     .unknown()
     .required(),

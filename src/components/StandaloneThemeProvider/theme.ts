@@ -42,6 +42,7 @@ type AppearanceDefaults = {
   lightBackgroundLoggedIn: string;
   lightBackgroundCard: string;
   offsetHeight: string;
+  borderBottom: string;
 };
 
 const neoboardAppearanceDefaults: AppearanceDefaults = {
@@ -51,6 +52,7 @@ const neoboardAppearanceDefaults: AppearanceDefaults = {
   lightBackgroundLoggedIn: '#fcf9f3',
   lightBackgroundCard: '#fce2cf',
   offsetHeight: '10vh',
+  borderBottom: '',
 };
 
 const opendeskAppearanceDefaults: AppearanceDefaults = {
@@ -60,6 +62,7 @@ const opendeskAppearanceDefaults: AppearanceDefaults = {
   lightBackgroundLoggedIn: '#eee6fb',
   lightBackgroundCard: '#d2c1f4',
   offsetHeight: '64px',
+  borderBottom: '1px solid rgba(27, 29, 34, 0.1)',
 };
 
 const appearance = getEnvironmentAppearance();
@@ -105,9 +108,49 @@ const textActionAccent = getEnvironment(
 );
 
 // opendesk navbar styling
+const backgroundColor = getEnvironment(
+  'REACT_APP_OPENDESK_BANNER_BACKGROUND_COLOR',
+  '#ffffff',
+);
+
+// opendesk navbar styling
+const backgroundHover = getEnvironment(
+  'REACT_APP_OPENDESK_BANNER_BACKGROUND_COLOR_HOVER',
+  '#f5f8fa',
+);
+
+// opendesk navbar styling
+const backgroundActive = getEnvironment(
+  'REACT_APP_OPENDESK_BANNER_BACKGROUND_COLOR_ACTIVE',
+  '#f5f8fa',
+);
+
+// opendesk navbar styling
 const textPrimary = getEnvironment(
   'REACT_APP_OPENDESK_BANNER_COLOR_TEXT_PRIMARY',
   '#1b1d22',
+);
+// opendesk navbar styling
+const textPrimaryHover = getEnvironment(
+  'REACT_APP_OPENDESK_BANNER_COLOR_TEXT_PRIMARY_HOVER',
+  '#1b1d22',
+);
+// opendesk navbar styling
+const textPrimaryActive = getEnvironment(
+  'REACT_APP_OPENDESK_BANNER_COLOR_TEXT_PRIMARY_ACTIVE',
+  '#1b1d22',
+);
+
+// opendesk navbar styling
+const height = getEnvironment(
+  'REACT_APP_OPENDESK_BANNER_HEIGHT',
+  appearanceDefaults.offsetHeight,
+);
+
+// opendesk navbar styling
+const borderBottom = getEnvironment(
+  'REACT_APP_OPENDESK_BANNER_BORDER_BOTTOM',
+  appearanceDefaults.borderBottom,
 );
 
 export const standaloneLightTheme: ThemeOptions = {
@@ -121,19 +164,25 @@ export const standaloneLightTheme: ThemeOptions = {
       loggedIn: lightBackgroundLoggedIn,
       card: lightBackgroundCard,
       paper: '#fff',
+      hover: backgroundHover,
+      active: backgroundActive,
     },
   },
   typography: {
     fontFamily,
   },
-  offsetHeight: appearanceDefaults.offsetHeight,
+  offsetHeight: height,
   navbar: {
     color: {
       bgCanvasDefault: '#ffffff',
+      backgroundColor,
       textActionAccent,
       textPrimary,
+      textPrimaryHover,
+      textPrimaryActive,
       iconOnSolidPrimary: '#ffffff',
     },
-    height: '63px',
+    height,
+    borderBottom,
   },
 };

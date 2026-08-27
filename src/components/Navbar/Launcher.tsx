@@ -29,6 +29,9 @@ const Root = styled('button')(({ theme, 'aria-expanded': ariaExpanded }) => ({
   backgroundColor: ariaExpanded
     ? theme.navbar.color.textActionAccent
     : 'transparent',
+  '&:hover': {
+    backgroundColor: theme.palette.background.hover,
+  },
   border: 'none',
   color: ariaExpanded
     ? theme.navbar.color.iconOnSolidPrimary

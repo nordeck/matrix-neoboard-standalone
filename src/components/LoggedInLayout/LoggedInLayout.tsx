@@ -18,7 +18,6 @@
 
 import { WidgetParameters } from '@matrix-widget-toolkit/api';
 import { MuiWidgetApiProvider } from '@matrix-widget-toolkit/mui';
-import HomeIcon from '@mui/icons-material/Home';
 import { styled } from '@mui/material';
 import React, { PropsWithChildren, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -34,6 +33,7 @@ import { NeoBoardIcon } from '../Header/NeoBoardIcon.tsx';
 import { useRoomId } from '../RoomIdProvider';
 import { StandaloneWidgetApiProvider } from '../StandaloneWidgetApiProvider';
 import { NavbarBanner } from './NavbarBanner.tsx';
+import { WhiteboardIcon } from './WhiteboardIcon.tsx';
 
 const Wrapper = styled('div')(({ theme }) => ({
   backgroundColor: theme.palette.background.loggedIn,
@@ -119,7 +119,7 @@ function BannerWrapper({ children }: BannerWrapperProps) {
     roomId === undefined
       ? appearance === 'neoboard'
         ? 'neoboard'
-        : ''
+        : 'Whiteboard'
       : (roomNameState?.entities[roomId]?.content.name ?? 'neoboard');
 
   let Banner: React.FC<PropsWithChildren<{}>>;
@@ -137,7 +137,9 @@ function BannerWrapper({ children }: BannerWrapperProps) {
         <HeaderTitle
           title={title}
           roomId={roomId}
-          homeIcon={appearance === 'neoboard' ? <NeoBoardIcon /> : <HomeIcon />}
+          homeIcon={
+            appearance === 'neoboard' ? <NeoBoardIcon /> : <WhiteboardIcon />
+          }
           hasPadding={appearance !== 'neoboard'}
         />
         <HeaderMenu roomId={roomId} />

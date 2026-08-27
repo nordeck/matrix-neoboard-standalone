@@ -23,7 +23,7 @@ import { useDashboardList } from '../Dashboard/useDashboardList';
 import { RenameDialog } from '../RenameDialog';
 
 const StyledTitle = styled('div')(({ theme }) => ({
-  color: theme.palette.primary.main,
+  color: theme.navbar.color.textPrimary,
   flexGrow: 1,
   fontSize: '25px',
   fontWeight: '600',
@@ -46,7 +46,12 @@ const EditableTitle = styled('button')(({ theme }) => ({
   whiteSpace: 'inherit',
   padding: '8px',
   '&:hover': {
-    backgroundColor: theme.palette.grey[200],
+    color: theme.navbar.color.textPrimaryHover,
+    backgroundColor: theme.palette.background.hover,
+  },
+  '&:active': {
+    color: theme.navbar.color.textPrimaryActive,
+    backgroundColor: theme.palette.background.active,
   },
 }));
 

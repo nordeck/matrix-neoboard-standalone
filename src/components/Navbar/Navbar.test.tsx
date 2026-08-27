@@ -27,6 +27,7 @@ describe('Navbar', () => {
     ics_navigation_json_url: 'https://example.com/navigation.json',
     ics_silent_url: 'https://example.com/silent',
     portal_logo_svg_url: 'https://example.com/logo.svg',
+    portal_logo_width: '82px',
     portal_url: 'https://example.com',
   };
   const messageEvent = new MessageEvent('message', {

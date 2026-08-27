@@ -23,6 +23,7 @@ type Props = {
   ariaLabel: string;
   href: string;
   src: string;
+  width: string;
 };
 
 const Root = styled('a')({
@@ -30,14 +31,10 @@ const Root = styled('a')({
   padding: '0 24px',
 });
 
-const Image = styled('img')({
-  width: 82,
-});
-
-export function Logo({ alt, ariaLabel, href, src }: Props) {
+export function Logo({ alt, ariaLabel, href, src, width }: Props) {
   return (
     <Root aria-label={ariaLabel} href={href}>
-      <Image alt={alt} src={src} />
+      <img alt={alt} src={src} width={width ?? '82px'} />
     </Root>
   );
 }

@@ -16,35 +16,37 @@
  * along with NeoBoard Standalone. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import '@mui/material/styles';
+import { SvgIcon, SvgIconProps } from '@mui/material';
 
-declare module '@mui/material/styles' {
-  interface Theme {
-    offsetHeight: string;
-    navbar: NavbarOptions;
-  }
-  interface ThemeOptions {
-    offsetHeight: string;
-    navbar: NavbarOptions;
-  }
-  interface TypeBackground {
-    loggedIn: string;
-    card: string;
-    hover: string;
-    active: string;
-  }
-}
-
-type NavbarOptions = {
-  color: {
-    bgCanvasDefault: string;
-    backgroundColor: string;
-    textActionAccent: string;
-    textPrimary: string;
-    textPrimaryHover: string;
-    textPrimaryActive: string;
-    iconOnSolidPrimary: string;
-  };
-  height: string;
-  borderBottom: string;
+export const WhiteboardIcon = (props: SvgIconProps) => {
+  return (
+    <SvgIcon {...props} viewBox="0 0 32 32">
+      <rect
+        fill="#5e27dd"
+        x="1.88"
+        y="7.88"
+        width="28"
+        height="16"
+        rx="2"
+        ry="2"
+      />
+      <rect
+        fill="#3a1c99"
+        x="9.88"
+        y="1.87"
+        width="12"
+        height="4"
+        rx="2"
+        ry="2"
+      />
+      <polygon
+        fill="#3a1c99"
+        points="27.88 31.88 23.88 31.88 20.88 25.88 24.88 25.88 27.88 31.88"
+      />
+      <polygon
+        fill="#3a1c99"
+        points="3.79 31.88 7.79 31.88 10.79 25.88 6.79 25.88 3.79 31.88"
+      />
+    </SvgIcon>
+  );
 };
