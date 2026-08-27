@@ -1,8 +1,10 @@
 # SDK commit pin
 
-This explains which commit of [`matrix-neoboard`](https://github.com/nordeck/matrix-neoboard)'s `react-sdk` is used to build the Docker image in different CI scenarios.
+This explains which commit of [`matrix-neoboard`](https://github.com/nordeck/matrix-neoboard)'s `react-sdk`
+is used to build it in different scenarios.
 
-The pinned commit lives in [`sdk.version`](../sdk.version) at the repo root. Whether it gets refreshed before a build - and what ends up tagged - depends on the trigger.
+The pinned commit lives in [`sdk.version`](../sdk.version) at the repo root.
+Whether it gets refreshed before a build - and what ends up tagged - depends on the trigger.
 
 ## Scenarios
 
@@ -10,25 +12,50 @@ The pinned commit lives in [`sdk.version`](../sdk.version) at the repo root. Whe
 | ------------------------------------------------------- | --------------------------------------------------------------------------------------------------- | --------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **Push to a feature branch (no pull request open yet)** | _(none - `ci.yml` only reacts to `push` on `main`/`release/*`, `pull_request`, or manual dispatch)_ | -                                                         | -                                                                                                                                                                                         | -                                                                                                                                                                                                                                              |
 | **Feature PR open/updated**                             | `pull_request`                                                                                      | **`sdk.version` pin** (as committed on that branch)       | Not refreshed - whatever is already committed, so PR builds are reproducible across reruns.                                                                                               | No tag.                                                                                                                                                                                                                                        |
-| **Feature PR merged to `main`**                         | `push` to `main`, with pending changesets                                                           | **HEAD of `matrix-neoboard` `main`**                      | Freshly resolved before the build, then left as an _uncommitted_ change; `changesets/action` bundles it into the "Version Packages" release PR it opens/updates.                          | No tag                                                                                                                                                                                                                                         |
+| **Feature PR merged to `main`**                         | `push` to `main`, with pending changesets                                                           | **HEAD of `matrix-neoboard` `main`**                      | Resolved once before the build and passed to the custom Changesets version command, which writes the same SHA to `sdk.version` after preparing the "Version Packages" release branch.     | No tag                                                                                                                                                                                                                                         |
 | **Release PR merged to `main`**                         | `push` to `main`, no pending changesets left                                                        | **`sdk.version` pin** (as committed in that merge commit) | Deliberately **not** re-refreshed against HEAD, so the build always matches its own git history exactly - even if upstream has moved further since the release PR was opened and updated. | `yarn changeset tag` tags this exact commit with `vX.Y.Z` (from `package.json`, bumped in the same merge). `publish-release.yml` then promotes the image already built for this commit's SHA - same SDK commit, same semver, guaranteed match. |
 
 ## Rule of thumb
 
-The build tracks **HEAD** only when a change is actually going to be captured in an upcoming release PR (so nothing is lost). It always falls back to the **pin** whenever a build's result could otherwise be tagged/released without a corresponding commit - PR builds (nothing gets tagged from them) and release-PR-merge builds (this is the exact commit about to be tagged) - so a release can never contain an SDK commit that isn't also recorded in `sdk.version`'s own git history.
+The build tracks **HEAD** only when a change is actually going to be captured in
+an upcoming release PR (so nothing is lost). The SHA is resolved once and used
+both for the build and the `changeset:version` command. Because Changesets prepares
+its release branch before running that command, the generated release commit records
+the exact SDK revision that was built.
+
+The workflow always falls back to the **pin** whenever a build's result could
+otherwise be tagged/released without a corresponding commit - PR builds
+(nothing gets tagged from them) and release-PR-merge builds
+(this is the exact commit about to be tagged) - so a release can never contain
+an SDK commit that isn't also recorded in `sdk.version`'s own git history.
 
 ## Other triggers
 
 Two additional triggers exist but are out of scope of the scenarios above:
 
-- Pushes to `release/*` branches always build from the pin - both the refresh step and the changesets/tagging logic are skipped entirely there.
-- A manual `workflow_dispatch` run can override with an explicit `neoboard_ref` input, which always takes precedence over both the pin and HEAD.
+- Pushes to `release/*` branches always build from the pin - both the refresh step
+  and the changesets/tagging logic are skipped entirely there.
+- A manual `workflow_dispatch` run can override with an explicit `neoboard_ref`
+  input, which always takes precedence over both the pin and HEAD.
 
 ## Renovate Bot PRs
 
-Renovate's PRs (dependency bumps, Docker/action digest updates, etc.) merge to `main` without adding a changeset file. As long as no other changeset happens to be pending at the same time, that merge lands in the same "no pending changesets" state as the **Release PR merged to `main`** row above - it's not specific to release PRs, it's whatever the changeset state happens to be at merge time.
+Renovate's PRs (dependency bumps, Docker/action digest updates, etc.) merge to
+`main` without adding a changeset file. As long as no other changeset happens to
+be pending at the same time, that merge lands in the same "no pending changesets"
+state as the **Release PR merged to `main`** row above - it's not specific to
+release PRs, it's whatever the changeset state happens to be at merge time.
 
 This has two consequences:
 
-- **No new release is triggered.** `changesets/action` finds nothing to version, so it goes straight to the `publish` path and runs `yarn changeset tag`. That looks for a tag matching the current `package.json` version, finds it already exists from the last real release, and skips creating a duplicate - so the merge produces no new tag and `publish-release.yml` never fires.
-- **The build uses the pinned `sdk.version`, not HEAD.** Since there are no pending changesets, the "Update SDK commit pin" step skips refreshing against upstream `matrix-neoboard` and builds from whatever commit is already committed in `sdk.version` - exactly the same reasoning as the release-PR-merge case: this commit could in principle end up being what a release points to, so the build must match its own git history rather than a freshly-resolved HEAD.
+- **No new release is triggered.** `changesets/action` finds nothing to version,
+  so it goes straight to the `publish` path and runs `yarn changeset tag`. That looks
+  for a tag matching the current `package.json` version, finds it already exists from
+  the last real release, and skips creating a duplicate - so the merge produces no
+  new tag and `publish-release.yml` never fires.
+- **The build uses the pinned `sdk.version`, not HEAD.** Since there are no
+  pending changesets, the "Update SDK commit pin" step skips refreshing against
+  upstream `matrix-neoboard` and builds from whatever commit is already committed
+  in `sdk.version` - exactly the same reasoning as the release-PR-merge case:
+  this commit could in principle end up being what a release points to, so the
+  build must match its own git history rather than a freshly-resolved HEAD.
