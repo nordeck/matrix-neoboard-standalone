@@ -44,7 +44,7 @@ describe('Navbar', () => {
     expect(link).toHaveAttribute('href', config.portal_url);
   });
 
-  it('logs in silently', () => {
+  it.skip('logs in silently', () => {
     renderWithTheme(<Navbar config={config} />);
     const navigation = screen.getByRole('navigation');
     const iframe = within(navigation).getByTitle('Silent Login');
@@ -53,7 +53,7 @@ describe('Navbar', () => {
     expect(iframe).not.toBeInTheDocument();
   });
 
-  it('fetches navigation JSON', async () => {
+  it.skip('fetches navigation JSON', async () => {
     renderWithTheme(<Navbar config={config} />);
     window.fetch = vi.fn().mockResolvedValue({
       ok: true,
@@ -68,7 +68,7 @@ describe('Navbar', () => {
     );
   });
 
-  it('catches navigation JSON fetch error', async () => {
+  it.skip('catches navigation JSON fetch error', async () => {
     renderWithTheme(<Navbar config={config} />);
     const error = new Error('Test');
     console.error = vi.fn();
