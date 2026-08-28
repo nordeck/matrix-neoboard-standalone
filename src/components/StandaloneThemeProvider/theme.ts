@@ -144,7 +144,7 @@ const textPrimaryActive = getEnvironment(
 // opendesk navbar styling
 const height = getEnvironment(
   'REACT_APP_OPENDESK_BANNER_HEIGHT',
-  appearanceDefaults.offsetHeight,
+  '63px',
 );
 
 // opendesk navbar styling
@@ -171,7 +171,7 @@ export const standaloneLightTheme: ThemeOptions = {
   typography: {
     fontFamily,
   },
-  offsetHeight: height,
+  offsetHeight: appearanceDefaults.offsetHeight,
   navbar: {
     color: {
       bgCanvasDefault: '#ffffff',
