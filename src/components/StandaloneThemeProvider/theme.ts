@@ -142,10 +142,7 @@ const textPrimaryActive = getEnvironment(
 );
 
 // opendesk navbar styling
-const height = getEnvironment(
-  'REACT_APP_OPENDESK_BANNER_HEIGHT',
-  '63px',
-);
+const height = getEnvironment('REACT_APP_OPENDESK_BANNER_HEIGHT', '63px');
 
 // opendesk navbar styling
 const borderBottom = getEnvironment(
