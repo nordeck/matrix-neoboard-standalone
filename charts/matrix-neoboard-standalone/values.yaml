@@ -7,7 +7,7 @@ replicaCount: 1
 image:
   repository: ghcr.io/nordeck/matrix-neoboard-standalone
   pullPolicy: Always
-  tag: latest
+  tag: latest@sha256:c061dd96518a48677ca8056d5442346e11add1d0e77e02da00604e32582f4eca
 
 imagePullSecrets:
 # - name: dockerconfigjson-ghcr
