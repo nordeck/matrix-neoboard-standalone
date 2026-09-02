@@ -35,6 +35,7 @@ export function NavbarBanner({ children }: PropsWithChildren<{}>) {
         portal_logo_svg_url: getEnvironment(
           'REACT_APP_OPENDESK_BANNER_PORTAL_LOGO_SVG_URL',
         ),
+        logo_width: getEnvironment('REACT_APP_OPENDESK_BANNER_LOGO_WIDTH'),
         portal_url: getEnvironment('REACT_APP_OPENDESK_BANNER_PORTAL_URL'),
       },
     };
