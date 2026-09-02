@@ -28,14 +28,17 @@ const Root = styled('button')(({ theme, 'aria-expanded': ariaExpanded }) => ({
   alignItems: 'center',
   backgroundColor: ariaExpanded
     ? theme.navbar.color.textActionAccent
-    : 'transparent',
+    : theme.palette.background.hover,
+  '&:hover': {
+    backgroundColor: theme.palette.background.hover,
+  },
   border: 'none',
   color: ariaExpanded
     ? theme.navbar.color.iconOnSolidPrimary
     : theme.navbar.color.textPrimary,
   cursor: 'pointer',
   display: 'flex',
-  padding: '0 22px',
+  padding: '0 25px',
   height: '100%',
 }));
 

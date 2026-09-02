@@ -19,11 +19,19 @@
 import { styled, Tooltip } from '@mui/material';
 import { useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { getEnvironmentAppearance } from '../../lib';
 import { useDashboardList } from '../Dashboard/useDashboardList';
 import { RenameDialog } from '../RenameDialog';
 
+const appearance = getEnvironmentAppearance();
 const StyledTitle = styled('div')(({ theme }) => ({
-  color: theme.palette.primary.main,
+  ...(appearance === 'opendesk'
+    ? {
+        color: theme.navbar.color.textPrimary,
+      }
+    : {
+        color: theme.palette.primary.main,
+      }),
   flexGrow: 1,
   fontSize: '25px',
   fontWeight: '600',
@@ -45,9 +53,22 @@ const EditableTitle = styled('button')(({ theme }) => ({
   fontWeight: 'inherit',
   whiteSpace: 'inherit',
   padding: '8px',
-  '&:hover': {
-    backgroundColor: theme.palette.grey[200],
-  },
+  ...(appearance === 'opendesk'
+    ? {
+        '&:hover': {
+          color: theme.navbar.color.textPrimaryHover,
+          backgroundColor: theme.palette.background.hover,
+        },
+        '&:active': {
+          color: theme.navbar.color.textPrimaryActive,
+          backgroundColor: theme.palette.background.active,
+        },
+      }
+    : {
+        '&:hover': {
+          backgroundColor: theme.palette.grey[200],
+        },
+      }),
 }));
 
 type TitleProps = {

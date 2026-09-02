@@ -26,24 +26,33 @@ describe('Logo', () => {
   const href = 'https://exmaple.com';
   const label = 'Show portal';
   const src = 'https://example.com/logo.svg';
+  const width = '82px';
 
   it(`renders with alt "${alt}"`, () => {
-    renderWithTheme(<Logo alt={alt} ariaLabel={label} href={href} src={src} />);
+    renderWithTheme(
+      <Logo alt={alt} ariaLabel={label} href={href} src={src} width={width} />,
+    );
     expect(screen.getByRole('img')).toHaveAttribute('alt', alt);
   });
 
   it(`renders with href "${href}"`, () => {
-    renderWithTheme(<Logo alt={alt} ariaLabel={label} href={href} src={src} />);
+    renderWithTheme(
+      <Logo alt={alt} ariaLabel={label} href={href} src={src} width={width} />,
+    );
     expect(screen.getByRole('link')).toHaveAttribute('href', href);
   });
 
   it(`renders with aria-label "${label}"`, () => {
-    renderWithTheme(<Logo alt={alt} ariaLabel={label} href={href} src={src} />);
+    renderWithTheme(
+      <Logo alt={alt} ariaLabel={label} href={href} src={src} width={width} />,
+    );
     expect(screen.getByRole('link')).toHaveAccessibleName(label);
   });
 
   it(`renders with src "${src}"`, () => {
-    renderWithTheme(<Logo alt={alt} ariaLabel={label} href={href} src={src} />);
+    renderWithTheme(
+      <Logo alt={alt} ariaLabel={label} href={href} src={src} width={width} />,
+    );
     expect(screen.getByRole('img')).toHaveAttribute('src', src);
   });
 });
