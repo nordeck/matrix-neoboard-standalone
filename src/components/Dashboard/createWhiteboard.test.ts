@@ -19,6 +19,7 @@
 import { getEnvironment } from '@matrix-widget-toolkit/mui';
 import {
   ROOM_EVENT_DOCUMENT_CREATE,
+  STATE_EVENT_4143_RTC_SLOT,
   STATE_EVENT_WHITEBOARD,
 } from '@nordeck/matrix-neoboard-react-sdk';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
@@ -61,6 +62,17 @@ describe('createWhiteboard', () => {
       STATE_EVENT_WHITEBOARD,
       '!room-1_whiteboard',
       { documentId: 'document-id-1' },
+      '!room-1',
+    );
+    expect(standaloneClient.sendStateEvent).toHaveBeenCalledWith(
+      STATE_EVENT_4143_RTC_SLOT,
+      'net.nordeck.whiteboard#!room-1_whiteboard',
+      {
+        status: 'open',
+        application: {
+          type: 'net.nordeck.whiteboard',
+        },
+      },
       '!room-1',
     );
 
