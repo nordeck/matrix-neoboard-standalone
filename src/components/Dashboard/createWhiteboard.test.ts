@@ -54,6 +54,7 @@ describe('createWhiteboard', () => {
       ROOM_EVENT_DOCUMENT_CREATE,
       {},
       '!room-1',
+      undefined,
     );
 
     expect(standaloneClient.sendStateEvent).toHaveBeenCalledWith(

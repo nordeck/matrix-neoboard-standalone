@@ -46,6 +46,7 @@ import {
   IGetMediaConfigActionFromWidgetResponseData,
   IOpenIDCredentials,
   IRoomEvent,
+  IRtcTransport,
   ITurnServer,
   IUploadFileActionFromWidgetResponseData,
   Symbols,
@@ -207,12 +208,24 @@ export class MatrixStandaloneClient implements StandaloneClient {
     eventType: string,
     content: unknown,
     roomId: string,
+    stickyDurationMs: number | undefined,
   ): Promise<string> {
-    const { event_id } = await this.matrixClient.sendEvent(
-      roomId,
-      eventType as keyof TimelineEvents,
-      content as TimelineEvents[keyof TimelineEvents],
-    );
+    let event_id: string;
+    if (!stickyDurationMs) {
+      ({ event_id } = await this.matrixClient.sendEvent(
+        roomId,
+        eventType as keyof TimelineEvents,
+        content as TimelineEvents[keyof TimelineEvents],
+      ));
+    } else {
+      ({ event_id } = await this.matrixClient._unstable_sendStickyEvent(
+        roomId,
+        stickyDurationMs,
+        null,
+        eventType as keyof TimelineEvents,
+        content as TimelineEvents[keyof TimelineEvents],
+      ));
+    }
     return event_id;
   }
 
@@ -221,14 +234,27 @@ export class MatrixStandaloneClient implements StandaloneClient {
     content: unknown,
     roomId: string,
     delay: number,
+    stickyDurationMs: number | undefined,
   ): Promise<string> {
-    const { delay_id } = await this.matrixClient._unstable_sendDelayedEvent(
-      roomId,
-      { delay },
-      null,
-      eventType as keyof TimelineEvents,
-      content as TimelineEvents[keyof TimelineEvents],
-    );
+    let delay_id: string;
+    if (!stickyDurationMs) {
+      ({ delay_id } = await this.matrixClient._unstable_sendDelayedEvent(
+        roomId,
+        { delay },
+        null,
+        eventType as keyof TimelineEvents,
+        content as TimelineEvents[keyof TimelineEvents],
+      ));
+    } else {
+      ({ delay_id } = await this.matrixClient._unstable_sendStickyDelayedEvent(
+        roomId,
+        stickyDurationMs,
+        { delay },
+        null,
+        eventType as keyof TimelineEvents,
+        content as TimelineEvents[keyof TimelineEvents],
+      ));
+    }
     return delay_id;
   }
 
@@ -355,11 +381,16 @@ export class MatrixStandaloneClient implements StandaloneClient {
     );
   }
 
-  public requestOpenIDConnectToken(): Promise<IOpenIDCredentials> {
+  requestOpenIDConnectToken(): Promise<IOpenIDCredentials> {
     return this.matrixClient.getOpenIdToken();
   }
 
-  public async closeRoom(roomId: string): Promise<void> {
+  async getRtcTransports(): Promise<IRtcTransport[]> {
+    const rtcTransports = await this.matrixClient._unstable_getRTCTransports();
+    return rtcTransports ?? [];
+  }
+
+  async closeRoom(roomId: string): Promise<void> {
     // First tombstone the room
     await this.sendStateEvent(
       STATE_EVENT_TOMBSTONE,
@@ -481,9 +512,9 @@ function findRoomEvents(
   const events: RoomEvent[] = [];
 
   for (const room of rooms) {
-    const events = room.getLiveTimeline().getEvents(); // timelines are most recent last
-    for (let i = events.length - 1; i > 0; i--) {
-      const ev = events[i];
+    const timelineEvents = room.getLiveTimeline().getEvents(); // timelines are most recent last
+    for (let i = timelineEvents.length - 1; i > 0; i--) {
+      const ev = timelineEvents[i];
       if (ev.getType() !== eventType || ev.isState()) continue;
       if (
         eventType === EventType.RoomMessage &&
@@ -491,7 +522,11 @@ function findRoomEvents(
         msgtype !== ev.getContent()['msgtype']
       )
         continue;
-      events.push(ev);
+      events.push(ev.getEffectiveEvent() as IRoomEvent);
+    }
+
+    for (const ev of room._unstable_getStickyEvents()) {
+      events.push(ev.getEffectiveEvent() as IRoomEvent);
     }
   }
 

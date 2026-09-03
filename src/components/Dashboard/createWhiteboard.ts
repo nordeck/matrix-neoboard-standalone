@@ -20,6 +20,7 @@ import { getEnvironment } from '@matrix-widget-toolkit/mui';
 import {
   ROOM_EVENT_DOCUMENT_CREATE,
   STATE_EVENT_WHITEBOARD,
+  Whiteboard,
 } from '@nordeck/matrix-neoboard-react-sdk';
 import { StandaloneClient } from '../../toolkit/standalone';
 
@@ -38,14 +39,16 @@ export async function createWhiteboard(
     ROOM_EVENT_DOCUMENT_CREATE,
     {},
     roomId,
+    undefined,
   );
 
+  const content: Whiteboard = {
+    documentId,
+  };
   await standaloneClient.sendStateEvent(
     STATE_EVENT_WHITEBOARD,
     `${roomId}_whiteboard`,
-    {
-      documentId,
-    },
+    content,
     roomId,
   );
 
