@@ -51,5 +51,6 @@ export function mockStandaloneClient(): MockedStandaloneClient {
     downloadFile: vi.fn(),
     sendToDeviceMessage: vi.fn(),
     requestOpenIDConnectToken: vi.fn(),
+    getRtcTransports: vi.fn().mockResolvedValue([]),
   };
 }
