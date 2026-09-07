@@ -526,7 +526,9 @@ function findRoomEvents(
     }
 
     for (const ev of room._unstable_getStickyEvents()) {
-      events.push(ev.getEffectiveEvent() as IRoomEvent);
+      if (ev.getType() === eventType) {
+        events.push(ev.getEffectiveEvent() as IRoomEvent);
+      }
     }
   }
 
