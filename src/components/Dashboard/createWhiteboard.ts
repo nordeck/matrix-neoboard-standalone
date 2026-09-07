@@ -18,6 +18,7 @@
 
 import { getEnvironment } from '@matrix-widget-toolkit/mui';
 import {
+  isMatrixRtcMode,
   ROOM_EVENT_DOCUMENT_CREATE,
   STATE_EVENT_4143_RTC_SLOT,
   STATE_EVENT_WHITEBOARD,
@@ -64,17 +65,19 @@ export async function createWhiteboard(
 
     // setup widget and layout
     await Promise.all([
-      standaloneClient.sendStateEvent(
-        STATE_EVENT_4143_RTC_SLOT,
-        `net.nordeck.whiteboard#${whiteboardId}`,
-        {
-          status: 'open',
-          application: {
-            type: 'net.nordeck.whiteboard',
-          },
-        },
-        roomId,
-      ),
+      isMatrixRtcMode()
+        ? standaloneClient.sendStateEvent(
+            STATE_EVENT_4143_RTC_SLOT,
+            `net.nordeck.whiteboard#${whiteboardId}`,
+            {
+              status: 'open',
+              application: {
+                type: 'net.nordeck.whiteboard',
+              },
+            },
+            roomId,
+          )
+        : undefined,
       standaloneClient.sendStateEvent(
         'im.vector.modular.widgets',
         'neoboard',
