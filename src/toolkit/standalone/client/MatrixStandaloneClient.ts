@@ -513,7 +513,7 @@ function findRoomEvents(
 
   for (const room of rooms) {
     const timelineEvents = room.getLiveTimeline().getEvents(); // timelines are most recent last
-    for (let i = timelineEvents.length - 1; i > 0; i--) {
+    for (let i = timelineEvents.length - 1; i >= 0; i--) {
       const ev = timelineEvents[i];
       if (ev.getType() !== eventType || ev.isState()) continue;
       if (
