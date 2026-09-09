@@ -28,7 +28,6 @@ import FocusLock from 'react-focus-lock';
 import { useTranslation } from 'react-i18next';
 import { BannerConfig } from './config';
 import { Launcher } from './Launcher';
-import { Logo } from './Logo';
 import { Menu } from './Menu';
 import { NavigationJson, assertValidNavigationJson } from './navigationJson';
 import { SilentLogin } from './SilentLogin';
@@ -97,15 +96,6 @@ export function Navbar({ config, children }: Props) {
 
   return (
     <Root>
-      {config.portal_logo_svg_url && config.portal_url && (
-        <Logo
-          alt={t('navbar.portalLogo', 'Portal logo')}
-          ariaLabel={t('navbar.showPortal', 'Show portal')}
-          href={config.portal_url}
-          src={config.portal_logo_svg_url}
-          width={config.portal_logo_width}
-        />
-      )}
       {loggedIn ? (
         navigationJson && (
           <>
@@ -120,6 +110,8 @@ export function Navbar({ config, children }: Props) {
                   navigationJson={navigationJson}
                   onClick={handleClick}
                   onKeyDown={handleKeyDown}
+                  config={config}
+                  open={ariaExpanded}
                 />
               </FocusLock>
             )}

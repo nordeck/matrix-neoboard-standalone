@@ -104,6 +104,15 @@ describe('Navbar', () => {
       expect(screen.queryByRole('list')).not.toBeInTheDocument();
     });
 
+    it('allows to close menu via click on the close button', async () => {
+      renderWithTheme(<Navbar config={config}/>);
+      fireEvent(window, messageEvent);
+      await waitFor(() => expect(window.fetch).toHaveBeenCalled());
+      fireEvent.click(screen.getByRole('button', {expanded: false}));
+      fireEvent.click(screen.getByTestId('menu-close-button'));
+      expect(screen.queryByRole('list')).not.toBeInTheDocument();
+    });
+      
     it('allows to close menu via escape-key on menu-list', async () => {
       renderWithTheme(<Navbar config={config} />);
       fireEvent(window, messageEvent);

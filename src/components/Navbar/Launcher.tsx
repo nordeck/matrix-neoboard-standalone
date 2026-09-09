@@ -30,6 +30,7 @@ const Root = styled('button')(({ theme, 'aria-expanded': ariaExpanded }) => ({
     ? theme.navbar.color.textActionAccent
     : theme.palette.background.hover,
   '&:hover': {
+    color: theme.navbar.color.iconOnSolidPrimary,
     backgroundColor: theme.palette.background.hover,
   },
   border: 'none',

@@ -34,9 +34,11 @@ export function NavbarBanner({ children }: PropsWithChildren<{}>) {
         ),
         portal_logo_svg_url: getEnvironment(
           'REACT_APP_OPENDESK_BANNER_PORTAL_LOGO_SVG_URL',
+            `${window.location.origin}/tmp/img.png`,
         ),
-        logo_width: getEnvironment('REACT_APP_OPENDESK_BANNER_LOGO_WIDTH'),
-        portal_url: getEnvironment('REACT_APP_OPENDESK_BANNER_PORTAL_URL'),
+        portal_logo_width: getEnvironment('REACT_APP_OPENDESK_BANNER_PORTAL_LOGO_WIDTH'),
+        portal_url: getEnvironment('REACT_APP_OPENDESK_BANNER_PORTAL_URL',
+            `https://portal.opendesk.family`,),
       },
     };
 
