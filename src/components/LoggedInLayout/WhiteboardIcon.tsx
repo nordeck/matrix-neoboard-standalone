@@ -16,13 +16,25 @@
  * along with NeoBoard Standalone. If not, see <https://www.gnu.org/licenses/>.
  */
 
+import { getEnvironment } from '@matrix-widget-toolkit/mui';
 import { SvgIcon, SvgIconProps } from '@mui/material';
+
+// opendesk navbar styling
+const iconPrimaryColor = getEnvironment(
+  'REACT_APP_OPENDESK_BANNER_WHITEBOARD_ICON_PRIMARY',
+  '#5e27dd',
+);
+// opendesk navbar styling
+const iconSecondaryColor = getEnvironment(
+  'REACT_APP_OPENDESK_BANNER_WHITEBOARD_ICON_SECONDARY',
+  '#3a1c99',
+);
 
 export const WhiteboardIcon = (props: SvgIconProps) => {
   return (
     <SvgIcon {...props} viewBox="0 0 32 32">
       <rect
-        fill="#5e27dd"
+        fill={iconPrimaryColor}
         x="1.88"
         y="7.88"
         width="28"
@@ -31,7 +43,7 @@ export const WhiteboardIcon = (props: SvgIconProps) => {
         ry="2"
       />
       <rect
-        fill="#3a1c99"
+        fill={iconSecondaryColor}
         x="9.88"
         y="1.87"
         width="12"
@@ -40,11 +52,11 @@ export const WhiteboardIcon = (props: SvgIconProps) => {
         ry="2"
       />
       <polygon
-        fill="#3a1c99"
+        fill={iconSecondaryColor}
         points="27.88 31.88 23.88 31.88 20.88 25.88 24.88 25.88 27.88 31.88"
       />
       <polygon
-        fill="#3a1c99"
+        fill={iconSecondaryColor}
         points="3.79 31.88 7.79 31.88 10.79 25.88 6.79 25.88 3.79 31.88"
       />
     </SvgIcon>

@@ -103,6 +103,7 @@
     "title": "Möchtest Du dich wirklich abmelden?"
   },
   "navbar": {
+    "closeMenu": "Menü schließen",
     "portalLogo": "Portal Logo",
     "showMenu": "Menü anzeigen",
     "showPortal": "Portal anzeigen"

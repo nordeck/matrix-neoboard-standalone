@@ -31,11 +31,11 @@ They can either be set via an environment variable or the `.env`-file.
 | ----------------------------------------------------- | -------------------------------------------------------------------------------------------------- | ------------------------------------- |
 | `REACT_APP_OPENDESK_BANNER_ICS_NAVIGATION_JSON_URL`   | Required. The URL of the navigation.json file that contains the navigation structure for the user. | `https://example.com/navigation.json` |
 | `REACT_APP_OPENDESK_BANNER_ICS_SILENT_URL`            | Required. The URL of the silent endpoint that is used via inline frame to log in the user.         | `https://example.com/silent`          |
-| `REACT_APP_OPENDESK_BANNER_PORTAL_URL`                | optional. The URL of the portal.                                                                   | `https://example.com`                 |
+| `REACT_APP_OPENDESK_BANNER_PORTAL_URL`                | Required. The URL of the portal.                                                                   | `https://example.com`                 |
+| `REACT_APP_OPENDESK_BANNER_PORTAL_LOGO_SVG_URL`       | Required. The URL of the portal logo.svg file.                                                     | `https://example.com/logo.svg`        |
+| `REACT_APP_OPENDESK_BANNER_PORTAL_LOGO_WIDTH`         | optional. The width of the portal logo.                                                            | `100`                                 |
 | `REACT_APP_OPENDESK_BANNER_TEXT_ACTION_ACCENT`        | Optional. Background of the launcher icon when expanded and the top border of the menu.            | `#5e27dd`                             |
 | `REACT_APP_OPENDESK_BANNER_COLOR_TEXT_PRIMARY`        | Optional. Primary text color.                                                                      | `#1b1d22`                             |
-| `REACT_APP_OPENDESK_BANNER_PORTAL_LOGO_SVG_URL`       | optional. The URL of the portal logo.svg file.                                                     | `https://example.com/logo.svg`        |
-| `REACT_APP_OPENDESK_BANNER_PORTAL_LOGO_WIDTH`         | optional. The width of the portal logo.                                                            | `100`                                 |
 | `REACT_APP_OPENDESK_BANNER_COLOR_TEXT_PRIMARY_HOVER`  | Optional. Primary text color when hovered.                                                         | `#1b1d22`                             |
 | `REACT_APP_OPENDESK_BANNER_COLOR_TEXT_PRIMARY_ACTIVE` | Optional. Primary text color when active.                                                          | `#1b1d22`                             |
 | `REACT_APP_OPENDESK_BANNER_BACKGROUND_COLOR`          | Optional. Background color of the navbar.                                                          | `#1b1d22`                             |

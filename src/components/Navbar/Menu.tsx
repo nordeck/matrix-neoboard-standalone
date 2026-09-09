@@ -16,14 +16,20 @@
  * along with NeoBoard Standalone. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { styled } from '@mui/material';
+import CloseIcon from '@mui/icons-material/Close';
+import { Collapse, IconButton, Slide, styled } from '@mui/material';
 import { KeyboardEventHandler, MouseEventHandler } from 'react';
+import { useTranslation } from 'react-i18next';
 import { NavigationJson } from './navigationJson';
+import {Logo} from "./Logo.tsx";
+import {BannerConfig} from "./config.ts";
 
 type Props = {
   navigationJson: NavigationJson;
   onClick: MouseEventHandler;
   onKeyDown: KeyboardEventHandler;
+  config: BannerConfig;
+  open: boolean;
 };
 
 const Root = styled('div')({
@@ -37,17 +43,23 @@ const Root = styled('div')({
 
 const List = styled('ul')(({ theme }) => ({
   backgroundColor: theme.navbar.color.bgCanvasDefault,
-  borderTop: `4px solid ${theme.navbar.color.textActionAccent}`,
-  borderRadius: 8,
+  borderRadius: '0 16px 16px 0',
   boxShadow: '4px 4px 12px 0 rgba(118, 131, 156, 0.6)',
-  left: 24,
+  left: 0,
   listStyle: 'none',
   margin: 0,
   padding: '4px 0 20px',
   position: 'absolute',
-  top: theme.navbar.height,
+  top: 0,
   width: 272,
+  height: '100%',
 }));
+
+const CloseButton = styled(IconButton)({
+  position: 'absolute',
+  right: 8,
+  top: 8,
+});
 
 const Heading = styled('span')({
   display: 'block',
@@ -85,34 +97,55 @@ const PlaceholderIcon = styled('div')({
   width: 20,
 });
 
-export function Menu({ navigationJson, onClick, onKeyDown }: Props) {
+export function Menu({ navigationJson, onClick, onKeyDown, config, open }: Props) {
+  const { t } = useTranslation();
   return (
-    <Root data-testid="menu-backdrop" onClick={onClick}>
-      <List data-testid="menu-list" onKeyDown={onKeyDown}>
-        {navigationJson.categories.map((category) => (
-          <li key={category.identifier}>
-            <Heading>{category.display_name}</Heading>
-            <Sublist>
-              {category.entries.map((entry) => (
-                <li key={entry.identifier}>
-                  <Link href={entry.link} target={entry.target}>
-                    {entry.icon_url ? (
-                      <Icon
-                        alt={entry.display_name}
-                        role="presentation"
-                        src={entry.icon_url}
-                      />
-                    ) : (
-                      <PlaceholderIcon />
-                    )}
-                    <span>{entry.display_name}</span>
-                  </Link>
-                </li>
-              ))}
-            </Sublist>
-          </li>
-        ))}
-      </List>
-    </Root>
+    <Collapse orientation="horizontal" in={open} mountOnEnter unmountOnExit>
+      <Slide in={open} direction="right">
+        <Root data-testid="menu-backdrop" onClick={onClick}>
+          <List data-testid="menu-list" onKeyDown={onKeyDown}>
+            <li>
+              <CloseButton
+                aria-label={t('navbar.closeMenu', 'Close menu')}
+                data-testid="menu-close-button"
+                onClick={onClick}
+              >
+                <CloseIcon />
+              </CloseButton>
+              <Logo
+                  alt={t('navbar.portalLogo', 'Portal logo')}
+                  ariaLabel={t('navbar.showPortal', 'Show portal')}
+                  href={config.portal_url}
+                  src={config.portal_logo_svg_url}
+                  width={config.portal_logo_width}
+              />
+            </li>
+            {navigationJson.categories.map((category) => (
+              <li key={category.identifier}>
+                <Heading>{category.display_name}</Heading>
+                <Sublist>
+                  {category.entries.map((entry) => (
+                    <li key={entry.identifier}>
+                      <Link href={entry.link} target={entry.target}>
+                        {entry.icon_url ? (
+                          <Icon
+                            alt={entry.display_name}
+                            role="presentation"
+                            src={entry.icon_url}
+                          />
+                        ) : (
+                          <PlaceholderIcon />
+                        )}
+                        <span>{entry.display_name}</span>
+                      </Link>
+                    </li>
+                  ))}
+                </Sublist>
+              </li>
+            ))}
+          </List>
+        </Root>
+      </Slide>
+    </Collapse>
   );
 }

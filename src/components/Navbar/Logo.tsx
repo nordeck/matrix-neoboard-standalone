@@ -28,7 +28,7 @@ type Props = {
 
 const Root = styled('a')({
   display: 'flex',
-  padding: '0 24px',
+  padding: '15px 24px',
 });
 
 export function Logo({ alt, ariaLabel, href, src, width }: Props) {
