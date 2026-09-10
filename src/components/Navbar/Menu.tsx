@@ -17,12 +17,12 @@
  */
 
 import CloseIcon from '@mui/icons-material/Close';
-import { Collapse, IconButton, Slide, styled } from '@mui/material';
-import { KeyboardEventHandler, MouseEventHandler } from 'react';
+import { Drawer, IconButton, styled } from '@mui/material';
+import { HTMLAttributes, KeyboardEventHandler, MouseEventHandler } from 'react';
 import { useTranslation } from 'react-i18next';
+import { Logo } from './Logo.tsx';
+import { BannerConfig } from './config.ts';
 import { NavigationJson } from './navigationJson';
-import {Logo} from "./Logo.tsx";
-import {BannerConfig} from "./config.ts";
 
 type Props = {
   navigationJson: NavigationJson;
@@ -32,34 +32,39 @@ type Props = {
   open: boolean;
 };
 
-const Root = styled('div')({
-  bottom: 0,
-  left: 0,
-  position: 'fixed',
-  right: 0,
-  top: 0,
-  zIndex: 8008,
-});
+const StyledDrawer = styled(Drawer)(({ theme }) => ({
+  '& .MuiDrawer-paper': {
+    backgroundColor: theme.navbar.color.bgCanvasDefault,
+    borderRadius: '0 16px 16px 0',
+    boxShadow: '0px 4px 20px 0px rgba(0, 0, 0, 0.1)',
+    width: 320,
+  },
+}));
 
-const List = styled('ul')(({ theme }) => ({
-  backgroundColor: theme.navbar.color.bgCanvasDefault,
-  borderRadius: '0 16px 16px 0',
-  boxShadow: '4px 4px 12px 0 rgba(118, 131, 156, 0.6)',
-  left: 0,
+const List = styled('ul')({
   listStyle: 'none',
   margin: 0,
   padding: '4px 0 20px',
-  position: 'absolute',
-  top: 0,
-  width: 272,
-  height: '100%',
-}));
+});
 
-const CloseButton = styled(IconButton)({
+const CloseButton = styled(IconButton)(({ theme }) => ({
   position: 'absolute',
   right: 8,
   top: 8,
-});
+  width: 32,
+  height: 32,
+  padding: 0,
+  borderRadius: 8,
+  '&:hover': {
+    backgroundColor: theme.navbar.color.textActionAccent,
+  },
+  '&:active': {
+    backgroundColor: '#D3D7DE',
+  },
+  '&:focus': {
+    border: `3px solid ${theme.palette.background.card}`,
+  },
+}));
 
 const Heading = styled('span')({
   display: 'block',
@@ -86,66 +91,79 @@ const Link = styled('a')(({ theme }) => ({
 }));
 
 const Icon = styled('img')({
-  height: 20,
+  height: 25,
   marginRight: 8,
-  width: 20,
+  width: 25,
 });
 
 const PlaceholderIcon = styled('div')({
-  height: 20,
+  height: 25,
   marginRight: 8,
-  width: 20,
+  width: 25,
 });
 
-export function Menu({ navigationJson, onClick, onKeyDown, config, open }: Props) {
+export function Menu({
+  navigationJson,
+  onClick,
+  onKeyDown,
+  config,
+  open,
+}: Props) {
   const { t } = useTranslation();
   return (
-    <Collapse orientation="horizontal" in={open} mountOnEnter unmountOnExit>
-      <Slide in={open} direction="right">
-        <Root data-testid="menu-backdrop" onClick={onClick}>
-          <List data-testid="menu-list" onKeyDown={onKeyDown}>
-            <li>
-              <CloseButton
-                aria-label={t('navbar.closeMenu', 'Close menu')}
-                data-testid="menu-close-button"
-                onClick={onClick}
-              >
-                <CloseIcon />
-              </CloseButton>
-              <Logo
-                  alt={t('navbar.portalLogo', 'Portal logo')}
-                  ariaLabel={t('navbar.showPortal', 'Show portal')}
-                  href={config.portal_url}
-                  src={config.portal_logo_svg_url}
-                  width={config.portal_logo_width}
-              />
-            </li>
-            {navigationJson.categories.map((category) => (
-              <li key={category.identifier}>
-                <Heading>{category.display_name}</Heading>
-                <Sublist>
-                  {category.entries.map((entry) => (
-                    <li key={entry.identifier}>
-                      <Link href={entry.link} target={entry.target}>
-                        {entry.icon_url ? (
-                          <Icon
-                            alt={entry.display_name}
-                            role="presentation"
-                            src={entry.icon_url}
-                          />
-                        ) : (
-                          <PlaceholderIcon />
-                        )}
-                        <span>{entry.display_name}</span>
-                      </Link>
-                    </li>
-                  ))}
-                </Sublist>
-              </li>
-            ))}
-          </List>
-        </Root>
-      </Slide>
-    </Collapse>
+    <StyledDrawer
+      anchor="left"
+      open={open}
+      aria-label={t('navbar.menuLabel', 'Navigation menu')}
+      slotProps={{
+        backdrop: {
+          'data-testid': 'menu-backdrop',
+          onClick,
+        } as HTMLAttributes<HTMLDivElement>,
+      }}
+    >
+      <List data-testid="menu-list" onKeyDown={onKeyDown}>
+        <li>
+          <CloseButton
+            aria-label={t('navbar.closeMenu', 'Close menu')}
+            data-testid="menu-close-button"
+            disableRipple
+            onClick={onClick}
+          >
+            <CloseIcon />
+          </CloseButton>
+          <Logo
+            alt={t('navbar.portalLogo', 'Portal logo')}
+            ariaLabel={t('navbar.showPortal', 'Show portal')}
+            href={config.portal_url}
+            src={config.portal_logo_svg_url}
+            width={config.portal_logo_width}
+          />
+        </li>
+        {navigationJson.categories.map((category) => (
+          <li key={category.identifier}>
+            <Heading>{category.display_name}</Heading>
+            <Sublist>
+              {category.entries.map((entry) => (
+                <li key={entry.identifier}>
+                  <Link href={entry.link} target={entry.target}>
+                    {entry.icon_url ? (
+                      <Icon
+                        alt={entry.display_name}
+                        role="presentation"
+                        src={entry.icon_url}
+                      />
+                    ) : (
+                      <PlaceholderIcon />
+                    )}
+                    <span>{entry.display_name}</span>
+                  </Link>
+                </li>
+              ))}
+            </Sublist>
+          </li>
+        ))}
+      </List>
+    </StyledDrawer>
   );
 }

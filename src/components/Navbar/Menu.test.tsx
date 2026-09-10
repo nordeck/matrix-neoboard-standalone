@@ -18,10 +18,9 @@
 
 import { fireEvent, screen, within } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
+import { BannerConfig } from './config.ts';
 import { Menu } from './Menu';
 import { renderWithTheme } from './test-utils';
-import {BannerConfig} from "./config.ts";
-import {Navbar} from "./Navbar.tsx";
 
 describe('Menu', () => {
   const navigationJson = {
@@ -67,12 +66,18 @@ describe('Menu', () => {
   });
 
   it('renders portal link', () => {
-    renderWithTheme(<Navbar config={config} />);
-    const navigation = screen.getByRole('navigation');
-    const link = within(navigation).getByRole('link');
+    renderWithTheme(
+      <Menu
+        navigationJson={navigationJson}
+        onClick={() => {}}
+        onKeyDown={() => {}}
+        config={config}
+        open
+      />,
+    );
+    const link = screen.getByRole('link', { name: 'Show portal' });
     expect(link).toHaveAttribute('href', config.portal_url);
   });
-
 
   it('triggers onClick-callback', () => {
     const callback = vi.fn();

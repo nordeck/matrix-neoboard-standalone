@@ -56,13 +56,13 @@ const neoboardAppearanceDefaults: AppearanceDefaults = {
 };
 
 const opendeskAppearanceDefaults: AppearanceDefaults = {
-  lightPrimaryColor: '#5e27dd',
-  lightPrimaryColorLight: '#612cdd',
-  lightPrimaryColorDark: '#5a25d4',
+  lightPrimaryColor: '#571EFA',
+  lightPrimaryColorLight: '#571EFA',
+  lightPrimaryColorDark: '#4519C2',
   lightBackgroundLoggedIn: '#eee6fb',
-  lightBackgroundCard: '#d2c1f4',
-  offsetHeight: '64px',
-  borderBottom: '1px solid rgba(27, 29, 34, 0.1)',
+  lightBackgroundCard: '#C8B9FD',
+  offsetHeight: '60px',
+  borderBottom: '1px solid #D3D7DE',
 };
 
 const appearance = getEnvironmentAppearance();
@@ -104,7 +104,7 @@ const lightBackgroundCard = getEnvironment(
 // opendesk navbar styling
 const textActionAccent = getEnvironment(
   'REACT_APP_OPENDESK_BANNER_TEXT_ACTION_ACCENT',
-  '#5e27dd',
+  '#EEEFF2',
 );
 
 // opendesk navbar styling
@@ -113,36 +113,33 @@ const backgroundColor = getEnvironment(
   '#ffffff',
 );
 
-// opendesk navbar styling
 const backgroundHover = getEnvironment(
   'REACT_APP_OPENDESK_BANNER_BACKGROUND_COLOR_HOVER',
   '#f5f8fa',
 );
 
-// opendesk navbar styling
 const backgroundActive = getEnvironment(
   'REACT_APP_OPENDESK_BANNER_BACKGROUND_COLOR_ACTIVE',
   '#f5f8fa',
 );
 
-// opendesk navbar styling
 const textPrimary = getEnvironment(
   'REACT_APP_OPENDESK_BANNER_COLOR_TEXT_PRIMARY',
   '#1b1d22',
 );
-// opendesk navbar styling
+
 const textPrimaryHover = getEnvironment(
   'REACT_APP_OPENDESK_BANNER_COLOR_TEXT_PRIMARY_HOVER',
   '#1b1d22',
 );
-// opendesk navbar styling
+
 const textPrimaryActive = getEnvironment(
   'REACT_APP_OPENDESK_BANNER_COLOR_TEXT_PRIMARY_ACTIVE',
-  '#1b1d22',
+  '#ffffff',
 );
 
 // opendesk navbar styling
-const height = getEnvironment('REACT_APP_OPENDESK_BANNER_HEIGHT', '63px');
+const height = getEnvironment('REACT_APP_OPENDESK_BANNER_HEIGHT', '60px');
 
 // opendesk navbar styling
 const borderBottom = getEnvironment(

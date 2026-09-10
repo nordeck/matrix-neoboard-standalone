@@ -37,13 +37,6 @@ describe('Navbar', () => {
     origin: config.portal_url,
   });
 
-  it('renders portal link', () => {
-    renderWithTheme(<Navbar config={config} />);
-    const navigation = screen.getByRole('navigation');
-    const link = within(navigation).getByRole('link');
-    expect(link).toHaveAttribute('href', config.portal_url);
-  });
-
   it.todo('logs in silently', () => {
     renderWithTheme(<Navbar config={config} />);
     const navigation = screen.getByRole('navigation');
@@ -91,7 +84,9 @@ describe('Navbar', () => {
       await waitFor(() => expect(window.fetch).toHaveBeenCalled());
       fireEvent.click(screen.getByRole('button', { expanded: false }));
       expect(screen.getByRole('list')).toBeInTheDocument();
-      fireEvent.click(screen.getByRole('button', { expanded: true }));
+      fireEvent.click(
+        screen.getByRole('button', { expanded: true, hidden: true }),
+      );
       expect(screen.queryByRole('list')).not.toBeInTheDocument();
     });
 
@@ -105,14 +100,14 @@ describe('Navbar', () => {
     });
 
     it('allows to close menu via click on the close button', async () => {
-      renderWithTheme(<Navbar config={config}/>);
+      renderWithTheme(<Navbar config={config} />);
       fireEvent(window, messageEvent);
       await waitFor(() => expect(window.fetch).toHaveBeenCalled());
-      fireEvent.click(screen.getByRole('button', {expanded: false}));
+      fireEvent.click(screen.getByRole('button', { expanded: false }));
       fireEvent.click(screen.getByTestId('menu-close-button'));
       expect(screen.queryByRole('list')).not.toBeInTheDocument();
     });
-      
+
     it('allows to close menu via escape-key on menu-list', async () => {
       renderWithTheme(<Navbar config={config} />);
       fireEvent(window, messageEvent);
