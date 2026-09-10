@@ -104,17 +104,15 @@ export function Navbar({ config, children }: Props) {
               ariaLabel={t('navbar.showMenu', 'Show menu')}
               onClick={handleAriaExpanded}
             />
-            {ariaExpanded && (
-              <FocusLock>
-                <Menu
-                  navigationJson={navigationJson}
-                  onClick={handleClick}
-                  onKeyDown={handleKeyDown}
-                  config={config}
-                  open={ariaExpanded}
-                />
-              </FocusLock>
-            )}
+            <FocusLock disabled={!ariaExpanded}>
+              <Menu
+                navigationJson={navigationJson}
+                onClick={handleClick}
+                onKeyDown={handleKeyDown}
+                config={config}
+                open={ariaExpanded}
+              />
+            </FocusLock>
           </>
         )
       ) : (

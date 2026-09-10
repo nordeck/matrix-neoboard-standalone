@@ -20,7 +20,6 @@ import { styled } from '@mui/material';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router';
-import { getEnvironmentAppearance } from '../../lib';
 import { Title } from './Title.tsx';
 
 const TitleWrapper = styled('div')(() => ({
@@ -37,18 +36,10 @@ type Props = {
   hasPadding?: boolean;
 };
 
-const appearance = getEnvironmentAppearance();
-
-const ButtonStyled = styled('div')(({ theme }) => ({
+const ButtonStyled = styled('div')({
   cursor: 'pointer',
   lineHeight: 0,
-  ...(appearance === 'opendesk' && {
-    color: theme.navbar.color.textPrimary,
-    '&:active': {
-      color: theme.navbar.color.textActionAccent,
-    },
-  }),
-}));
+});
 
 export function HeaderTitle({ title, roomId, homeIcon, hasPadding }: Props) {
   const { t } = useTranslation();

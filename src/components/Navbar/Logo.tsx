@@ -28,13 +28,13 @@ type Props = {
 
 const Root = styled('a')({
   display: 'flex',
-  padding: '15px 24px',
+  padding: '10px 24px',
 });
 
 export function Logo({ alt, ariaLabel, href, src, width }: Props) {
   return (
     <Root aria-label={ariaLabel} href={href}>
-      <img alt={alt} src={src} width={width ?? '82px'} />
+      <img alt={alt} src={src} width={width ?? '120px'} />
     </Root>
   );
 }
