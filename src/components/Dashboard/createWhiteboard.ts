@@ -55,6 +55,24 @@ export async function createWhiteboard(
     roomId,
   );
 
+  const promises: Promise<string>[] = [];
+
+  if (isMatrixRtcMode()) {
+    promises.push(
+      standaloneClient.sendStateEvent(
+        STATE_EVENT_4143_RTC_SLOT,
+        `net.nordeck.whiteboard#${whiteboardId}`,
+        {
+          status: 'open',
+          application: {
+            type: 'net.nordeck.whiteboard',
+          },
+        },
+        roomId,
+      ),
+    );
+  }
+
   const widgetBaseUrl = getEnvironment('REACT_APP_WIDGET_BASE');
 
   if (widgetBaseUrl) {
@@ -64,20 +82,7 @@ export async function createWhiteboard(
     );
 
     // setup widget and layout
-    await Promise.all([
-      isMatrixRtcMode()
-        ? standaloneClient.sendStateEvent(
-            STATE_EVENT_4143_RTC_SLOT,
-            `net.nordeck.whiteboard#${whiteboardId}`,
-            {
-              status: 'open',
-              application: {
-                type: 'net.nordeck.whiteboard',
-              },
-            },
-            roomId,
-          )
-        : undefined,
+    promises.push(
       standaloneClient.sendStateEvent(
         'im.vector.modular.widgets',
         'neoboard',
@@ -100,6 +105,8 @@ export async function createWhiteboard(
         },
         roomId,
       ),
-    ]);
+    );
+
+    await Promise.all(promises);
   }
 }
