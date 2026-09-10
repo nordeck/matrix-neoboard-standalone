@@ -120,7 +120,7 @@ const backgroundHover = getEnvironment(
 
 const backgroundActive = getEnvironment(
   'REACT_APP_OPENDESK_BANNER_BACKGROUND_COLOR_ACTIVE',
-  '#f5f8fa',
+  '#571EFA',
 );
 
 const textPrimary = getEnvironment(
