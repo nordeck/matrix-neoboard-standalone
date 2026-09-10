@@ -42,7 +42,7 @@ They can either be set via an environment variable or the `.env`-file.
 | `REACT_APP_OPENDESK_BANNER_COLOR_TEXT_PRIMARY_ACTIVE` | Optional. Primary text color when active.                                                          | `#ffffff`                             |
 | `REACT_APP_OPENDESK_BANNER_BACKGROUND_COLOR`          | Optional. Background color of the navbar.                                                          | `#ffffff`                             |
 | `REACT_APP_OPENDESK_BANNER_BACKGROUND_COLOR_HOVER`    | Optional. Background color of the title when hovered.                                              | `#eeeff2`                             |
-| `REACT_APP_OPENDESK_BANNER_BACKGROUND_COLOR_ACTIVE`   | Optional. Background color of the title when active.                                               | `#eeeff2`                             |
+| `REACT_APP_OPENDESK_BANNER_BACKGROUND_COLOR_ACTIVE`   | Optional. Background color of the title when active.                                               | `#571EFA`                             |
 | `REACT_APP_OPENDESK_BANNER_HEIGHT`                    | Optional. Height of the navbar.                                                                    | `60px`                                |
 | `REACT_APP_OPENDESK_BANNER_BORDER_BOTTOM`             | Optional. Border bottom of the navbar.                                                             | `1px solid #d3d7de`                   |
 
