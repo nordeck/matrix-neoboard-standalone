@@ -21,7 +21,10 @@ import {
   StateEvent,
   StateEventCreateContent,
 } from '@matrix-widget-toolkit/api';
-import { matrixRtcMode, Whiteboard } from '@nordeck/matrix-neoboard-react-sdk';
+import {
+  isMatrixRtcMode,
+  Whiteboard,
+} from '@nordeck/matrix-neoboard-react-sdk';
 import { createSelector } from '@reduxjs/toolkit';
 import { WhiteboardSessionsEvent } from '../../../model';
 import { SortBy } from '../../dashboard/dashboardSlice';
@@ -74,7 +77,7 @@ export function makeSelectWhiteboard(
 
 export function makeSelectWhiteboards(
   userId: string,
-  deviceId: string,
+  _deviceId: string,
   sortBy?: SortBy,
 ): (state: RootState) => WhiteboardEntry[] {
   return createSelector(
@@ -99,7 +102,7 @@ export function makeSelectWhiteboards(
       const seenRooms = new Set<string>();
 
       // Pre-index the latest session event per room for this user (O(M) pre-pass)
-      const stateKey = matrixRtcMode ? `_${userId}_${deviceId}` : userId;
+      const stateKey = isMatrixRtcMode() ? undefined : userId;
       const latestSessionByRoom = Object.values(
         whiteboardSessionsEvents,
       ).reduce<Record<string, StateEvent<WhiteboardSessionsEvent>>>(

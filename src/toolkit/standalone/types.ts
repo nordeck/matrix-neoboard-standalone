@@ -136,7 +136,7 @@ export type StandaloneApi = {
   sendRoomEvent<T>(
     eventType: string,
     content: T,
-    { roomId }: { roomId: string },
+    { roomId }: { roomId: string; stickyDurationMs?: number },
   ): Promise<RoomEvent<T>>;
 
   /**
@@ -154,7 +154,7 @@ export type StandaloneApi = {
     eventType: string,
     content: T,
     delay: number,
-    options: { roomId: string },
+    options: { roomId: string; stickyDurationMs?: number },
   ): Promise<{ delay_id: string }>;
 
   /**

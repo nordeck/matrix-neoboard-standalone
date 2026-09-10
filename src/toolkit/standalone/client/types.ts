@@ -56,6 +56,7 @@ export type StandaloneClient = Pick<
   | 'downloadFile'
   | 'sendToDeviceMessage'
   | 'requestOpenIDConnectToken'
+  | 'getRtcTransports'
 > & {
   /**
    * Invite a user to a room.
@@ -207,12 +208,14 @@ export type StandaloneClient = Pick<
    * @param eventType - The event type.
    * @param content -The event content.
    * @param roomId - The room id
+   * @param stickyDurationMs - The sticky event duration ms, optional
    * @returns event id
    */
   sendRoomEvent(
     eventType: string,
     content: unknown,
     roomId: string,
+    stickyDurationMs: number | undefined,
   ): Promise<string>;
 
   /**
@@ -221,6 +224,7 @@ export type StandaloneClient = Pick<
    * @param content -The event content.
    * @param roomId - The room id
    * @param delay - The delay in ms
+   * @param stickyDurationMs - The sticky event duration ms, optional
    * @returns delay id
    */
   sendDelayedRoomEvent(
@@ -228,6 +232,7 @@ export type StandaloneClient = Pick<
     content: unknown,
     roomId: string,
     delay: number,
+    stickyDurationMs: number | undefined,
   ): Promise<string>;
 
   /**

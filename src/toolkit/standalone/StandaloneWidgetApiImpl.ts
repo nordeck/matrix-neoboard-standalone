@@ -31,6 +31,7 @@ import {
   IModalWidgetOpenRequestDataButton,
   IModalWidgetReturnData,
   IOpenIDCredentials,
+  IRtcTransport,
   IUploadFileActionFromWidgetResponseData,
   IWidgetApiRequestData,
   ModalButtonID,
@@ -201,11 +202,15 @@ export class StandaloneWidgetApiImpl implements StandaloneWidgetApi {
   async sendRoomEvent<T>(
     eventType: string,
     content: T,
-    { roomId }: { roomId?: string } = {},
+    {
+      roomId,
+      stickyDurationMs,
+    }: { roomId?: string; stickyDurationMs?: number } = {},
   ): Promise<RoomEvent<T>> {
     const targetRoomId = this.targetRoomId(roomId);
     return await this.standaloneApi.sendRoomEvent(eventType, content, {
       roomId: targetRoomId,
+      stickyDurationMs,
     });
   }
 
@@ -214,7 +219,10 @@ export class StandaloneWidgetApiImpl implements StandaloneWidgetApi {
     eventType: string,
     content: T,
     delay: number,
-    { roomId }: { roomId?: string } = {},
+    {
+      roomId,
+      stickyDurationMs,
+    }: { roomId?: string; stickyDurationMs?: number } = {},
   ): Promise<{ delay_id: string }> {
     const targetRoomId = this.targetRoomId(roomId);
     return await this.standaloneApi.sendDelayedRoomEvent(
@@ -223,6 +231,7 @@ export class StandaloneWidgetApiImpl implements StandaloneWidgetApi {
       delay,
       {
         roomId: targetRoomId,
+        stickyDurationMs,
       },
     );
   }
@@ -363,6 +372,10 @@ export class StandaloneWidgetApiImpl implements StandaloneWidgetApi {
   /** {@inheritdoc WidgetApi.observeTurnServers} */
   observeTurnServers(): Observable<TurnServer> {
     return this.standaloneApi.client.observeTurnServers();
+  }
+
+  getRtcTransports(): Promise<IRtcTransport[]> {
+    return this.standaloneApi.client.getRtcTransports();
   }
 
   private targetRoomId(roomId?: string): string {

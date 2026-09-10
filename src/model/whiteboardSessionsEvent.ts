@@ -17,11 +17,7 @@
  */
 
 import { StateEvent } from '@matrix-widget-toolkit/api';
-import {
-  matrixRtcMode,
-  STATE_EVENT_RTC_MEMBER,
-  STATE_EVENT_WHITEBOARD_SESSIONS,
-} from '@nordeck/matrix-neoboard-react-sdk';
+import { STATE_EVENT_WHITEBOARD_SESSIONS } from '@nordeck/matrix-neoboard-react-sdk';
 import Joi from 'joi';
 import { isValidEvent } from './validation';
 
@@ -31,9 +27,7 @@ const whiteboardSessionsEventSchema = Joi.object<WhiteboardSessionsEvent, true>(
   {},
 ).unknown();
 
-export const STATE_EVENT_SESSION = matrixRtcMode
-  ? STATE_EVENT_RTC_MEMBER
-  : STATE_EVENT_WHITEBOARD_SESSIONS;
+export const STATE_EVENT_SESSION = STATE_EVENT_WHITEBOARD_SESSIONS;
 
 export function isValidWhiteboardSessionsEvent(
   event: StateEvent<unknown>,

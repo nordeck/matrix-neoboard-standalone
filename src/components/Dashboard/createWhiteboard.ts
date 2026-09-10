@@ -18,8 +18,11 @@
 
 import { getEnvironment } from '@matrix-widget-toolkit/mui';
 import {
+  isMatrixRtcMode,
   ROOM_EVENT_DOCUMENT_CREATE,
+  STATE_EVENT_4143_RTC_SLOT,
   STATE_EVENT_WHITEBOARD,
+  Whiteboard,
 } from '@nordeck/matrix-neoboard-react-sdk';
 import { StandaloneClient } from '../../toolkit/standalone';
 
@@ -38,16 +41,37 @@ export async function createWhiteboard(
     ROOM_EVENT_DOCUMENT_CREATE,
     {},
     roomId,
+    undefined,
   );
 
+  const content: Whiteboard = {
+    documentId,
+  };
+  const whiteboardId = `${roomId}_whiteboard`;
   await standaloneClient.sendStateEvent(
     STATE_EVENT_WHITEBOARD,
-    `${roomId}_whiteboard`,
-    {
-      documentId,
-    },
+    whiteboardId,
+    content,
     roomId,
   );
+
+  const promises: Promise<string>[] = [];
+
+  if (isMatrixRtcMode()) {
+    promises.push(
+      standaloneClient.sendStateEvent(
+        STATE_EVENT_4143_RTC_SLOT,
+        `net.nordeck.whiteboard#${whiteboardId}`,
+        {
+          status: 'open',
+          application: {
+            type: 'net.nordeck.whiteboard',
+          },
+        },
+        roomId,
+      ),
+    );
+  }
 
   const widgetBaseUrl = getEnvironment('REACT_APP_WIDGET_BASE');
 
@@ -58,7 +82,7 @@ export async function createWhiteboard(
     );
 
     // setup widget and layout
-    await Promise.all([
+    promises.push(
       standaloneClient.sendStateEvent(
         'im.vector.modular.widgets',
         'neoboard',
@@ -81,6 +105,8 @@ export async function createWhiteboard(
         },
         roomId,
       ),
-    ]);
+    );
+
+    await Promise.all(promises);
   }
 }
