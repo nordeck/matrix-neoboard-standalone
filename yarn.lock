@@ -1514,7 +1514,7 @@
   dependencies:
     "@babel/runtime" "^7.12.5"
 
-"@testing-library/user-event@^14.6.4":
+"@testing-library/user-event@^14.6.6":
   version "14.6.7"
   resolved "https://registry.yarnpkg.com/@testing-library/user-event/-/user-event-14.6.7.tgz#c453ccfcaffed110cc79048ed18fccb0f4224f3b"
   integrity sha512-MPCpX8bxe8zS+JmmTwLp8jd0dy1rAm60Te/SL8JrQM3qvQJcBOs1d7IefJMyZzqM3EWBrDn/LWDt1BCGu4ASfg==
@@ -4269,10 +4269,10 @@ jiti@^2.6.1:
   resolved "https://registry.yarnpkg.com/jiti/-/jiti-2.6.1.tgz#178ef2fc9a1a594248c20627cd820187a4d78d92"
   integrity sha512-ekilCSN1jwRvIbgeg/57YFh8qQDNbwDb9xT/qu2DAHbFFZUicIl4ygVaAvzveMhMVr3LnpSKTNnwt8PoOfmKhQ==
 
-joi@^17.13.4:
-  version "17.13.6"
-  resolved "https://registry.yarnpkg.com/joi/-/joi-17.13.6.tgz#3fa166ca4b7feac442340c1522ea2f51cca3d425"
-  integrity sha512-ImNZaq/LSysofih+xIGYfR0WUXMA9GLUNB//YTCSrZptoRmVgaNAdJyi6K1kXi9pkLEoSkoI8I4UwtNiu/D7nw==
+joi@^17.13.4, joi@^17.13.6, joi@^17.13.7:
+  version "17.13.7"
+  resolved "https://registry.yarnpkg.com/joi/-/joi-17.13.7.tgz#92e212c50dbbbcb1a1592424f84083eb265cc778"
+  integrity sha512-MF80Dm5Y2veNy8QWVx9Bj3ui4mo7+VPSPsR1M+oaHXV0Gx6zGX9a2F+OZG3Blby9tOlzU9Rs5FUimlEhbKtfnQ==
   dependencies:
     "@hapi/hoek" "^9.3.0"
     "@hapi/topo" "^5.1.0"
