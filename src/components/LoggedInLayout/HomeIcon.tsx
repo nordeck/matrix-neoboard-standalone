@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Nordeck IT + Consulting GmbH
+ * Copyright 2026 Nordeck IT + Consulting GmbH
  *
  * NeoBoard Standalone is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -16,11 +16,14 @@
  * along with NeoBoard Standalone. If not, see <https://www.gnu.org/licenses/>.
  */
 
-export { formatTimeAgo } from './formatTimeAgo';
-export { getDocumentTitle } from './getDocumentTitle';
-export { getEnvironmentAppearance } from './getEnvironmentAppearance';
-export { getEnvironmentUrl } from './getEnvironmentUrl';
-export { isValidServerName } from './isValidServerName';
-export { isValidUrl } from './isValidUrl';
-export { setLocale } from './locale';
-export { randomString } from './randomString';
+import { getEnvironment } from '@matrix-widget-toolkit/mui';
+import { ImgHTMLAttributes } from 'react';
+
+const home_icon_src = getEnvironment(
+  'REACT_APP_OPENDESK_BANNER_APP_HOME_ICON_SVG_URL',
+  `${window.location.origin}/opendesk.svg`,
+);
+
+export const HomeIcon = (props: ImgHTMLAttributes<HTMLImageElement>) => {
+  return <img src={home_icon_src} width={32} height={32} alt="" {...props} />;
+};

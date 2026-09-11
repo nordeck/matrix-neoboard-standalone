@@ -30,15 +30,21 @@ declare module '@mui/material/styles' {
   interface TypeBackground {
     loggedIn: string;
     card: string;
+    hover: string;
+    active: string;
   }
 }
 
 type NavbarOptions = {
   color: {
     bgCanvasDefault: string;
+    backgroundColor: string;
     textActionAccent: string;
     textPrimary: string;
+    textPrimaryHover: string;
+    textPrimaryActive: string;
     iconOnSolidPrimary: string;
   };
   height: string;
+  borderBottom: string;
 };

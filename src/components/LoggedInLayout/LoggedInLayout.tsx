@@ -17,8 +17,10 @@
  */
 
 import { WidgetParameters } from '@matrix-widget-toolkit/api';
-import { MuiWidgetApiProvider } from '@matrix-widget-toolkit/mui';
-import HomeIcon from '@mui/icons-material/Home';
+import {
+  getEnvironment,
+  MuiWidgetApiProvider,
+} from '@matrix-widget-toolkit/mui';
 import { styled } from '@mui/material';
 import React, { PropsWithChildren, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -31,8 +33,10 @@ import {
 } from '../../toolkit/standalone';
 import { Header, HeaderMenu, HeaderTitle } from '../Header';
 import { NeoBoardIcon } from '../Header/NeoBoardIcon.tsx';
+import { Title } from '../Header/Title.tsx';
 import { useRoomId } from '../RoomIdProvider';
 import { StandaloneWidgetApiProvider } from '../StandaloneWidgetApiProvider';
+import { HomeIcon } from './HomeIcon.tsx';
 import { NavbarBanner } from './NavbarBanner.tsx';
 
 const Wrapper = styled('div')(({ theme }) => ({
@@ -111,17 +115,15 @@ type BannerWrapperProps = PropsWithChildren<{}>;
 
 function BannerWrapper({ children }: BannerWrapperProps) {
   const appearance = getEnvironmentAppearance();
+  const productName = getEnvironment('REACT_APP_PRODUCT_NAME', 'NeoBoard');
 
   const roomId = useRoomId();
 
   const { data: roomNameState } = useGetAllRoomNameEventsQuery();
   const title =
     roomId === undefined
-      ? appearance === 'neoboard'
-        ? 'neoboard'
-        : ''
-      : (roomNameState?.entities[roomId]?.content.name ?? 'neoboard');
-
+      ? productName
+      : (roomNameState?.entities[roomId]?.content.name ?? productName);
   let Banner: React.FC<PropsWithChildren<{}>>;
   if (appearance === 'neoboard') {
     Banner = Header;
@@ -135,11 +137,11 @@ function BannerWrapper({ children }: BannerWrapperProps) {
     <>
       <Banner>
         <HeaderTitle
-          title={title}
-          roomId={roomId}
+          title={productName}
           homeIcon={appearance === 'neoboard' ? <NeoBoardIcon /> : <HomeIcon />}
           hasPadding={appearance !== 'neoboard'}
         />
+        {roomId && <Title title={title} roomId={roomId} />}
         <HeaderMenu roomId={roomId} />
       </Banner>
       {children}

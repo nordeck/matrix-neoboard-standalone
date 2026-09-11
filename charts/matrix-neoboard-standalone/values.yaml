@@ -115,11 +115,82 @@ customization:
 #        </body>
 #      </html>
 
-# Extra env variables to pass to the container
+# Extra env variables to pass to the container.
+#
+# The examples below are the most commonly used options. See the complete reference at
+# https://github.com/nordeck/matrix-neoboard-standalone#configuration
 env: []
+#
+# # Homeserver and widget
+#
 # # optional: Use this homeserver instead of showing an input field on the login screen
 # - name: REACT_APP_HOMESERVER
 #   value: "example.com"
 # # optional: Link to a non-standalone deployment of the widget, which gets added to the room and will be usable through element
 # - name: REACT_APP_WIDGET_BASE
 #   value: "https://matrix-neoboard-widget.example.com"
+#
+# # Branding and appearance
+#
+# # optional: The product name to display. Defaults to "NeoBoard"
+# - name: REACT_APP_PRODUCT_NAME
+#   value: "NeoBoard"
+# # optional: The appearance to use, either "neoboard" or "opendesk"
+# - name: REACT_APP_APPEARANCE
+#   value: "opendesk"
+# # optional: Icon overrides. Default to the icons bundled for the configured appearance.
+# # Externally hosted icons require their origin to be allowed by the img-src directive
+# # of customization.csp_headers below.
+# - name: REACT_APP_FAVICON_16
+#   value: "https://example.com/favicon-16.png"
+# - name: REACT_APP_FAVICON_32
+#   value: "https://example.com/favicon-32.png"
+# - name: REACT_APP_APPLE_TOUCH_ICON
+#   value: "https://example.com/apple-touch-icon.png"
+# # optional: Light theme palette overrides. Default to the configured appearance.
+# - name: REACT_APP_LIGHT_PRIMARY_COLOR
+#   value: "#e85e10"
+# - name: REACT_APP_LIGHT_PRIMARY_COLOR_LIGHT
+#   value: "#ff8a42"
+# - name: REACT_APP_LIGHT_PRIMARY_COLOR_DARK
+#   value: "#b52e00"
+# - name: REACT_APP_LIGHT_BACKGROUND_LOGGED_IN
+#   value: "#fcf9f3"
+# - name: REACT_APP_LIGHT_BACKGROUND_CARD
+#   value: "#fce2cf"
+#
+# # openDesk banner, required when REACT_APP_APPEARANCE is "opendesk".
+#
+# - name: REACT_APP_OPENDESK_BANNER_ICS_NAVIGATION_JSON_URL
+#   value: "https://portal.example.com/navigation.json"
+# - name: REACT_APP_OPENDESK_BANNER_ICS_SILENT_URL
+#   value: "https://portal.example.com/silent"
+# - name: REACT_APP_OPENDESK_BANNER_PORTAL_URL
+#   value: "https://portal.example.com"
+# - name: REACT_APP_OPENDESK_BANNER_PORTAL_LOGO_SVG_URL
+#   value: "https://portal.example.com/logo.svg"
+#
+# # openDesk banner styling, all optional
+#
+# - name: REACT_APP_OPENDESK_BANNER_PORTAL_LOGO_WIDTH
+#   value: "120px"
+# - name: REACT_APP_OPENDESK_BANNER_APP_HOME_ICON_SVG_URL
+#   value: "https://portal.example.com/home.svg"
+# - name: REACT_APP_OPENDESK_BANNER_HEIGHT
+#   value: "60px"
+# - name: REACT_APP_OPENDESK_BANNER_BORDER_BOTTOM
+#   value: "1px solid #d3d7de"
+# - name: REACT_APP_OPENDESK_BANNER_BACKGROUND_COLOR
+#   value: "#ffffff"
+# - name: REACT_APP_OPENDESK_BANNER_BACKGROUND_COLOR_HOVER
+#   value: "#f5f8fa"
+# - name: REACT_APP_OPENDESK_BANNER_BACKGROUND_COLOR_ACTIVE
+#   value: "#571efa"
+# - name: REACT_APP_OPENDESK_BANNER_COLOR_TEXT_PRIMARY
+#   value: "#1b1d22"
+# - name: REACT_APP_OPENDESK_BANNER_COLOR_TEXT_PRIMARY_HOVER
+#   value: "#1b1d22"
+# - name: REACT_APP_OPENDESK_BANNER_COLOR_TEXT_PRIMARY_ACTIVE
+#   value: "#ffffff"
+# - name: REACT_APP_OPENDESK_BANNER_TEXT_ACTION_ACCENT
+#   value: "#eeeff2"

@@ -16,37 +16,54 @@
  * along with NeoBoard Standalone. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { styled } from '@mui/material';
-import { KeyboardEventHandler, MouseEventHandler } from 'react';
+import CloseIcon from '@mui/icons-material/Close';
+import { Drawer, IconButton, styled } from '@mui/material';
+import { HTMLAttributes, KeyboardEventHandler, MouseEventHandler } from 'react';
+import { useTranslation } from 'react-i18next';
+import { Logo } from './Logo.tsx';
+import { BannerConfig } from './config.ts';
 import { NavigationJson } from './navigationJson';
 
 type Props = {
   navigationJson: NavigationJson;
   onClick: MouseEventHandler;
   onKeyDown: KeyboardEventHandler;
+  config: BannerConfig;
+  open: boolean;
 };
 
-const Root = styled('div')({
-  bottom: 0,
-  left: 0,
-  position: 'fixed',
-  right: 0,
-  top: 0,
-  zIndex: 8008,
-});
+const StyledDrawer = styled(Drawer)(({ theme }) => ({
+  '& .MuiDrawer-paper': {
+    backgroundColor: theme.navbar.color.bgCanvasDefault,
+    borderRadius: '0 16px 16px 0',
+    boxShadow: '0px 4px 20px 0px rgba(0, 0, 0, 0.1)',
+    width: 320,
+  },
+}));
 
-const List = styled('ul')(({ theme }) => ({
-  backgroundColor: theme.navbar.color.bgCanvasDefault,
-  borderTop: `4px solid ${theme.navbar.color.textActionAccent}`,
-  borderRadius: 8,
-  boxShadow: '4px 4px 12px 0 rgba(118, 131, 156, 0.6)',
-  left: 24,
+const List = styled('ul')({
   listStyle: 'none',
   margin: 0,
   padding: '4px 0 20px',
+});
+
+const CloseButton = styled(IconButton)(({ theme }) => ({
   position: 'absolute',
-  top: theme.navbar.height,
-  width: 272,
+  right: 8,
+  top: 8,
+  width: 32,
+  height: 32,
+  padding: 0,
+  borderRadius: 8,
+  '&:hover': {
+    backgroundColor: theme.navbar.color.textActionAccent,
+  },
+  '&:active': {
+    backgroundColor: '#D3D7DE',
+  },
+  '&:focus': {
+    border: `3px solid ${theme.palette.background.card}`,
+  },
 }));
 
 const Heading = styled('span')({
@@ -74,21 +91,55 @@ const Link = styled('a')(({ theme }) => ({
 }));
 
 const Icon = styled('img')({
-  height: 20,
+  height: 25,
   marginRight: 8,
-  width: 20,
+  width: 25,
 });
 
 const PlaceholderIcon = styled('div')({
-  height: 20,
+  height: 25,
   marginRight: 8,
-  width: 20,
+  width: 25,
 });
 
-export function Menu({ navigationJson, onClick, onKeyDown }: Props) {
+export function Menu({
+  navigationJson,
+  onClick,
+  onKeyDown,
+  config,
+  open,
+}: Props) {
+  const { t } = useTranslation();
   return (
-    <Root data-testid="menu-backdrop" onClick={onClick}>
+    <StyledDrawer
+      anchor="left"
+      open={open}
+      aria-label={t('navbar.menuLabel', 'Navigation menu')}
+      slotProps={{
+        backdrop: {
+          'data-testid': 'menu-backdrop',
+          onClick,
+        } as HTMLAttributes<HTMLDivElement>,
+      }}
+    >
       <List data-testid="menu-list" onKeyDown={onKeyDown}>
+        <li>
+          <CloseButton
+            aria-label={t('navbar.closeMenu', 'Close menu')}
+            data-testid="menu-close-button"
+            disableRipple
+            onClick={onClick}
+          >
+            <CloseIcon />
+          </CloseButton>
+          <Logo
+            alt={t('navbar.portalLogo', 'Portal logo')}
+            ariaLabel={t('navbar.showPortal', 'Show portal')}
+            href={config.portal_url}
+            src={config.portal_logo_svg_url}
+            width={config.portal_logo_width}
+          />
+        </li>
         {navigationJson.categories.map((category) => (
           <li key={category.identifier}>
             <Heading>{category.display_name}</Heading>
@@ -113,6 +164,6 @@ export function Menu({ navigationJson, onClick, onKeyDown }: Props) {
           </li>
         ))}
       </List>
-    </Root>
+    </StyledDrawer>
   );
 }

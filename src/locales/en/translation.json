@@ -103,6 +103,8 @@
     "title": "Are you sure you want to log out?"
   },
   "navbar": {
+    "closeMenu": "Close menu",
+    "menuLabel": "Navigation menu",
     "portalLogo": "Portal logo",
     "showMenu": "Show menu",
     "showPortal": "Show portal"

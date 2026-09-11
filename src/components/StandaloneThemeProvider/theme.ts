@@ -42,6 +42,7 @@ type AppearanceDefaults = {
   lightBackgroundLoggedIn: string;
   lightBackgroundCard: string;
   offsetHeight: string;
+  borderBottom: string;
 };
 
 const neoboardAppearanceDefaults: AppearanceDefaults = {
@@ -51,15 +52,17 @@ const neoboardAppearanceDefaults: AppearanceDefaults = {
   lightBackgroundLoggedIn: '#fcf9f3',
   lightBackgroundCard: '#fce2cf',
   offsetHeight: '10vh',
+  borderBottom: '',
 };
 
 const opendeskAppearanceDefaults: AppearanceDefaults = {
-  lightPrimaryColor: '#5e27dd',
-  lightPrimaryColorLight: '#612cdd',
-  lightPrimaryColorDark: '#5a25d4',
+  lightPrimaryColor: '#571EFA',
+  lightPrimaryColorLight: '#571EFA',
+  lightPrimaryColorDark: '#4519C2',
   lightBackgroundLoggedIn: '#eee6fb',
-  lightBackgroundCard: '#d2c1f4',
-  offsetHeight: '64px',
+  lightBackgroundCard: '#C8B9FD',
+  offsetHeight: '60px',
+  borderBottom: '1px solid #D3D7DE',
 };
 
 const appearance = getEnvironmentAppearance();
@@ -99,15 +102,47 @@ const lightBackgroundCard = getEnvironment(
 );
 
 // opendesk navbar styling
+
 const textActionAccent = getEnvironment(
   'REACT_APP_OPENDESK_BANNER_TEXT_ACTION_ACCENT',
-  '#5e27dd',
+  '#EEEFF2',
 );
 
-// opendesk navbar styling
+const backgroundColor = getEnvironment(
+  'REACT_APP_OPENDESK_BANNER_BACKGROUND_COLOR',
+  '#ffffff',
+);
+
+const backgroundHover = getEnvironment(
+  'REACT_APP_OPENDESK_BANNER_BACKGROUND_COLOR_HOVER',
+  '#f5f8fa',
+);
+
+const backgroundActive = getEnvironment(
+  'REACT_APP_OPENDESK_BANNER_BACKGROUND_COLOR_ACTIVE',
+  '#571EFA',
+);
+
 const textPrimary = getEnvironment(
   'REACT_APP_OPENDESK_BANNER_COLOR_TEXT_PRIMARY',
   '#1b1d22',
+);
+
+const textPrimaryHover = getEnvironment(
+  'REACT_APP_OPENDESK_BANNER_COLOR_TEXT_PRIMARY_HOVER',
+  '#1b1d22',
+);
+
+const textPrimaryActive = getEnvironment(
+  'REACT_APP_OPENDESK_BANNER_COLOR_TEXT_PRIMARY_ACTIVE',
+  '#ffffff',
+);
+
+const height = getEnvironment('REACT_APP_OPENDESK_BANNER_HEIGHT', '60px');
+
+const borderBottom = getEnvironment(
+  'REACT_APP_OPENDESK_BANNER_BORDER_BOTTOM',
+  appearanceDefaults.borderBottom,
 );
 
 export const standaloneLightTheme: ThemeOptions = {
@@ -121,6 +156,8 @@ export const standaloneLightTheme: ThemeOptions = {
       loggedIn: lightBackgroundLoggedIn,
       card: lightBackgroundCard,
       paper: '#fff',
+      hover: backgroundHover,
+      active: backgroundActive,
     },
   },
   typography: {
@@ -130,10 +167,14 @@ export const standaloneLightTheme: ThemeOptions = {
   navbar: {
     color: {
       bgCanvasDefault: '#ffffff',
+      backgroundColor,
       textActionAccent,
       textPrimary,
+      textPrimaryHover,
+      textPrimaryActive,
       iconOnSolidPrimary: '#ffffff',
     },
-    height: '63px',
+    height,
+    borderBottom,
   },
 };
