@@ -78,7 +78,7 @@
         },
         {
           "identifier": "swp.realtime_whiteboard",
-          "icon_url": "/opendesk.svg",
+          "icon_url": "/navigation-menu-whiteboard.svg",
           "display_name": "Whiteboard",
           "link": "/dashboard",
           "target": "tab_realtime_whiteboard",
