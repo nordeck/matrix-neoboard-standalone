@@ -102,12 +102,12 @@ const lightBackgroundCard = getEnvironment(
 );
 
 // opendesk navbar styling
+
 const textActionAccent = getEnvironment(
   'REACT_APP_OPENDESK_BANNER_TEXT_ACTION_ACCENT',
   '#EEEFF2',
 );
 
-// opendesk navbar styling
 const backgroundColor = getEnvironment(
   'REACT_APP_OPENDESK_BANNER_BACKGROUND_COLOR',
   '#ffffff',
@@ -138,10 +138,8 @@ const textPrimaryActive = getEnvironment(
   '#ffffff',
 );
 
-// opendesk navbar styling
 const height = getEnvironment('REACT_APP_OPENDESK_BANNER_HEIGHT', '60px');
 
-// opendesk navbar styling
 const borderBottom = getEnvironment(
   'REACT_APP_OPENDESK_BANNER_BORDER_BOTTOM',
   appearanceDefaults.borderBottom,
