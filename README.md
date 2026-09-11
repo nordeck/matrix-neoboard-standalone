@@ -9,24 +9,28 @@ Standalone version of [NeoBoard](https://github.com/nordeck/matrix-neoboard) - A
 NeoBoard standalone is built using the [NeoBoard React SDK](https://github.com/nordeck/matrix-neoboard/tree/main/packages/react-sdk).
 Therefore, all of NeoBoard's configuration options apply also when using it in standalone: see [the configuration section of the NeoBoard README](https://github.com/nordeck/matrix-neoboard?tab=readme-ov-file#configuration).
 
-On top, NeoBoard standalone offer some addition configuration options.
+On top, NeoBoard standalone offer some additionional configuration options.
 They can either be set via an environment variable or the `.env`-file.
 
-| Name                                   | Description                                                                                                                                                                                    | Example                                |
-| -------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------- |
-| `REACT_APP_WIDGET_BASE`                | This sets the widget url for when the room is viewed using element-web or other widget-supporting clients. The schema (i.e.: `https://`) is required. If not set, a widget won't be available. | `https://neoboard.example.com`         |
-| `REACT_APP_HOMESERVER`                 | If set, it uses this homeserver instead of showing an input field on the login screen. Either a domain name or homeserver URL.                                                                 | `example.com` or `https://example.com` |
-| `REACT_APP_SKIP_LOGIN`                 | If set to `true` and `REACT_APP_HOMESERVER` is set, then the application skips welcome/login screens and starts SSO immediately. It is not set by default.                                     | `true`                                 |
-| `REACT_APP_LOGOUT_REDIRECT_URL`        | If set, the application redirects the user to the specified URL after logout.                                                                                                                  | `https://id.example.com/logout`        |
-| `REACT_APP_PRODUCT_NAME`               | The name of the product to be displayed.                                                                                                                                                       | `NeoBoard`                             |
-| `REACT_APP_APPEARANCE`                 | An appearance to be shown. Either `neoboard` or `opendesk`.                                                                                                                                    | `neoboard`                             |
-| `REACT_APP_LIGHT_PRIMARY_COLOR`        | This overrides a primary palette color for the light theme.                                                                                                                                    | `#e85e10`                              |
-| `REACT_APP_LIGHT_PRIMARY_COLOR_LIGHT`  | This overrides a primary palette light color for the light theme.                                                                                                                              | `#ff8a42`                              |
-| `REACT_APP_LIGHT_PRIMARY_COLOR_DARK`   | This overrides a primary palette light color for the dark theme.                                                                                                                               | `#b52e00`                              |
-| `REACT_APP_LIGHT_BACKGROUND_LOGGED_IN` | A background when user is logged in.                                                                                                                                                           | `#fcf9f3`                              |
-| `REACT_APP_LIGHT_BACKGROUND_CARD`      | A card background when a board is created.                                                                                                                                                     | `#fce2cf`                              |
+| Name                                   | Description                                                                                                                                                                                    | Example                                    |
+| -------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------ |
+| `REACT_APP_WIDGET_BASE`                | This sets the widget url for when the room is viewed using element-web or other widget-supporting clients. The schema (i.e.: `https://`) is required. If not set, a widget won't be available. | `https://neoboard.example.com`             |
+| `REACT_APP_HOMESERVER`                 | If set, it uses this homeserver instead of showing an input field on the login screen. Either a domain name or homeserver URL.                                                                 | `example.com` or `https://example.com`     |
+| `REACT_APP_SKIP_LOGIN`                 | If set to `true` and `REACT_APP_HOMESERVER` is set, then the application skips welcome/login screens and starts SSO immediately. It is not set by default.                                     | `true`                                     |
+| `REACT_APP_LOGOUT_REDIRECT_URL`        | If set, the application redirects the user to the specified URL after logout.                                                                                                                  | `https://id.example.com/logout`            |
+| `REACT_APP_PRODUCT_NAME`               | The name of the product to be displayed.                                                                                                                                                       | `NeoBoard`                                 |
+| `REACT_APP_APPEARANCE`                 | An appearance to be shown. Either `neoboard` or `opendesk`.                                                                                                                                    | `neoboard`                                 |
+| `REACT_APP_FAVICON_16`                 | The URL of the 16x16 favicon. Defaults to the icon bundled for the configured appearance.                                                                                                      | `https://example.com/favicon-16.png`       |
+| `REACT_APP_FAVICON_32`                 | The URL of the 32x32 favicon. Defaults to the icon bundled for the configured appearance.                                                                                                      | `https://example.com/favicon-32.png`       |
+| `REACT_APP_APPLE_TOUCH_ICON`           | The URL of the 180x180 apple touch icon. Defaults to the icon bundled for the configured appearance.                                                                                           | `https://example.com/apple-touch-icon.png` |
+| `REACT_APP_LIGHT_PRIMARY_COLOR`        | This overrides a primary palette color for the light theme.                                                                                                                                    | `#e85e10`                                  |
+| `REACT_APP_LIGHT_PRIMARY_COLOR_LIGHT`  | This overrides a primary palette light color for the light theme.                                                                                                                              | `#ff8a42`                                  |
+| `REACT_APP_LIGHT_PRIMARY_COLOR_DARK`   | This overrides a primary palette light color for the dark theme.                                                                                                                               | `#b52e00`                                  |
+| `REACT_APP_LIGHT_BACKGROUND_LOGGED_IN` | A background when user is logged in.                                                                                                                                                           | `#fcf9f3`                                  |
+| `REACT_APP_LIGHT_BACKGROUND_CARD`      | A card background when a board is created.                                                                                                                                                     | `#fce2cf`                                  |
 
-`opendesk` banner configurations:
+If the appearance is set to `opendesk`, the following options exist for configuring
+the navigation bar:
 
 | Name                                                  | Description                                                                                        | Example                               |
 | ----------------------------------------------------- | -------------------------------------------------------------------------------------------------- | ------------------------------------- |
@@ -34,8 +38,8 @@ They can either be set via an environment variable or the `.env`-file.
 | `REACT_APP_OPENDESK_BANNER_ICS_SILENT_URL`            | Required. The URL of the silent endpoint that is used via inline frame to log in the user.         | `https://example.com/silent`          |
 | `REACT_APP_OPENDESK_BANNER_PORTAL_URL`                | Required. The URL of the portal.                                                                   | `https://example.com`                 |
 | `REACT_APP_OPENDESK_BANNER_PORTAL_LOGO_SVG_URL`       | Required. The URL of the portal logo.svg file.                                                     | `https://example.com/logo.svg`        |
-| `REACT_APP_OPENDESK_BANNER_PORTAL_LOGO_WIDTH`         | optional. The width of the portal logo.                                                            | `120`                                 |
-| `REACT_APP_OPENDESK_BANNER_APP_HOME_ICON_SVG_URL`     | optional. The URL of the app home icon.svg file.                                                   | `https://example.com/home.svg`        |
+| `REACT_APP_OPENDESK_BANNER_PORTAL_LOGO_WIDTH`         | Optional. The width of the portal logo, as a CSS length.                                           | `120px`                               |
+| `REACT_APP_OPENDESK_BANNER_APP_HOME_ICON_SVG_URL`     | Optional. The URL of the app home icon.svg file.                                                   | `https://example.com/home.svg`        |
 | `REACT_APP_OPENDESK_BANNER_TEXT_ACTION_ACCENT`        | Optional. Background of the launcher icon when not expanded.                                       | `#eeeff2`                             |
 | `REACT_APP_OPENDESK_BANNER_COLOR_TEXT_PRIMARY`        | Optional. Primary text color.                                                                      | `#1b1d22`                             |
 | `REACT_APP_OPENDESK_BANNER_COLOR_TEXT_PRIMARY_HOVER`  | Optional. Primary text color when hovered.                                                         | `#1b1d22`                             |
@@ -45,6 +49,22 @@ They can either be set via an environment variable or the `.env`-file.
 | `REACT_APP_OPENDESK_BANNER_BACKGROUND_COLOR_ACTIVE`   | Optional. Background color of the title when active.                                               | `#571EFA`                             |
 | `REACT_APP_OPENDESK_BANNER_HEIGHT`                    | Optional. Height of the navbar.                                                                    | `60px`                                |
 | `REACT_APP_OPENDESK_BANNER_BORDER_BOTTOM`             | Optional. Border bottom of the navbar.                                                             | `1px solid #d3d7de`                   |
+
+All options above are read at container start, so changing one only needs a
+redeployment.
+
+### Content Security Policy
+
+For URLs pointing at assets hosted elsewhere, the origin has to be allowed by
+the `img-src` directive of the CSP that the container serves:
+
+```yaml
+env:
+  - name: REACT_APP_OPENDESK_BANNER_PORTAL_LOGO_SVG_URL
+    value: 'https://portal.example.com/logo.svg'
+  - name: CSP_IMG_SRC
+    value: 'https://portal.example.com'
+```
 
 ## Getting Started
 

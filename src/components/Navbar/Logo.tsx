@@ -34,7 +34,7 @@ const Root = styled('a')({
 export function Logo({ alt, ariaLabel, href, src, width }: Props) {
   return (
     <Root aria-label={ariaLabel} href={href}>
-      <img alt={alt} src={src} width={width ?? '120px'} />
+      <img alt={alt} src={src} width={width} />
     </Root>
   );
 }

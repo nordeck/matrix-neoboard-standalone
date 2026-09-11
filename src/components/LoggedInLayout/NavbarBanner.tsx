@@ -38,6 +38,7 @@ export function NavbarBanner({ children }: PropsWithChildren<{}>) {
         ),
         portal_logo_width: getEnvironment(
           'REACT_APP_OPENDESK_BANNER_PORTAL_LOGO_WIDTH',
+          '120px',
         ),
         portal_url: getEnvironment(
           'REACT_APP_OPENDESK_BANNER_PORTAL_URL',
