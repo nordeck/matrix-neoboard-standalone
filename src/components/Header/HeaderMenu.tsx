@@ -25,7 +25,9 @@ import { UserMenu } from './UserMenu.tsx';
 
 const MenuWrapper = styled('div')(() => ({
   display: 'flex',
+  flex: 1,
   gap: '8px',
+  justifyContent: 'flex-end',
 }));
 
 type Props = {

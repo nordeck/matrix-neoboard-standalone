@@ -32,11 +32,11 @@ const StyledTitle = styled('div')(({ theme }) => ({
     : {
         color: theme.palette.primary.main,
       }),
-  flexGrow: 1,
   fontSize: '25px',
   fontWeight: '600',
   overflow: 'hidden',
   position: 'relative',
+  textAlign: 'center',
   textOverflow: 'ellipsis',
   whiteSpace: 'nowrap',
 }));
