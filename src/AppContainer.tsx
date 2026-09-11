@@ -23,7 +23,7 @@ import {
 } from '@nordeck/matrix-neoboard-react-sdk';
 import { useLayoutEffect } from 'react';
 import { App } from './App';
-import { getEnvironmentAppearance } from './lib';
+import { getDocumentTitle, getEnvironmentAppearance } from './lib';
 import { Application } from './state';
 import { ApplicationProvider } from './state/useApplication';
 
@@ -35,6 +35,8 @@ export const AppContainer = ({
   whiteboardManager: WhiteboardManager;
 }) => {
   useLayoutEffect(() => {
+    document.title = getDocumentTitle();
+
     const appearance = getEnvironmentAppearance();
     const favicon16 = getEnvironment(
       'REACT_APP_FAVICON_16',
