@@ -16,47 +16,64 @@
  * along with NeoBoard Standalone. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { styled } from '@mui/material';
+import { styled, Tooltip, Typography } from '@mui/material';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router';
-import { Title } from './Title.tsx';
+import { getEnvironmentAppearance } from '../../lib';
+
+const appearance = getEnvironmentAppearance();
 
 const TitleWrapper = styled('div')(() => ({
   alignItems: 'center',
   display: 'flex',
-  flexGrow: 1,
+  flex: 1,
   gap: '16px',
+  justifyContent: 'flex-start',
 }));
 
 type Props = {
   title: string;
-  roomId?: string;
   homeIcon: React.ReactNode;
   hasPadding?: boolean;
 };
 
 const ButtonStyled = styled('div')({
   cursor: 'pointer',
-  lineHeight: 0,
+  alignItems: 'center',
+  display: 'flex',
+  gap: '16px',
 });
 
-export function HeaderTitle({ title, roomId, homeIcon, hasPadding }: Props) {
+const ProductName = styled(Typography)(({ theme }) => ({
+  ...(appearance === 'opendesk'
+    ? { color: theme.navbar.color.textPrimary }
+    : { color: theme.palette.primary.main }),
+  fontSize: '25px',
+  fontWeight: '600',
+  overflow: 'hidden',
+  textOverflow: 'ellipsis',
+  whiteSpace: 'nowrap',
+}));
+
+export function HeaderTitle({ title, homeIcon, hasPadding }: Props) {
   const { t } = useTranslation();
 
   return (
     <TitleWrapper
       sx={{ ...(hasPadding ? { paddingLeft: '16px' } : undefined) }}
     >
-      <Link to="/dashboard">
-        <ButtonStyled
-          role="button"
-          aria-label={t('header.dashboard', 'Go back to the dashboard')}
-        >
-          {homeIcon}
-        </ButtonStyled>
+      <Link style={{ textDecoration: 'none' }} to="/dashboard">
+        <Tooltip title={t('header.dashboard', 'Go back to the dashboard')}>
+          <ButtonStyled
+            role="button"
+            aria-label={t('header.dashboard', 'Go back to the dashboard')}
+          >
+            {homeIcon}
+            <ProductName>{title}</ProductName>
+          </ButtonStyled>
+        </Tooltip>
       </Link>
-      <Title title={title} roomId={roomId} />
     </TitleWrapper>
   );
 }

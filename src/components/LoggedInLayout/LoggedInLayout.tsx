@@ -33,6 +33,7 @@ import {
 } from '../../toolkit/standalone';
 import { Header, HeaderMenu, HeaderTitle } from '../Header';
 import { NeoBoardIcon } from '../Header/NeoBoardIcon.tsx';
+import { Title } from '../Header/Title.tsx';
 import { useRoomId } from '../RoomIdProvider';
 import { StandaloneWidgetApiProvider } from '../StandaloneWidgetApiProvider';
 import { HomeIcon } from './HomeIcon.tsx';
@@ -136,11 +137,11 @@ function BannerWrapper({ children }: BannerWrapperProps) {
     <>
       <Banner>
         <HeaderTitle
-          title={title}
-          roomId={roomId}
+          title={productName}
           homeIcon={appearance === 'neoboard' ? <NeoBoardIcon /> : <HomeIcon />}
           hasPadding={appearance !== 'neoboard'}
         />
+        {roomId && <Title title={title} roomId={roomId} />}
         <HeaderMenu roomId={roomId} />
       </Banner>
       {children}
