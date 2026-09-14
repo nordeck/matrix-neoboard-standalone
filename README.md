@@ -9,8 +9,8 @@ Standalone version of [NeoBoard](https://github.com/nordeck/matrix-neoboard) - A
 NeoBoard standalone is built using the [NeoBoard React SDK](https://github.com/nordeck/matrix-neoboard/tree/main/packages/react-sdk).
 Therefore, all of NeoBoard's configuration options apply also when using it in standalone: see [the configuration section of the NeoBoard README](https://github.com/nordeck/matrix-neoboard?tab=readme-ov-file#configuration).
 
-On top, NeoBoard standalone offer some additionional configuration options.
-They can either be set via an environment variable or the `.env`-file.
+NeoBoard standalone itself also exposes some aditional configuration options, which
+can either be set via an environment variable or the `.env`-file.
 
 | Name                                   | Description                                                                                                                                                                                    | Example                                    |
 | -------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------ |

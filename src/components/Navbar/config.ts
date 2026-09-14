@@ -38,8 +38,8 @@ export type BannerConfig = {
   portal_logo_svg_url: string;
 
   /**
-   * The URL of the portal logo.svg file.
-   * @example `https://example.com/logo.svg`
+   * The width of the portal logo image
+   * @example `120px`
    */
   portal_logo_width: string;
 

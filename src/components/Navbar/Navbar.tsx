@@ -48,7 +48,7 @@ type Props = PropsWithChildren<{
 export function Navbar({ config, children }: Props) {
   const { t, i18n } = useTranslation();
   const [ariaExpanded, setAriaExpanded] = useState(false);
-  const [loggedIn, setLoggedIn] = useState(true);
+  const [loggedIn, setLoggedIn] = useState(false);
   const [navigationJson, setNavigationJson] = useState<NavigationJson>();
 
   useEffect(() => {

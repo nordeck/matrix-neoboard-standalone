@@ -26,27 +26,20 @@ export function NavbarBanner({ children }: PropsWithChildren<{}>) {
       banner: {
         ics_navigation_json_url: getEnvironment(
           'REACT_APP_OPENDESK_BANNER_ICS_NAVIGATION_JSON_URL',
-          `${window.location.origin}/tmp/navigation.json`,
         ),
         ics_silent_url: getEnvironment(
           'REACT_APP_OPENDESK_BANNER_ICS_SILENT_URL',
-          `${window.location.origin}/tmp/silent.html`,
         ),
         portal_logo_svg_url: getEnvironment(
           'REACT_APP_OPENDESK_BANNER_PORTAL_LOGO_SVG_URL',
-          `${window.location.origin}/tmp/img.png`,
         ),
         portal_logo_width: getEnvironment(
           'REACT_APP_OPENDESK_BANNER_PORTAL_LOGO_WIDTH',
           '120px',
         ),
-        portal_url: getEnvironment(
-          'REACT_APP_OPENDESK_BANNER_PORTAL_URL',
-          `https://portal.opendesk.family`,
-        ),
+        portal_url: getEnvironment('REACT_APP_OPENDESK_BANNER_PORTAL_URL'),
         product_home_icon_url: getEnvironment(
           'REACT_APP_OPENDESK_BANNER_APP_HOME_ICON_SVG_URL',
-          `${window.location.origin}/tmp/home.svg`,
         ),
       },
     };
