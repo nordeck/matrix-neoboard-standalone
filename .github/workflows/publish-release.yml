@@ -38,6 +38,7 @@ jobs:
             org.opencontainers.image.vendor=Nordeck IT + Consulting GmbH
           tags: |
             type=semver,pattern={{version}}
+            type=raw,value=latest
 
       - name: Generate Dockerfile
         env:

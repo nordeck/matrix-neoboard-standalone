@@ -16,11 +16,14 @@
  * along with NeoBoard Standalone. If not, see <https://www.gnu.org/licenses/>.
  */
 
+import {
+  isMatrixRtcMode,
+  STATE_EVENT_WHITEBOARD_SESSIONS,
+} from '@nordeck/matrix-neoboard-react-sdk';
 import { useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useStore } from 'react-redux';
 import { useNavigate } from 'react-router';
-import { STATE_EVENT_SESSION } from '../../model';
 import { useLoggedIn } from '../../state';
 import { makeSelectWhiteboard, RootState } from '../../store';
 import { DashboardContainer } from './DashboardContainer.tsx';
@@ -40,11 +43,13 @@ export function Dashboard() {
     // create room first
     const { room_id: roomId } = await standaloneClient.createRoom({
       name: t('dashboard.untitled', 'Untitled'),
-      power_level_content_override: {
-        events: {
-          [STATE_EVENT_SESSION]: 0,
-        },
-      },
+      power_level_content_override: isMatrixRtcMode()
+        ? undefined
+        : {
+            events: {
+              [STATE_EVENT_WHITEBOARD_SESSIONS]: 0,
+            },
+          },
     });
 
     // create a promise that will be resolved when whiteboard data is in store

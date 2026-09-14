@@ -126,7 +126,6 @@ jobs:
             org.opencontainers.image.description=Standalone version of NeoBoard: A whiteboard widget for Matrix
             org.opencontainers.image.vendor=Nordeck IT + Consulting GmbH
           tags: |
-            type=raw,value=latest,enable={{is_default_branch}}
             type=sha,prefix=
             type=raw,value=${{ env.ARGOCD_TAG }}
 

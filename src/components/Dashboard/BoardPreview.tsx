@@ -48,7 +48,7 @@ export const BoardPreview: React.FC<BoardPreviewProps> = ({ whiteboard }) => {
 
   useEffect(() => {
     const manager = createWhiteboardManager(store, widgetApiPromise, true);
-    manager.selectActiveWhiteboardInstance(whiteboard, userId);
+    manager.selectActiveWhiteboardInstance(whiteboard, userId, true);
     setWhiteboardManager(manager);
     return () => {
       manager.clear();
