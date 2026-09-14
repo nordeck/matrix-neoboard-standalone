@@ -62,9 +62,6 @@ const ProductName = styled(Typography, {
   [theme.breakpoints.down('md')]: {
     ...(collapsible ? { display: 'none' } : {}),
   },
-  [theme.breakpoints.down('sm')]: {
-    fontSize: '16px',
-  },
 }));
 
 export function HeaderTitle({

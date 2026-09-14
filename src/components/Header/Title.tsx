@@ -40,9 +40,6 @@ const StyledTitle = styled('div')(({ theme }) => ({
   fontSize: '25px',
   fontWeight: '600',
   position: 'relative',
-  [theme.breakpoints.down('sm')]: {
-    fontSize: '16px',
-  },
 }));
 
 const truncated = {
