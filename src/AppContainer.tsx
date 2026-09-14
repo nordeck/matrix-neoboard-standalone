@@ -27,6 +27,30 @@ import { getDocumentTitle, getEnvironmentAppearance } from './lib';
 import { Application } from './state';
 import { ApplicationProvider } from './state/useApplication';
 
+function setIconLink(
+  rel: string,
+  sizes: string,
+  href: string,
+  type?: string,
+): void {
+  let link = document.head.querySelector<HTMLLinkElement>(
+    `link[rel="${rel}"][sizes="${sizes}"]`,
+  );
+
+  if (!link) {
+    link = document.createElement('link');
+    link.setAttribute('rel', rel);
+    link.setAttribute('sizes', sizes);
+    document.head.appendChild(link);
+  }
+
+  if (type) {
+    link.setAttribute('type', type);
+  }
+
+  link.setAttribute('href', href);
+}
+
 export const AppContainer = ({
   application,
   whiteboardManager,
@@ -38,39 +62,27 @@ export const AppContainer = ({
     document.title = getDocumentTitle();
 
     const appearance = getEnvironmentAppearance();
-    const favicon16 = getEnvironment(
-      'REACT_APP_FAVICON_16',
-      `/${appearance}-16.png`,
+
+    setIconLink(
+      'icon',
+      '32x32',
+      getEnvironment('REACT_APP_FAVICON_32', `/${appearance}-32.png`),
+      'image/png',
     );
-    const favicon32 = getEnvironment(
-      'REACT_APP_FAVICON_32',
-      `/${appearance}-32.png`,
+    setIconLink(
+      'icon',
+      '16x16',
+      getEnvironment('REACT_APP_FAVICON_16', `/${appearance}-16.png`),
+      'image/png',
     );
-    const appleTouchIcon = getEnvironment(
-      'REACT_APP_APPLE_TOUCH_ICON',
-      `/${appearance}-apple-touch-icon.png`,
+    setIconLink(
+      'apple-touch-icon',
+      '180x180',
+      getEnvironment(
+        'REACT_APP_APPLE_TOUCH_ICON',
+        `/${appearance}-apple-touch-icon.png`,
+      ),
     );
-
-    const logo32 = document.createElement('link');
-    logo32.setAttribute('rel', 'icon');
-    logo32.setAttribute('type', 'image/png');
-    logo32.setAttribute('sizes', '32x32');
-    logo32.setAttribute('href', favicon32);
-
-    const logo16 = document.createElement('link');
-    logo16.setAttribute('rel', 'icon');
-    logo16.setAttribute('type', 'image/png');
-    logo16.setAttribute('sizes', '16x16');
-    logo16.setAttribute('href', favicon16);
-
-    const appleTouch = document.createElement('link');
-    appleTouch.setAttribute('rel', 'apple-touch-icon');
-    appleTouch.setAttribute('sizes', '180x180');
-    appleTouch.setAttribute('href', appleTouchIcon);
-
-    document.head.appendChild(logo32);
-    document.head.appendChild(logo16);
-    document.head.appendChild(appleTouch);
   }, []);
 
   return (
