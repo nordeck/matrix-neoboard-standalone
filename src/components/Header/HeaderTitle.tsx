@@ -51,9 +51,10 @@ const ProductName = styled(Typography)(({ theme }) => ({
     : { color: theme.palette.primary.main }),
   fontSize: '25px',
   fontWeight: '600',
-  overflow: 'hidden',
-  textOverflow: 'ellipsis',
   whiteSpace: 'nowrap',
+  [theme.breakpoints.down('sm')]: {
+    fontSize: '16px',
+  },
 }));
 
 export function HeaderTitle({ title, homeIcon, hasPadding }: Props) {
