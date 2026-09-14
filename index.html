@@ -13,6 +13,50 @@
       global = globalThis ?? window;
     </script>
 
+    <script nonce='<!--#echo var="cspNonce"-->'>
+      (function () {
+        var environment = {};
+        var encoded = window.__ENVIRONMENT__;
+
+        var appearance = environment.REACT_APP_APPEARANCE || 'neoboard';
+
+        var icons = [
+          {
+            rel: 'icon',
+            type: 'image/png',
+            sizes: '32x32',
+            href:
+              environment.REACT_APP_FAVICON_32 || '/' + appearance + '-32.png',
+          },
+          {
+            rel: 'icon',
+            type: 'image/png',
+            sizes: '16x16',
+            href:
+              environment.REACT_APP_FAVICON_16 || '/' + appearance + '-16.png',
+          },
+          {
+            rel: 'apple-touch-icon',
+            sizes: '180x180',
+            href:
+              environment.REACT_APP_APPLE_TOUCH_ICON ||
+              '/' + appearance + '-apple-touch-icon.png',
+          },
+        ];
+
+        icons.forEach(function (icon) {
+          var link = document.createElement('link');
+          link.setAttribute('rel', icon.rel);
+          if (icon.type) {
+            link.setAttribute('type', icon.type);
+          }
+          link.setAttribute('sizes', icon.sizes);
+          link.setAttribute('href', icon.href);
+          document.head.appendChild(link);
+        });
+      })();
+    </script>
+
     <script nonce='<!--#echo var="cspNonce"-->' type="module">
       // Copy environment variables to process.env for backward compatibility with CRA.
       window.process = window.process ?? {};

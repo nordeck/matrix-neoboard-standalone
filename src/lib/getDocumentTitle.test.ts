@@ -58,6 +58,7 @@ describe('getDocumentTitle', () => {
 
   it('should only use the product name if no appearance is configured', () => {
     mockEnvironment({ REACT_APP_PRODUCT_NAME: 'NeoBoard' });
+    mockEnvironment({ REACT_APP_APPEARANCE: '' });
 
     expect(getDocumentTitle()).toBe('NeoBoard');
   });
