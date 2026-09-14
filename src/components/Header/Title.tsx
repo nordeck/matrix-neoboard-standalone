@@ -24,6 +24,7 @@ import { useDashboardList } from '../Dashboard/useDashboardList';
 import { RenameDialog } from '../RenameDialog';
 
 const appearance = getEnvironmentAppearance();
+
 const StyledTitle = styled('div')(({ theme }) => ({
   ...(appearance === 'opendesk'
     ? {
@@ -32,19 +33,27 @@ const StyledTitle = styled('div')(({ theme }) => ({
     : {
         color: theme.palette.primary.main,
       }),
+  display: 'flex',
+  flex: '0 1 auto',
+  justifyContent: 'center',
+  minWidth: 0,
   fontSize: '25px',
   fontWeight: '600',
   position: 'relative',
-  textAlign: 'center',
-  textOverflow: 'ellipsis',
-  whiteSpace: 'nowrap',
   [theme.breakpoints.down('sm')]: {
     fontSize: '16px',
   },
 }));
 
+const truncated = {
+  maxWidth: '100%',
+  overflow: 'hidden',
+  textOverflow: 'ellipsis',
+  whiteSpace: 'nowrap',
+} as const;
+
 const EditableTitle = styled('button')(({ theme }) => ({
-  display: 'inherit',
+  display: 'block',
   background: 'inherit',
   borderRadius: '8px',
   border: 'inherit',
@@ -53,8 +62,8 @@ const EditableTitle = styled('button')(({ theme }) => ({
   fontSize: 'inherit',
   fontFamily: 'inherit',
   fontWeight: 'inherit',
-  whiteSpace: 'inherit',
   padding: '8px',
+  ...truncated,
   ...(appearance === 'opendesk'
     ? {
         '&:hover': {
@@ -72,6 +81,11 @@ const EditableTitle = styled('button')(({ theme }) => ({
         },
       }),
 }));
+
+const StaticTitle = styled('div')({
+  padding: '8px',
+  ...truncated,
+});
 
 type TitleProps = {
   title: string;
@@ -113,7 +127,7 @@ export function Title({ title, roomId }: TitleProps) {
             </EditableTitle>
           </Tooltip>
         ) : (
-          title
+          <StaticTitle>{title}</StaticTitle>
         )}
       </StyledTitle>
       {roomId && (

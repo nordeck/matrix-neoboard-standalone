@@ -23,12 +23,15 @@ import { InvitesMenu } from './InvitesMenu.tsx';
 import { ShareMenu } from './ShareMenu.tsx';
 import { UserMenu } from './UserMenu.tsx';
 
-const MenuWrapper = styled('div')(() => ({
+const MenuWrapper = styled('div')({
   display: 'flex',
-  flex: 1,
+  flex: '1 1 0',
   gap: '8px',
   justifyContent: 'flex-end',
-}));
+  '& > *': {
+    flexShrink: 0,
+  },
+});
 
 type Props = {
   roomId?: string;

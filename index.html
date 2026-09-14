@@ -18,6 +18,17 @@
         var environment = {};
         var encoded = window.__ENVIRONMENT__;
 
+        if (typeof encoded === 'string' && !encoded.match(/^{{.*}}$/)) {
+          try {
+            environment = JSON.parse(atob(encoded));
+          } catch (error) {
+            console.warn(
+              'window.__ENVIRONMENT__ has an unexpected format',
+              encoded,
+            );
+          }
+        }
+
         var appearance = environment.REACT_APP_APPEARANCE || 'neoboard';
 
         var icons = [

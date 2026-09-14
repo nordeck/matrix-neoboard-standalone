@@ -24,18 +24,19 @@ import { getEnvironmentAppearance } from '../../lib';
 
 const appearance = getEnvironmentAppearance();
 
-const TitleWrapper = styled('div')(() => ({
+const TitleWrapper = styled('div')({
   alignItems: 'center',
   display: 'flex',
-  flex: 1,
+  flex: '1 1 0',
   gap: '16px',
   justifyContent: 'flex-start',
-}));
+});
 
 type Props = {
   title: string;
   homeIcon: React.ReactNode;
   hasPadding?: boolean;
+  collapsible?: boolean;
 };
 
 const ButtonStyled = styled('div')({
@@ -43,21 +44,35 @@ const ButtonStyled = styled('div')({
   alignItems: 'center',
   display: 'flex',
   gap: '16px',
+  '& > *': {
+    flexShrink: 0,
+  },
 });
 
-const ProductName = styled(Typography)(({ theme }) => ({
+const ProductName = styled(Typography, {
+  shouldForwardProp: (prop) => prop !== 'collapsible',
+})<{ collapsible?: boolean }>(({ theme, collapsible }) => ({
   ...(appearance === 'opendesk'
     ? { color: theme.navbar.color.textPrimary }
     : { color: theme.palette.primary.main }),
   fontSize: '25px',
   fontWeight: '600',
   whiteSpace: 'nowrap',
+  // Give way to the room name before it has to be truncated.
+  [theme.breakpoints.down('md')]: {
+    ...(collapsible ? { display: 'none' } : {}),
+  },
   [theme.breakpoints.down('sm')]: {
     fontSize: '16px',
   },
 }));
 
-export function HeaderTitle({ title, homeIcon, hasPadding }: Props) {
+export function HeaderTitle({
+  title,
+  homeIcon,
+  hasPadding,
+  collapsible,
+}: Props) {
   const { t } = useTranslation();
 
   return (
@@ -71,7 +86,7 @@ export function HeaderTitle({ title, homeIcon, hasPadding }: Props) {
             aria-label={t('header.dashboard', 'Go back to the dashboard')}
           >
             {homeIcon}
-            <ProductName>{title}</ProductName>
+            <ProductName collapsible={collapsible}>{title}</ProductName>
           </ButtonStyled>
         </Tooltip>
       </Link>

@@ -140,6 +140,7 @@ function BannerWrapper({ children }: BannerWrapperProps) {
           title={productName}
           homeIcon={appearance === 'neoboard' ? <NeoBoardIcon /> : <HomeIcon />}
           hasPadding={appearance !== 'neoboard'}
+          collapsible={roomId !== undefined}
         />
         {roomId && <Title title={title} roomId={roomId} />}
         <HeaderMenu roomId={roomId} />
