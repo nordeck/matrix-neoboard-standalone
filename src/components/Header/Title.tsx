@@ -34,11 +34,13 @@ const StyledTitle = styled('div')(({ theme }) => ({
       }),
   fontSize: '25px',
   fontWeight: '600',
-  overflow: 'hidden',
   position: 'relative',
   textAlign: 'center',
   textOverflow: 'ellipsis',
   whiteSpace: 'nowrap',
+  [theme.breakpoints.down('sm')]: {
+    fontSize: '16px',
+  },
 }));
 
 const EditableTitle = styled('button')(({ theme }) => ({
