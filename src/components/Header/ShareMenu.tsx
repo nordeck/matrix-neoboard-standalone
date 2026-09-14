@@ -114,6 +114,7 @@ export function ShareMenu({ roomId }: { roomId: string }) {
             display: 'flex',
             justifyContent: 'center',
             width: 40,
+            color: 'inherit',
           }}
         >
           <Share sx={{ width: 24, height: 24 }} />

@@ -27,15 +27,19 @@ type Props = {
 const Root = styled('button')(({ theme, 'aria-expanded': ariaExpanded }) => ({
   alignItems: 'center',
   backgroundColor: ariaExpanded
-    ? theme.navbar.color.textActionAccent
-    : 'transparent',
+    ? theme.palette.primary.dark
+    : theme.navbar.color.textActionAccent,
+  '&:hover': {
+    color: theme.navbar.color.iconOnSolidPrimary,
+    backgroundColor: theme.palette.primary.main,
+  },
   border: 'none',
   color: ariaExpanded
     ? theme.navbar.color.iconOnSolidPrimary
     : theme.navbar.color.textPrimary,
   cursor: 'pointer',
   display: 'flex',
-  padding: '0 22px',
+  padding: '0 25px',
   height: '100%',
 }));
 
@@ -47,8 +51,16 @@ export function Launcher({ ariaExpanded, ariaLabel, onClick }: Props) {
       aria-label={ariaLabel}
       onClick={onClick}
     >
-      <svg fill="currentColor" height="16" width="16">
-        <path d="M0 4h4V0H0v4Zm6 12h4v-4H6v4Zm-6 0h4v-4H0v4Zm0-6h4V6H0v4Zm6 0h4V6H6v4Zm6-10v4h4V0h-4ZM6 4h4V0H6v4Zm6 6h4V6h-4v4Zm0 6h4v-4h-4v4Z" />
+      <svg fill="currentColor" height="20" width="20">
+        <circle cx="2.5" cy="2.5" r="2.5" />
+        <circle cx="10" cy="2.5" r="2.5" />
+        <circle cx="17.5" cy="2.5" r="2.5" />
+        <circle cx="2.5" cy="10" r="2.5" />
+        <circle cx="10" cy="10" r="2.5" />
+        <circle cx="17.5" cy="10" r="2.5" />
+        <circle cx="2.5" cy="17.5" r="2.5" />
+        <circle cx="10" cy="17.5" r="2.5" />
+        <circle cx="17.5" cy="17.5" r="2.5" />
       </svg>
     </Root>
   );

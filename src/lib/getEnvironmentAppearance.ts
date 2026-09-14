@@ -19,5 +19,5 @@
 import { getEnvironment } from '@matrix-widget-toolkit/mui';
 
 export function getEnvironmentAppearance(): string {
-  return getEnvironment('REACT_APP_APPEARANCE', 'neoboard');
+  return getEnvironment('REACT_APP_APPEARANCE', 'opendesk');
 }

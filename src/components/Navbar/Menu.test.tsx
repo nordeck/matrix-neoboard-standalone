@@ -18,6 +18,7 @@
 
 import { fireEvent, screen, within } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
+import { BannerConfig } from './config.ts';
 import { Menu } from './Menu';
 import { renderWithTheme } from './test-utils';
 
@@ -39,6 +40,13 @@ describe('Menu', () => {
       },
     ],
   };
+  const config: BannerConfig = {
+    ics_navigation_json_url: 'https://example.com/navigation.json',
+    ics_silent_url: 'https://example.com/silent',
+    portal_logo_svg_url: 'https://example.com/logo.svg',
+    portal_logo_width: '82px',
+    portal_url: 'https://example.com',
+  };
 
   it('renders a given navigation JSON', () => {
     renderWithTheme(
@@ -46,6 +54,8 @@ describe('Menu', () => {
         navigationJson={navigationJson}
         onClick={() => {}}
         onKeyDown={() => {}}
+        config={config}
+        open
       />,
     );
     const link = screen.getByRole('link', { name: 'Bar' });
@@ -55,6 +65,20 @@ describe('Menu', () => {
     expect(img).toHaveAttribute('src', 'https://example.com/bar-icon.svg');
   });
 
+  it('renders portal link', () => {
+    renderWithTheme(
+      <Menu
+        navigationJson={navigationJson}
+        onClick={() => {}}
+        onKeyDown={() => {}}
+        config={config}
+        open
+      />,
+    );
+    const link = screen.getByRole('link', { name: 'Show portal' });
+    expect(link).toHaveAttribute('href', config.portal_url);
+  });
+
   it('triggers onClick-callback', () => {
     const callback = vi.fn();
     renderWithTheme(
@@ -62,9 +86,26 @@ describe('Menu', () => {
         navigationJson={navigationJson}
         onClick={callback}
         onKeyDown={() => {}}
+        config={config}
+        open
       />,
     );
     fireEvent.click(screen.getByTestId('menu-backdrop'));
+    expect(callback).toHaveBeenCalled();
+  });
+
+  it('triggers onClick-callback when the close button is clicked', () => {
+    const callback = vi.fn();
+    renderWithTheme(
+      <Menu
+        navigationJson={navigationJson}
+        onClick={callback}
+        onKeyDown={() => {}}
+        config={config}
+        open
+      />,
+    );
+    fireEvent.click(screen.getByTestId('menu-close-button'));
     expect(callback).toHaveBeenCalled();
   });
 
@@ -75,6 +116,8 @@ describe('Menu', () => {
         navigationJson={navigationJson}
         onClick={() => {}}
         onKeyDown={callback}
+        config={config}
+        open
       />,
     );
     fireEvent.keyDown(screen.getByTestId('menu-list'));

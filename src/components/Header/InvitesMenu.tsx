@@ -59,6 +59,7 @@ export const InvitesMenu: React.FC = () => {
             display: 'flex',
             justifyContent: 'center',
             width: 40,
+            color: 'inherit',
           }}
         >
           <Badge
