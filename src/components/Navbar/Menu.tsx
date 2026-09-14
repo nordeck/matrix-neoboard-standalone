@@ -44,7 +44,7 @@ const StyledDrawer = styled(Drawer)(({ theme }) => ({
 const List = styled('ul')({
   listStyle: 'none',
   margin: 0,
-  padding: '4px 0 20px',
+  padding: '4px 16px 20px',
 });
 
 const CloseButton = styled(IconButton)(({ theme }) => ({
@@ -69,7 +69,7 @@ const CloseButton = styled(IconButton)(({ theme }) => ({
 const Heading = styled('span')({
   display: 'block',
   fontWeight: 'bold',
-  margin: '20px 24px 8px',
+  margin: '20px 16px 8px',
 });
 
 const Sublist = styled('ul')({
@@ -79,7 +79,13 @@ const Sublist = styled('ul')({
 
 const Link = styled('a')(({ theme }) => ({
   '&:hover': {
-    backgroundColor: '#f5f8fa',
+    backgroundColor: theme.navbar.color.textActionAccent,
+  },
+  '&:active': {
+    backgroundColor: theme.navbar.color.textActionAccent,
+  },
+  '&:focus': {
+    border: `3px solid ${theme.palette.background.card}`,
   },
   '&:hover, &:link, &:visited': {
     textDecoration: 'none',
@@ -87,7 +93,8 @@ const Link = styled('a')(({ theme }) => ({
   alignItems: 'center',
   color: theme.navbar.color.textPrimary,
   display: 'flex',
-  padding: '4px 24px',
+  padding: '4px 10px',
+  borderRadius: 8,
 }));
 
 const Icon = styled('img')({
