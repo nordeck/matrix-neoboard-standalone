@@ -56,13 +56,13 @@ const neoboardAppearanceDefaults: AppearanceDefaults = {
 };
 
 const opendeskAppearanceDefaults: AppearanceDefaults = {
-  lightPrimaryColor: '#571EFA',
-  lightPrimaryColorLight: '#571EFA',
-  lightPrimaryColorDark: '#4519C2',
-  lightBackgroundLoggedIn: '#eee6fb',
-  lightBackgroundCard: '#C8B9FD',
+  lightPrimaryColor: '#A99602',
+  lightPrimaryColorLight: '#A99602',
+  lightPrimaryColorDark: '#A99602',
+  lightBackgroundLoggedIn: '#FFF9BB',
+  lightBackgroundCard: '#FFF9BB',
   offsetHeight: '60px',
-  borderBottom: '1px solid #D3D7DE',
+  borderBottom: '',
 };
 
 const appearance = getEnvironmentAppearance();
@@ -105,22 +105,22 @@ const lightBackgroundCard = getEnvironment(
 
 const textActionAccent = getEnvironment(
   'REACT_APP_OPENDESK_BANNER_TEXT_ACTION_ACCENT',
-  '#EEEFF2',
+  '#FFEC36',
 );
 
 const backgroundColor = getEnvironment(
   'REACT_APP_OPENDESK_BANNER_BACKGROUND_COLOR',
-  '#ffffff',
+  '#FFEC36',
 );
 
 const backgroundHover = getEnvironment(
   'REACT_APP_OPENDESK_BANNER_BACKGROUND_COLOR_HOVER',
-  '#f5f8fa',
+  '#FFFCDC',
 );
 
 const backgroundActive = getEnvironment(
   'REACT_APP_OPENDESK_BANNER_BACKGROUND_COLOR_ACTIVE',
-  '#571EFA',
+  '#A99602',
 );
 
 const textPrimary = getEnvironment(

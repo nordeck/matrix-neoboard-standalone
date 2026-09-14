@@ -34,19 +34,19 @@ export function NavbarBanner({ children }: PropsWithChildren<{}>) {
         ),
         portal_logo_svg_url: getEnvironment(
           'REACT_APP_OPENDESK_BANNER_PORTAL_LOGO_SVG_URL',
-          `${window.location.origin}/tmp/img.png`,
+          `${window.location.origin}/tmp/bw.svg`,
         ),
         portal_logo_width: getEnvironment(
           'REACT_APP_OPENDESK_BANNER_PORTAL_LOGO_WIDTH',
-          '120px',
+          '80px',
         ),
         portal_url: getEnvironment(
           'REACT_APP_OPENDESK_BANNER_PORTAL_URL',
-          `https://portal.opendesk.family`,
+          `https://bw.schule`,
         ),
         product_home_icon_url: getEnvironment(
           'REACT_APP_OPENDESK_BANNER_APP_HOME_ICON_SVG_URL',
-          `${window.location.origin}/tmp/home.svg`,
+          `${window.location.origin}/opendesk.svg`,
         ),
       },
     };
