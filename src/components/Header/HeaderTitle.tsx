@@ -71,25 +71,29 @@ export function HeaderTitle({
   collapsible,
 }: Props) {
   const { t } = useTranslation();
+  const label = t('header.dashboard', 'Go back to the dashboard');
+
+  const homeButton = (
+    <ButtonStyled>
+      {homeIcon}
+      <ProductName collapsible={collapsible}>{title}</ProductName>
+    </ButtonStyled>
+  );
 
   return (
     <TitleWrapper
       sx={{ ...(hasPadding ? { paddingLeft: '16px' } : undefined) }}
     >
-      <Link style={{ textDecoration: 'none' }} to="/dashboard">
-        <Tooltip
-          title={
-            collapsible ? t('header.dashboard', 'Go back to the dashboard') : ''
-          }
-        >
-          <ButtonStyled
-            role="button"
-            aria-label={t('header.dashboard', 'Go back to the dashboard')}
-          >
-            {homeIcon}
-            <ProductName collapsible={collapsible}>{title}</ProductName>
-          </ButtonStyled>
-        </Tooltip>
+      <Link
+        style={{ textDecoration: 'none' }}
+        to="/dashboard"
+        aria-label={label}
+      >
+        {collapsible ? (
+          <Tooltip title={label}>{homeButton}</Tooltip>
+        ) : (
+          homeButton
+        )}
       </Link>
     </TitleWrapper>
   );
