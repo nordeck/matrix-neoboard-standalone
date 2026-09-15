@@ -181,6 +181,13 @@ Learn more in the [`.changeset` folder](./.changeset).
 Once the change is merged to `main`, a “Version Packages” pull request will be created.
 As soon as the project maintainers merged it, the package will be released and the container is published.
 
+### SDK Version Pinning
+
+The commit of [`@nordeck/matrix-neoboard-react-sdk`][@nordeck/matrix-neoboard-react-sdk] used to build this
+package is pinned in [`matrix-neoboard-react-sdk.version`](./matrix-neoboard-react-sdk.version) at the repo
+root. CI reads this file to check out that exact commit for every build, and it is only ever updated
+manually by editing the file.
+
 ### Processing Renovate PRs
 
 Renovate PRs which update packages that are direct dependencies of our packages (and not `devDependencies`) need a changeset as described above.
