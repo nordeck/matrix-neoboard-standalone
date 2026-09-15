@@ -51,16 +51,16 @@ export function Launcher({ ariaExpanded, ariaLabel, onClick }: Props) {
       aria-label={ariaLabel}
       onClick={onClick}
     >
-      <svg fill="currentColor" height="20" width="20">
-        <circle cx="2.5" cy="2.5" r="2.5" />
-        <circle cx="10" cy="2.5" r="2.5" />
-        <circle cx="17.5" cy="2.5" r="2.5" />
-        <circle cx="2.5" cy="10" r="2.5" />
-        <circle cx="10" cy="10" r="2.5" />
-        <circle cx="17.5" cy="10" r="2.5" />
-        <circle cx="2.5" cy="17.5" r="2.5" />
-        <circle cx="10" cy="17.5" r="2.5" />
-        <circle cx="17.5" cy="17.5" r="2.5" />
+      <svg fill="currentColor" height="20" width="20" viewBox="0 0 20 20">
+        <circle cx="5" cy="5" r="1.667" />
+        <circle cx="10" cy="5" r="1.667" />
+        <circle cx="15" cy="5" r="1.667" />
+        <circle cx="5" cy="10" r="1.667" />
+        <circle cx="10" cy="10" r="1.667" />
+        <circle cx="15" cy="10" r="1.667" />
+        <circle cx="5" cy="15" r="1.667" />
+        <circle cx="10" cy="15" r="1.667" />
+        <circle cx="15" cy="15" r="1.667" />
       </svg>
     </Root>
   );

@@ -25,5 +25,5 @@ const home_icon_src = getEnvironment(
 );
 
 export const HomeIcon = (props: ImgHTMLAttributes<HTMLImageElement>) => {
-  return <img src={home_icon_src} width={32} height={32} alt="" {...props} />;
+  return <img src={home_icon_src} width={36} height={36} alt="" {...props} />;
 };
