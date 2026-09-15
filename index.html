@@ -70,8 +70,26 @@
 
     <script nonce='<!--#echo var="cspNonce"-->' type="module">
       // Copy environment variables to process.env for backward compatibility with CRA.
+      //
+      // These are deliberately set here, and not in main.tsx, because the NeoBoard React
+      // SDK reads some of these flags at module scope.
+      //
+      // Precedence, highest first:
+      //   1. the container environment (window.__ENVIRONMENT__, read first by
+      //      getEnvironment()), so deployments can still opt out
+      //   2. a local .env / .env.local file, via import.meta.env
+      //   3. the defaults below
+      //
+      // Keep in sync with the defaults in src/setupTests.ts.
       window.process = window.process ?? {};
-      window.process.env = import.meta.env;
+      window.process.env = Object.assign(
+        {
+          REACT_APP_INFINITE_CANVAS: 'true',
+          REACT_APP_RTC: 'matrixrtc',
+          REACT_APP_EMBEDDED: 'true',
+        },
+        import.meta.env,
+      );
     </script>
 
     <style nonce='<!--#echo var="cspNonce"-->'>

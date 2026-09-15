@@ -29,6 +29,20 @@ can either be set via an environment variable or the `.env`-file.
 | `REACT_APP_LIGHT_BACKGROUND_LOGGED_IN` | A background when user is logged in.                                                                                                                                                           | `#fcf9f3`                                  |
 | `REACT_APP_LIGHT_BACKGROUND_CARD`      | A card background when a board is created.                                                                                                                                                     | `#fce2cf`                                  |
 
+### Feature defaults
+
+Standalone changes the default value of two NeoBoard React SDK feature flags:
+
+| Name                        | Description                                       | Standalone default | NeoBoard default |
+| --------------------------- | ------------------------------------------------- | ------------------ | ---------------- |
+| `REACT_APP_INFINITE_CANVAS` | Use infinite canvas instead of slides mode.       | `true`             | `false`          |
+| `REACT_APP_RTC`             | The Realtime Communication implementation to use. | `matrixrtc`        | `webrtc`         |
+
+These defaults apply to the container image, to local development and to builds from
+source, so neither variable has to be set. Setting either of them explicitly — in an
+`.env` file or in the container environment — still takes precedence, so a deployment
+can opt out with `REACT_APP_INFINITE_CANVAS=false` or `REACT_APP_RTC=webrtc`.
+
 If the appearance is set to `opendesk`, the following options exist for configuring
 the navigation bar:
 

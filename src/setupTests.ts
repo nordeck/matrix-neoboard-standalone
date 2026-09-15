@@ -26,6 +26,11 @@ import createFetchMock from 'vitest-fetch-mock';
 // Import React specifically for test environment setup
 import React from 'react';
 
+// Standalone feature defaults for tests
+process.env.REACT_APP_INFINITE_CANVAS ??= 'true';
+process.env.REACT_APP_RTC ??= 'matrixrtc';
+process.env.REACT_APP_EMBEDDED ??= 'true';
+
 // Configure React for testing environment
 // Configure globals needed for React 18
 beforeAll(() => {

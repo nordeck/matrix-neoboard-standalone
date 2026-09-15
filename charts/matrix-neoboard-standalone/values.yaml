@@ -130,6 +130,15 @@ env: []
 # - name: REACT_APP_WIDGET_BASE
 #   value: "https://matrix-neoboard-widget.example.com"
 #
+# # Feature flags
+# #
+# # Standalone enables infinite canvas and the MatrixRTC implementation by default.
+# # Set these only to opt out of the defaults.
+# - name: REACT_APP_INFINITE_CANVAS
+#   value: "false"
+# - name: REACT_APP_RTC
+#   value: "webrtc"
+#
 # # Branding and appearance
 #
 # # optional: The product name to display. Defaults to "NeoBoard"
