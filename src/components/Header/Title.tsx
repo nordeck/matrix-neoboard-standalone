@@ -37,8 +37,8 @@ const StyledTitle = styled('div')(({ theme }) => ({
   flex: '0 1 auto',
   justifyContent: 'center',
   minWidth: 0,
-  fontSize: '25px',
-  fontWeight: '600',
+  fontSize: '22px',
+  fontWeight: '400',
   position: 'relative',
 }));
 
