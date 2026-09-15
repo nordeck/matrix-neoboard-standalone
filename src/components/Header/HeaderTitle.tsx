@@ -77,7 +77,11 @@ export function HeaderTitle({
       sx={{ ...(hasPadding ? { paddingLeft: '16px' } : undefined) }}
     >
       <Link style={{ textDecoration: 'none' }} to="/dashboard">
-        <Tooltip title={t('header.dashboard', 'Go back to the dashboard')}>
+        <Tooltip
+          title={
+            collapsible ? t('header.dashboard', 'Go back to the dashboard') : ''
+          }
+        >
           <ButtonStyled
             role="button"
             aria-label={t('header.dashboard', 'Go back to the dashboard')}
