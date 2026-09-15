@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Nordeck IT + Consulting GmbH
+ * Copyright 2024-2026 Nordeck IT + Consulting GmbH
  *
  * NeoBoard Standalone is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -19,22 +19,38 @@
 import { styled, Tooltip } from '@mui/material';
 import { useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { getEnvironmentAppearance } from '../../lib';
 import { useDashboardList } from '../Dashboard/useDashboardList';
 import { RenameDialog } from '../RenameDialog';
 
+const appearance = getEnvironmentAppearance();
+
 const StyledTitle = styled('div')(({ theme }) => ({
-  color: theme.palette.primary.main,
-  flexGrow: 1,
-  fontSize: '25px',
-  fontWeight: '600',
-  overflow: 'hidden',
+  ...(appearance === 'opendesk'
+    ? {
+        color: theme.navbar.color.textPrimary,
+      }
+    : {
+        color: theme.palette.primary.main,
+      }),
+  display: 'flex',
+  flex: '0 1 auto',
+  justifyContent: 'center',
+  minWidth: 0,
+  fontSize: '22px',
+  fontWeight: '400',
   position: 'relative',
-  textOverflow: 'ellipsis',
-  whiteSpace: 'nowrap',
 }));
 
+const truncated = {
+  maxWidth: '100%',
+  overflow: 'hidden',
+  textOverflow: 'ellipsis',
+  whiteSpace: 'nowrap',
+} as const;
+
 const EditableTitle = styled('button')(({ theme }) => ({
-  display: 'inherit',
+  display: 'block',
   background: 'inherit',
   borderRadius: '8px',
   border: 'inherit',
@@ -43,12 +59,30 @@ const EditableTitle = styled('button')(({ theme }) => ({
   fontSize: 'inherit',
   fontFamily: 'inherit',
   fontWeight: 'inherit',
-  whiteSpace: 'inherit',
   padding: '8px',
-  '&:hover': {
-    backgroundColor: theme.palette.grey[200],
-  },
+  ...truncated,
+  ...(appearance === 'opendesk'
+    ? {
+        '&:hover': {
+          color: theme.navbar.color.textPrimaryHover,
+          backgroundColor: theme.palette.background.hover,
+        },
+        '&:active': {
+          color: theme.navbar.color.textPrimaryActive,
+          backgroundColor: theme.palette.background.active,
+        },
+      }
+    : {
+        '&:hover': {
+          backgroundColor: theme.palette.grey[200],
+        },
+      }),
 }));
+
+const StaticTitle = styled('div')({
+  padding: '8px',
+  ...truncated,
+});
 
 type TitleProps = {
   title: string;
@@ -90,7 +124,7 @@ export function Title({ title, roomId }: TitleProps) {
             </EditableTitle>
           </Tooltip>
         ) : (
-          title
+          <StaticTitle>{title}</StaticTitle>
         )}
       </StyledTitle>
       {roomId && (

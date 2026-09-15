@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 Nordeck IT + Consulting GmbH
+ * Copyright 2025-2026 Nordeck IT + Consulting GmbH
  *
  * NeoBoard Standalone is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -36,6 +36,12 @@ export type BannerConfig = {
    * @example `https://example.com/logo.svg`
    */
   portal_logo_svg_url: string;
+
+  /**
+   * The width of the portal logo image
+   * @example `120px`
+   */
+  portal_logo_width: string;
 
   /**
    * The URL of the portal.

@@ -1,5 +1,5 @@
 /*
- * Copyright 2024-2026 Nordeck IT + Consulting GmbH
+ * Copyright 2026 Nordeck IT + Consulting GmbH
  *
  * NeoBoard Standalone is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -16,35 +16,17 @@
  * along with NeoBoard Standalone. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import '@mui/material/styles';
+import { getEnvironment } from '@matrix-widget-toolkit/mui';
+import { getEnvironmentAppearance } from './getEnvironmentAppearance';
 
-declare module '@mui/material/styles' {
-  interface Theme {
-    offsetHeight: string;
-    navbar: NavbarOptions;
+const openDeskSuffix = ' - openDesk';
+
+export function getDocumentTitle(): string {
+  const productName = getEnvironment('REACT_APP_PRODUCT_NAME', 'NeoBoard');
+
+  if (getEnvironmentAppearance() === 'opendesk') {
+    return `${productName}${openDeskSuffix}`;
   }
-  interface ThemeOptions {
-    offsetHeight: string;
-    navbar: NavbarOptions;
-  }
-  interface TypeBackground {
-    loggedIn: string;
-    card: string;
-    hover: string;
-    active: string;
-  }
+
+  return productName;
 }
-
-type NavbarOptions = {
-  color: {
-    bgCanvasDefault: string;
-    backgroundColor: string;
-    textActionAccent: string;
-    textPrimary: string;
-    textPrimaryHover: string;
-    textPrimaryActive: string;
-    iconOnSolidPrimary: string;
-  };
-  height: string;
-  borderBottom: string;
-};

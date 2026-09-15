@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Nordeck IT + Consulting GmbH
+ * Copyright 2024-2026 Nordeck IT + Consulting GmbH
  *
  * NeoBoard Standalone is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -114,6 +114,7 @@ export function ShareMenu({ roomId }: { roomId: string }) {
             display: 'flex',
             justifyContent: 'center',
             width: 40,
+            color: 'inherit',
           }}
         >
           <Share sx={{ width: 24, height: 24 }} />

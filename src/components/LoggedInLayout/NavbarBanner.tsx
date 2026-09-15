@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 Nordeck IT + Consulting GmbH
+ * Copyright 2025-2026 Nordeck IT + Consulting GmbH
  *
  * NeoBoard Standalone is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -33,7 +33,14 @@ export function NavbarBanner({ children }: PropsWithChildren<{}>) {
         portal_logo_svg_url: getEnvironment(
           'REACT_APP_OPENDESK_BANNER_PORTAL_LOGO_SVG_URL',
         ),
+        portal_logo_width: getEnvironment(
+          'REACT_APP_OPENDESK_BANNER_PORTAL_LOGO_WIDTH',
+          '120px',
+        ),
         portal_url: getEnvironment('REACT_APP_OPENDESK_BANNER_PORTAL_URL'),
+        product_home_icon_url: getEnvironment(
+          'REACT_APP_OPENDESK_BANNER_APP_HOME_ICON_SVG_URL',
+        ),
       },
     };
 

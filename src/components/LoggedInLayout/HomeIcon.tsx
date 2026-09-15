@@ -1,5 +1,5 @@
 /*
- * Copyright 2024-2026 Nordeck IT + Consulting GmbH
+ * Copyright 2026 Nordeck IT + Consulting GmbH
  *
  * NeoBoard Standalone is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -16,35 +16,14 @@
  * along with NeoBoard Standalone. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import '@mui/material/styles';
+import { getEnvironment } from '@matrix-widget-toolkit/mui';
+import { ImgHTMLAttributes } from 'react';
 
-declare module '@mui/material/styles' {
-  interface Theme {
-    offsetHeight: string;
-    navbar: NavbarOptions;
-  }
-  interface ThemeOptions {
-    offsetHeight: string;
-    navbar: NavbarOptions;
-  }
-  interface TypeBackground {
-    loggedIn: string;
-    card: string;
-    hover: string;
-    active: string;
-  }
-}
+const home_icon_src = getEnvironment(
+  'REACT_APP_OPENDESK_BANNER_APP_HOME_ICON_SVG_URL',
+  `${window.location.origin}/opendesk.svg`,
+);
 
-type NavbarOptions = {
-  color: {
-    bgCanvasDefault: string;
-    backgroundColor: string;
-    textActionAccent: string;
-    textPrimary: string;
-    textPrimaryHover: string;
-    textPrimaryActive: string;
-    iconOnSolidPrimary: string;
-  };
-  height: string;
-  borderBottom: string;
+export const HomeIcon = (props: ImgHTMLAttributes<HTMLImageElement>) => {
+  return <img src={home_icon_src} width={32} height={32} alt="" {...props} />;
 };

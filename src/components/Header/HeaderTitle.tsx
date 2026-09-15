@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 Nordeck IT + Consulting GmbH
+ * Copyright 2025-2026 Nordeck IT + Consulting GmbH
  *
  * NeoBoard Standalone is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -16,56 +16,85 @@
  * along with NeoBoard Standalone. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { styled } from '@mui/material';
+import { styled, Tooltip, Typography } from '@mui/material';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router';
 import { getEnvironmentAppearance } from '../../lib';
-import { Title } from './Title.tsx';
-
-const TitleWrapper = styled('div')(() => ({
-  alignItems: 'center',
-  display: 'flex',
-  flexGrow: 1,
-  gap: '16px',
-}));
-
-type Props = {
-  title: string;
-  roomId?: string;
-  homeIcon: React.ReactNode;
-  hasPadding?: boolean;
-};
 
 const appearance = getEnvironmentAppearance();
 
-const ButtonStyled = styled('div')(({ theme }) => ({
+const TitleWrapper = styled('div')({
+  alignItems: 'center',
+  display: 'flex',
+  flex: '1 1 0',
+  gap: '16px',
+  justifyContent: 'flex-start',
+});
+
+type Props = {
+  title: string;
+  homeIcon: React.ReactNode;
+  hasPadding?: boolean;
+  collapsible?: boolean;
+};
+
+const ButtonStyled = styled('div')({
   cursor: 'pointer',
-  lineHeight: 0,
-  ...(appearance === 'opendesk' && {
-    color: theme.navbar.color.textPrimary,
-    '&:active': {
-      color: theme.navbar.color.textActionAccent,
-    },
-  }),
+  alignItems: 'center',
+  display: 'flex',
+  gap: '16px',
+  '& > *': {
+    flexShrink: 0,
+  },
+});
+
+const ProductName = styled(Typography, {
+  shouldForwardProp: (prop) => prop !== 'collapsible',
+})<{ collapsible?: boolean }>(({ theme, collapsible }) => ({
+  ...(appearance === 'opendesk'
+    ? { color: theme.navbar.color.textPrimary }
+    : { color: theme.palette.primary.main }),
+  fontSize: '25px',
+  fontWeight: '600',
+  whiteSpace: 'nowrap',
+  // Give way to the room name before it has to be truncated.
+  [theme.breakpoints.down('md')]: {
+    ...(collapsible ? { display: 'none' } : {}),
+  },
 }));
 
-export function HeaderTitle({ title, roomId, homeIcon, hasPadding }: Props) {
+export function HeaderTitle({
+  title,
+  homeIcon,
+  hasPadding,
+  collapsible,
+}: Props) {
   const { t } = useTranslation();
+  const label = t('header.dashboard', 'Go back to the dashboard');
+
+  const homeButton = (
+    <ButtonStyled>
+      {homeIcon}
+      <ProductName collapsible={collapsible}>{title}</ProductName>
+    </ButtonStyled>
+  );
 
   return (
     <TitleWrapper
       sx={{ ...(hasPadding ? { paddingLeft: '16px' } : undefined) }}
     >
-      <Link to="/dashboard">
-        <ButtonStyled
-          role="button"
-          aria-label={t('header.dashboard', 'Go back to the dashboard')}
-        >
-          {homeIcon}
-        </ButtonStyled>
+      <Link
+        style={{ textDecoration: 'none' }}
+        to="/dashboard"
+        aria-label={label}
+      >
+        {collapsible ? (
+          <Tooltip title={label}>{homeButton}</Tooltip>
+        ) : (
+          homeButton
+        )}
       </Link>
-      <Title title={title} roomId={roomId} />
     </TitleWrapper>
   );
 }
