@@ -24,8 +24,8 @@ declare module '@mui/material/styles' {
     navbar: NavbarOptions;
   }
   interface ThemeOptions {
-    offsetHeight: string;
-    navbar: NavbarOptions;
+    offsetHeight?: string;
+    navbar?: NavbarOptions;
   }
   interface TypeBackground {
     loggedIn: string;
