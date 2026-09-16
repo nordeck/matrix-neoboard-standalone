@@ -16,43 +16,46 @@
  * along with NeoBoard Standalone. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { OidcClientConfig, generateOidcAuthorizationUrl } from 'matrix-js-sdk';
-import { randomString } from '../../lib';
+import { OAuth2, ValidatedAuthMetadata } from 'matrix-js-sdk';
+import { secureRandomString } from 'matrix-js-sdk/lib/randomstring';
+import { setOAuthContext } from './oAuthContext';
 
 /**
- * Start OIDC authorization code flow
- * Generates auth params, stores them in session storage and
- * Navigates to configured authorization endpoint
+ * Start OAuth2 authorization code flow.
+ * Creates an OAuth2 instance, stores context in sessionStorage,
+ * and navigates to the authorization endpoint.
  *
- * Borrowed from {@link https://github.com/matrix-org/matrix-react-sdk/blob/79c50db00993a97a0b6b8c3df02b8eec4e6cb21a/src/utils/oidc/authorize.ts#L36}
- *
- * @param delegatedAuthConfig from discovery
- * @param clientId this client's id as registered with configured issuer
- * @param homeserverUrl target homeserver
- * @param identityServerUrl OPTIONAL target identity server
+ * @param authMetadata - validated auth metadata from discovery
+ * @param clientId - this client's id as registered with the issuer
+ * @param homeserverUrl - target homeserver
  * @returns Promise that resolves after we have navigated to auth endpoint
  */
 export async function startOidcLogin(
-  clientConfig: OidcClientConfig,
+  authMetadata: ValidatedAuthMetadata,
   clientId: string,
   homeserverUrl: string,
-  identityServerUrl?: string,
-  isRegistration?: boolean,
 ): Promise<void> {
   const redirectUri = `${location.protocol}//${location.host}${location.pathname}`;
-  const nonce = randomString(10);
-  const prompt = isRegistration ? 'create' : undefined;
+  const state = secureRandomString(16);
 
-  const authorizationUrl = await generateOidcAuthorizationUrl({
-    metadata: clientConfig,
-    redirectUri,
+  const oauth2 = new OAuth2(authMetadata, {
     clientId,
-    homeserverUrl,
-    identityServerUrl,
-    nonce,
-    prompt,
-    urlState: '',
+    redirectUri,
   });
+  setOAuthContext({
+    homeserverUrl,
+    issuer: authMetadata.issuer,
+    clientId: oauth2.context.clientId,
+    redirectUri: oauth2.context.redirectUri,
+    codeVerifier: oauth2.context.codeVerifier,
+    deviceId: oauth2.context.deviceId,
+    state,
+  });
+
+  const authorizationUrl = await oauth2.generateAuthorizationCodeGrantUrl(
+    state,
+    'fragment',
+  );
 
   window.location.href = authorizationUrl;
 }

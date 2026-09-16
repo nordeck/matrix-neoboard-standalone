@@ -22,13 +22,6 @@ export function mockOidcCredentials(): OidcCredentials {
   return {
     issuer: 'https://example.com',
     clientId: 'test_client_id',
-    idTokenClaims: {
-      aud: 'test_aud',
-      exp: 100000,
-      iat: 200000,
-      iss: 'https://example.com',
-      sub: 'test_sub',
-    },
   };
 }
 
@@ -37,7 +30,6 @@ export function mockMatrixCredentials(): MatrixCredentials {
     accessToken: 'test_access_token',
     refreshToken: 'test_refresh_token',
     homeserverUrl: 'https://matrix.example.com/',
-    identityServerUrl: undefined,
     userId: '@test:example.com',
     deviceId: 'test_device_id',
   };

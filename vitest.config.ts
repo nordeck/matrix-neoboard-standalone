@@ -45,6 +45,7 @@ export default defineConfig({
           '@matrix-widget-toolkit/api',
           '@matrix-widget-toolkit/react',
           '@matrix-widget-toolkit/mui',
+          'matrix-js-sdk',
           'react',
           'react-dom',
           'react-i18next',

@@ -16,39 +16,55 @@
  * along with NeoBoard Standalone. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { completeAuthorizationCodeGrant } from 'matrix-js-sdk';
+import { OAuth2 } from 'matrix-js-sdk';
+import { fetchAuthMetadata } from '../../lib/discovery';
+import { clearOAuthContext, getOAuthContext } from './oAuthContext';
 import { OidcCodeAndState, OidcLoginResponse } from './types';
 
 /**
- * Attempt to complete authorization code flow to get an access token
+ * Attempt to complete authorization code flow to get an access token.
  *
- * Borrowed from {@link https://github.com/matrix-org/matrix-react-sdk/blob/79c50db00993a97a0b6b8c3df02b8eec4e6cb21a/src/utils/oidc/authorize.ts#L102}
+ * Retrieves the stored OAuth context from sessionStorage (saved during
+ * startOidcLogin), fetches auth metadata from the homeserver, and
+ * exchanges the authorization code for tokens.
  *
- * @param codeAndState the query-parameters extracted from the real query-string of the starting URI.
+ * @param codeAndState the code and state extracted from the redirect URI.
  * @returns Promise that resolves with a OidcLoginResponse when login was successful
- * @throws When we failed to get a valid access token
+ * @throws When we failed to get a valid access token or stored context is missing
  */
 export const completeOidcLogin = async (
   codeAndState: OidcCodeAndState,
 ): Promise<OidcLoginResponse> => {
-  const {
-    homeserverUrl,
-    tokenResponse,
-    idTokenClaims,
-    identityServerUrl,
-    oidcClientSettings,
-  } = await completeAuthorizationCodeGrant(
+  const storedContext = getOAuthContext();
+  if (!storedContext) {
+    throw new Error('Missing stored OAuth context.');
+  }
+
+  if (storedContext.state !== codeAndState.state) {
+    clearOAuthContext();
+    throw new Error('OAuth state mismatch.');
+  }
+
+  const authMetadata = await fetchAuthMetadata(storedContext.homeserverUrl);
+
+  const oauth2 = new OAuth2(authMetadata, {
+    clientId: storedContext.clientId,
+    redirectUri: storedContext.redirectUri,
+    codeVerifier: storedContext.codeVerifier,
+    deviceId: storedContext.deviceId,
+  });
+
+  const tokenResponse = await oauth2.completeAuthorizationCodeGrant(
     codeAndState.code,
-    codeAndState.state,
   );
 
+  clearOAuthContext();
+
   return {
-    homeserverUrl,
-    identityServerUrl,
+    homeserverUrl: storedContext.homeserverUrl,
     accessToken: tokenResponse.access_token,
     refreshToken: tokenResponse.refresh_token,
-    clientId: oidcClientSettings.clientId,
-    issuer: oidcClientSettings.issuer,
-    idTokenClaims,
+    clientId: storedContext.clientId,
+    issuer: storedContext.issuer,
   };
 };

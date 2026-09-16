@@ -20,8 +20,6 @@ import Joi from 'joi';
 export type MatrixCredentials = {
   // url of the homeserver selected during login
   homeserverUrl: string;
-  // identity server url as discovered during login
-  identityServerUrl?: string;
   // accessToken
   accessToken: string;
   // refreshToken, when falsy token cannot be refreshed
@@ -34,9 +32,8 @@ export type MatrixCredentials = {
 
 export const matrixCredentialsSchema = Joi.object({
   homeserverUrl: Joi.string().uri().required(),
-  identityServerUrl: Joi.string().uri(),
   accessToken: Joi.string(),
   refreshToken: Joi.string(),
   deviceId: Joi.string().required(),
   userId: Joi.string().required(),
-});
+}).unknown(true); // allow extra fields for backward compatibility

@@ -16,14 +16,7 @@
  * along with NeoBoard Standalone. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { OidcClientConfig, ValidatedAuthMetadata } from 'matrix-js-sdk';
-
-export function mockOidcClientConfig(): OidcClientConfig {
-  return {
-    ...mockOpenIdConfiguration(),
-    signingKeys: null,
-  };
-}
+import { ValidatedAuthMetadata } from 'matrix-js-sdk';
 
 export function mockOpenIdConfiguration(): ValidatedAuthMetadata {
   return {
@@ -33,9 +26,9 @@ export function mockOpenIdConfiguration(): ValidatedAuthMetadata {
     issuer: 'https://example.com',
     registration_endpoint: 'https://auth.example.com/register',
     response_types_supported: ['code'],
+    response_modes_supported: ['query', 'fragment'],
     revocation_endpoint: 'https://auth.example.com/revoke',
     token_endpoint: 'https://auth.example.com/token',
-    jwks_uri: 'https://auth.example.com/jwks',
     device_authorization_endpoint: 'https://auth.example.com/device',
   };
 }

@@ -16,22 +16,22 @@
  * along with NeoBoard Standalone. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { OidcClientConfig } from 'matrix-js-sdk';
+import { ValidatedAuthMetadata } from 'matrix-js-sdk';
 import { registerOidcClient } from './registerOidcClient';
 import { startOidcLogin } from './startOidcLogin';
 
 /**
- * Starts the OIDC login flow for a given homeserver.
+ * Starts the OAuth2 login flow for a given homeserver.
  *
  * @param homeserverUrl - The homeserver URL to login
- * @param oidcClientConfig - The oidc client config for delegated authentication
+ * @param authMetadata - The validated auth metadata for delegated authentication
  * @throws Error if the login process fails at any step
  */
 export async function startOidcLoginFlow(
   homeserverUrl: string,
-  oidcClientConfig: OidcClientConfig,
+  authMetadata: ValidatedAuthMetadata,
 ): Promise<void> {
-  // Register an OIDC client and start the authentication
-  const clientId = await registerOidcClient(oidcClientConfig);
-  await startOidcLogin(oidcClientConfig, clientId, homeserverUrl);
+  // Register an OAuth2 client and start the authentication
+  const clientId = await registerOidcClient(authMetadata);
+  await startOidcLogin(authMetadata, clientId, homeserverUrl);
 }

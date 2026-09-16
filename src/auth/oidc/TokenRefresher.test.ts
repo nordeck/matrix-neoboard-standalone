@@ -42,23 +42,19 @@ describe('TokenRefresher', () => {
 
   beforeEach(async () => {
     fetch.mockResponse((req) => {
-      if (req.url === 'https://example.com/.well-known/openid-configuration') {
-        return {
-          status: 200,
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(openIdConfiguration),
-        };
-      } else if (req.url === openIdConfiguration.jwks_uri) {
-        return {
-          status: 200,
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ keys: [] }),
-        };
+      if (req.url === 'https://matrix.example.com/_matrix/client/versions') {
+        return JSON.stringify({
+          versions: ['v1.1', 'v1.15'],
+          unstable_features: {},
+        });
       }
+
+      if (
+        req.url === 'https://matrix.example.com/_matrix/client/v1/auth_metadata'
+      ) {
+        return JSON.stringify(openIdConfiguration);
+      }
+
       return '';
     });
 
@@ -72,16 +68,34 @@ describe('TokenRefresher', () => {
       credentials,
       oidcCredentials,
       matrixCredentials.deviceId,
+      matrixCredentials.homeserverUrl,
     );
   });
 
-  it('persistTokens should update the access tokens on the credentials', () => {
-    const newTokens: AccessTokens = {
+  it('doRefreshAccessToken should update the access tokens on the credentials', async () => {
+    // Mock the token endpoint to return new tokens
+    fetch.mockResponse((req) => {
+      if (req.url === openIdConfiguration.token_endpoint) {
+        return {
+          status: 200,
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            access_token: 'new_access_token',
+            refresh_token: 'new_refresh_token',
+            token_type: 'Bearer',
+          }),
+        };
+      }
+      return '';
+    });
+
+    const newTokens: AccessTokens =
+      await tokenRefresher.doRefreshAccessToken('test_refresh_token');
+
+    expect(newTokens).toMatchObject({
       accessToken: 'new_access_token',
       refreshToken: 'new_refresh_token',
-    };
-    tokenRefresher.persistTokens(newTokens);
-
+    });
     expect(credentials.getMatrixCredentials()?.accessToken).toBe(
       'new_access_token',
     );

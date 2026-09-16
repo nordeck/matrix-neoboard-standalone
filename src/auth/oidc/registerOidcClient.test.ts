@@ -16,56 +16,36 @@
  * along with NeoBoard Standalone. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { afterEach, beforeEach, describe, expect, it } from 'vitest';
-import {
-  mockOidcClientConfig,
-  mockOpenIdConfiguration,
-} from '../../lib/testUtils';
+import { afterEach, describe, expect, it } from 'vitest';
+import { mockOpenIdConfiguration } from '../../lib/testUtils';
 import { registerOidcClient } from './registerOidcClient';
 
 import type { FetchMock } from 'vitest-fetch-mock';
 const fetch = global.fetch as FetchMock;
 
-const openIdConfiguration = mockOpenIdConfiguration();
-const oidcClientConfig = mockOidcClientConfig();
+const authMetadata = mockOpenIdConfiguration();
 
 describe('registerOidcClient', () => {
-  beforeEach(() => {
-    fetch.mockResponse((req) => {
-      if (req.url === 'https://example.com/.well-known/openid-configuration') {
-        return JSON.stringify(openIdConfiguration);
-      }
-      return '';
-    });
-  });
-
   afterEach(() => {
     fetch.resetMocks();
   });
 
-  it('should register an OIDC client', async () => {
+  it('should register an OAuth2 client', async () => {
     fetch.mockResponse((req) => {
       if (
-        req.url === 'https://auth.example.com/register' &&
+        req.url === authMetadata.registration_endpoint &&
         req.method === 'POST' &&
         req.headers.get('Content-Type') === 'application/json'
       ) {
-        const expectedBody = {
-          client_name: 'NeoBoard',
-          client_uri: 'http://example.com/',
-          response_types: ['code'],
-          grant_types: ['authorization_code', 'refresh_token'],
-          redirect_uris: ['http://example.com/'],
-          id_token_signed_response_alg: 'RS256',
-          token_endpoint_auth_method: 'none',
-          application_type: 'web',
-          contacts: ['noreply@example.com'],
-          policy_uri: 'http://example.com/',
-          tos_uri: 'http://example.com/',
-        };
-        // Arrays in the parsed body are behaving weirdly, so we need to compare the stringified body
-        if (req.body?.toString() === JSON.stringify(expectedBody)) {
+        const body = JSON.parse(req.body?.toString() ?? '{}');
+        if (
+          body.client_name === 'NeoBoard' &&
+          body.application_type === 'web' &&
+          body.token_endpoint_auth_method === 'none'
+        ) {
           return {
+            status: 200,
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
               client_id: 'test_client_id',
             }),
@@ -75,6 +55,6 @@ describe('registerOidcClient', () => {
       return '';
     });
 
-    expect(await registerOidcClient(oidcClientConfig)).toBe('test_client_id');
+    expect(await registerOidcClient(authMetadata)).toBe('test_client_id');
   });
 });

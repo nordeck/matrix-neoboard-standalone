@@ -19,7 +19,6 @@
 import {
   ClientEvent,
   ClientEventHandlerMap,
-  completeAuthorizationCodeGrant,
   MatrixClient,
   SyncState,
 } from 'matrix-js-sdk';
@@ -34,8 +33,8 @@ import {
 } from 'vitest';
 import {
   mockMatrixCredentials,
-  mockOidcClientConfig,
   mockOidcCredentials,
+  mockOpenIdConfiguration,
 } from '../../lib/testUtils';
 import {
   matrixCredentialsStorageKey,
@@ -52,8 +51,6 @@ vi.mock('matrix-js-sdk', async () => ({
   ...(await vi.importActual('matrix-js-sdk')),
   // Mock MatrixClient to prevent mocking of a lot of Matrix requests
   MatrixClient: vi.fn(),
-  // Mock completeAuthorizationCodeGrant to prevent mocking of a lot of OIDC stuff
-  completeAuthorizationCodeGrant: vi.fn(),
 }));
 
 vi.mock('@matrix-widget-toolkit/mui', async () => ({
@@ -66,7 +63,7 @@ vi.mock('../../auth', async () => ({
   startLoginFlow: vi.fn(),
 }));
 
-const oidcClientConfig = mockOidcClientConfig();
+const openIdConfiguration = mockOpenIdConfiguration();
 const oidcCredentials = mockOidcCredentials();
 const matrixCredentials = mockMatrixCredentials();
 
@@ -78,25 +75,32 @@ describe('Application', () => {
   beforeEach(() => {
     consoleWarningSpy = vi.spyOn(console, 'warn');
 
-    // Mock common OIDC requests
+    // Mock common OAuth2 requests
     fetch.mockResponse((req) => {
-      if (req.url === 'https://example.com/.well-known/openid-configuration') {
+      if (req.url === 'https://matrix.example.com/_matrix/client/versions') {
+        return JSON.stringify({
+          versions: ['v1.1', 'v1.15'],
+        });
+      }
+
+      if (
+        req.url === 'https://matrix.example.com/_matrix/client/v1/auth_metadata'
+      ) {
+        return JSON.stringify(openIdConfiguration);
+      }
+
+      if (req.url === openIdConfiguration.token_endpoint) {
         return {
           status: 200,
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(oidcClientConfig),
-        };
-      } else if (req.url === oidcClientConfig.jwks_uri!) {
-        return {
-          status: 200,
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ keys: [] }),
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            access_token: matrixCredentials.accessToken,
+            refresh_token: matrixCredentials.refreshToken,
+            token_type: 'Bearer',
+          }),
         };
       }
+
       return '';
     });
 
@@ -109,6 +113,7 @@ describe('Application', () => {
       addEventListener: vi.fn(),
       removeEventListener: vi.fn(),
       once: vi.fn(),
+      getAuthMetadata: vi.fn().mockResolvedValue(openIdConfiguration),
     } as unknown as MatrixClient;
     vi.mocked(MatrixClient).mockReturnValue(clientMock);
     vi.mocked(MatrixClient).mockClear();
@@ -266,24 +271,21 @@ describe('Application', () => {
   it('should complete an OIDC login', async () => {
     // Set code and state URL params so that completing an OIDC login is tried
     window.location.href =
-      'https://example.com/?code=test_code&state=test_state';
+      'https://example.com/#code=test_code&state=test_state';
 
-    // Mock OIDC related function to prevent mocking a lot of OIDC stuff
-    vi.mocked(completeAuthorizationCodeGrant).mockResolvedValue({
-      homeserverUrl: matrixCredentials.homeserverUrl,
-      idTokenClaims: oidcCredentials.idTokenClaims,
-      oidcClientSettings: {
+    // Store OAuth context as startOidcLogin does
+    sessionStorage.setItem(
+      'nd_oauth_context',
+      JSON.stringify({
+        homeserverUrl: matrixCredentials.homeserverUrl,
         issuer: oidcCredentials.issuer,
         clientId: oidcCredentials.clientId,
-      },
-      tokenResponse: {
-        access_token: matrixCredentials.accessToken,
-        refresh_token: matrixCredentials.refreshToken,
-        token_type: 'Bearer',
-        scope: 'oidc',
-        id_token: 'oidc_test_id_token',
-      },
-    });
+        redirectUri: 'https://example.com/',
+        codeVerifier: 'test_code_verifier',
+        deviceId: matrixCredentials.deviceId,
+        state: 'test_state',
+      }),
+    );
 
     // Mock the whoami response
     vi.mocked(clientMock.whoami).mockResolvedValue({
@@ -311,8 +313,7 @@ describe('Application', () => {
     if (state.lifecycleState !== 'loggedIn') return;
 
     // Ensure that the MatrixClient has been created with the credentials delivered by OIDC
-    expect(vi.mocked(MatrixClient)).toHaveBeenNthCalledWith(
-      2,
+    expect(vi.mocked(MatrixClient)).toHaveBeenLastCalledWith(
       expect.objectContaining({
         accessToken: 'test_access_token',
         baseUrl: 'https://matrix.example.com/',
@@ -332,7 +333,7 @@ describe('Application', () => {
 
     // Only provide code and state params; it should then explode somewhere during the OIDC process
     window.location.href =
-      'https://example.com/?code=test_code&state=test_state';
+      'https://example.com/#code=test_code&state=test_state';
 
     await application.start();
 
@@ -340,8 +341,8 @@ describe('Application', () => {
     expect(state.lifecycleState).toBe('notLoggedIn');
 
     expect(console.warn).toHaveBeenCalledWith(
-      'Error completing OIDC login',
-      new TypeError("Cannot read properties of undefined (reading 'user_id')"),
+      'Completing OIDC login failed',
+      new Error('Missing stored OAuth context.'),
     );
   });
 

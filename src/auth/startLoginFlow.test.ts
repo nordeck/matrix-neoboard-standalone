@@ -18,7 +18,7 @@
 import { AutoDiscovery, MatrixClient, MatrixError } from 'matrix-js-sdk';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { discoverClientConfig, fetchAuthMetadata } from '../lib/discovery';
-import { mockOidcClientConfig } from '../lib/testUtils';
+import { mockOpenIdConfiguration } from '../lib/testUtils';
 import { startLegacySsoLoginFlow } from './legacy';
 import { startOidcLoginFlow } from './oidc';
 import { startLoginFlow } from './startLoginFlow';
@@ -38,7 +38,7 @@ vi.mock('./oidc');
 vi.mock('./legacy');
 
 describe('startLoginFlow', () => {
-  const oidcClientConfig = mockOidcClientConfig();
+  const authMetadata = mockOpenIdConfiguration();
 
   let matrixClient: MatrixClient;
 
@@ -55,13 +55,13 @@ describe('startLoginFlow', () => {
   });
 
   it('should start oidc login flow from homeserver URL', async () => {
-    vi.mocked(fetchAuthMetadata).mockResolvedValue(oidcClientConfig);
+    vi.mocked(fetchAuthMetadata).mockResolvedValue(authMetadata);
 
     await startLoginFlow('https://matrix.example.com');
 
     expect(startOidcLoginFlow).toHaveBeenCalledWith(
       'https://matrix.example.com',
-      oidcClientConfig,
+      authMetadata,
     );
   });
 
@@ -84,13 +84,13 @@ describe('startLoginFlow', () => {
       },
     });
 
-    vi.mocked(fetchAuthMetadata).mockResolvedValue(oidcClientConfig);
+    vi.mocked(fetchAuthMetadata).mockResolvedValue(authMetadata);
 
     await startLoginFlow('example.com');
 
     expect(startOidcLoginFlow).toHaveBeenCalledWith(
       'https://matrix.example.com',
-      oidcClientConfig,
+      authMetadata,
     );
   });
 
@@ -108,13 +108,13 @@ describe('startLoginFlow', () => {
       },
     });
 
-    vi.mocked(fetchAuthMetadata).mockResolvedValue(oidcClientConfig);
+    vi.mocked(fetchAuthMetadata).mockResolvedValue(authMetadata);
 
     await startLoginFlow('example.com');
 
     expect(startOidcLoginFlow).toHaveBeenCalledWith(
       'https://example.com',
-      oidcClientConfig,
+      authMetadata,
     );
   });
 

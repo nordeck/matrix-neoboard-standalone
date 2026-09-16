@@ -1,5 +1,3 @@
-import { MatrixClient, OidcClientConfig } from 'matrix-js-sdk';
-
 /*
  * Copyright 2025 Nordeck IT + Consulting GmbH
  *
@@ -17,13 +15,16 @@ import { MatrixClient, OidcClientConfig } from 'matrix-js-sdk';
  * You should have received a copy of the GNU Affero General Public License
  * along with NeoBoard Standalone. If not, see <https://www.gnu.org/licenses/>.
  */
+
+import { MatrixClient, ValidatedAuthMetadata } from 'matrix-js-sdk';
+
 /**
  *  OAuth 2.0 server metadata for the homeserver
  * @param homeserverUrl
  */
 export async function fetchAuthMetadata(
   homeserverUrl: string,
-): Promise<OidcClientConfig> {
+): Promise<ValidatedAuthMetadata> {
   const matrixClient = new MatrixClient({
     baseUrl: homeserverUrl,
   });
