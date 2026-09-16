@@ -32,7 +32,7 @@ jobs:
       - name: Read pinned NeoBoard React SDK commit
         id: sdk-pin
         working-directory: ./matrix-neoboard-standalone/
-        run: echo "sha=$(cat neoboard-react-sdk.version)" >> "$GITHUB_OUTPUT"
+        run: echo "sha=$(tr -d '[:space:]' < neoboard-react-sdk.version)" >> "$GITHUB_OUTPUT"
 
       - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
         with:
