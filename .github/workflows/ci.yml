@@ -7,9 +7,6 @@ on:
       - release/*
   pull_request:
   workflow_dispatch:
-    inputs:
-      neoboard_ref:
-        description: 'NeoBoard Git ref to check out'
 
 jobs:
   build:
@@ -25,22 +22,23 @@ jobs:
     steps:
       - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
         with:
-          repository: nordeck/matrix-neoboard
-          path: matrix-neoboard
-          ref: ${{ github.events.inputs.neoboard_ref }}
+          path: matrix-neoboard-standalone
           # required for changesets
           fetch-depth: '0'
           # don't persist the credentials so the changesets action doesn't use the
           # github actions token but the git token provided via environment variable
           persist-credentials: false
 
+      - name: Read pinned NeoBoard React SDK commit
+        id: sdk-pin
+        working-directory: ./matrix-neoboard-standalone/
+        run: echo "sha=$(cat neoboard-react-sdk.version)" >> "$GITHUB_OUTPUT"
+
       - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
         with:
-          path: matrix-neoboard-standalone
-          # required for changesets
-          fetch-depth: '0'
-          # don't persist the credentials so the changesets action doesn't use the
-          # github actions token but the git token provided via environment variable
+          repository: nordeck/matrix-neoboard
+          path: matrix-neoboard
+          ref: ${{ steps.sdk-pin.outputs.sha }}
           persist-credentials: false
 
       - name: Setup Node.js

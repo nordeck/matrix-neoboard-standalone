@@ -95,11 +95,15 @@ It may often happen, that it is necessary to change both, standalone and the rea
 For a better development experience, NeoBoard standalone links [`@nordeck/matrix-neoboard-react-sdk`][@nordeck/matrix-neoboard-react-sdk]
 in it's `package.json`. Because of that it is important to clone both repos next to each other.
 
-Clone NeoBoard and install the dependencies:
+The React SDK commit that NeoBoard standalone is built against is pinned in
+[`neoboard-react-sdk.version`](./neoboard-react-sdk.version) (see [Pinning the NeoBoard React SDK](#pinning-the-neoboard-react-sdk)).
+Clone NeoBoard, check out the pinned commit and install the dependencies:
 
 ```sh
 git clone git@github.com:nordeck/matrix-neoboard.git
-cd matrix-neoboard/packages/react-sdk
+cd matrix-neoboard
+git checkout "$(cat ../matrix-neoboard-standalone/neoboard-react-sdk.version)"
+cd packages/react-sdk
 yarn install
 cd ../../..
 ```
@@ -180,6 +184,35 @@ Learn more in the [`.changeset` folder](./.changeset).
 
 Once the change is merged to `main`, a “Version Packages” pull request will be created.
 As soon as the project maintainers merged it, the package will be released and the container is published.
+
+### Pinning the NeoBoard React SDK
+
+CI builds NeoBoard standalone against the [`@nordeck/matrix-neoboard-react-sdk`][@nordeck/matrix-neoboard-react-sdk]
+commit pinned in [`neoboard-react-sdk.version`](./neoboard-react-sdk.version) at the repository root.
+The file contains a single line with the full commit hash of the
+[`matrix-neoboard`](https://github.com/nordeck/matrix-neoboard) repository to build against.
+
+The pin is managed by the developers:
+
+- **Feature PRs** that require newer SDK changes bump the pin in the same pull request.
+- **Releases** bump the pin to the SDK commit the release should ship with, see
+  [Publishing a new version](#publishing-a-new-version).
+
+### Publishing a new version
+
+A release ships the code on `main` together with the NeoBoard React SDK commit pinned in
+[`neoboard-react-sdk.version`](./neoboard-react-sdk.version).
+
+1. Bump `neoboard-react-sdk.version` to the SDK commit the release should ship with and merge it to `main` via a
+   pull request, including a changeset for the SDK update.
+2. The changesets action creates or updates the “Version Packages” pull request from the current `main`, so it
+   carries the new pin. Review the version bump, the changelog and the pin.
+3. Merge the “Version Packages” pull request. CI builds the image against the pinned SDK and creates the `v<version>`
+   tag, which triggers the “Release Package” workflow. It re-tags the image as `<version>` and `latest`, signs it
+   and attaches the SBOM to the GitHub release.
+
+Do not commit on the “Version Packages” branch: it is re-created on every push to `main`, so changes there are lost.
+Fix things on `main` instead.
 
 ### Processing Renovate PRs
 
