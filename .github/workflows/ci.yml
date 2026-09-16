@@ -25,18 +25,34 @@ jobs:
     steps:
       - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
         with:
-          repository: nordeck/matrix-neoboard
-          path: matrix-neoboard
-          ref: ${{ github.events.inputs.neoboard_ref }}
+          path: matrix-neoboard-standalone
           # required for changesets
           fetch-depth: '0'
           # don't persist the credentials so the changesets action doesn't use the
           # github actions token but the git token provided via environment variable
           persist-credentials: false
 
+      - name: Resolve SDK commit pin
+        id: sdk-pin
+        # Builds always use the commit pinned in matrix-neoboard-react-sdk.version,
+        # unless a manual workflow_dispatch run overrides it via neoboard_ref.
+        working-directory: ./matrix-neoboard-standalone/
+        env:
+          NEOBOARD_REF: ${{ github.event.inputs.neoboard_ref }}
+        run: |
+          if [[ -n "$NEOBOARD_REF" ]]; then
+            echo "Manual override via neoboard_ref: using $NEOBOARD_REF."
+            echo "sha=$NEOBOARD_REF" >> "$GITHUB_OUTPUT"
+          else
+            RESOLVED_SHA=$(tr -d '[:space:]' < matrix-neoboard-react-sdk.version)
+            echo "sha=$RESOLVED_SHA" >> "$GITHUB_OUTPUT"
+          fi
+
       - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
         with:
-          path: matrix-neoboard-standalone
+          repository: nordeck/matrix-neoboard
+          path: matrix-neoboard
+          ref: ${{ steps.sdk-pin.outputs.sha }}
           # required for changesets
           fetch-depth: '0'
           # don't persist the credentials so the changesets action doesn't use the
@@ -104,6 +120,8 @@ jobs:
 
       - name: get argo-cd type of sha
         id: argocd-sha
+        env:
+          SDK_SHA: ${{ steps.sdk-pin.outputs.sha }}
         run: |
           COMMIT_SHA=${{ github.sha }}
           if [[ '${{ github.event_name }}' == 'pull_request' ]]
@@ -111,8 +129,10 @@ jobs:
             COMMIT_SHA=${{ github.event.pull_request.head.sha }}
           fi
           ARGOCD_TAG=argo-$(echo $COMMIT_SHA | cut -c1-8)
+          COMPOSITE_TAG=standalone-${COMMIT_SHA}-sdk-${SDK_SHA}
           echo "ARGOCD_TAG=$ARGOCD_TAG" >> $GITHUB_ENV
           echo "ARGOCD_TAG=$ARGOCD_TAG" >> "$GITHUB_OUTPUT"
+          echo "COMPOSITE_TAG=$COMPOSITE_TAG" >> "$GITHUB_OUTPUT"
 
       - name: Generate Docker metadata
         id: meta
@@ -128,6 +148,7 @@ jobs:
           tags: |
             type=sha,prefix=
             type=raw,value=${{ env.ARGOCD_TAG }}
+            type=raw,value=${{ steps.argocd-sha.outputs.COMPOSITE_TAG }}
 
       # Read the created files into variables
       - name: Read version and revision to be used by docker
