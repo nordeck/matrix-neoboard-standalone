@@ -4584,10 +4584,9 @@ matrix-events-sdk@0.0.1:
   resolved "https://registry.yarnpkg.com/matrix-events-sdk/-/matrix-events-sdk-0.0.1.tgz#c8c38911e2cb29023b0bbac8d6f32e0de2c957dd"
   integrity sha512-1QEOsXO+bhyCroIe2/A5OwaxHvBm7EsSQ46DEDn8RBIfQwN5HWBpFvyWWR4QY0KHPPnnJdI99wgRiAl7Ad5qaA==
 
-matrix-js-sdk@^42.4.0:
-  version "42.4.0"
-  resolved "https://registry.yarnpkg.com/matrix-js-sdk/-/matrix-js-sdk-42.4.0.tgz#50f89b7972aa80e180599da37ee9d4358590ec04"
-  integrity sha512-tlTU3kz9WmK+eJVDou+tMVPggVJdvj56XpEYBKgNx56mWd8rF6YfiK82o/aTjtAezuAoV50b+i4q3SGrfPiIGg==
+"matrix-js-sdk@git+https://github.com/matrix-org/matrix-js-sdk.git#15ed5fe089394f54e52eb6a0aa21e1ac791230af":
+  version "42.3.0"
+  resolved "git+https://github.com/matrix-org/matrix-js-sdk.git#15ed5fe089394f54e52eb6a0aa21e1ac791230af"
   dependencies:
     "@babel/runtime" "^8.0.0"
     "@matrix-org/matrix-sdk-crypto-wasm" "^18.7.0"
@@ -4601,7 +4600,7 @@ matrix-js-sdk@^42.4.0:
     sdp-transform "^3.0.0"
     unhomoglyph "^1.0.6"
 
-matrix-widget-api@1.18.0, matrix-widget-api@^1.18.0:
+matrix-widget-api@1.18.0:
   version "1.18.0"
   resolved "https://registry.yarnpkg.com/matrix-widget-api/-/matrix-widget-api-1.18.0.tgz#3366d7ad14df62df1465a9384bc9557e72bbab79"
   integrity sha512-4T2f2koWmx05p1BLcT/9YGGGPSXpPT+PA4Oap/5fjhXsWPxMGJiGL97YpANMYLKsnE1sScYFeuyxIgdc1Qo+Ew==
@@ -4609,7 +4608,7 @@ matrix-widget-api@1.18.0, matrix-widget-api@^1.18.0:
     "@types/events" "^3.0.0"
     events "^3.2.0"
 
-matrix-widget-api@^1.19.0:
+matrix-widget-api@^1.18.0, matrix-widget-api@^1.19.0:
   version "1.19.0"
   resolved "https://registry.yarnpkg.com/matrix-widget-api/-/matrix-widget-api-1.19.0.tgz#77819e0307adbba972ae8178c83b77fada896e29"
   integrity sha512-Qe7L6G1mQJphBC47/Bzp5ljPIK1UARgLiuGgS+/KmEs/eaNHkQ3+ArD0/0kvMV+d6kCGAZ9OKRqsnuPjizI+tw==

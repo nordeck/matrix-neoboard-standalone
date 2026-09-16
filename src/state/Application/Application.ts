@@ -28,10 +28,8 @@ import { BehaviorSubject } from 'rxjs';
 import {
   attemptCompleteLegacySsoLogin,
   attemptCompleteOidcLogin,
-  createOidcTokenRefresher,
   OidcLoginResponse,
   startLoginFlow,
-  TokenRefresher,
 } from '../../auth';
 import { isValidServerName } from '../../lib';
 import { fetchWhoami } from '../../lib/matrix';
@@ -78,7 +76,6 @@ export class Application {
   private readonly resolveWidgetApi: (widgetApi: WidgetApi) => void;
   public readonly widgetApiPromise: Promise<WidgetApi>;
 
-  private tokenRefresher: TokenRefresher | null = null;
   private readonly state: BehaviorSubject<ApplicationState> =
     new BehaviorSubject<ApplicationState>({ lifecycleState: 'starting' });
   private readonly credentials = new Credentials();
@@ -180,18 +177,10 @@ export class Application {
       return false;
     }
 
-    if (oidcCredentials) {
-      this.tokenRefresher = await createOidcTokenRefresher(
-        this.credentials,
-        oidcCredentials,
-        matrixCredentials.deviceId,
-        matrixCredentials.homeserverUrl,
-      );
-    }
-
     const matrixClient = await createMatrixClient(
       matrixCredentials,
-      this.tokenRefresher ?? undefined,
+      oidcCredentials?.clientId,
+      (tokens) => this.credentials.updateAccessTokens(tokens),
     );
 
     const standaloneClient: StandaloneClient = new MatrixStandaloneClient(

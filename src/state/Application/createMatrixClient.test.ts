@@ -18,7 +18,6 @@
 
 import { MatrixClient } from 'matrix-js-sdk';
 import { describe, expect, it, vi } from 'vitest';
-import { TokenRefresher } from '../../auth';
 import { mockMatrixCredentials } from '../../lib/testUtils';
 import { createMatrixClient } from './createMatrixClient';
 
@@ -31,15 +30,18 @@ const matrixCredentials = mockMatrixCredentials();
 
 describe('createMatrixClient', () => {
   it('should create a MatrixClient', async () => {
-    const tokenRefresherStub = {
-      doRefreshAccessToken: () => {},
-    } as unknown as TokenRefresher;
     const clientStub = {
       startClient: vi.fn(),
     } as unknown as MatrixClient;
     vi.mocked(MatrixClient).mockReturnValue(clientStub);
 
-    await createMatrixClient(matrixCredentials, tokenRefresherStub);
+    const onTokenRefresh = vi.fn();
+
+    await createMatrixClient(
+      matrixCredentials,
+      'test_client_id',
+      onTokenRefresh,
+    );
 
     expect(MatrixClient).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -49,7 +51,8 @@ describe('createMatrixClient', () => {
         userId: '@test:example.com',
         deviceId: 'test_device_id',
         refreshToken: 'test_refresh_token',
-        tokenRefreshFunction: expect.any(Function),
+        oauthClientId: 'test_client_id',
+        onTokenRefresh,
         store: expect.anything(),
         scheduler: expect.anything(),
       }),

@@ -194,7 +194,8 @@ describe('Application', () => {
         deviceId: 'test_device_id',
         fetchFn: expect.any(Function),
         refreshToken: 'test_refresh_token',
-        tokenRefreshFunction: expect.any(Function),
+        oauthClientId: 'test_client_id',
+        onTokenRefresh: expect.any(Function),
         userId: '@test:example.com',
       }),
     );
@@ -320,7 +321,8 @@ describe('Application', () => {
         deviceId: 'test_device_id',
         fetchFn: expect.any(Function),
         refreshToken: 'test_refresh_token',
-        tokenRefreshFunction: expect.any(Function),
+        oauthClientId: 'test_client_id',
+        onTokenRefresh: expect.any(Function),
         userId: '@test:example.com',
       }),
     );

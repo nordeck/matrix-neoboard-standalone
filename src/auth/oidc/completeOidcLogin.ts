@@ -35,36 +35,36 @@ import { OidcCodeAndState, OidcLoginResponse } from './types';
 export const completeOidcLogin = async (
   codeAndState: OidcCodeAndState,
 ): Promise<OidcLoginResponse> => {
-  const storedContext = getOAuthContext();
-  if (!storedContext) {
+  const oAuthContext = getOAuthContext();
+  if (!oAuthContext) {
     throw new Error('Missing stored OAuth context.');
   }
 
-  if (storedContext.state !== codeAndState.state) {
+  if (oAuthContext.state !== codeAndState.state) {
     clearOAuthContext();
     throw new Error('OAuth state mismatch.');
   }
 
-  const authMetadata = await fetchAuthMetadata(storedContext.homeserverUrl);
+  const authMetadata = await fetchAuthMetadata(oAuthContext.homeserverUrl);
 
   const oauth2 = new OAuth2(authMetadata, {
-    clientId: storedContext.clientId,
-    redirectUri: storedContext.redirectUri,
-    codeVerifier: storedContext.codeVerifier,
-    deviceId: storedContext.deviceId,
+    clientId: oAuthContext.clientId,
+    codeVerifier: oAuthContext.codeVerifier,
+    deviceId: oAuthContext.deviceId,
   });
 
   const tokenResponse = await oauth2.completeAuthorizationCodeGrant(
     codeAndState.code,
+    oAuthContext.redirectUri,
   );
 
   clearOAuthContext();
 
   return {
-    homeserverUrl: storedContext.homeserverUrl,
+    homeserverUrl: oAuthContext.homeserverUrl,
     accessToken: tokenResponse.access_token,
     refreshToken: tokenResponse.refresh_token,
-    clientId: storedContext.clientId,
-    issuer: storedContext.issuer,
+    clientId: oAuthContext.clientId,
+    issuer: oAuthContext.issuer,
   };
 };

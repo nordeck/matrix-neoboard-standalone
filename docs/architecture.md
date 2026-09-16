@@ -42,8 +42,8 @@ sequenceDiagram
   Note over Application: Credentials have been saved to localStorage.<br />From now on, it is the same as<br />when restoring a session from localStorage.
   Application ->> Application: attemptStartFromStoredSession()
   Application ->> Credentials: get credentials
-  Application ->> Application: createOidcTokenRefresher()
   Application ->> Application: createAndStartMatrixclient()
+  Note over Application: For OAuth2 sessions the client is given the OAuth2 client ID<br />and refreshes tokens itself, discovering the auth server on demand.
   Application ->> Application: set state to "loggedIn"
 ```
 
