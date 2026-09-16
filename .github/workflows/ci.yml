@@ -11,10 +11,6 @@ on:
       neoboard_ref:
         description: 'NeoBoard Git ref to check out'
 
-concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: false
-
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -44,26 +40,13 @@ jobs:
         env:
           NEOBOARD_REF: ${{ github.event.inputs.neoboard_ref }}
         run: |
-          RESOLVED_SHA=$(tr -d '[:space:]' < matrix-neoboard-react-sdk.version)
-
           if [[ -n "$NEOBOARD_REF" ]]; then
-            # Explicit manual override always wins.
-            RESOLVED_SHA=$(git ls-remote https://github.com/nordeck/matrix-neoboard.git "$NEOBOARD_REF" "$NEOBOARD_REF^{}" | awk 'END { print $1 }')
-            if [[ -z "$RESOLVED_SHA" ]]; then
-              # Not a named branch/tag on the remote - validate it as a commit SHA.
-              RESOLVED_SHA="$NEOBOARD_REF"
-            fi
-            echo "Manual override via neoboard_ref: using $RESOLVED_SHA."
+            echo "Manual override via neoboard_ref: using $NEOBOARD_REF."
+            echo "sha=$NEOBOARD_REF" >> "$GITHUB_OUTPUT"
           else
-            echo "Using committed SDK pin $RESOLVED_SHA."
+            RESOLVED_SHA=$(tr -d '[:space:]' < matrix-neoboard-react-sdk.version)
+            echo "sha=$RESOLVED_SHA" >> "$GITHUB_OUTPUT"
           fi
-
-          if [[ ! "$RESOLVED_SHA" =~ ^[0-9a-fA-F]{40}$ ]]; then
-            echo "::error::SDK revision must be a full 40-character commit SHA, got '$RESOLVED_SHA'."
-            exit 1
-          fi
-
-          echo "sha=$RESOLVED_SHA" >> "$GITHUB_OUTPUT"
 
       - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
         with:

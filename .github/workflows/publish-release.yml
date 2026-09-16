@@ -32,14 +32,8 @@ jobs:
       - name: Generate composite release tag
         id: composite-tag
         run: |
-          STANDALONE_VERSION=$(node -p "require('./package.json').version")
+          STANDALONE_VERSION="${GITHUB_REF_NAME#v}"
           SDK_SHA=$(tr -d '[:space:]' < matrix-neoboard-react-sdk.version)
-
-          if [[ ! "$SDK_SHA" =~ ^[0-9a-fA-F]{40}$ ]]; then
-            echo "::error::SDK revision must be a full 40-character commit SHA, got '$SDK_SHA'."
-            exit 1
-          fi
-
           echo "tag=standalone-${STANDALONE_VERSION}-sdk-${SDK_SHA}" >> "$GITHUB_OUTPUT"
 
       - name: Generate Docker metadata of the new image
