@@ -18,8 +18,8 @@
 
 import { afterEach, beforeAll, describe, expect, it } from 'vitest';
 import { mockOpenIdConfiguration } from '../../lib/testUtils';
+import { getOAuthContext } from './oAuthContext';
 import { startOidcLogin } from './startOidcLogin';
-import { getStoredOAuthContext } from './storedOAuthContext';
 
 const authMetadata = mockOpenIdConfiguration();
 
@@ -64,8 +64,8 @@ describe('startOidcLogin', () => {
       'https://matrix.example.com',
     );
 
-    const storedOAuthContext = getStoredOAuthContext();
-    expect(storedOAuthContext).toEqual({
+    const oAuthContext = getOAuthContext();
+    expect(oAuthContext).toEqual({
       homeserverUrl: 'https://matrix.example.com',
       issuer: authMetadata.issuer,
       clientId: 'test_client_id',
@@ -74,22 +74,5 @@ describe('startOidcLogin', () => {
       state: expect.any(String),
       redirectUri: expect.any(String),
     });
-  });
-
-  it('should return undefined when no context is stored', () => {
-    expect(getStoredOAuthContext()).toBeUndefined();
-  });
-
-  it('should return undefined when stored context is invalid JSON', () => {
-    sessionStorage.setItem('neoboard_oauth_context', 'unexpected');
-    expect(getStoredOAuthContext()).toBeUndefined();
-  });
-
-  it('should return undefined when stored context is missing required fields', () => {
-    sessionStorage.setItem(
-      'neoboard_oauth_context',
-      JSON.stringify({ clientId: 'test' }),
-    );
-    expect(getStoredOAuthContext()).toBeUndefined();
   });
 });

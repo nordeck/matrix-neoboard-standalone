@@ -18,7 +18,7 @@
 
 import { OAuth2, ValidatedAuthMetadata } from 'matrix-js-sdk';
 import { randomString } from '../../lib';
-import { setStoredOAuthContext } from './storedOAuthContext';
+import { setOAuthContext } from './oAuthContext';
 
 /**
  * Start OAuth2 authorization code flow.
@@ -42,7 +42,15 @@ export async function startOidcLogin(
     clientId,
     redirectUri,
   });
-  setStoredOAuthContext(homeserverUrl, authMetadata, oauth2, state);
+  setOAuthContext({
+    homeserverUrl,
+    issuer: authMetadata.issuer,
+    clientId: oauth2.context.clientId,
+    redirectUri: oauth2.context.redirectUri,
+    codeVerifier: oauth2.context.codeVerifier,
+    deviceId: oauth2.context.deviceId,
+    state,
+  });
 
   const authorizationUrl = await oauth2.generateAuthorizationCodeGrantUrl(
     state,

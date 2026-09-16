@@ -23,7 +23,7 @@ import {
   mockOpenIdConfiguration,
 } from '../../lib/testUtils';
 import { completeOidcLogin } from './completeOidcLogin';
-import { StoredOAuthContext } from './storedOAuthContext';
+import { OAuthContext } from './oAuthContext';
 import { OidcCodeAndState } from './types';
 
 import type { FetchMock } from 'vitest-fetch-mock';
@@ -33,7 +33,7 @@ const openIdConfiguration = mockOpenIdConfiguration();
 const matrixCredentials = mockMatrixCredentials();
 const oidcCredentials = mockOidcCredentials();
 
-const storedContext: StoredOAuthContext = {
+const oAuthContext: OAuthContext = {
   homeserverUrl: matrixCredentials.homeserverUrl,
   issuer: oidcCredentials.issuer,
   clientId: oidcCredentials.clientId,
@@ -45,10 +45,7 @@ const storedContext: StoredOAuthContext = {
 
 describe('completeOidcLogin', () => {
   beforeEach(() => {
-    sessionStorage.setItem(
-      'neoboard_oauth_context',
-      JSON.stringify(storedContext),
-    );
+    sessionStorage.setItem('nd_oauth_context', JSON.stringify(oAuthContext));
 
     fetch.mockResponse((req) => {
       if (
@@ -123,7 +120,7 @@ describe('completeOidcLogin', () => {
 
     await completeOidcLogin(codeAndState);
 
-    expect(sessionStorage.getItem('neoboard_oauth_context')).toBeNull();
+    expect(sessionStorage.getItem('nd_oauth_context')).toBeNull();
   });
 
   it('should throw on state mismatch', async () => {
@@ -136,6 +133,6 @@ describe('completeOidcLogin', () => {
       'OAuth state mismatch',
     );
 
-    expect(sessionStorage.getItem('neoboard_oauth_context')).toBeNull();
+    expect(sessionStorage.getItem('nd_oauth_context')).toBeNull();
   });
 });

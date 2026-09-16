@@ -18,10 +18,7 @@
 
 import { OAuth2 } from 'matrix-js-sdk';
 import { fetchAuthMetadata } from '../../lib/discovery';
-import {
-  clearStoredOAuthContext,
-  getStoredOAuthContext,
-} from './storedOAuthContext';
+import { clearOAuthContext, getOAuthContext } from './oAuthContext';
 import { OidcCodeAndState, OidcLoginResponse } from './types';
 
 /**
@@ -38,13 +35,13 @@ import { OidcCodeAndState, OidcLoginResponse } from './types';
 export const completeOidcLogin = async (
   codeAndState: OidcCodeAndState,
 ): Promise<OidcLoginResponse> => {
-  const storedContext = getStoredOAuthContext();
+  const storedContext = getOAuthContext();
   if (!storedContext) {
     throw new Error('Missing stored OAuth context.');
   }
 
   if (storedContext.state !== codeAndState.state) {
-    clearStoredOAuthContext();
+    clearOAuthContext();
     throw new Error('OAuth state mismatch.');
   }
 
@@ -61,7 +58,7 @@ export const completeOidcLogin = async (
     codeAndState.code,
   );
 
-  clearStoredOAuthContext();
+  clearOAuthContext();
 
   return {
     homeserverUrl: storedContext.homeserverUrl,

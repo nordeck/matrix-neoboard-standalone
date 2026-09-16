@@ -275,7 +275,7 @@ describe('Application', () => {
 
     // Store OAuth context as startOidcLogin does
     sessionStorage.setItem(
-      'neoboard_oauth_context',
+      'nd_oauth_context',
       JSON.stringify({
         homeserverUrl: matrixCredentials.homeserverUrl,
         issuer: oidcCredentials.issuer,

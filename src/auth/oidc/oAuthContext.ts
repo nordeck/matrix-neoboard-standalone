@@ -16,11 +16,10 @@
  * along with NeoBoard Standalone. If not, see <https://www.gnu.org/licenses/>.
  */
 import Joi from 'joi';
-import { OAuth2, ValidatedAuthMetadata } from 'matrix-js-sdk';
 
-const OAUTH_STORAGE_KEY = 'neoboard_oauth_context';
+const OAUTH_CONTEXT_KEY = 'nd_oauth_context';
 
-export type StoredOAuthContext = {
+export type OAuthContext = {
   homeserverUrl: string;
   issuer: string;
   clientId: string;
@@ -30,7 +29,7 @@ export type StoredOAuthContext = {
   state: string;
 };
 
-const storedOAuthContextSchema = Joi.object<StoredOAuthContext>({
+const oAuthContextSchema = Joi.object<OAuthContext>({
   homeserverUrl: Joi.string().uri().required(),
   issuer: Joi.string().uri().required(),
   clientId: Joi.string().required(),
@@ -43,31 +42,17 @@ const storedOAuthContextSchema = Joi.object<StoredOAuthContext>({
 /**
  * Set stored OAuth context to sessionStorage.
  */
-export function setStoredOAuthContext(
-  homeserverUrl: string,
-  authMetadata: ValidatedAuthMetadata,
-  oauth2: OAuth2,
-  state: string,
-) {
+export function setOAuthContext(context: OAuthContext): void {
   // Store context needed to complete the login after redirect
-  const storedContext: StoredOAuthContext = {
-    homeserverUrl,
-    issuer: authMetadata.issuer,
-    clientId: oauth2.context.clientId,
-    redirectUri: oauth2.context.redirectUri,
-    codeVerifier: oauth2.context.codeVerifier,
-    deviceId: oauth2.context.deviceId,
-    state,
-  };
-  sessionStorage.setItem(OAUTH_STORAGE_KEY, JSON.stringify(storedContext));
+  sessionStorage.setItem(OAUTH_CONTEXT_KEY, JSON.stringify(context));
 }
 
 /**
  * Load, validate, and return the stored OAuth context from sessionStorage.
  * Returns undefined if no context is stored or if validation fails.
  */
-export function getStoredOAuthContext(): StoredOAuthContext | undefined {
-  const rawData = sessionStorage.getItem(OAUTH_STORAGE_KEY);
+export function getOAuthContext(): OAuthContext | undefined {
+  const rawData = sessionStorage.getItem(OAUTH_CONTEXT_KEY);
 
   if (rawData === null) {
     return undefined;
@@ -75,7 +60,7 @@ export function getStoredOAuthContext(): StoredOAuthContext | undefined {
 
   try {
     const parsed = JSON.parse(rawData);
-    const result = storedOAuthContextSchema.validate(parsed);
+    const result = oAuthContextSchema.validate(parsed);
 
     if (result.error !== undefined) {
       console.warn('Invalid stored OAuth context', result.error);
@@ -92,6 +77,6 @@ export function getStoredOAuthContext(): StoredOAuthContext | undefined {
 /**
  * Clear stored OAuth context from sessionStorage.
  */
-export function clearStoredOAuthContext(): void {
-  sessionStorage.removeItem(OAUTH_STORAGE_KEY);
+export function clearOAuthContext(): void {
+  sessionStorage.removeItem(OAUTH_CONTEXT_KEY);
 }
