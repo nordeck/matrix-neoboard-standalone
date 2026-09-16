@@ -17,7 +17,7 @@
  */
 
 import { OAuth2, ValidatedAuthMetadata } from 'matrix-js-sdk';
-import { randomString } from '../../lib';
+import { secureRandomString } from 'matrix-js-sdk/lib/randomstring';
 import { setOAuthContext } from './oAuthContext';
 
 /**
@@ -36,7 +36,7 @@ export async function startOidcLogin(
   homeserverUrl: string,
 ): Promise<void> {
   const redirectUri = `${location.protocol}//${location.host}${location.pathname}`;
-  const state = randomString(16);
+  const state = secureRandomString(16);
 
   const oauth2 = new OAuth2(authMetadata, {
     clientId,
