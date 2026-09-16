@@ -17,32 +17,31 @@
  */
 
 import {
-  OidcClientConfig,
-  OidcRegistrationClientMetadata,
-  registerOidcClient as matrixRegisterOidcClient,
+  OAuth2,
+  OAuthRegistrationRequest,
+  ValidatedAuthMetadata,
 } from 'matrix-js-sdk';
 
 /**
- * Register a new OIDC client.
+ * Register a new OAuth2 client.
  *
- * @param oidcClientConfig - OIDC client config
+ * @param authMetadata - Validated auth metadata from the homeserver
  * @returns The client ID
  */
 export async function registerOidcClient(
-  oidcClientConfig: OidcClientConfig,
+  authMetadata: ValidatedAuthMetadata,
 ): Promise<string> {
   const clientUri = `${window.location.origin}${window.location.pathname}`;
-  const clientMetaData: OidcRegistrationClientMetadata = {
-    clientName: 'NeoBoard',
-    clientUri,
-    applicationType: 'web',
-    redirectUris: [`${clientUri}`],
+  const clientMetaData: OAuthRegistrationRequest = {
+    client_name: 'NeoBoard',
+    client_uri: clientUri,
+    application_type: 'web',
+    redirect_uris: [clientUri],
     // TODO The following values are actually required and dummies for the start.
     //      They should be made configurable.
-    tosUri: clientUri,
-    policyUri: clientUri,
-    contacts: ['noreply@example.com'],
+    tos_uri: clientUri,
+    policy_uri: clientUri,
   };
 
-  return await matrixRegisterOidcClient(oidcClientConfig, clientMetaData);
+  return await OAuth2.registerClient(authMetadata, clientMetaData);
 }

@@ -39,23 +39,19 @@ describe('createOidcTokenRefresher', () => {
 
   beforeEach(() => {
     fetch.mockResponse((req) => {
-      if (req.url === 'https://example.com/.well-known/openid-configuration') {
-        return {
-          status: 200,
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(openIdConfiguration),
-        };
-      } else if (req.url === openIdConfiguration.jwks_uri) {
-        return {
-          status: 200,
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ keys: [] }),
-        };
+      if (req.url === 'https://matrix.example.com/_matrix/client/versions') {
+        return JSON.stringify({
+          versions: ['v1.1', 'v1.15'],
+          unstable_features: {},
+        });
       }
+
+      if (
+        req.url === 'https://matrix.example.com/_matrix/client/v1/auth_metadata'
+      ) {
+        return JSON.stringify(openIdConfiguration);
+      }
+
       return '';
     });
   });
@@ -70,6 +66,7 @@ describe('createOidcTokenRefresher', () => {
         credentials,
         oidcCredentials,
         matrixCredentials.deviceId,
+        matrixCredentials.homeserverUrl,
       ),
     ).toBeInstanceOf(TokenRefresher);
   });

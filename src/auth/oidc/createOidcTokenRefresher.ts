@@ -16,29 +16,35 @@
  * along with NeoBoard Standalone. If not, see <https://www.gnu.org/licenses/>.
  */
 
+import { fetchAuthMetadata } from '../../lib/discovery';
 import { Credentials } from '../../state';
 import { TokenRefresher } from './TokenRefresher';
 import { OidcCredentials } from './types';
 
 /**
- * When we have a authenticated via OIDC-native flow and have a refresh token
- * try to create a token refresher.
+ * When we have authenticated via OAuth2/OIDC-native flow and have a refresh
+ * token, create a token refresher.
  *
- * Borrowed from {@link https://github.com/matrix-org/matrix-react-sdk/blob/79c50db00993a97a0b6b8c3df02b8eec4e6cb21a/src/Lifecycle.ts#L746}
+ * Fetches auth metadata from the homeserver to construct the OAuth2 context
+ * needed for token refresh.
  *
  * @param credentials from current session
- * @returns Promise that resolves to a TokenRefresher, or undefined
+ * @param oidcCredentials OIDC credentials with issuer and client info
+ * @param deviceId the device ID for this session
+ * @param homeserverUrl the homeserver URL to fetch auth metadata from
+ * @returns Promise that resolves to a TokenRefresher
  */
 export async function createOidcTokenRefresher(
   credentials: Credentials,
   oidcCredentials: OidcCredentials,
   deviceId: string,
+  homeserverUrl: string,
 ): Promise<TokenRefresher> {
-  const tokenRefresher = new TokenRefresher(
+  const authMetadata = await fetchAuthMetadata(homeserverUrl);
+  return new TokenRefresher(
+    authMetadata,
     oidcCredentials,
     deviceId,
     credentials,
   );
-  await tokenRefresher.oidcClientReady;
-  return tokenRefresher;
 }

@@ -17,7 +17,7 @@
  */
 
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { mockOidcClientConfig } from '../../lib/testUtils';
+import { mockOpenIdConfiguration } from '../../lib/testUtils';
 import { registerOidcClient } from './registerOidcClient';
 import { startOidcLogin } from './startOidcLogin';
 import { startOidcLoginFlow } from './startOidcLoginFlow';
@@ -32,7 +32,7 @@ vi.mock('./startOidcLogin', () => ({
 describe('startOidcLoginFlow', () => {
   const homeserverUrl = 'https://matrix.example.com';
   const clientId = 'test_client_id';
-  const oidcClientConfig = mockOidcClientConfig();
+  const authMetadata = mockOpenIdConfiguration();
 
   beforeEach(() => {
     vi.mocked(registerOidcClient).mockResolvedValue(clientId);
@@ -44,11 +44,11 @@ describe('startOidcLoginFlow', () => {
   });
 
   it('should start the login flow', async () => {
-    await startOidcLoginFlow(homeserverUrl, oidcClientConfig);
+    await startOidcLoginFlow(homeserverUrl, authMetadata);
 
-    expect(registerOidcClient).toHaveBeenCalledWith(oidcClientConfig);
+    expect(registerOidcClient).toHaveBeenCalledWith(authMetadata);
     expect(startOidcLogin).toHaveBeenCalledWith(
-      oidcClientConfig,
+      authMetadata,
       clientId,
       homeserverUrl,
     );
@@ -59,10 +59,10 @@ describe('startOidcLoginFlow', () => {
     vi.mocked(registerOidcClient).mockRejectedValue(error);
 
     await expect(
-      startOidcLoginFlow(homeserverUrl, oidcClientConfig),
+      startOidcLoginFlow(homeserverUrl, authMetadata),
     ).rejects.toThrow('OIDC client registration failed');
 
-    expect(registerOidcClient).toHaveBeenCalledWith(oidcClientConfig);
+    expect(registerOidcClient).toHaveBeenCalledWith(authMetadata);
     expect(startOidcLogin).not.toHaveBeenCalled();
   });
 });

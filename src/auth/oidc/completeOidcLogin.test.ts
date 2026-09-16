@@ -16,52 +16,126 @@
  * along with NeoBoard Standalone. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { completeAuthorizationCodeGrant } from 'matrix-js-sdk';
-import { describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import {
   mockMatrixCredentials,
   mockOidcCredentials,
-  mockOidcLoginResponse,
+  mockOpenIdConfiguration,
 } from '../../lib/testUtils';
 import { completeOidcLogin } from './completeOidcLogin';
+import { StoredOAuthContext } from './storedOAuthContext';
 import { OidcCodeAndState } from './types';
 
-vi.mock('matrix-js-sdk', async () => ({
-  ...(await vi.importActual('matrix-js-sdk')),
-  completeAuthorizationCodeGrant: vi.fn(),
-}));
+import type { FetchMock } from 'vitest-fetch-mock';
+const fetch = global.fetch as FetchMock;
 
+const openIdConfiguration = mockOpenIdConfiguration();
 const matrixCredentials = mockMatrixCredentials();
-const oidcTestCredentials = mockOidcCredentials();
-const oidcLoginResponse = mockOidcLoginResponse();
+const oidcCredentials = mockOidcCredentials();
+
+const storedContext: StoredOAuthContext = {
+  homeserverUrl: matrixCredentials.homeserverUrl,
+  issuer: oidcCredentials.issuer,
+  clientId: oidcCredentials.clientId,
+  redirectUri: 'http://localhost/',
+  codeVerifier: 'test_code_verifier',
+  deviceId: matrixCredentials.deviceId,
+  state: 'oidc_test_state',
+};
 
 describe('completeOidcLogin', () => {
-  it('should forward the call to the Matrix JS SDK', async () => {
+  beforeEach(() => {
+    sessionStorage.setItem(
+      'neoboard_oauth_context',
+      JSON.stringify(storedContext),
+    );
+
+    fetch.mockResponse((req) => {
+      if (
+        req.url === `${matrixCredentials.homeserverUrl}_matrix/client/versions`
+      ) {
+        return JSON.stringify({
+          versions: ['v1.1', 'v1.15'],
+        });
+      }
+
+      if (
+        req.url ===
+        `${matrixCredentials.homeserverUrl}_matrix/client/v1/auth_metadata`
+      ) {
+        return JSON.stringify(openIdConfiguration);
+      }
+
+      if (req.url === openIdConfiguration.token_endpoint) {
+        return {
+          status: 200,
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            access_token: matrixCredentials.accessToken,
+            refresh_token: matrixCredentials.refreshToken,
+            token_type: 'Bearer',
+          }),
+        };
+      }
+
+      return '';
+    });
+  });
+
+  afterEach(() => {
+    fetch.resetMocks();
+    sessionStorage.clear();
+  });
+
+  it('should exchange the code for tokens and return login response', async () => {
     const codeAndState: OidcCodeAndState = {
       state: 'oidc_test_state',
       code: 'oidc_test_code',
     };
 
-    vi.mocked(completeAuthorizationCodeGrant).mockResolvedValue({
-      homeserverUrl: matrixCredentials.homeserverUrl,
-      idTokenClaims: oidcTestCredentials.idTokenClaims,
-      oidcClientSettings: {
-        issuer: oidcTestCredentials.issuer,
-        clientId: oidcTestCredentials.clientId,
-      },
-      tokenResponse: {
-        access_token: matrixCredentials.accessToken,
-        refresh_token: matrixCredentials.refreshToken,
-        token_type: 'Bearer',
-        scope: 'oidc',
-        id_token: 'oidc_test_id_token',
-      },
-    });
+    const result = await completeOidcLogin(codeAndState);
 
-    expect(await completeOidcLogin(codeAndState)).toEqual(oidcLoginResponse);
-    expect(completeAuthorizationCodeGrant).toHaveBeenCalledWith(
-      codeAndState.code,
-      codeAndState.state,
+    expect(result.homeserverUrl).toBe(matrixCredentials.homeserverUrl);
+    expect(result.accessToken).toBe(matrixCredentials.accessToken);
+    expect(result.refreshToken).toBe(matrixCredentials.refreshToken);
+    expect(result.clientId).toBe(oidcCredentials.clientId);
+    expect(result.issuer).toBe(oidcCredentials.issuer);
+  });
+
+  it('should throw when stored OAuth context is missing', async () => {
+    sessionStorage.clear();
+
+    const codeAndState: OidcCodeAndState = {
+      state: 'oidc_test_state',
+      code: 'oidc_test_code',
+    };
+
+    await expect(completeOidcLogin(codeAndState)).rejects.toThrow(
+      'Missing stored OAuth context',
     );
+  });
+
+  it('should clear stored context after successful login', async () => {
+    const codeAndState: OidcCodeAndState = {
+      state: 'oidc_test_state',
+      code: 'oidc_test_code',
+    };
+
+    await completeOidcLogin(codeAndState);
+
+    expect(sessionStorage.getItem('neoboard_oauth_context')).toBeNull();
+  });
+
+  it('should throw on state mismatch', async () => {
+    const codeAndState: OidcCodeAndState = {
+      state: 'wrong_state',
+      code: 'oidc_test_code',
+    };
+
+    await expect(completeOidcLogin(codeAndState)).rejects.toThrow(
+      'OAuth state mismatch',
+    );
+
+    expect(sessionStorage.getItem('neoboard_oauth_context')).toBeNull();
   });
 });

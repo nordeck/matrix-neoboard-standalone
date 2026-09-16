@@ -26,24 +26,24 @@ vi.mock('./completeOidcLogin');
 const oidcLoginResponse = mockOidcLoginResponse();
 
 describe('attemptCompleteOidcLogin', () => {
-  it('should return null if no query params are set', async () => {
+  it('should return null if no fragment params are set', async () => {
     window.location.href = 'https://example.com/';
     expect(await attemptCompleteOidcLogin()).toBeNull();
   });
 
-  it('should return null if only the "code" query params is set', async () => {
-    window.location.href = 'https://example.com/?code=test_code';
+  it('should return null if only the "code" fragment param is set', async () => {
+    window.location.href = 'https://example.com/#code=test_code';
     expect(await attemptCompleteOidcLogin()).toBeNull();
   });
 
-  it('should return null if only the "state" query params is set', async () => {
-    window.location.href = 'https://example.com/?state=test_state';
+  it('should return null if only the "state" fragment param is set', async () => {
+    window.location.href = 'https://example.com/#state=test_state';
     expect(await attemptCompleteOidcLogin()).toBeNull();
   });
 
-  it('should return complete the login if the "code" and "state" query params are set', async () => {
+  it('should complete the login if the "code" and "state" are in the URL fragment', async () => {
     window.location.href =
-      'https://example.com/?code=test_code&state=test_state';
+      'https://example.com/#state=test_state&code=test_code';
 
     vi.mocked(completeOidcLogin).mockResolvedValue(oidcLoginResponse);
 

@@ -16,55 +16,80 @@
  * along with NeoBoard Standalone. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { afterAll, beforeAll, describe, expect, it } from 'vitest';
-import {
-  mockOidcClientConfig,
-  mockOpenIdConfiguration,
-} from '../../lib/testUtils';
+import { afterEach, beforeAll, describe, expect, it } from 'vitest';
+import { mockOpenIdConfiguration } from '../../lib/testUtils';
 import { startOidcLogin } from './startOidcLogin';
+import { getStoredOAuthContext } from './storedOAuthContext';
 
-import type { FetchMock } from 'vitest-fetch-mock';
-const fetch = global.fetch as FetchMock;
-
-const openIdConfiguration = mockOpenIdConfiguration();
-const oidcClientConfig = mockOidcClientConfig();
+const authMetadata = mockOpenIdConfiguration();
 
 describe('startOidcLogin', () => {
   beforeAll(() => {
-    // Add a path and a query param
     Object.defineProperty(window, 'location', {
       value: new URL('http://example.com/oidc_callback/?lang=en'),
       configurable: true,
     });
-
-    fetch.mockResponse((req) => {
-      if (req.url === 'https://example.com/.well-known/openid-configuration') {
-        return {
-          status: 200,
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(openIdConfiguration),
-        };
-      }
-      return '';
-    });
   });
 
-  afterAll(() => {
-    fetch.resetMocks();
+  afterEach(() => {
+    sessionStorage.clear();
   });
 
   it('should redirect to the authorisation URL', async () => {
     await startOidcLogin(
-      oidcClientConfig,
+      authMetadata,
       'test_client_id',
       'https://matrix.example.com',
     );
 
-    // The redirect_uri should include the path but not the query params
-    expect(window.location.href).toMatch(
-      /^https:\/\/auth\.example\.com\/auth\?client_id=test_client_id&redirect_uri=http%3A%2F%2Fexample\.com%2Foidc_callback%2F&response_type=code&scope=openid\+urn%3Amatrix%3Aorg\.matrix\.msc2967\.client%3Aapi%3A\*\+urn%3Amatrix%3Aorg\.matrix\.msc2967\.client%3Adevice%3A.+&nonce=.+&state=.+&code_challenge=.+&code_challenge_method=S256&response_mode=query/,
+    const url = new URL(window.location.href);
+    expect(url.origin + url.pathname).toBe(authMetadata.authorization_endpoint);
+    expect(url.searchParams.get('client_id')).toBe('test_client_id');
+    expect(url.searchParams.get('response_type')).toBe('code');
+    expect(url.searchParams.get('response_mode')).toBe('fragment');
+    expect(url.searchParams.get('code_challenge_method')).toBe('S256');
+    expect(url.searchParams.get('code_challenge')).toBeTruthy();
+    expect(url.searchParams.get('state')).toBeTruthy();
+    expect(url.searchParams.get('scope')).toBeTruthy();
+    // redirect_uri should include the path but not the query params
+    expect(url.searchParams.get('redirect_uri')).toBe(
+      'http://example.com/oidc_callback/',
     );
+  });
+
+  it('should store OAuth context in sessionStorage', async () => {
+    await startOidcLogin(
+      authMetadata,
+      'test_client_id',
+      'https://matrix.example.com',
+    );
+
+    const storedOAuthContext = getStoredOAuthContext();
+    expect(storedOAuthContext).toEqual({
+      homeserverUrl: 'https://matrix.example.com',
+      issuer: authMetadata.issuer,
+      clientId: 'test_client_id',
+      codeVerifier: expect.any(String),
+      deviceId: expect.any(String),
+      state: expect.any(String),
+      redirectUri: expect.any(String),
+    });
+  });
+
+  it('should return undefined when no context is stored', () => {
+    expect(getStoredOAuthContext()).toBeUndefined();
+  });
+
+  it('should return undefined when stored context is invalid JSON', () => {
+    sessionStorage.setItem('neoboard_oauth_context', 'unexpected');
+    expect(getStoredOAuthContext()).toBeUndefined();
+  });
+
+  it('should return undefined when stored context is missing required fields', () => {
+    sessionStorage.setItem(
+      'neoboard_oauth_context',
+      JSON.stringify({ clientId: 'test' }),
+    );
+    expect(getStoredOAuthContext()).toBeUndefined();
   });
 });

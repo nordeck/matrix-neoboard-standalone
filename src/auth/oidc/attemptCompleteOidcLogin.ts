@@ -24,14 +24,16 @@ import {
 } from './types';
 
 /**
- * Try to complete an OIDC login if the "code" and "state" query params are set.
+ * Try to complete an OIDC login if the "code" and "state" params are set
+ * in the URL fragment (hash). The IdP returns them via response_mode=fragment.
  *
  * @returns Promise that resolves to OidcCredentials on success or
  *          null if "code" or "state" are not set.
  */
 export async function attemptCompleteOidcLogin(): Promise<OidcLoginResponse | null> {
-  const codeAndState = parseValidatedCodeAndStateFromQueryParams(
-    new URL(window.location.href).searchParams,
+  const url = new URL(window.location.href);
+  const codeAndState = parseValidatedCodeAndState(
+    new URLSearchParams(url.hash.slice(1)),
   );
 
   if (codeAndState === null) {
@@ -39,18 +41,18 @@ export async function attemptCompleteOidcLogin(): Promise<OidcLoginResponse | nu
   }
 
   // If code and state stay in the URL a client may navigate back to it or bookmark it.
-  // Prevent this by removing all query params after an OIDC login.
+  // Prevent this by removing all query params and the fragment after an OIDC login.
   window.history.replaceState(null, '', window.location.pathname);
 
   return await completeOidcLogin(codeAndState);
 }
 
-function parseValidatedCodeAndStateFromQueryParams(
-  queryParams: URLSearchParams,
+function parseValidatedCodeAndState(
+  params: URLSearchParams,
 ): OidcCodeAndState | null {
   const rawCodeAndState = {
-    code: queryParams.get('code'),
-    state: queryParams.get('state'),
+    code: params.get('code'),
+    state: params.get('state'),
   };
 
   const validationResult = oidcCodeAndStateSchema.validate(rawCodeAndState);

@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with NeoBoard Standalone. If not, see <https://www.gnu.org/licenses/>.
  */
-import { MatrixError, OidcClientConfig } from 'matrix-js-sdk';
+import { MatrixError, ValidatedAuthMetadata } from 'matrix-js-sdk';
 import { fetchAuthMetadata } from '../lib/discovery';
 import { fetchSsoLoginFlow } from '../lib/matrix';
 import { discoverHomeserverUrl } from './discoverHomeserverUrl';
@@ -34,7 +34,7 @@ export async function startLoginFlow(homeserverName: string): Promise<void> {
   }
 
   // Fetch the OIDC configuration
-  let oidcClientConfig: OidcClientConfig | undefined;
+  let oidcClientConfig: ValidatedAuthMetadata | undefined;
   try {
     oidcClientConfig = await fetchAuthMetadata(homeserverUrl);
   } catch (e) {

@@ -185,6 +185,7 @@ export class Application {
         this.credentials,
         oidcCredentials,
         matrixCredentials.deviceId,
+        matrixCredentials.homeserverUrl,
       );
     }
 
@@ -271,15 +272,8 @@ export class Application {
       return false;
     }
 
-    const {
-      homeserverUrl,
-      identityServerUrl,
-      accessToken,
-      refreshToken,
-      clientId,
-      issuer,
-      idTokenClaims,
-    } = oidcLoginResponse;
+    const { homeserverUrl, accessToken, refreshToken, clientId, issuer } =
+      oidcLoginResponse;
 
     let whoamiData: Awaited<ReturnType<MatrixClient['whoami']>> | null = null;
 
@@ -293,11 +287,9 @@ export class Application {
     this.credentials.setOidcCredentials({
       clientId,
       issuer,
-      idTokenClaims,
     });
     this.credentials.setMatrixCredentials({
       homeserverUrl,
-      identityServerUrl,
       accessToken,
       refreshToken,
       userId: whoamiData.user_id,

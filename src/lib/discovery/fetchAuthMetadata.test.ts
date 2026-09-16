@@ -19,11 +19,11 @@
 import { afterEach, describe, expect, it } from 'vitest';
 
 import type { FetchMock } from 'vitest-fetch-mock';
-import { mockOidcClientConfig } from '../testUtils';
+import { mockOpenIdConfiguration } from '../testUtils';
 import { fetchAuthMetadata } from './fetchAuthMetadata';
 const fetch = global.fetch as FetchMock;
 
-const oidcClientConfig = mockOidcClientConfig();
+const authMetadata = mockOpenIdConfiguration();
 
 describe('fetchAuthMetadata', () => {
   afterEach(() => {
@@ -32,38 +32,24 @@ describe('fetchAuthMetadata', () => {
 
   it('should fetch and return authentication metadata', async () => {
     fetch.mockResponse((req) => {
-      if (
-        req.url ===
-        'https://matrix.example.com/_matrix/client/unstable/org.matrix.msc2965/auth_metadata'
-      ) {
-        return JSON.stringify(oidcClientConfig);
+      if (req.url === 'https://matrix.example.com/_matrix/client/versions') {
+        return JSON.stringify({
+          versions: ['v1.1', 'v1.15'],
+          unstable_features: {},
+        });
       }
 
-      if (req.url === 'https://auth.example.com/jwks') {
-        return {
-          status: 200,
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ keys: [] }),
-        };
+      if (
+        req.url === 'https://matrix.example.com/_matrix/client/v1/auth_metadata'
+      ) {
+        return JSON.stringify(authMetadata);
       }
 
       return '';
     });
 
-    expect(await fetchAuthMetadata('https://matrix.example.com')).toEqual({
-      authorization_endpoint: 'https://auth.example.com/auth',
-      code_challenge_methods_supported: ['S256'],
-      grant_types_supported: ['authorization_code', 'refresh_token'],
-      issuer: 'https://example.com',
-      registration_endpoint: 'https://auth.example.com/register',
-      response_types_supported: ['code'],
-      revocation_endpoint: 'https://auth.example.com/revoke',
-      token_endpoint: 'https://auth.example.com/token',
-      jwks_uri: 'https://auth.example.com/jwks',
-      device_authorization_endpoint: 'https://auth.example.com/device',
-      signingKeys: [],
-    });
+    expect(await fetchAuthMetadata('https://matrix.example.com')).toEqual(
+      authMetadata,
+    );
   });
 });

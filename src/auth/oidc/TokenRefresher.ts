@@ -16,37 +16,50 @@
  * along with NeoBoard Standalone. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { AccessTokens, OidcTokenRefresher } from 'matrix-js-sdk';
+import {
+  AccessTokens,
+  OAuth2,
+  TokenRefresher as SdkTokenRefresher,
+  ValidatedAuthMetadata,
+} from 'matrix-js-sdk';
 import { Credentials } from '../../state';
 import { OidcCredentials } from './types';
 
 /**
- * OidcTokenRefresher implementation that gets a Credentials instance and
- * updates the access tokens on token refresh.
+ * Token refresher that wraps the SDK's TokenRefresher and persists
+ * new tokens to the Credentials state.
  */
-export class TokenRefresher extends OidcTokenRefresher {
+export class TokenRefresher {
+  private sdkRefresher: SdkTokenRefresher;
+
   public constructor(
+    authMetadata: ValidatedAuthMetadata,
     oidcCredentials: OidcCredentials,
     deviceId: string,
     private credentials: Credentials,
   ) {
-    super(
-      oidcCredentials.issuer,
-      oidcCredentials.clientId,
-      new URL(window.location.href).href,
+    const oauth2 = new OAuth2(authMetadata, {
+      clientId: oidcCredentials.clientId,
+      redirectUri: new URL(window.location.href).href,
       deviceId,
-      oidcCredentials.idTokenClaims,
+    });
+
+    this.sdkRefresher = new SdkTokenRefresher(
+      oauth2,
+      async (tokens: AccessTokens) => {
+        this.credentials.updateAccessTokens(tokens);
+      },
     );
   }
 
   /**
-   * Update the access token on the Credentials state.
-   *
-   * @param accessToken - new access token
-   * @param refreshToken - OPTIONAL new refresh token
-   * @returns Promise<void>
+   * The token refresh function to pass to MatrixClient.
+   * Delegates to the SDK's TokenRefresher which handles the OAuth2 refresh
+   * token grant and calls our onRefresh callback to persist the new tokens.
    */
-  public async persistTokens(accessTokens: AccessTokens): Promise<void> {
-    this.credentials.updateAccessTokens(accessTokens);
-  }
+  public doRefreshAccessToken = (
+    refreshToken: string,
+  ): Promise<AccessTokens> => {
+    return this.sdkRefresher.tokenRefreshFunction(refreshToken);
+  };
 }

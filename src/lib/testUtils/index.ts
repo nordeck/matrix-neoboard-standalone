@@ -18,5 +18,5 @@
 
 export { mockMatrixCredentials, mockOidcCredentials } from './credentials';
 export { mockLoggedInApis } from './mockLoggedInApis';
-export { mockOidcClientConfig, mockOpenIdConfiguration } from './oidc';
+export { mockOpenIdConfiguration } from './oidc';
 export { mockOidcLoginResponse } from './oidcLoginResponse';
