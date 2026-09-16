@@ -49,13 +49,13 @@ export const completeOidcLogin = async (
 
   const oauth2 = new OAuth2(authMetadata, {
     clientId: storedContext.clientId,
-    redirectUri: storedContext.redirectUri,
     codeVerifier: storedContext.codeVerifier,
     deviceId: storedContext.deviceId,
   });
 
   const tokenResponse = await oauth2.completeAuthorizationCodeGrant(
     codeAndState.code,
+    storedContext.redirectUri,
   );
 
   clearOAuthContext();

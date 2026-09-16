@@ -40,13 +40,12 @@ export async function startOidcLogin(
 
   const oauth2 = new OAuth2(authMetadata, {
     clientId,
-    redirectUri,
   });
   setOAuthContext({
     homeserverUrl,
     issuer: authMetadata.issuer,
     clientId: oauth2.context.clientId,
-    redirectUri: oauth2.context.redirectUri,
+    redirectUri,
     codeVerifier: oauth2.context.codeVerifier,
     deviceId: oauth2.context.deviceId,
     state,
@@ -54,6 +53,7 @@ export async function startOidcLogin(
 
   const authorizationUrl = await oauth2.generateAuthorizationCodeGrantUrl(
     state,
+    redirectUri,
     'fragment',
   );
 

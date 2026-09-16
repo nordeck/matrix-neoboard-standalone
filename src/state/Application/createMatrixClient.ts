@@ -16,12 +16,18 @@
  * along with NeoBoard Standalone. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { MatrixClient, MatrixScheduler, MemoryStore } from 'matrix-js-sdk';
-import { MatrixCredentials, TokenRefresher } from '../../auth';
+import {
+  MatrixClient,
+  MatrixScheduler,
+  MemoryStore,
+  TokenRefreshCallback,
+} from 'matrix-js-sdk';
+import { MatrixCredentials } from '../../auth';
 
 export async function createMatrixClient(
   matrixCredentials: MatrixCredentials,
-  tokenRefresher?: TokenRefresher,
+  oauthClientId?: string,
+  onTokenRefresh?: TokenRefreshCallback,
 ): Promise<MatrixClient> {
   return new MatrixClient({
     baseUrl: matrixCredentials.homeserverUrl,
@@ -31,8 +37,8 @@ export async function createMatrixClient(
     userId: matrixCredentials.userId,
     deviceId: matrixCredentials.deviceId,
     refreshToken: matrixCredentials.refreshToken,
-    tokenRefreshFunction:
-      tokenRefresher?.doRefreshAccessToken.bind(tokenRefresher),
+    oauthClientId,
+    onTokenRefresh,
     // create a store to save sync data to be requested by the api endpoints
     store: new MemoryStore({
       localStorage: global.localStorage,
