@@ -17,36 +17,12 @@
  */
 
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
-import Joi from 'joi';
 import { RootState } from '../store';
+import { SortBy, ViewMode } from './dashboardState';
 import { loadDashboardState } from './persistence';
 
-export type SortBy =
-  | 'recently_viewed'
-  | 'name_asc'
-  | 'name_desc'
-  | 'created_asc'
-  | 'created_desc';
-
-export type ViewMode = 'tile' | 'list';
-
-export interface DashboardState {
-  sortBy: SortBy;
-  viewMode: ViewMode;
-}
-
-export const dashboardStateSchema = Joi.object({
-  sortBy: Joi.string()
-    .valid(
-      'recently_viewed',
-      'name_asc',
-      'name_desc',
-      'created_asc',
-      'created_desc',
-    )
-    .required(),
-  viewMode: Joi.string().valid('tile', 'list'),
-}).unknown();
+export { dashboardStateSchema, defaultDashboardState } from './dashboardState';
+export type { DashboardState, SortBy, ViewMode } from './dashboardState';
 
 export const dashboardSlice = createSlice({
   name: 'dashboard',

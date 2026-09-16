@@ -16,22 +16,43 @@
  * along with NeoBoard Standalone. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { MatrixClient } from 'matrix-js-sdk';
-import { afterEach, beforeEach, describe, expect, it, Mocked } from 'vitest';
+import { MatrixClient, RoomEvent } from 'matrix-js-sdk';
+import { ReceiptType } from 'matrix-js-sdk/lib/@types/read_receipts';
+import { Symbols } from 'matrix-widget-api';
+import { firstValueFrom } from 'rxjs';
 import {
+  afterEach,
+  beforeEach,
+  describe,
+  expect,
+  it,
+  Mocked,
+  vi,
+} from 'vitest';
+import {
+  createMatrixEvent,
+  createMatrixRoom,
   createMembershipEvent,
+  createPrivateReceiptEvent,
   getMockClientWithEventEmitter,
 } from '../../../lib/test';
 import { STATE_EVENT_TOMBSTONE } from '../../../model';
 import { MatrixStandaloneClient } from './MatrixStandaloneClient';
 import { StandaloneClient } from './types';
 
+const userId = '@alice:example.com';
+
 describe('MatrixStandaloneClient', () => {
   let matrixClient: Mocked<MatrixClient>;
   let standaloneClient: StandaloneClient;
 
   beforeEach(() => {
-    matrixClient = getMockClientWithEventEmitter();
+    matrixClient = getMockClientWithEventEmitter({
+      getSafeUserId: vi.fn().mockReturnValue(userId),
+      getVisibleRooms: vi.fn().mockReturnValue([]),
+      getRoom: vi.fn(),
+      sendReadReceipt: vi.fn().mockResolvedValue({}),
+    });
     standaloneClient = new MatrixStandaloneClient(matrixClient);
   });
 
@@ -98,6 +119,132 @@ describe('MatrixStandaloneClient', () => {
         '@invite:example.com',
         'Room closed',
       );
+    });
+  });
+
+  describe('getRoomLastViewed', () => {
+    it('should return the timestamp of the private read receipt', async () => {
+      matrixClient.getVisibleRooms.mockReturnValue([
+        createMatrixRoom({
+          roomId: '!viewed:example.com',
+          privateReceipt: { eventId: '$event', data: { ts: 1234 } },
+        }),
+      ]);
+
+      await expect(
+        standaloneClient.getRoomLastViewed(Symbols.AnyRoom),
+      ).resolves.toEqual({ '!viewed:example.com': 1234 });
+    });
+
+    it('should omit rooms the user never viewed', async () => {
+      matrixClient.getVisibleRooms.mockReturnValue([
+        createMatrixRoom({ roomId: '!never:example.com' }),
+      ]);
+
+      await expect(
+        standaloneClient.getRoomLastViewed(Symbols.AnyRoom),
+      ).resolves.toEqual({});
+    });
+
+    it('should ignore receipts the SDK synthesized locally', async () => {
+      const room = createMatrixRoom({ roomId: '!room:example.com' });
+      const getReadReceiptForUserId = vi.fn().mockReturnValue(null);
+      matrixClient.getVisibleRooms.mockReturnValue([
+        { ...room, getReadReceiptForUserId } as unknown as typeof room,
+      ]);
+
+      await standaloneClient.getRoomLastViewed(Symbols.AnyRoom);
+
+      expect(getReadReceiptForUserId).toHaveBeenCalledWith(
+        userId,
+        true,
+        ReceiptType.ReadPrivate,
+      );
+    });
+  });
+
+  describe('markRoomViewed', () => {
+    it('should send a private read receipt for the latest event', async () => {
+      const event = createMatrixEvent('$latest');
+      matrixClient.getRoom.mockReturnValue(
+        createMatrixRoom({ roomId: '!room:example.com', lastLiveEvent: event }),
+      );
+
+      await standaloneClient.markRoomViewed('!room:example.com');
+
+      expect(matrixClient.sendReadReceipt).toHaveBeenCalledWith(
+        event,
+        ReceiptType.ReadPrivate,
+      );
+    });
+
+    it('should do nothing if the room holds no event', async () => {
+      matrixClient.getRoom.mockReturnValue(
+        createMatrixRoom({ roomId: '!room:example.com' }),
+      );
+
+      await standaloneClient.markRoomViewed('!room:example.com');
+
+      expect(matrixClient.sendReadReceipt).not.toHaveBeenCalled();
+    });
+
+    it('should throw for an unknown room', async () => {
+      matrixClient.getRoom.mockReturnValue(null);
+
+      await expect(
+        standaloneClient.markRoomViewed('!unknown:example.com'),
+      ).rejects.toThrow('Room not found by id: !unknown:example.com');
+    });
+  });
+
+  describe('roomLastViewedObservable', () => {
+    it('should emit the room id of an own private read receipt', async () => {
+      const room = createMatrixRoom({ roomId: '!room:example.com' });
+      const emitted = firstValueFrom(
+        standaloneClient.roomLastViewedObservable(),
+      );
+
+      matrixClient.emit(
+        RoomEvent.Receipt,
+        createPrivateReceiptEvent({ userId }),
+        room,
+      );
+
+      await expect(emitted).resolves.toEqual('!room:example.com');
+    });
+
+    it('should ignore private read receipts of other users', async () => {
+      const room = createMatrixRoom({ roomId: '!room:example.com' });
+      const seen: string[] = [];
+      const subscription = standaloneClient
+        .roomLastViewedObservable()
+        .subscribe((roomId) => seen.push(roomId));
+
+      matrixClient.emit(
+        RoomEvent.Receipt,
+        createPrivateReceiptEvent({ userId: '@bob:example.com' }),
+        room,
+      );
+
+      expect(seen).toEqual([]);
+      subscription.unsubscribe();
+    });
+
+    it('should ignore public read receipts', async () => {
+      const room = createMatrixRoom({ roomId: '!room:example.com' });
+      const seen: string[] = [];
+      const subscription = standaloneClient
+        .roomLastViewedObservable()
+        .subscribe((roomId) => seen.push(roomId));
+
+      matrixClient.emit(
+        RoomEvent.Receipt,
+        createPrivateReceiptEvent({ userId, receiptType: ReceiptType.Read }),
+        room,
+      );
+
+      expect(seen).toEqual([]);
+      subscription.unsubscribe();
     });
   });
 });

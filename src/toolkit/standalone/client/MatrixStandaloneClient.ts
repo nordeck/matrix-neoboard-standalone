@@ -37,10 +37,13 @@ import {
   IJoinRoomOpts,
   MatrixClient,
   MatrixEvent,
+  RoomEvent as MatrixRoomEvent,
+  ReceiptType,
   Room,
   StateEvents,
   TimelineEvents,
 } from 'matrix-js-sdk';
+import { ReceiptContent } from 'matrix-js-sdk/lib/@types/read_receipts';
 import {
   IDownloadFileActionFromWidgetResponseData,
   IGetMediaConfigActionFromWidgetResponseData,
@@ -52,7 +55,7 @@ import {
   Symbols,
   UpdateDelayedEventAction,
 } from 'matrix-widget-api';
-import { Observable, from, fromEvent, map } from 'rxjs';
+import { Observable, filter, from, fromEvent, map } from 'rxjs';
 import { STATE_EVENT_TOMBSTONE } from '../../../model';
 import { MediaAsset } from './MediaAsset';
 import { IUser, StandaloneClient } from './types';
@@ -65,6 +68,7 @@ import { IUser, StandaloneClient } from './types';
 export class MatrixStandaloneClient implements StandaloneClient {
   private readonly events$: Observable<RoomEvent | StateEvent>;
   private readonly toDeviceMessages$: Observable<ToDeviceMessageEvent>;
+  private readonly ownReceipts$: Observable<string>;
 
   constructor(private readonly matrixClient: MatrixClient) {
     this.events$ = fromEvent(
@@ -81,6 +85,15 @@ export class MatrixStandaloneClient implements StandaloneClient {
       (event: MatrixEvent) => {
         return event.getEffectiveEvent() as unknown as ToDeviceMessageEvent;
       },
+    );
+
+    this.ownReceipts$ = fromEvent(
+      this.matrixClient,
+      MatrixRoomEvent.Receipt,
+      (event: MatrixEvent, room: Room) => ({ event, room }),
+    ).pipe(
+      filter(({ event }) => containsReceiptOf(event, this.userId())),
+      map(({ room }) => room.roomId),
     );
   }
 
@@ -131,6 +144,48 @@ export class MatrixStandaloneClient implements StandaloneClient {
       stateKey,
     ) as StateEvent<T>[];
     return Promise.resolve(events);
+  }
+
+  getRoomLastViewed(
+    roomIds: string[] | Symbols.AnyRoom,
+  ): Promise<Record<string, number>> {
+    const userId = this.userId();
+    const lastViewed: Record<string, number> = {};
+
+    for (const room of this.pickRooms(roomIds)) {
+      const receipt = room.getReadReceiptForUserId(
+        userId,
+        true,
+        ReceiptType.ReadPrivate,
+      );
+
+      if (receipt !== null) {
+        lastViewed[room.roomId] = receipt.data.ts;
+      }
+    }
+
+    return Promise.resolve(lastViewed);
+  }
+
+  async markRoomViewed(roomId: string): Promise<void> {
+    const room = this.matrixClient.getRoom(roomId);
+
+    if (!room) {
+      throw new Error(`Room not found by id: ${roomId}`);
+    }
+
+    const event = room.getLastLiveEvent();
+
+    if (!event) {
+      // Nothing to point a receipt at
+      return;
+    }
+
+    await this.matrixClient.sendReadReceipt(event, ReceiptType.ReadPrivate);
+  }
+
+  roomLastViewedObservable(): Observable<string> {
+    return this.ownReceipts$;
   }
 
   async getPowerLevelEvent(
@@ -421,6 +476,10 @@ export class MatrixStandaloneClient implements StandaloneClient {
     await Promise.allSettled(promises);
   }
 
+  private userId(): string {
+    return this.matrixClient.getSafeUserId();
+  }
+
   private pickRooms(roomIds: string[] | Symbols.AnyRoom): Room[] {
     let rooms: Room[];
 
@@ -475,6 +534,19 @@ export class MatrixStandaloneClient implements StandaloneClient {
       client.off(ClientEvent.TurnServersError, onTurnServersError);
     }
   }
+}
+
+/**
+ * Check whether an `m.receipt` event carries a private read receipt of the
+ * given user.
+ */
+function containsReceiptOf(event: MatrixEvent, userId: string): boolean {
+  const content = event.getContent<ReceiptContent>();
+
+  return Object.values(content).some(
+    (receiptsByType) =>
+      receiptsByType[ReceiptType.ReadPrivate]?.[userId] !== undefined,
+  );
 }
 
 function findStateEvents(

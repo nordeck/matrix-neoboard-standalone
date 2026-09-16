@@ -129,6 +129,39 @@ export type StandaloneClient = Pick<
   ): Promise<Array<StateEvent<T>>>;
 
   /**
+   * Get the point in time the current user last viewed each of the requested
+   * rooms.
+   *
+   * Backed by private read receipts (`m.read.private`), so the timestamps are
+   * stamped by the homeserver, are only visible to the current user and are
+   * shared across their devices. Rooms the user never viewed are omitted.
+   *
+   * @param roomIds - The rooms to get the timestamps for.
+   *                  Pass `Symbols.AnyRoom` to get them for all rooms of the
+   *                  user.
+   * @returns A map of room id to the timestamp the user last viewed it.
+   */
+  getRoomLastViewed(
+    roomIds: string[] | Symbols.AnyRoom,
+  ): Promise<Record<string, number>>;
+
+  /**
+   * Mark a room as viewed by the current user now, by sending a private read
+   * receipt for its most recent event.
+   *
+   * Does nothing if the room holds no event to point the receipt at.
+   *
+   * @param roomId - The room the user is viewing.
+   */
+  markRoomViewed(roomId: string): Promise<void>;
+
+  /**
+   * Observable that emits the id of a room whenever the read receipts of the
+   * current user change in it.
+   */
+  roomLastViewedObservable(): Observable<string>;
+
+  /**
    * Get the power level event of the room.
    *
    * @param roomId - The room id to get the power level event from.
