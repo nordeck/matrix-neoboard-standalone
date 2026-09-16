@@ -124,9 +124,9 @@ function mapWhiteboardToDashboardItem(
 }
 
 function formatLastView(whiteboard: WhiteboardEntry): string {
-  return whiteboard.whiteboardSessions?.origin_server_ts === undefined
+  return whiteboard.lastViewed === undefined
     ? '-'
-    : formatTimeAgo(whiteboard.whiteboardSessions.origin_server_ts);
+    : formatTimeAgo(whiteboard.lastViewed);
 }
 
 function formatCreated(whiteboard: WhiteboardEntry): string {

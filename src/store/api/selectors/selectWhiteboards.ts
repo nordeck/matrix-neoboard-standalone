@@ -21,20 +21,16 @@ import {
   StateEvent,
   StateEventCreateContent,
 } from '@matrix-widget-toolkit/api';
-import {
-  isMatrixRtcMode,
-  Whiteboard,
-} from '@nordeck/matrix-neoboard-react-sdk';
+import { Whiteboard } from '@nordeck/matrix-neoboard-react-sdk';
 import { createSelector } from '@reduxjs/toolkit';
-import { WhiteboardSessionsEvent } from '../../../model';
 import { SortBy } from '../../dashboard/dashboardSlice';
 import { RootState } from '../../store';
 import { selectAllPowerLevelsEventEntities } from '../PowerLevelsApi';
 import { selectAllRoomCreateEventEntities } from '../roomCreateApi.ts';
+import { selectAllRoomLastViewed } from '../roomLastViewedApi';
 import { selectAllRoomMemberEventEntities } from '../roomMemberApi';
 import { selectAllRoomNameEventEntities } from '../roomNameApi';
 import { selectAllWhiteboards } from '../whiteboardApi';
-import { selectAllWhiteboardSessionsEventEntities } from '../whiteboardSessionsApi';
 
 export type SingleWhiteboard = {
   roomName: string;
@@ -44,7 +40,7 @@ export type SingleWhiteboard = {
 export type WhiteboardEntry = {
   roomName: string;
   whiteboard: StateEvent<Whiteboard>;
-  whiteboardSessions: StateEvent<WhiteboardSessionsEvent> | undefined;
+  lastViewed: number | undefined;
   powerLevels: StateEvent<PowerLevelsStateEvent> | undefined;
   roomCreateEvent: StateEvent<StateEventCreateContent> | undefined;
   preview: string | undefined;
@@ -84,14 +80,14 @@ export function makeSelectWhiteboards(
     selectAllWhiteboards,
     selectAllRoomNameEventEntities,
     selectAllRoomMemberEventEntities,
-    selectAllWhiteboardSessionsEventEntities,
+    selectAllRoomLastViewed,
     selectAllPowerLevelsEventEntities,
     selectAllRoomCreateEventEntities,
     (
       whiteboards,
       roomNameEvents,
       roomMemberEvents,
-      whiteboardSessionsEvents,
+      roomLastViewed,
       powerLevelsEvents,
       roomCreateEvents,
     ): WhiteboardEntry[] => {
@@ -100,24 +96,6 @@ export function makeSelectWhiteboards(
        * Remembers room IDs to de-duplicate the whiteboard list.
        */
       const seenRooms = new Set<string>();
-
-      // Pre-index the latest session event per room for this user (O(M) pre-pass)
-      const stateKey = isMatrixRtcMode() ? undefined : userId;
-      const latestSessionByRoom = Object.values(
-        whiteboardSessionsEvents,
-      ).reduce<Record<string, StateEvent<WhiteboardSessionsEvent>>>(
-        (acc, ev) => {
-          if (
-            ev.state_key === stateKey &&
-            (acc[ev.room_id] === undefined ||
-              acc[ev.room_id].origin_server_ts < ev.origin_server_ts)
-          ) {
-            acc[ev.room_id] = ev;
-          }
-          return acc;
-        },
-        {},
-      );
 
       // Pre-index rooms where the current user is a member (O(M) pre-pass)
       const memberRooms = new Set(
@@ -146,7 +124,7 @@ export function makeSelectWhiteboards(
             {
               roomName,
               whiteboard,
-              whiteboardSessions: latestSessionByRoom[room_id],
+              lastViewed: roomLastViewed[room_id],
               powerLevels: powerLevelsEvents[room_id],
               roomCreateEvent: roomCreateEvents[room_id],
               preview: undefined,
@@ -169,15 +147,7 @@ export function makeSelectWhiteboards(
 function createBoardComparator(sortBy: SortBy) {
   return (a: WhiteboardEntry, b: WhiteboardEntry) => {
     if (sortBy === 'recently_viewed') {
-      const compareA =
-        a.whiteboardSessions?.origin_server_ts ??
-        // Fall back to create event, if there is no whiteboardSessions event
-        a.whiteboard.origin_server_ts;
-      const compareB =
-        b.whiteboardSessions?.origin_server_ts ??
-        // Fall back to create event, if there is no whiteboardSessions event
-        b.whiteboard.origin_server_ts;
-      return compareB - compareA;
+      return (b.lastViewed ?? -Infinity) - (a.lastViewed ?? -Infinity);
     }
 
     if (sortBy === 'name_asc') {

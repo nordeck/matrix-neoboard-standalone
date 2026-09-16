@@ -37,6 +37,7 @@ import loglevel from 'loglevel';
 import { useCallback, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router';
+import { useLoggedIn } from '../../state';
 import { useAppDispatch } from '../../store';
 import { useSaveOnLeave } from '../LoggedInLayout/useSaveOnLeave.tsx';
 import { useOpenedRoomId } from '../RoomIdProvider';
@@ -50,6 +51,13 @@ export const BoardView = () => {
   const roomId = useOpenedRoomId();
   const whiteboardManager = useWhiteboardManager();
   const standaloneWidgetApi = useStandaloneWidgetApi();
+  const { standaloneClient } = useLoggedIn();
+
+  useEffect(() => {
+    standaloneClient.markRoomViewed(roomId).catch((error) => {
+      loglevel.error('Error while marking the room as viewed', error);
+    });
+  }, [roomId, standaloneClient]);
 
   useEffect(() => {
     // override a widget room id

@@ -17,4 +17,3 @@
  */
 
 export * from './tombstoneEvent';
-export * from './whiteboardSessionsEvent';

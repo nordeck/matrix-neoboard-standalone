@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Nordeck IT + Consulting GmbH
+ * Copyright 2026 Nordeck IT + Consulting GmbH
  *
  * NeoBoard Standalone is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -16,26 +16,36 @@
  * along with NeoBoard Standalone. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { StateEvent } from '@matrix-widget-toolkit/api';
-import { STATE_EVENT_WHITEBOARD_SESSIONS } from '@nordeck/matrix-neoboard-react-sdk';
 import Joi from 'joi';
-import { isValidEvent } from './validation';
 
-export type WhiteboardSessionsEvent = {};
+export type SortBy =
+  | 'recently_viewed'
+  | 'name_asc'
+  | 'name_desc'
+  | 'created_asc'
+  | 'created_desc';
 
-const whiteboardSessionsEventSchema = Joi.object<WhiteboardSessionsEvent, true>(
-  {},
-).unknown();
+export type ViewMode = 'tile' | 'list';
 
-export const STATE_EVENT_SESSION = STATE_EVENT_WHITEBOARD_SESSIONS;
-
-export function isValidWhiteboardSessionsEvent(
-  event: StateEvent<unknown>,
-): event is StateEvent<WhiteboardSessionsEvent> {
-  return isValidEvent(
-    event,
-    STATE_EVENT_SESSION,
-    whiteboardSessionsEventSchema,
-    true,
-  );
+export interface DashboardState {
+  sortBy: SortBy;
+  viewMode: ViewMode;
 }
+
+export const defaultDashboardState: DashboardState = {
+  sortBy: 'recently_viewed',
+  viewMode: 'tile',
+};
+
+export const dashboardStateSchema = Joi.object({
+  sortBy: Joi.string()
+    .valid(
+      'recently_viewed',
+      'name_asc',
+      'name_desc',
+      'created_asc',
+      'created_desc',
+    )
+    .required(),
+  viewMode: Joi.string().valid('tile', 'list'),
+}).unknown();

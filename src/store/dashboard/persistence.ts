@@ -16,8 +16,12 @@
  * along with NeoBoard Standalone. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { loadValidatedFromLocalStorage } from '../../lib/storage';
-import { DashboardState, dashboardStateSchema } from './dashboardSlice';
+import { tryLoadValidatedFromLocalStorage } from '../../lib/storage';
+import {
+  DashboardState,
+  dashboardStateSchema,
+  defaultDashboardState,
+} from './dashboardState';
 
 /**
  * Key under which the dashboard part of the store is persisted.
@@ -26,15 +30,27 @@ const localStorageKey = 'neoboard-store-dashboard';
 
 /**
  * Load the dashboard state from local storage.
- * If it fails, return the default state.
  */
 export function loadDashboardState(): DashboardState {
-  return {
+  const persistedState: Partial<DashboardState> | null =
+    tryLoadValidatedFromLocalStorage(localStorageKey, dashboardStateSchema);
+
+  const state: DashboardState = {
     // Fall back to default values if an entry is missing from the store
-    sortBy: 'recently_viewed',
-    viewMode: 'tile',
-    ...loadValidatedFromLocalStorage(localStorageKey, dashboardStateSchema),
+    ...defaultDashboardState,
+    ...persistedState,
   };
+
+  if (
+    persistedState === null &&
+    localStorage.getItem(localStorageKey) !== null
+  ) {
+    // An entry exists, but could not be read. Reset it, so that the next load
+    // does not run into the same error again.
+    saveDashboardState(state);
+  }
+
+  return state;
 }
 
 /**
