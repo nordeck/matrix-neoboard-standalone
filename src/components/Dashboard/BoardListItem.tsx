@@ -20,6 +20,7 @@ import { alpha, Stack, styled, Typography, useTheme } from '@mui/material';
 import { PropsWithChildren } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router';
+import { isLastViewEnabled } from '../../lib';
 import { BoardPreview } from './BoardPreview.tsx';
 import { Thumbnail } from './Thumbnail.tsx';
 import { TileMenu } from './TileMenu';
@@ -74,15 +75,17 @@ export function BoardListItem({ dashboardItem }: BoardItemProps) {
           </Stack>
         </UnstyledLink>
       </td>
-      <td>
-        <UnstyledLink dashboardItem={dashboardItem}>
-          <Typography color="textSecondary" sx={{ fontSize: 13 }}>
-            {t('dashboard.boardTile.lastView', 'Last view {{lastView}}', {
-              lastView: dashboardItem.lastView,
-            })}
-          </Typography>
-        </UnstyledLink>
-      </td>
+      {isLastViewEnabled() && (
+        <td>
+          <UnstyledLink dashboardItem={dashboardItem}>
+            <Typography color="textSecondary" sx={{ fontSize: 13 }}>
+              {t('dashboard.boardTile.lastView', 'Last view {{lastView}}', {
+                lastView: dashboardItem.lastView,
+              })}
+            </Typography>
+          </UnstyledLink>
+        </td>
+      )}
       <td>
         <UnstyledLink dashboardItem={dashboardItem}>
           <Typography color="textSecondary" sx={{ fontSize: 13 }}>

@@ -27,6 +27,7 @@ import {
 } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router';
+import { isLastViewEnabled } from '../../lib';
 import { BoardPreview } from './BoardPreview';
 import { Thumbnail } from './Thumbnail';
 import { TileMenu } from './TileMenu';
@@ -74,9 +75,13 @@ export function BoardTile({ dashboardItem, linkTarget }: BoardTileProps) {
                 whiteSpace: 'nowrap',
               }}
             >
-              {t('dashboard.boardTile.lastView', 'Last view {{lastView}}', {
-                lastView: dashboardItem.lastView,
-              })}
+              {isLastViewEnabled()
+                ? t('dashboard.boardTile.lastView', 'Last view {{lastView}}', {
+                    lastView: dashboardItem.lastView,
+                  })
+                : t('dashboard.boardTile.created', 'Created {{created}}', {
+                    created: dashboardItem.created,
+                  })}
             </Typography>
           </CardContent>
           <CardActions>

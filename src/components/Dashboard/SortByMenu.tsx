@@ -22,8 +22,9 @@ import NorthIcon from '@mui/icons-material/North';
 import SouthIcon from '@mui/icons-material/South';
 import { ListItemIcon, ListItemText, Menu, MenuItem } from '@mui/material';
 import { TFunction } from 'i18next';
-import React, { useCallback, useMemo } from 'react';
+import React, { ReactElement, useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
+import { isLastViewEnabled } from '../../lib';
 import {
   SortBy,
   selectSortBy,
@@ -33,39 +34,48 @@ import {
 } from '../../store';
 import { SecondaryTextButton } from '../lib';
 
-const sortByOptions = (
-  t: TFunction,
-): {
+type SortOption = {
   id: SortBy;
   label: string;
-  icon: string | React.ReactElement;
-}[] => [
-  {
-    id: 'recently_viewed',
-    label: t('dashboard.sortBy.recently_viewed', 'Recently viewed'),
-    icon: '',
-  },
-  {
-    id: 'name_asc',
-    label: t('dashboard.sortBy.alphabetical', 'Alphabetical'),
-    icon: 'A-Z',
-  },
-  {
-    id: 'name_desc',
-    label: t('dashboard.sortBy.alphabetical', 'Alphabetical'),
-    icon: 'Z-A',
-  },
-  {
-    id: 'created_asc',
-    label: t('dashboard.sortBy.created', 'Date created'),
-    icon: <NorthIcon fontSize="small" />,
-  },
-  {
-    id: 'created_desc',
-    label: t('dashboard.sortBy.created', 'Date created'),
-    icon: <SouthIcon fontSize="small" />,
-  },
-];
+  icon: string | ReactElement;
+};
+
+const sortByOptions = (t: TFunction): SortOption[] => {
+  const options: SortOption[] = [];
+
+  if (isLastViewEnabled()) {
+    options.push({
+      id: 'recently_viewed',
+      label: t('dashboard.sortBy.recently_viewed', 'Recently viewed'),
+      icon: '',
+    });
+  }
+
+  options.push(
+    {
+      id: 'name_asc',
+      label: t('dashboard.sortBy.alphabetical', 'Alphabetical'),
+      icon: 'A-Z',
+    },
+    {
+      id: 'name_desc',
+      label: t('dashboard.sortBy.alphabetical', 'Alphabetical'),
+      icon: 'Z-A',
+    },
+    {
+      id: 'created_asc',
+      label: t('dashboard.sortBy.created', 'Date created'),
+      icon: <NorthIcon fontSize="small" />,
+    },
+    {
+      id: 'created_desc',
+      label: t('dashboard.sortBy.created', 'Date created'),
+      icon: <SouthIcon fontSize="small" />,
+    },
+  );
+
+  return options;
+};
 
 /**
  * Display the sort by button and menu.

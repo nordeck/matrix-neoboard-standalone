@@ -16,6 +16,7 @@
  * along with NeoBoard Standalone. If not, see <https://www.gnu.org/licenses/>.
  */
 
+import { isLastViewEnabled } from '../../lib';
 import { loadValidatedFromLocalStorage } from '../../lib/storage';
 import { DashboardState, dashboardStateSchema } from './dashboardSlice';
 
@@ -31,7 +32,7 @@ const localStorageKey = 'neoboard-store-dashboard';
 export function loadDashboardState(): DashboardState {
   return {
     // Fall back to default values if an entry is missing from the store
-    sortBy: 'recently_viewed',
+    sortBy: isLastViewEnabled() ? 'recently_viewed' : 'created_desc',
     viewMode: 'tile',
     ...loadValidatedFromLocalStorage(localStorageKey, dashboardStateSchema),
   };
