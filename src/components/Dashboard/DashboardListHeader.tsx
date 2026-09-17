@@ -18,6 +18,7 @@
 
 import { Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
+import { isLastViewEnabled } from '../../lib';
 
 export function DashboardListHeader() {
   const { t } = useTranslation();
@@ -38,14 +39,16 @@ export function DashboardListHeader() {
       >
         {t('dashboard.boardList.name', 'Name')}
       </Typography>
-      <Typography
-        variant="h6"
-        color="textSecondary"
-        component="th"
-        sx={{ fontSize: 13 }}
-      >
-        {t('dashboard.boardList.lastView', 'Recently viewed')}
-      </Typography>
+      {isLastViewEnabled() && (
+        <Typography
+          variant="h6"
+          color="textSecondary"
+          component="th"
+          sx={{ fontSize: 13 }}
+        >
+          {t('dashboard.boardList.lastView', 'Recently viewed')}
+        </Typography>
+      )}
       <Typography
         variant="h6"
         color="textSecondary"
