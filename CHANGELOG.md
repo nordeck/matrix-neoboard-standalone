@@ -1,5 +1,38 @@
 # @nordeck/matrix-neoboard-standalone
 
+## 1.0.0
+
+### Major Changes
+
+- 3822921: Update to the latest NeoBoard React SDK (v2.0.0)
+
+### Minor Changes
+
+- 2d76492: Update `matrix-js-sdk` to 42.4.0, update OAuth2 related changes
+- da40a5e: Update to the latest changes in `matrix-neoboard-react-sdk` to use a new MatrixRTC implementation based on MSC4143, MSC4354, MSC4195
+- 671863e: Customize the openDesk navbar according to theme colors via environment variables.
+- b0a1826: Show invite dialog when invited to a board via link
+- 267f88c: Add 'Go to dashboard' button into slides migration dialog
+- 671863e: Derive the browser tab title from the product name and suffix it with " - openDesk" for the openDesk appearance.
+
+### Patch Changes
+
+- 6c3407e: Remove `oidc-client-ts` library
+- 1b57320: Build with a commit from develop with our patch for state_after states events
+- 2655124: Pin trivy version to 0.69.3
+  Pin trivy-action to v0.35.0
+- d7fe69d: Update lodash to 4.18.1 for CVEs: `CVE-2026-2950`, `CVE-2026-4800`
+- fc11a7d: Replace O(N×M) loops in whiteboard selector with indexed lookups
+- 67c7a84: Minor adjustments to the home icon size and launcher icon
+- 3f6eb17: Update German translation
+- 920050d: Stabilize RoomIdProvider context value with useMemo
+- 671863e: Set the icons of the document while it is parsed, so that Safari shows them.
+- 1b57320: Matrix client now handles token refreshes by itself
+- 06efc6e: Update dashboard to show created date info for boards instead of last view
+- 97b4a7d: Switch lodash imports to per-function entry points
+- 95bebf1: Replace roomId-change effect in Title with inline guard
+- 8613421: Upload helm chart to OCI Registry, release helm chart
+
 ## 0.1.0
 
 ### Minor Changes
