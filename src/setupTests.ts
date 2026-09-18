@@ -18,6 +18,7 @@
 
 import '@testing-library/jest-dom/vitest';
 import { cleanup } from '@testing-library/react';
+import { createCanvas } from 'canvas';
 import crypto from 'crypto';
 import { TextDecoder, TextEncoder } from 'util';
 import { afterEach, beforeAll, vi } from 'vitest';
@@ -25,6 +26,21 @@ import createFetchMock from 'vitest-fetch-mock';
 
 // Import React specifically for test environment setup
 import React from 'react';
+
+// happy-dom's canvas element doesn't implement a 2D rendering context for paper.js
+HTMLCanvasElement.prototype.getContext = function (
+  this: HTMLCanvasElement,
+  contextId: string,
+  options?: unknown,
+) {
+  if (contextId === '2d') {
+    return createCanvas(this.width || 1, this.height || 1).getContext(
+      '2d',
+      options as never,
+    );
+  }
+  return null;
+} as typeof HTMLCanvasElement.prototype.getContext;
 
 // Configure React for testing environment
 // Configure globals needed for React 18
