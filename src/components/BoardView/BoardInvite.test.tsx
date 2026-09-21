@@ -20,7 +20,7 @@ import { render, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { ComponentType, PropsWithChildren, useState } from 'react';
 import { Provider } from 'react-redux';
-import { useNavigate } from 'react-router';
+import { NavigateFunction, useNavigate } from 'react-router';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { mockLoggedInApis } from '../../lib/testUtils';
 import { LoggedInProvider } from '../../state';
@@ -39,7 +39,7 @@ vi.mock('react-router', async () => ({
 const userId = '@alice:example.com';
 
 let standaloneClient: MockedStandaloneClient;
-let mockNavigate: ReturnType<typeof vi.fn>;
+let mockNavigate: NavigateFunction;
 
 describe('<BoardInvite />', () => {
   let Wrapper: ComponentType<PropsWithChildren>;

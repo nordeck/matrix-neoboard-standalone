@@ -47,7 +47,9 @@ describe('startLoginFlow', () => {
       loginFlows: vi.fn(),
     } as unknown as MatrixClient;
 
-    vi.mocked(MatrixClient).mockReturnValue(matrixClient);
+    vi.mocked(MatrixClient).mockImplementation(function () {
+      return matrixClient;
+    });
   });
 
   afterEach(() => {
