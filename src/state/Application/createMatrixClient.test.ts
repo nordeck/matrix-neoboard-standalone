@@ -33,7 +33,9 @@ describe('createMatrixClient', () => {
     const clientStub = {
       startClient: vi.fn(),
     } as unknown as MatrixClient;
-    vi.mocked(MatrixClient).mockReturnValue(clientStub);
+    vi.mocked(MatrixClient).mockImplementation(function () {
+      return clientStub;
+    });
 
     const onTokenRefresh = vi.fn();
 

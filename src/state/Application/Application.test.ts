@@ -115,7 +115,9 @@ describe('Application', () => {
       once: vi.fn(),
       getAuthMetadata: vi.fn().mockResolvedValue(openIdConfiguration),
     } as unknown as MatrixClient;
-    vi.mocked(MatrixClient).mockReturnValue(clientMock);
+    vi.mocked(MatrixClient).mockImplementation(function () {
+      return clientMock;
+    });
     vi.mocked(MatrixClient).mockClear();
 
     vi.mocked(getEnvironment).mockImplementation(

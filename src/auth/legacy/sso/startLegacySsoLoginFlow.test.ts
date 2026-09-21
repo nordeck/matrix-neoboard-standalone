@@ -36,7 +36,9 @@ describe('startLegacySsoLoginFlow', () => {
     const matrixClient = {
       getSsoLoginUrl: vi.fn(),
     } as unknown as MatrixClient;
-    vi.mocked(MatrixClient).mockReturnValue(matrixClient);
+    vi.mocked(MatrixClient).mockImplementation(function () {
+      return matrixClient;
+    });
 
     vi.mocked(matrixClient).getSsoLoginUrl.mockReturnValue(ssoLoginUrl);
 
