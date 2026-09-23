@@ -81,6 +81,14 @@ describe('createWhiteboard', () => {
       { documentId: 'document-id-1' },
       '!room-1',
     );
+    expect(standaloneClient.sendStateEvent).toHaveBeenCalledWith(
+      'm.room.join_rules',
+      '',
+      {
+        join_rule: 'knock',
+      },
+      '!room-1',
+    );
     expect(standaloneClient.sendStateEvent).not.toHaveBeenCalledWith(
       STATE_EVENT_4143_RTC_SLOT,
       expect.any(String),
@@ -122,6 +130,14 @@ describe('createWhiteboard', () => {
       STATE_EVENT_WHITEBOARD,
       '!room-1_whiteboard',
       { documentId: 'document-id-1' },
+      '!room-1',
+    );
+    expect(standaloneClient.sendStateEvent).toHaveBeenCalledWith(
+      'm.room.join_rules',
+      '',
+      {
+        join_rule: 'knock',
+      },
       '!room-1',
     );
     expect(standaloneClient.sendStateEvent).not.toHaveBeenCalledWith(
