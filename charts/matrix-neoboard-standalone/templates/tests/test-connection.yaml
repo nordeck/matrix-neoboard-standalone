@@ -9,7 +9,7 @@ metadata:
 spec:
   containers:
     - name: wget
-      image: busybox
+      image: busybox:1.38.0@sha256:dc2d74b28e4cf8984fa52af1f39bc7c3d9c73760b41a74d629f5d11b1ab28616
       command: ['wget']
       args:  ['{{ include "app.fullname" . }}:8080', '-O', '/dev/null']
       securityContext:
@@ -21,4 +21,3 @@ spec:
         runAsUser: 1000
         runAsGroup: 1000
   restartPolicy: Never
-
