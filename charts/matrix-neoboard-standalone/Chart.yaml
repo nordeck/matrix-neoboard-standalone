@@ -4,7 +4,7 @@ description: Standalone version of NeoBoard (https://github.com/nordeck/matrix-n
 type: application
 version: 0.0.10
 # renovate: image=ghcr.io/nordeck/matrix-neoboard-standalone
-appVersion: '0.0.0'
+appVersion: '1.0.0'
 home: https://neoboard.io
 sources:
   - https://github.com/nordeck/matrix-neoboard-standalone
