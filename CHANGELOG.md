@@ -1,5 +1,11 @@
 # @nordeck/matrix-neoboard-standalone
 
+## 1.0.1
+
+### Patch Changes
+
+- 833c136: Update neoboard-react-sdk to 2.0.1
+
 ## 1.0.0
 
 ### Major Changes
