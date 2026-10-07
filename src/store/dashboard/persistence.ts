@@ -42,7 +42,7 @@ export function loadDashboardState(): DashboardState {
   >(localStorageKey, dashboardStateSchema);
   const defaultSortBy: SortBy = isLastViewEnabled()
     ? 'recently_viewed'
-    : 'created';
+    : 'modified';
 
   const state: DashboardState = {
     // Fall back to default values if an entry is missing from the store

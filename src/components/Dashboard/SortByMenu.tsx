@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Nordeck IT + Consulting GmbH
+ * Copyright 2024-2026 Nordeck IT + Consulting GmbH
  *
  * NeoBoard Standalone is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -47,6 +47,10 @@ const sortByOptions = (t: TFunction): SortOption[] => {
     {
       id: 'name',
       label: t('dashboard.sortBy.name', 'Name'),
+    },
+    {
+      id: 'modified',
+      label: t('dashboard.sortBy.modified', 'Date modified'),
     },
     {
       id: 'created',

@@ -48,30 +48,35 @@ describe('DashboardListHeader', () => {
   it('should only show the sorting of the active column', () => {
     renderHeader();
     const nameHeader = screen.getByRole('columnheader', { name: /Name/ });
+    const modifiedHeader = screen.getByRole('columnheader', {
+      name: /Modified/,
+    });
     const createdHeader = screen.getByRole('columnheader', {
       name: /Created/,
     });
 
     expect(nameHeader).not.toHaveAttribute('aria-sort');
     expect(within(nameHeader).queryByRole('img')).not.toBeInTheDocument();
-    expect(createdHeader).toHaveAttribute('aria-sort', 'descending');
+    expect(modifiedHeader).toHaveAttribute('aria-sort', 'descending');
     expect(
-      within(createdHeader).getByRole('img', { name: 'Descending' }),
+      within(modifiedHeader).getByRole('img', { name: 'Descending' }),
     ).toBeInTheDocument();
+    expect(createdHeader).not.toHaveAttribute('aria-sort');
+    expect(within(createdHeader).queryByRole('img')).not.toBeInTheDocument();
   });
 
   it('should toggle the sorting of the active column', async () => {
     renderHeader();
     await userEvent.click(
-      screen.getByRole('button', { name: 'Sort by Created' }),
+      screen.getByRole('button', { name: 'Sort by Modified' }),
     );
 
     expect(store.getState().dashboardReducer).toMatchObject({
-      sortBy: 'created',
+      sortBy: 'modified',
       sortDirection: 'asc',
     });
     expect(
-      screen.getByRole('columnheader', { name: /Created/ }),
+      screen.getByRole('columnheader', { name: /Modified/ }),
     ).toHaveAttribute('aria-sort', 'ascending');
   });
 
@@ -90,9 +95,9 @@ describe('DashboardListHeader', () => {
     });
     expect(nameHeader).toHaveAttribute('aria-sort', 'ascending');
     expect(
-      within(screen.getByRole('columnheader', { name: /Created/ })).queryByRole(
-        'img',
-      ),
+      within(
+        screen.getByRole('columnheader', { name: /Modified/ }),
+      ).queryByRole('img'),
     ).not.toBeInTheDocument();
     expect(
       within(nameHeader).getByRole('img', { name: 'Ascending' }),

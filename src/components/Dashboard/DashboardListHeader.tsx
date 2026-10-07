@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Nordeck IT + Consulting GmbH
+ * Copyright 2024-2026 Nordeck IT + Consulting GmbH
  *
  * NeoBoard Standalone is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -75,6 +75,10 @@ export function DashboardListHeader() {
       <SortableColumnHeader
         sortBy="name"
         label={t('dashboard.boardList.name', 'Name')}
+      />
+      <SortableColumnHeader
+        sortBy="modified"
+        label={t('dashboard.boardList.modified', 'Modified')}
       />
       {isLastViewEnabled() && (
         <SortableColumnHeader
