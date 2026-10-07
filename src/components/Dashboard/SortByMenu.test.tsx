@@ -47,29 +47,31 @@ describe('SortByMenu', () => {
     const menu = await openMenu();
 
     const items = within(menu).getAllByRole('menuitem');
-    expect(items).toHaveLength(2);
+    expect(items).toHaveLength(3);
     expect(items[0]).toHaveTextContent('Name');
     expect(within(items[0]).queryByRole('img')).not.toBeInTheDocument();
-    expect(items[1]).toHaveTextContent('Date created');
+    expect(items[1]).toHaveTextContent('Date modified');
     expect(
       within(items[1]).getByRole('img', { name: 'Descending' }),
     ).toBeInTheDocument();
+    expect(items[2]).toHaveTextContent('Date created');
+    expect(within(items[2]).queryByRole('img')).not.toBeInTheDocument();
   });
 
   it('should toggle the direction of the selected sort field', async () => {
     const menu = await openMenu();
-    const createdItem = within(menu).getByRole('menuitem', {
-      name: /Date created/,
+    const modifiedItem = within(menu).getByRole('menuitem', {
+      name: /Date modified/,
     });
 
-    await userEvent.click(createdItem);
+    await userEvent.click(modifiedItem);
 
     expect(store.getState().dashboardReducer).toMatchObject({
-      sortBy: 'created',
+      sortBy: 'modified',
       sortDirection: 'asc',
     });
     expect(
-      within(createdItem).getByRole('img', { name: 'Ascending' }),
+      within(modifiedItem).getByRole('img', { name: 'Ascending' }),
     ).toBeInTheDocument();
   });
 
@@ -90,7 +92,7 @@ describe('SortByMenu', () => {
     ).toBeInTheDocument();
     expect(
       within(
-        within(menu).getByRole('menuitem', { name: /Date created/ }),
+        within(menu).getByRole('menuitem', { name: /Date modified/ }),
       ).queryByRole('img'),
     ).not.toBeInTheDocument();
 

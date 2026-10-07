@@ -18,14 +18,18 @@
 
 import {
   PowerLevelsStateEvent,
+  RoomEvent,
   StateEvent,
   StateEventCreateContent,
 } from '@matrix-widget-toolkit/api';
 import {
+  DocumentSnapshot,
+  documentSnapshotApi,
   isMatrixRtcMode,
   Whiteboard,
 } from '@nordeck/matrix-neoboard-react-sdk';
 import { createSelector } from '@reduxjs/toolkit';
+import { shallowEqual } from 'react-redux';
 import { WhiteboardSessionsEvent } from '../../../model';
 import { SortBy, SortDirection } from '../../dashboard/dashboardState';
 import { RootState } from '../../store';
@@ -47,8 +51,15 @@ export type WhiteboardEntry = {
   whiteboardSessions: StateEvent<WhiteboardSessionsEvent> | undefined;
   powerLevels: StateEvent<PowerLevelsStateEvent> | undefined;
   roomCreateEvent: StateEvent<StateEventCreateContent> | undefined;
+  latestSnapshot: RoomEvent<DocumentSnapshot> | undefined;
   preview: string | undefined;
 };
+
+export function getModifiedTimestamp(entry: WhiteboardEntry): number {
+  return (
+    entry.latestSnapshot?.origin_server_ts ?? entry.whiteboard.origin_server_ts
+  );
+}
 
 export function makeSelectWhiteboard(
   roomId: string,
@@ -75,6 +86,28 @@ export function makeSelectWhiteboard(
   );
 }
 
+export const selectLatestSnapshots = createSelector(
+  [selectAllWhiteboards, (state: RootState) => state],
+  (whiteboards, state) => {
+    const latestSnapshots: Record<string, RoomEvent<DocumentSnapshot>> = {};
+
+    for (const {
+      content: { documentId },
+    } of whiteboards) {
+      const event = documentSnapshotApi.endpoints.getDocumentSnapshot.select({
+        documentId,
+      })(state).data?.event;
+
+      if (event) {
+        latestSnapshots[documentId] = event;
+      }
+    }
+
+    return latestSnapshots;
+  },
+  { memoizeOptions: { resultEqualityCheck: shallowEqual } },
+);
+
 export function makeSelectWhiteboards(
   userId: string,
   _deviceId: string,
@@ -88,6 +121,7 @@ export function makeSelectWhiteboards(
     selectAllWhiteboardSessionsEventEntities,
     selectAllPowerLevelsEventEntities,
     selectAllRoomCreateEventEntities,
+    selectLatestSnapshots,
     (
       whiteboards,
       roomNameEvents,
@@ -95,6 +129,7 @@ export function makeSelectWhiteboards(
       whiteboardSessionsEvents,
       powerLevelsEvents,
       roomCreateEvents,
+      latestSnapshots,
     ): WhiteboardEntry[] => {
       /**
        * Currently, the rule is one whiteboard equals one room.
@@ -150,6 +185,7 @@ export function makeSelectWhiteboards(
               whiteboardSessions: latestSessionByRoom[room_id],
               powerLevels: powerLevelsEvents[room_id],
               roomCreateEvent: roomCreateEvents[room_id],
+              latestSnapshot: latestSnapshots[whiteboard.content.documentId],
               preview: undefined,
             },
           ];
@@ -167,7 +203,10 @@ export function makeSelectWhiteboards(
   );
 }
 
-function createBoardComparator(sortBy: SortBy, sortDirection: SortDirection) {
+export function createBoardComparator(
+  sortBy: SortBy,
+  sortDirection: SortDirection,
+) {
   const compareAscending = (a: WhiteboardEntry, b: WhiteboardEntry) => {
     if (sortBy === 'recently_viewed') {
       const compareA =
@@ -183,6 +222,10 @@ function createBoardComparator(sortBy: SortBy, sortDirection: SortDirection) {
 
     if (sortBy === 'name') {
       return a.roomName.localeCompare(b.roomName);
+    }
+
+    if (sortBy === 'modified') {
+      return getModifiedTimestamp(a) - getModifiedTimestamp(b);
     }
 
     if (sortBy === 'created') {

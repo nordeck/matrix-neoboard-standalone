@@ -36,6 +36,7 @@
     "boardList": {
       "created": "Erstellungsdatum",
       "lastView": "Zuletzt angesehen",
+      "modified": "Änderungsdatum",
       "name": "Name",
       "sortBy": "Nach {{column}} sortieren"
     },
@@ -43,6 +44,7 @@
       "created": "Erstellt {{created}}",
       "delete": "Löschen",
       "lastView": "Zuletzt {{lastView}}",
+      "modified": "Geändert {{modified}}",
       "rename": "Umbenennen"
     },
     "createBoardTile": {
@@ -53,6 +55,7 @@
       "button": "Sortieren nach:",
       "created": "Erstellungsdatum",
       "descending": "Absteigend",
+      "modified": "Änderungsdatum",
       "name": "Name",
       "recently_viewed": "Zuletzt angesehen"
     },

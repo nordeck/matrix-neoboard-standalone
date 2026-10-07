@@ -18,7 +18,7 @@
 
 import Joi from 'joi';
 
-export type SortBy = 'recently_viewed' | 'name' | 'created';
+export type SortBy = 'recently_viewed' | 'name' | 'modified' | 'created';
 
 export type SortDirection = 'asc' | 'desc';
 
@@ -45,7 +45,13 @@ export type LegacySortBy = (typeof legacySortByValues)[number];
 
 export const dashboardStateSchema = Joi.object({
   sortBy: Joi.string()
-    .valid('recently_viewed', 'name', 'created', ...legacySortByValues)
+    .valid(
+      'recently_viewed',
+      'name',
+      'modified',
+      'created',
+      ...legacySortByValues,
+    )
     .required(),
   sortDirection: Joi.string().valid('asc', 'desc'),
   viewMode: Joi.string().valid('tile', 'list'),
@@ -57,5 +63,6 @@ export const dashboardStateSchema = Joi.object({
 export const defaultSortDirections: Record<SortBy, SortDirection> = {
   recently_viewed: 'desc',
   name: 'asc',
+  modified: 'desc',
   created: 'desc',
 };

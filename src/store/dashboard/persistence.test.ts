@@ -35,7 +35,7 @@ describe('loadDashboardState', () => {
 
   it('should return the default state if nothing is stored', () => {
     expect(loadDashboardState()).toEqual({
-      sortBy: 'created',
+      sortBy: 'modified',
       sortDirection: 'desc',
       viewMode: 'tile',
     });
@@ -73,7 +73,7 @@ describe('loadDashboardState', () => {
     });
 
     expect(loadDashboardState()).toEqual({
-      sortBy: 'created',
+      sortBy: 'modified',
       sortDirection: 'desc',
       viewMode: 'list',
     });

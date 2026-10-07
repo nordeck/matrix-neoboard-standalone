@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Nordeck IT + Consulting GmbH
+ * Copyright 2024-2026 Nordeck IT + Consulting GmbH
  *
  * NeoBoard Standalone is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -16,7 +16,17 @@
  * along with NeoBoard Standalone. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { RoomMemberStateEventContent } from '@matrix-widget-toolkit/api';
+import {
+  RoomEvent,
+  RoomMemberStateEventContent,
+  StateEvent,
+} from '@matrix-widget-toolkit/api';
+import {
+  DocumentSnapshot,
+  ROOM_EVENT_DOCUMENT_SNAPSHOT,
+  STATE_EVENT_WHITEBOARD,
+  Whiteboard,
+} from '@nordeck/matrix-neoboard-react-sdk';
 import { EventType, IStateEventWithRoomId } from 'matrix-js-sdk';
 
 let membershipEventId = 1;
@@ -41,6 +51,52 @@ export function createMembershipEvent({
     type: EventType.RoomMember,
     content: {
       membership,
+    },
+  };
+}
+
+let whiteboardEventId = 1;
+
+export function createWhiteboardEvent({
+  roomId = '!room:example.com',
+  documentId = '$document',
+  originServerTs = 0,
+}: {
+  roomId?: string;
+  documentId?: string;
+  originServerTs?: number;
+} = {}): StateEvent<Whiteboard> {
+  return {
+    event_id: `whiteboard-${whiteboardEventId++}`,
+    room_id: roomId,
+    sender: '@user:example.com',
+    state_key: `whiteboard-${roomId}`,
+    origin_server_ts: originServerTs,
+    type: STATE_EVENT_WHITEBOARD,
+    content: { documentId },
+  };
+}
+
+let documentSnapshotEventId = 1;
+
+export function createDocumentSnapshotEvent({
+  roomId = '!room:example.com',
+  documentId = '$document',
+  originServerTs = 0,
+}: {
+  roomId?: string;
+  documentId?: string;
+  originServerTs?: number;
+} = {}): RoomEvent<DocumentSnapshot> {
+  return {
+    event_id: `snapshot-${documentSnapshotEventId++}`,
+    room_id: roomId,
+    sender: '@user:example.com',
+    origin_server_ts: originServerTs,
+    type: ROOM_EVENT_DOCUMENT_SNAPSHOT,
+    content: {
+      chunkCount: 1,
+      'm.relates_to': { rel_type: 'm.reference', event_id: documentId },
     },
   };
 }
