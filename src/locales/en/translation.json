@@ -36,7 +36,8 @@
     "boardList": {
       "created": "Created",
       "lastView": "Recently viewed",
-      "name": "Name"
+      "name": "Name",
+      "sortBy": "Sort by {{column}}"
     },
     "boardTile": {
       "created": "Created {{created}}",
@@ -48,9 +49,11 @@
       "createBoard": "Create a new board"
     },
     "sortBy": {
-      "alphabetical": "Alphabetical",
+      "ascending": "Ascending",
       "button": "Sort by:",
       "created": "Date created",
+      "descending": "Descending",
+      "name": "Name",
       "recently_viewed": "Recently viewed"
     },
     "untitled": "Untitled",

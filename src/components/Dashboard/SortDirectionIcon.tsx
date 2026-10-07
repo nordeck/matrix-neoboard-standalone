@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Nordeck IT + Consulting GmbH
+ * Copyright 2026 Nordeck IT + Consulting GmbH
  *
  * NeoBoard Standalone is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -16,26 +16,30 @@
  * along with NeoBoard Standalone. If not, see <https://www.gnu.org/licenses/>.
  */
 
-export * from './api/selectors/selectInvitedOrJoinedRoomMembers';
-export * from './api/selectors/selectInvites';
-export * from './api/selectors/selectWhiteboards';
-export {
-  selectSortBy,
-  selectSortDirection,
-  selectViewMode,
-  setViewMode,
-  toggleSortBy,
-} from './dashboard/dashboardSlice';
-export type {
-  SortBy,
-  SortDirection,
-  ViewMode,
-} from './dashboard/dashboardState';
-export { useAppDispatch, useAppSelector } from './reduxToolkitHooks';
-export { createStore, initializeStore } from './store';
-export type {
-  AppDispatch,
-  RootState,
-  StoreType,
-  ThunkExtraArgument,
-} from './store';
+import NorthIcon from '@mui/icons-material/North';
+import SouthIcon from '@mui/icons-material/South';
+import { useTranslation } from 'react-i18next';
+import { SortDirection } from '../../store';
+
+/**
+ * Displays the arrow of a sort direction.
+ */
+export function SortDirectionIcon({
+  sortDirection,
+}: {
+  sortDirection: SortDirection;
+}) {
+  const { t } = useTranslation();
+
+  return sortDirection === 'asc' ? (
+    <NorthIcon
+      fontSize="small"
+      titleAccess={t('dashboard.sortBy.ascending', 'Ascending')}
+    />
+  ) : (
+    <SouthIcon
+      fontSize="small"
+      titleAccess={t('dashboard.sortBy.descending', 'Descending')}
+    />
+  );
+}

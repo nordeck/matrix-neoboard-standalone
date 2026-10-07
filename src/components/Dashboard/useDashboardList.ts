@@ -31,6 +31,7 @@ import {
   WhiteboardEntry,
   makeSelectWhiteboards,
   selectSortBy,
+  selectSortDirection,
   useAppSelector,
 } from '../../store';
 
@@ -69,9 +70,10 @@ export type DashboardItem = {
 export function useDashboardList(): DashboardItem[] {
   const { userId, deviceId } = useLoggedIn();
   const sortBy = useAppSelector((state) => selectSortBy(state));
+  const sortDirection = useAppSelector((state) => selectSortDirection(state));
   const selectWhiteboards = useMemo(
-    () => makeSelectWhiteboards(userId, deviceId, sortBy),
-    [sortBy, userId, deviceId],
+    () => makeSelectWhiteboards(userId, deviceId, sortBy, sortDirection),
+    [sortBy, sortDirection, userId, deviceId],
   );
   const whiteboards = useAppSelector(
     (state) => selectWhiteboards(state),

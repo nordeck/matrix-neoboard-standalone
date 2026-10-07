@@ -18,7 +18,14 @@
 
 import { isLastViewEnabled } from '../../lib';
 import { loadValidatedFromLocalStorage } from '../../lib/storage';
-import { DashboardState, dashboardStateSchema } from './dashboardSlice';
+import {
+  DashboardState,
+  LegacySortBy,
+  SortBy,
+  SortDirection,
+  dashboardStateSchema,
+  defaultSortDirections,
+} from './dashboardState';
 
 /**
  * Key under which the dashboard part of the store is persisted.
@@ -30,11 +37,54 @@ const localStorageKey = 'neoboard-store-dashboard';
  * If it fails, return the default state.
  */
 export function loadDashboardState(): DashboardState {
-  return {
+  const storedState = loadValidatedFromLocalStorage<
+    Omit<Partial<DashboardState>, 'sortBy'> & { sortBy: SortBy | LegacySortBy }
+  >(localStorageKey, dashboardStateSchema);
+  const defaultSortBy: SortBy = isLastViewEnabled()
+    ? 'recently_viewed'
+    : 'created';
+
+  const state: DashboardState = {
     // Fall back to default values if an entry is missing from the store
-    sortBy: isLastViewEnabled() ? 'recently_viewed' : 'created_desc',
+    sortBy: defaultSortBy,
+    sortDirection: defaultSortDirections[defaultSortBy],
     viewMode: 'tile',
-    ...loadValidatedFromLocalStorage(localStorageKey, dashboardStateSchema),
+    ...(storedState ? { ...storedState, ...migrateSortBy(storedState) } : {}),
+  };
+
+  // Sorting by last view is not available while the last view is disabled
+  if (state.sortBy === 'recently_viewed' && !isLastViewEnabled()) {
+    return {
+      ...state,
+      sortBy: defaultSortBy,
+      sortDirection: defaultSortDirections[defaultSortBy],
+    };
+  }
+
+  return state;
+}
+
+/**
+ * Split a sort value into the sort field and direction.
+ * Supports the legacy format that combined both in a single value
+ * (e.g. `name_asc`).
+ */
+function migrateSortBy({
+  sortBy,
+  sortDirection,
+}: {
+  sortBy: SortBy | LegacySortBy;
+  sortDirection?: SortDirection;
+}): Pick<DashboardState, 'sortBy' | 'sortDirection'> {
+  const [field, legacyDirection] = sortBy.split(/_(?=asc$|desc$)/) as [
+    SortBy,
+    SortDirection | undefined,
+  ];
+
+  return {
+    sortBy: field,
+    sortDirection:
+      legacyDirection ?? sortDirection ?? defaultSortDirections[field],
   };
 }
 

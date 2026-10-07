@@ -27,7 +27,7 @@ import {
 } from '@nordeck/matrix-neoboard-react-sdk';
 import { createSelector } from '@reduxjs/toolkit';
 import { WhiteboardSessionsEvent } from '../../../model';
-import { SortBy } from '../../dashboard/dashboardSlice';
+import { SortBy, SortDirection } from '../../dashboard/dashboardState';
 import { RootState } from '../../store';
 import { selectAllPowerLevelsEventEntities } from '../PowerLevelsApi';
 import { selectAllRoomCreateEventEntities } from '../roomCreateApi.ts';
@@ -79,6 +79,7 @@ export function makeSelectWhiteboards(
   userId: string,
   _deviceId: string,
   sortBy?: SortBy,
+  sortDirection: SortDirection = 'asc',
 ): (state: RootState) => WhiteboardEntry[] {
   return createSelector(
     selectAllWhiteboards,
@@ -158,7 +159,7 @@ export function makeSelectWhiteboards(
       });
 
       if (sortBy) {
-        boards.sort(createBoardComparator(sortBy));
+        boards.sort(createBoardComparator(sortBy, sortDirection));
       }
 
       return boards;
@@ -166,8 +167,8 @@ export function makeSelectWhiteboards(
   );
 }
 
-function createBoardComparator(sortBy: SortBy) {
-  return (a: WhiteboardEntry, b: WhiteboardEntry) => {
+function createBoardComparator(sortBy: SortBy, sortDirection: SortDirection) {
+  const compareAscending = (a: WhiteboardEntry, b: WhiteboardEntry) => {
     if (sortBy === 'recently_viewed') {
       const compareA =
         a.whiteboardSessions?.origin_server_ts ??
@@ -177,25 +178,21 @@ function createBoardComparator(sortBy: SortBy) {
         b.whiteboardSessions?.origin_server_ts ??
         // Fall back to create event, if there is no whiteboardSessions event
         b.whiteboard.origin_server_ts;
-      return compareB - compareA;
+      return compareA - compareB;
     }
 
-    if (sortBy === 'name_asc') {
+    if (sortBy === 'name') {
       return a.roomName.localeCompare(b.roomName);
     }
 
-    if (sortBy === 'name_desc') {
-      return b.roomName.localeCompare(a.roomName);
-    }
-
-    if (sortBy === 'created_asc') {
+    if (sortBy === 'created') {
       return a.whiteboard.origin_server_ts - b.whiteboard.origin_server_ts;
-    }
-
-    if (sortBy === 'created_desc') {
-      return b.whiteboard.origin_server_ts - a.whiteboard.origin_server_ts;
     }
 
     return 0;
   };
+
+  return sortDirection === 'asc'
+    ? compareAscending
+    : (a: WhiteboardEntry, b: WhiteboardEntry) => compareAscending(b, a);
 }

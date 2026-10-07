@@ -16,9 +16,50 @@
  * along with NeoBoard Standalone. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { Typography } from '@mui/material';
+import { ButtonBase, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { isLastViewEnabled } from '../../lib';
+import { SortBy } from '../../store';
+import { SortDirectionIcon } from './SortDirectionIcon';
+import { useSortToggle } from './useSortToggle';
+
+/**
+ * Column header that displays the sorting of the column, if it is active.
+ * Clicking the column title toggles the sorting.
+ */
+function SortableColumnHeader({
+  sortBy,
+  label,
+}: {
+  sortBy: SortBy;
+  label: string;
+}) {
+  const { t } = useTranslation();
+  const { sortDirection, toggle } = useSortToggle(sortBy);
+
+  return (
+    <Typography
+      variant="h6"
+      color="textSecondary"
+      component="th"
+      sx={{ fontSize: 13 }}
+      aria-sort={
+        sortDirection && (sortDirection === 'asc' ? 'ascending' : 'descending')
+      }
+    >
+      <ButtonBase
+        onClick={toggle}
+        aria-label={t('dashboard.boardList.sortBy', 'Sort by {{column}}', {
+          column: label,
+        })}
+        sx={{ font: 'inherit', gap: 0.5, minHeight: 20 }}
+      >
+        {label}
+        {sortDirection && <SortDirectionIcon sortDirection={sortDirection} />}
+      </ButtonBase>
+    </Typography>
+  );
+}
 
 export function DashboardListHeader() {
   const { t } = useTranslation();
@@ -31,32 +72,20 @@ export function DashboardListHeader() {
         component="th"
         sx={{ fontSize: 13 }}
       />
-      <Typography
-        variant="h6"
-        color="textSecondary"
-        component="th"
-        sx={{ fontSize: 13 }}
-      >
-        {t('dashboard.boardList.name', 'Name')}
-      </Typography>
+      <SortableColumnHeader
+        sortBy="name"
+        label={t('dashboard.boardList.name', 'Name')}
+      />
       {isLastViewEnabled() && (
-        <Typography
-          variant="h6"
-          color="textSecondary"
-          component="th"
-          sx={{ fontSize: 13 }}
-        >
-          {t('dashboard.boardList.lastView', 'Recently viewed')}
-        </Typography>
+        <SortableColumnHeader
+          sortBy="recently_viewed"
+          label={t('dashboard.boardList.lastView', 'Recently viewed')}
+        />
       )}
-      <Typography
-        variant="h6"
-        color="textSecondary"
-        component="th"
-        sx={{ fontSize: 13 }}
-      >
-        {t('dashboard.boardList.created', 'Created')}
-      </Typography>
+      <SortableColumnHeader
+        sortBy="created"
+        label={t('dashboard.boardList.created', 'Created')}
+      />
     </tr>
   );
 }
