@@ -2,14 +2,19 @@
 
 [![CI](https://github.com/nordeck/matrix-neoboard-standalone/actions/workflows/ci.yml/badge.svg)](https://github.com/nordeck/matrix-neoboard-standalone/actions/workflows/ci.yml)
 
-Standalone version of [NeoBoard](https://github.com/nordeck/matrix-neoboard) - A collaborative whiteboard widget for Element, based on Matrix.
+NeoBoard is a private, secure, real-time collaborative whiteboard built on the
+Matrix protocol, focused on content creation, brainstorming and team collaboration.
+
+It is based on the [NeoBoard Widget](https://github.com/nordeck/matrix-neoboard),
+a Matrix Widget that you can use on Matrix clients that support Widget integrations,
+such as [Element Web](https://github.com/element-hq/element-web).
 
 ## Configuration
 
 NeoBoard standalone is built using the [NeoBoard React SDK](https://github.com/nordeck/matrix-neoboard/tree/main/packages/react-sdk).
-Therefore, all of NeoBoard's configuration options apply also when using it in standalone: see [the configuration section of the NeoBoard README](https://github.com/nordeck/matrix-neoboard?tab=readme-ov-file#configuration).
+Therefore, all of NeoBoard's configuration options also apply when using it in standalone: see [the configuration section of the NeoBoard README](https://github.com/nordeck/matrix-neoboard?tab=readme-ov-file#configuration).
 
-NeoBoard standalone itself also exposes some aditional configuration options, which
+NeoBoard standalone itself exposes some aditional configuration options, which
 can either be set via an environment variable or the `.env`-file.
 
 | Name                                   | Description                                                                                                                                                                                    | Example                                    |
@@ -116,25 +121,6 @@ cd matrix-neoboard-standalone
 yarn install
 ```
 
-#### Set up Synapse with MAS
-
-Synapse with MAS is required to run NeoBoard standalone locally.
-
-It is possible to use the Compose file from [opendesk-widgets-docker-compose](https://github.com/nordeck/opendesk-widgets-docker-compose) to create the environment:
-
-- Add the following to your hosts-file:  
-  `127.0.0.1 matrix.internal mas.matrix.internal synapse.matrix.internal`
-- Clone opendesk-widgets-docker-compose:  
-  `git clone --recurse-submodules git@github.com:nordeck/opendesk-widgets-docker-compose.git`
-- `cd opendesk-widgets-docker-compose`
-- Start the required containers:
-  - Podman `podman compose --podman-run-args="--no-hosts" -f compose.mas.yaml --env-file nordeck.env up web synapse-db synapse mas-db mas`
-  - Docker `docker compose -f compose.mas.yaml --env-file nordeck.env up web synapse-db synapse mas-db mas`
-- Visit the following URLs and accept the certificate
-  - <https://matrix.internal>
-  - <https://mas.matrix.internal>
-  - <https://synapse.matrix.internal/_matrix/client/versions>
-
 #### Start the development environment
 
 You can now start NeoBoard standalone:
@@ -143,12 +129,8 @@ You can now start NeoBoard standalone:
 yarn run dev:https
 ```
 
-Then open the printed URL. Your Homeserver is `matrix.internal`.
-
-#### Running
-
-Then run `yarn dev` from the project root to start a development environment.
-When asked for a server name enter `matrix.internal`.
+Then open the printed URL and connect to a Homeserver that supports authentication
+with the [OAuth 2.0 API](https://spec.matrix.org/v1.19/client-server-api/#oauth-20-api).
 
 ### Available Scripts
 
@@ -245,17 +227,28 @@ We provide SBOM reports within the widget container and as a release artifact.
 - The generated SBOM report is available alongside the hosted widget assets, and can be found at `<DEPLOYMENT-URL>/sbom.spdx.json`, or via the filesystem at `/usr/share/nginx/html/sbom.spdx.json`
 - Each GitHub release has a corresponding image SBOM scan report file attached as a release asset
 
-### Signed Container Images
+### Signed Container Images and Charts
 
-The container images releases are signed by [cosign](https://github.com/sigstore/cosign) using identity-based ("keyless") signing and transparency.
+Our container images and chart releases are signed by [cosign](https://github.com/sigstore/cosign) using identity-based ("keyless") signing and transparency.
 
-Execute the following command to verify the signature of a chart container image (example for version: `@nordeck/helm-matrix-neoboard-standalone-0.0.9`):
+Execute the following command to verify the signature of the container image,
+replacing `<version>` with the release version:
 
 ```sh
 cosign verify \
---certificate-identity-regexp https://github.com/nordeck/matrix-neoboard-standalone/.github/workflows/helm-release.yml@refs/tags/@nordeck/helm-matrix-neoboard-standalone-0.0.9 \
+--certificate-identity-regexp https://github.com/nordeck/matrix-neoboard-standalone/.github/workflows/publish-release.yml@refs/tags/v \
 --certificate-oidc-issuer https://token.actions.githubusercontent.com \
-ghcr.io/nordeck/charts/matrix-neoboard-standalone:0.0.9 | jq
+ghcr.io/nordeck/matrix-neoboard-standalone:<version> | jq
+```
+
+Execute the following command to verify the signature of a chart container image,
+replacing `<version>` with the release version:
+
+```sh
+cosign verify \
+--certificate-identity-regexp https://github.com/nordeck/matrix-neoboard-standalone/.github/workflows/helm-release.yml@refs/tags/@nordeck/helm-matrix-neoboard-standalone-<version> \
+--certificate-oidc-issuer https://token.actions.githubusercontent.com \
+ghcr.io/nordeck/charts/matrix-neoboard-standalone:<version> | jq
 ```
 
 ## License
