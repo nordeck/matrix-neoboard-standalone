@@ -16,15 +16,6 @@
  * along with NeoBoard Standalone. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  Typography,
-} from '@mui/material';
-import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Login } from '../Login';
 import { WelcomeLogo } from './WelcomeLogo';
@@ -41,33 +32,9 @@ import {
 
 export const WelcomePane = () => {
   const { t } = useTranslation();
-  const [loginError, setLoginError] = useState<string | null>(null);
-  const [showErrorDialog, setShowErrorDialog] = useState(false);
-
-  const handleCloseErrorDialog = () => {
-    setShowErrorDialog(false);
-    setLoginError(null);
-  };
 
   return (
     <>
-      <Dialog
-        open={showErrorDialog}
-        onClose={handleCloseErrorDialog}
-        maxWidth="sm"
-        fullWidth
-      >
-        <DialogTitle>{t('login.error.title', 'Login Failed')}</DialogTitle>
-        <DialogContent>
-          <Typography variant="body1">{loginError}</Typography>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleCloseErrorDialog} variant="contained">
-            {t('app.ok', 'OK')}
-          </Button>
-        </DialogActions>
-      </Dialog>
-
       <WelcomeWrapper>
         <WelcomeGrid container>
           <WelcomeGridLeftPane item xs={12} sm={7}>
@@ -83,7 +50,7 @@ export const WelcomePane = () => {
               </WelcomeGridSymbols>
             </WelcomeGrid>
           </WelcomeGridLeftPane>
-          <WelcomeGridRightPane xs={12} sm={5}>
+          <WelcomeGridRightPane item xs={12} sm={5}>
             <Login />
           </WelcomeGridRightPane>
         </WelcomeGrid>

@@ -16,55 +16,38 @@
  * along with NeoBoard Standalone. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { ChangeEvent, FormEvent, useCallback, useState } from 'react';
-
 import { Typography } from '@mui/material';
-import {
-  FullWidthButton,
-  LoginWrapper,
-  StyledFormInput,
-  StyledFormLabel,
-  StyledLoginForm,
-} from './styles';
+import { LoginWrapper } from './styles';
 
-import { getEnvironment } from '@matrix-widget-toolkit/mui';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { startLoginFlow } from '../../auth';
-import { isValidServerName } from '../../lib';
+import { isSkipGuestLogin } from '../../lib/isSkipGuestLogin.ts';
+import { isSkipUserLogin } from '../../lib/isSkipUserLogin.ts';
+import { getRedirectPath } from '../../redirectPath';
+import { GuestLogin } from './GuestLogin.tsx';
+import { UserLogin } from './UserLogin.tsx';
 
 /**
  * Simple login component demonstrating the login flow.
  */
 export function Login() {
   const { t } = useTranslation();
-  const staticServerName = getEnvironment('REACT_APP_HOMESERVER');
-  const hasValidServerName = isValidServerName(staticServerName);
-  const [serverName, setServerName] = useState('');
-  const [message, setMessage] = useState('');
 
-  const handleFormSubmit = useCallback(
-    async (event: FormEvent) => {
-      event.preventDefault();
-      setMessage('');
+  const [roomId, setRoomId] = useState<string | undefined>();
 
-      try {
-        await startLoginFlow(
-          hasValidServerName ? staticServerName : serverName,
-        );
-      } catch (error) {
-        console.error('Login failed', error);
-        setMessage('Login failed. Check your homeserver name.');
-      }
-    },
-    [hasValidServerName, serverName, staticServerName],
-  );
+  useEffect(() => {
+    const redirectPath = getRedirectPath();
+    if (!redirectPath) {
+      return;
+    }
 
-  const handleServerNameChange = useCallback(
-    (event: ChangeEvent<HTMLInputElement>) => {
-      setServerName(event.target.value);
-    },
-    [setServerName],
-  );
+    const prefix = '/board/';
+    const roomId = redirectPath.startsWith(prefix)
+      ? redirectPath.slice(prefix.length)
+      : undefined;
+
+    setRoomId(roomId);
+  }, []);
 
   return (
     <LoginWrapper>
@@ -93,36 +76,11 @@ export function Login() {
           'NeoBoard is a whiteboard app suited for creative presentations, detailed diagrams and conducting productive meetings.',
         )}
       </Typography>
-      <StyledLoginForm onSubmit={handleFormSubmit}>
-        {hasValidServerName === false && (
-          <>
-            <StyledFormLabel htmlFor="login-homeserver">
-              {t('login.homeserver.label', 'Homeserver')}
-            </StyledFormLabel>
-            <StyledFormInput
-              id="login-homeserver"
-              value={serverName}
-              placeholder={t('login.homeserver.placeholder', 'e.g. matrix.org')}
-              onChange={handleServerNameChange}
-              style={{ marginBottom: '0.5rem' }}
-              autoFocus={true}
-            />
-          </>
-        )}
-        <FullWidthButton type="submit" variant="contained" color="primary">
-          {t('login.button', 'Log In')}
-        </FullWidthButton>
-        {message !== '' && (
-          <small
-            style={{
-              color: 'red',
-              marginTop: '.25rem',
-            }}
-          >
-            {message}
-          </small>
-        )}
-      </StyledLoginForm>
+
+      {!isSkipUserLogin() && <UserLogin />}
+      {!isSkipGuestLogin() && roomId && (
+        <GuestLogin roomId={roomId} primary={isSkipUserLogin()} />
+      )}
     </LoginWrapper>
   );
 }

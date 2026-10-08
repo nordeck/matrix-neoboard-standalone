@@ -8,8 +8,7 @@
     }
   },
   "app": {
-    "cancel": "Cancel",
-    "ok": "OK"
+    "cancel": "Cancel"
   },
   "boardInvite": {
     "invitedBy": "Invited by",
@@ -87,13 +86,16 @@
   },
   "login": {
     "button": "Log In",
-    "error": {
-      "title": "Login Failed"
-    },
+    "displayName": "Display name",
+    "guestDisplayNameRequired": "Please enter a display name.",
+    "guestJoinFailed": "Failed to join as guest. Please try again.",
+    "guestRegistrationFailed": "Guest registration failed. Please try again.",
     "homeserver": {
       "label": "Homeserver",
       "placeholder": "e.g. matrix.org"
     },
+    "joinAsGuest": "Join as guest",
+    "joiningAsGuest": "Joining…",
     "lead": "NeoBoard is a whiteboard app suited for creative presentations, detailed diagrams and conducting productive meetings.",
     "subtitle": "Visual Collaboration for Teams",
     "title": "NeoBoard"
