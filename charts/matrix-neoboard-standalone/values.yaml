@@ -14,16 +14,43 @@ imagePullSecrets:
 nameOverride: ''
 fullnameOverride: ''
 
+# Deprecated: use serviceAccount.create=false and serviceAccount.name instead.
+serviceAccountName: ''
+
 serviceAccount:
   # Specifies whether a service account should be created
-  create: false
+  create: true
   # Annotations to add to the service account
   annotations: {}
   # The name of the service account to use.
   # If not set and create is true, a name is generated using the fullname template
   name: ''
 
+# This satisfies the second branch of openDesk's `disallow-default-serviceaccount`
+# policy, which passes a pod that either does not use `default` OR mounts no token:
+# https://gitlab.opencode.de/bmi/opendesk/deployment/opendesk/-/blob/main/.kyverno/policies/disallow-default-serviceaccount.yaml
+automountServiceAccountToken: false
+
 podAnnotations: {}
+
+# Satisfies openDesk's `require-health-and-liveness-check` which
+# asserts `periodSeconds > 0` on the rendered manifest:
+# https://gitlab.opencode.de/bmi/opendesk/deployment/opendesk/-/blob/main/.kyverno/policies/require-health-and-liveness-check.yaml
+livenessProbe:
+  httpGet:
+    path: /
+    port: http
+  periodSeconds: 10
+  timeoutSeconds: 3
+  failureThreshold: 3
+
+readinessProbe:
+  httpGet:
+    path: /
+    port: http
+  periodSeconds: 10
+  timeoutSeconds: 3
+  failureThreshold: 3
 
 podSecurityContext:
   {}
