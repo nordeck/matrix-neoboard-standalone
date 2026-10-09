@@ -94,8 +94,8 @@
       "label": "Homeserver",
       "placeholder": "z.B. matrix.org"
     },
-    "joinAsGuest": "",
-    "joiningAsGuest": "",
+    "joinAsGuest": "Als Gast beitreten",
+    "joiningAsGuest": "Beitreten...",
     "lead": "NeoBoard ist eine Whiteboard-App, die sich für kreative Präsentationen, detaillierte Diagramme und die Durchführung produktiver Meetings eignet.",
     "subtitle": "Visuelle Zusammenarbeit für Teams",
     "title": "NeoBoard"
