@@ -16,9 +16,7 @@
  * along with NeoBoard Standalone. If not, see <https://www.gnu.org/licenses/>.
  */
 
-export * from './api/selectors/selectInvitedOrJoinedRoomMembers';
-export * from './api/selectors/selectInvites';
-export * from './api/selectors/selectWhiteboards';
+export * from './api';
 export {
   selectSortBy,
   selectViewMode,
@@ -34,3 +32,4 @@ export type {
   StoreType,
   ThunkExtraArgument,
 } from './store';
+export { waitForSelector } from './waitForSelector';

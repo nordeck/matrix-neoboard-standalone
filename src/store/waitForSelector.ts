@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 Nordeck IT + Consulting GmbH
+ * Copyright 2026 Nordeck IT + Consulting GmbH
  *
  * NeoBoard Standalone is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -15,4 +15,27 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with NeoBoard Standalone. If not, see <https://www.gnu.org/licenses/>.
  */
-export { Login } from './Login';
+import { RootState, StoreType } from './store';
+
+export async function waitForSelector<T>(
+  store: StoreType,
+  selector: (state: RootState) => T | undefined,
+): Promise<T | undefined> {
+  return await new Promise<T | undefined>((resolve) => {
+    const state = store.getState();
+    const result = selector(state);
+    if (result) {
+      resolve(result);
+      return;
+    }
+
+    const unsubscribe = store.subscribe(() => {
+      const state = store.getState();
+      const result = selector(state);
+      if (result) {
+        unsubscribe();
+        resolve(result);
+      }
+    });
+  });
+}
