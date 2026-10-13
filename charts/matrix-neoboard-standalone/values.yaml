@@ -14,20 +14,18 @@ imagePullSecrets:
 nameOverride: ''
 fullnameOverride: ''
 
-# Deprecated: use serviceAccount.create=false and serviceAccount.name instead.
-serviceAccountName: ''
-
 serviceAccount:
   # Specifies whether a service account should be created
-  create: true
+  create: false
   # Annotations to add to the service account
   annotations: {}
   # The name of the service account to use.
-  # If not set and create is true, a name is generated using the fullname template
+  # If not set and create is true, a name is generated using the fullname template.
   name: ''
 
-# This satisfies the second branch of openDesk's `disallow-default-serviceaccount`
-# policy, which passes a pod that either does not use `default` OR mounts no token:
+# The app never talks to the Kubernetes API, so no token is mounted. This also
+# satisfies openDesk's `disallow-default-serviceaccount` policy, which accepts a
+# pod that either does not use `default` OR mounts no token:
 # https://gitlab.opencode.de/bmi/opendesk/deployment/opendesk/-/blob/main/.kyverno/policies/disallow-default-serviceaccount.yaml
 automountServiceAccountToken: false
 
