@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Nordeck IT + Consulting GmbH
+ * Copyright 2024-2026 Nordeck IT + Consulting GmbH
  *
  * NeoBoard Standalone is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -29,8 +29,10 @@ import { calculateWhiteboardUserlist } from '../../lib/matrix/calculateWhiteboar
 import { useLoggedIn } from '../../state';
 import {
   WhiteboardEntry,
+  getModifiedTimestamp,
   makeSelectWhiteboards,
   selectSortBy,
+  selectSortDirection,
   useAppSelector,
 } from '../../store';
 
@@ -40,6 +42,10 @@ export type DashboardItem = {
    * Readable last view string, e.g. "3 hours ago"
    */
   lastView: string;
+  /**
+   * Readable last modification string, e.g. "3 hours ago"
+   */
+  modified: string;
   /**
    * Readable created at string, e.g. "3 hours ago"
    */
@@ -69,9 +75,10 @@ export type DashboardItem = {
 export function useDashboardList(): DashboardItem[] {
   const { userId, deviceId } = useLoggedIn();
   const sortBy = useAppSelector((state) => selectSortBy(state));
+  const sortDirection = useAppSelector((state) => selectSortDirection(state));
   const selectWhiteboards = useMemo(
-    () => makeSelectWhiteboards(userId, deviceId, sortBy),
-    [sortBy, userId, deviceId],
+    () => makeSelectWhiteboards(userId, deviceId, sortBy, sortDirection),
+    [sortBy, sortDirection, userId, deviceId],
   );
   const whiteboards = useAppSelector(
     (state) => selectWhiteboards(state),
@@ -111,6 +118,7 @@ function mapWhiteboardToDashboardItem(
     roomId: whiteboard.whiteboard.room_id,
     name: whiteboard.roomName,
     lastView: formatLastView(whiteboard),
+    modified: formatTimeAgo(getModifiedTimestamp(whiteboard)),
     created: formatCreated(whiteboard),
     permissions: calculateWhiteboardPermissions(
       whiteboard.powerLevels,

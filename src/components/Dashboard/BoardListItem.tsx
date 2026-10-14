@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Nordeck IT + Consulting GmbH
+ * Copyright 2024-2026 Nordeck IT + Consulting GmbH
  *
  * NeoBoard Standalone is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -73,6 +73,15 @@ export function BoardListItem({ dashboardItem }: BoardItemProps) {
               <TileMenu item={dashboardItem} />
             )}
           </Stack>
+        </UnstyledLink>
+      </td>
+      <td>
+        <UnstyledLink dashboardItem={dashboardItem}>
+          <Typography color="textSecondary" sx={{ fontSize: 13 }}>
+            {t('dashboard.boardTile.modified', 'Modified {{modified}}', {
+              modified: dashboardItem.modified,
+            })}
+          </Typography>
         </UnstyledLink>
       </td>
       {isLastViewEnabled() && (
