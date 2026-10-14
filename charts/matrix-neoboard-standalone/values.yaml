@@ -33,7 +33,7 @@ podAnnotations: {}
 
 # Satisfies openDesk's `require-health-and-liveness-check` which
 # asserts `periodSeconds > 0` on the rendered manifest:
-# https://gitlab.opencode.de/bmi/opendesk/deployment/opendesk/-/blob/main/.kyverno/policies/require-health-and-liveness-check.yaml
+# https://gitlab.opencode.de/bmi/opendesk/deployment/opendesk/-/blob/e055e8b35b9f299a2fc46a199ec3f3123347b792/.kyverno/policies/require-health-and-liveness-check.yaml
 livenessProbe:
   tcpSocket:
     port: http
