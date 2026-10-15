@@ -104,6 +104,7 @@
   },
   "navbar": {
     "closeMenu": "Menü schließen",
+    "label": "Navigationsleiste",
     "menuLabel": "Navigationsmenü",
     "portalLogo": "Portal Logo",
     "showMenu": "Menü anzeigen",
