@@ -21,11 +21,16 @@ export * from './api/selectors/selectInvites';
 export * from './api/selectors/selectWhiteboards';
 export {
   selectSortBy,
+  selectSortDirection,
   selectViewMode,
-  setSortBy,
   setViewMode,
+  toggleSortBy,
 } from './dashboard/dashboardSlice';
-export type { SortBy, ViewMode } from './dashboard/dashboardSlice';
+export type {
+  SortBy,
+  SortDirection,
+  ViewMode,
+} from './dashboard/dashboardState';
 export { useAppDispatch, useAppSelector } from './reduxToolkitHooks';
 export { createStore, initializeStore } from './store';
 export type {
