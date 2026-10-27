@@ -30,8 +30,17 @@ const StyledHeader = styled('nav')(({ theme }) => ({
   height: theme.offsetHeight,
 }));
 
-type HeaderProps = PropsWithChildren<{}>;
+type HeaderProps = PropsWithChildren<{
+  'data-guided-tour-target'?: string;
+}>;
 
-export function Header({ children }: HeaderProps) {
-  return <StyledHeader>{children}</StyledHeader>;
+export function Header({
+  children,
+  'data-guided-tour-target': dataGuidedTourTarget,
+}: HeaderProps) {
+  return (
+    <StyledHeader data-guided-tour-target={dataGuidedTourTarget}>
+      {children}
+    </StyledHeader>
+  );
 }
