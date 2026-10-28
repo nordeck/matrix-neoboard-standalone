@@ -8,8 +8,7 @@
     }
   },
   "app": {
-    "cancel": "Abbrechen",
-    "ok": "OK"
+    "cancel": "Abbrechen"
   },
   "boardInvite": {
     "invitedBy": "Eingeladen von",
@@ -87,13 +86,16 @@
   },
   "login": {
     "button": "Einloggen",
-    "error": {
-      "title": "Login Fehlgeschlagen"
-    },
+    "displayName": "Anzeigename",
+    "guestDisplayNameRequired": "Bitte geben Sie einen Anzeigenamen ein.",
+    "guestJoinFailed": "Beitritt als Gast fehlgeschlagen. Bitte versuchen Sie es erneut.",
+    "guestRegistrationFailed": "Gastregistrierung fehlgeschlagen. Bitte versuchen Sie es erneut.",
     "homeserver": {
       "label": "Homeserver",
       "placeholder": "z.B. matrix.org"
     },
+    "joinAsGuest": "Als Gast beitreten",
+    "joiningAsGuest": "Beitreten...",
     "lead": "NeoBoard ist eine Whiteboard-App, die sich für kreative Präsentationen, detaillierte Diagramme und die Durchführung produktiver Meetings eignet.",
     "subtitle": "Visuelle Zusammenarbeit für Teams",
     "title": "NeoBoard"

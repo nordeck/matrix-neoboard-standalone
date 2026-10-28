@@ -18,12 +18,7 @@
 
 import { WidgetApi } from '@matrix-widget-toolkit/api';
 import { getEnvironment } from '@matrix-widget-toolkit/mui';
-import {
-  ClientEvent,
-  MatrixClient,
-  MatrixError,
-  SyncState,
-} from 'matrix-js-sdk';
+import { MatrixClient } from 'matrix-js-sdk';
 import { BehaviorSubject } from 'rxjs';
 import {
   attemptCompleteLegacySsoLogin,
@@ -39,13 +34,9 @@ import {
   StandaloneApiImpl,
   StandaloneClient,
 } from '../../toolkit/standalone';
-import {
-  Credentials,
-  matrixCredentialsStorageKey,
-  oidcCredentialsStorageKey,
-} from '../Credentials';
+import { Credentials } from '../Credentials';
 import { LoggedInState, ObservableBehaviorSubject } from '../types';
-import { createMatrixClient } from './createMatrixClient';
+import { startMatrixClient } from './startMatrixClient';
 
 export type LifecycleState =
   // The application is starting
@@ -139,12 +130,18 @@ export class Application {
     if (hasValidServerName && skipLogin) {
       await startLoginFlow(staticServerName);
     } else {
-      this.state.next({ lifecycleState: 'notLoggedIn' });
+      this.state.next({
+        lifecycleState: 'notLoggedIn',
+      });
     }
   }
 
   public getStateSubject(): ObservableBehaviorSubject<ApplicationState> {
     return this.state;
+  }
+
+  public getCredentials(): Credentials {
+    return this.credentials;
   }
 
   public destroy(logoutRedirectUrl?: string): void {
@@ -167,21 +164,23 @@ export class Application {
    * create and start a MatrixClient with an OIDC token refresher and
    * set the application lifecycle state to "loggedIn";
    *
-   * @returns Promise that resolves to true if a session could be restored, else false.
+   * @param setup an optional callback to provide a promise to wait for before
+   * lifecycle state change to "loggedIn"
    */
-  private async attemptStartFromStoredSession(): Promise<boolean> {
-    const oidcCredentials = this.credentials.getOidcCredentials();
+  public async attemptStartFromStoredSession(
+    setup?: (matrixClient: MatrixClient) => Promise<void>,
+  ): Promise<boolean> {
     const matrixCredentials = this.credentials.getMatrixCredentials();
 
     if (matrixCredentials === null) {
       return false;
     }
 
-    const matrixClient = await createMatrixClient(
-      matrixCredentials,
-      oidcCredentials?.clientId,
-      (tokens) => this.credentials.updateAccessTokens(tokens),
-    );
+    const matrixClient = await startMatrixClient(this.credentials);
+
+    if (!matrixClient) {
+      return false;
+    }
 
     const standaloneClient: StandaloneClient = new MatrixStandaloneClient(
       matrixClient,
@@ -189,39 +188,10 @@ export class Application {
     const standaloneApi: StandaloneApi = new StandaloneApiImpl(
       standaloneClient,
     );
+    this.resolveStandaloneApi(standaloneApi);
 
-    // Send a whoami request before starting the client
-    // to ensure that we can connect to the server with valid credentials.
-    try {
-      await matrixClient.whoami();
-    } catch (error) {
-      const matrixError = error as MatrixError;
-      if (matrixError.name === 'M_UNKNOWN_TOKEN') {
-        // An invalid token is nothing that can be recover from.
-        // Clear the persisted credentials.
-        localStorage.removeItem(oidcCredentialsStorageKey);
-        localStorage.removeItem(matrixCredentialsStorageKey);
-
-        // Re-throw the error, so that the application knows that the.
-        throw error;
-      }
-    }
-
-    matrixClient.once(ClientEvent.Sync, (state) => {
-      if (state === SyncState.Prepared) {
-        this.resolveStandaloneApi(standaloneApi);
-      } else {
-        throw new Error('Cannot sync');
-      }
-    });
-
-    await matrixClient.startClient();
-
-    // wait for sync with the server
-    await this.standaloneApiPromise;
-
-    if (!matrixCredentials.deviceId) {
-      throw new Error('Device ID is not available.');
+    if (setup) {
+      await setup(matrixClient);
     }
 
     this.state.next({
