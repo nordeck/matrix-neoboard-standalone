@@ -86,28 +86,6 @@ export function makeSelectWhiteboard(
   );
 }
 
-export const selectLatestSnapshots = createSelector(
-  [selectAllWhiteboards, (state: RootState) => state],
-  (whiteboards, state) => {
-    const latestSnapshots: Record<string, RoomEvent<DocumentSnapshot>> = {};
-
-    for (const {
-      content: { documentId },
-    } of whiteboards) {
-      const event = documentSnapshotApi.endpoints.getDocumentSnapshot.select({
-        documentId,
-      })(state).data?.event;
-
-      if (event) {
-        latestSnapshots[documentId] = event;
-      }
-    }
-
-    return latestSnapshots;
-  },
-  { memoizeOptions: { resultEqualityCheck: shallowEqual } },
-);
-
 export function makeSelectWhiteboards(
   userId: string,
   _deviceId: string,
@@ -202,6 +180,28 @@ export function makeSelectWhiteboards(
     },
   );
 }
+
+const selectLatestSnapshots = createSelector(
+  [selectAllWhiteboards, (state: RootState) => state],
+  (whiteboards, state) => {
+    const latestSnapshots: Record<string, RoomEvent<DocumentSnapshot>> = {};
+
+    for (const {
+      content: { documentId },
+    } of whiteboards) {
+      const event = documentSnapshotApi.endpoints.getDocumentSnapshot.select({
+        documentId,
+      })(state).data?.event;
+
+      if (event) {
+        latestSnapshots[documentId] = event;
+      }
+    }
+
+    return latestSnapshots;
+  },
+  { memoizeOptions: { resultEqualityCheck: shallowEqual } },
+);
 
 export function createBoardComparator(
   sortBy: SortBy,

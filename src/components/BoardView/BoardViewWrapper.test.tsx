@@ -16,16 +16,16 @@
  * along with NeoBoard Standalone. If not, see <https://www.gnu.org/licenses/>.
  */
 
+import {
+  mockRoomMember,
+  mockRoomName,
+  mockWhiteboard,
+} from '@nordeck/matrix-neoboard-react-sdk/src/lib/testUtils/matrixTestUtils';
 import { render, screen } from '@testing-library/react';
 import { ComponentType, PropsWithChildren, useState } from 'react';
 import { Provider } from 'react-redux';
 import { MemoryRouter } from 'react-router';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import {
-  mockRoomMember,
-  mockRoomName,
-  mockWhiteboard,
-} from '../../../../matrix-neoboard/packages/react-sdk/src/lib/testUtils/matrixTestUtils';
 import { mockLoggedInApis } from '../../lib/testUtils';
 import { LoggedInProvider } from '../../state';
 import { createStore, initializeStore } from '../../store';

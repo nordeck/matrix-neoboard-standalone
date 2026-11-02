@@ -18,6 +18,7 @@
 
 import { render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { ComponentType, PropsWithChildren } from 'react';
 import { Provider } from 'react-redux';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { StoreType, createStore } from '../../store';
@@ -25,28 +26,27 @@ import { DashboardListHeader } from './DashboardListHeader';
 
 describe('DashboardListHeader', () => {
   let store: StoreType;
+  let Wrapper: ComponentType<PropsWithChildren>;
 
   beforeEach(() => {
     store = createStore({
       standaloneApi: new Promise(() => {}),
       widgetApi: new Promise(() => {}),
     });
+
+    Wrapper = ({ children }: PropsWithChildren) => {
+      return (
+        <Provider store={store}>
+          <table>
+            <thead>{children}</thead>
+          </table>
+        </Provider>
+      );
+    };
   });
 
-  function renderHeader() {
-    render(
-      <Provider store={store}>
-        <table>
-          <thead>
-            <DashboardListHeader />
-          </thead>
-        </table>
-      </Provider>,
-    );
-  }
-
   it('should only show the sorting of the active column', () => {
-    renderHeader();
+    render(<DashboardListHeader />, { wrapper: Wrapper });
     const nameHeader = screen.getByRole('columnheader', { name: /Name/ });
     const modifiedHeader = screen.getByRole('columnheader', {
       name: /Modified/,
@@ -66,7 +66,7 @@ describe('DashboardListHeader', () => {
   });
 
   it('should toggle the sorting of the active column', async () => {
-    renderHeader();
+    render(<DashboardListHeader />, { wrapper: Wrapper });
     await userEvent.click(
       screen.getByRole('button', { name: 'Sort by Modified' }),
     );
@@ -81,7 +81,7 @@ describe('DashboardListHeader', () => {
   });
 
   it('should sort by another column and toggle it', async () => {
-    renderHeader();
+    render(<DashboardListHeader />, { wrapper: Wrapper });
     const nameHeader = screen.getByRole('columnheader', { name: /Name/ });
     const sortByNameButton = screen.getByRole('button', {
       name: 'Sort by Name',

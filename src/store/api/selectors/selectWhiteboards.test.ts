@@ -16,18 +16,14 @@
  * along with NeoBoard Standalone. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { documentSnapshotApi } from '@nordeck/matrix-neoboard-react-sdk';
-import { describe, expect, it } from 'vitest';
 import {
-  createDocumentSnapshotEvent,
-  createWhiteboardEvent,
-} from '../../../lib/test';
-import { createStore } from '../../store';
-import { whiteboardApi } from '../whiteboardApi';
+  mockDocumentSnapshot,
+  mockWhiteboard,
+} from '@nordeck/matrix-neoboard-react-sdk/src/lib/testUtils/matrixTestUtils';
+import { describe, expect, it } from 'vitest';
 import {
   createBoardComparator,
   getModifiedTimestamp,
-  selectLatestSnapshots,
   WhiteboardEntry,
 } from './selectWhiteboards';
 
@@ -42,14 +38,14 @@ function createEntry({
 }): WhiteboardEntry {
   return {
     roomName,
-    whiteboard: createWhiteboardEvent({ originServerTs: createdAt }),
+    whiteboard: mockWhiteboard({ origin_server_ts: createdAt }),
     whiteboardSessions: undefined,
     powerLevels: undefined,
     roomCreateEvent: undefined,
     latestSnapshot:
       modifiedAt === undefined
         ? undefined
-        : createDocumentSnapshotEvent({ originServerTs: modifiedAt }),
+        : mockDocumentSnapshot({ origin_server_ts: modifiedAt }).snapshot,
     preview: undefined,
   };
 }
@@ -90,48 +86,5 @@ describe('createBoardComparator', () => {
     );
 
     expect(sorted.map((entry) => entry.roomName)).toEqual(expected);
-  });
-});
-
-describe('selectLatestSnapshots', () => {
-  it('should select the loaded snapshots', async () => {
-    const store = createStore({
-      standaloneApi: new Promise(() => {}),
-      widgetApi: new Promise(() => {}),
-    });
-    const whiteboard1 = createWhiteboardEvent({
-      roomId: '!room-1',
-      documentId: '$document-1',
-    });
-    const whiteboard2 = createWhiteboardEvent({
-      roomId: '!room-2',
-      documentId: '$document-2',
-    });
-    const snapshot1 = createDocumentSnapshotEvent({
-      roomId: '!room-1',
-      documentId: '$document-1',
-    });
-
-    await store.dispatch(
-      whiteboardApi.util.upsertQueryData('getWhiteboardsAll', undefined, {
-        ids: [whiteboard1.state_key, whiteboard2.state_key],
-        entities: {
-          [whiteboard1.state_key]: whiteboard1,
-          [whiteboard2.state_key]: whiteboard2,
-        },
-      }),
-    );
-    await store.dispatch(
-      documentSnapshotApi.util.upsertQueryData(
-        'getDocumentSnapshot',
-        { documentId: '$document-1' },
-        { event: snapshot1, data: '' },
-      ),
-    );
-
-    const latestSnapshots = selectLatestSnapshots(store.getState());
-    expect(latestSnapshots).toEqual({ '$document-1': snapshot1 });
-
-    expect(selectLatestSnapshots(store.getState())).toBe(latestSnapshots);
   });
 });

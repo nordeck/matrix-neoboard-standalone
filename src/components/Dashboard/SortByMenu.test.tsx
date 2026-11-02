@@ -18,6 +18,7 @@
 
 import { render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { ComponentType, PropsWithChildren } from 'react';
 import { Provider } from 'react-redux';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { StoreType, createStore } from '../../store';
@@ -25,20 +26,21 @@ import { SortByMenu } from './SortByMenu';
 
 describe('SortByMenu', () => {
   let store: StoreType;
+  let Wrapper: ComponentType<PropsWithChildren>;
 
   beforeEach(() => {
     store = createStore({
       standaloneApi: new Promise(() => {}),
       widgetApi: new Promise(() => {}),
     });
+
+    Wrapper = ({ children }: PropsWithChildren) => {
+      return <Provider store={store}>{children}</Provider>;
+    };
   });
 
   async function openMenu() {
-    render(
-      <Provider store={store}>
-        <SortByMenu />
-      </Provider>,
-    );
+    render(<SortByMenu />, { wrapper: Wrapper });
     await userEvent.click(screen.getByRole('button', { name: /Sort by:/ }));
     return screen.getByRole('menu');
   }
