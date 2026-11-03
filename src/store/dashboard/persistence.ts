@@ -17,12 +17,10 @@
  */
 
 import { isLastViewEnabled } from '../../lib';
-import { loadValidatedFromLocalStorage } from '../../lib/storage';
+import { tryLoadValidatedFromLocalStorage } from '../../lib/storage';
 import {
   DashboardState,
-  LegacySortBy,
   SortBy,
-  SortDirection,
   dashboardStateSchema,
   defaultSortDirections,
 } from './dashboardState';
@@ -34,58 +32,43 @@ const localStorageKey = 'neoboard-store-dashboard';
 
 /**
  * Load the dashboard state from local storage.
- * If it fails, return the default state.
+ * If nothing is stored or the stored state is invalid, return the default state.
  */
 export function loadDashboardState(): DashboardState {
-  const storedState = loadValidatedFromLocalStorage<
-    Omit<Partial<DashboardState>, 'sortBy'> & { sortBy: SortBy | LegacySortBy }
-  >(localStorageKey, dashboardStateSchema);
   const defaultSortBy: SortBy = isLastViewEnabled()
     ? 'recently_viewed'
     : 'modified';
-
-  const state: DashboardState = {
-    // Fall back to default values if an entry is missing from the store
+  const defaultState: DashboardState = {
     sortBy: defaultSortBy,
     sortDirection: defaultSortDirections[defaultSortBy],
     viewMode: 'tile',
-    ...(storedState ? { ...storedState, ...migrateSortBy(storedState) } : {}),
+  };
+
+  const storedState = tryLoadValidatedFromLocalStorage(
+    localStorageKey,
+    dashboardStateSchema,
+  );
+
+  if (!storedState) {
+    return defaultState;
+  }
+
+  const state: DashboardState = {
+    sortBy: storedState.sortBy,
+    sortDirection: storedState.sortDirection,
+    viewMode: storedState.viewMode,
   };
 
   // Sorting by last view is not available while the last view is disabled
   if (state.sortBy === 'recently_viewed' && !isLastViewEnabled()) {
     return {
       ...state,
-      sortBy: defaultSortBy,
-      sortDirection: defaultSortDirections[defaultSortBy],
+      sortBy: defaultState.sortBy,
+      sortDirection: defaultState.sortDirection,
     };
   }
 
   return state;
-}
-
-/**
- * Split a sort value into the sort field and direction.
- * Supports the legacy format that combined both in a single value
- * (e.g. `name_asc`).
- */
-function migrateSortBy({
-  sortBy,
-  sortDirection,
-}: {
-  sortBy: SortBy | LegacySortBy;
-  sortDirection?: SortDirection;
-}): Pick<DashboardState, 'sortBy' | 'sortDirection'> {
-  const [field, legacyDirection] = sortBy.split(/_(?=asc$|desc$)/) as [
-    SortBy,
-    SortDirection | undefined,
-  ];
-
-  return {
-    sortBy: field,
-    sortDirection:
-      legacyDirection ?? sortDirection ?? defaultSortDirections[field],
-  };
 }
 
 /**

@@ -55,16 +55,6 @@ describe('loadDashboardState', () => {
     });
   });
 
-  it('should apply the default direction if none is stored', () => {
-    localStorage.setItem(localStorageKey, JSON.stringify({ sortBy: 'name' }));
-
-    expect(loadDashboardState()).toEqual({
-      sortBy: 'name',
-      sortDirection: 'asc',
-      viewMode: 'tile',
-    });
-  });
-
   it('should fall back to the default sorting if the last view is disabled', () => {
     saveDashboardState({
       sortBy: 'recently_viewed',
@@ -95,23 +85,30 @@ describe('loadDashboardState', () => {
   });
 
   it.each([
-    ['name_asc', 'name', 'asc'],
-    ['name_desc', 'name', 'desc'],
-    ['created_asc', 'created', 'asc'],
-    ['created_desc', 'created', 'desc'],
-  ])(
-    'should migrate the legacy sort value %s',
-    (legacySortBy, sortBy, sortDirection) => {
-      localStorage.setItem(
-        localStorageKey,
-        JSON.stringify({ sortBy: legacySortBy, viewMode: 'list' }),
-      );
+    ['a legacy sort value', { sortBy: 'created_desc', viewMode: 'list' }],
+    ['a missing direction', { sortBy: 'name', viewMode: 'list' }],
+    ['a missing view mode', { sortBy: 'name', sortDirection: 'asc' }],
+    [
+      'an invalid direction',
+      { sortBy: 'name', sortDirection: 'up', viewMode: 'list' },
+    ],
+  ])('should reset to the default state for %s', (_, storedState) => {
+    localStorage.setItem(localStorageKey, JSON.stringify(storedState));
 
-      expect(loadDashboardState()).toEqual({
-        sortBy,
-        sortDirection,
-        viewMode: 'list',
-      });
-    },
-  );
+    expect(loadDashboardState()).toEqual({
+      sortBy: 'modified',
+      sortDirection: 'desc',
+      viewMode: 'tile',
+    });
+  });
+
+  it('should reset to the default state for invalid JSON', () => {
+    localStorage.setItem(localStorageKey, '{');
+
+    expect(loadDashboardState()).toEqual({
+      sortBy: 'modified',
+      sortDirection: 'desc',
+      viewMode: 'tile',
+    });
+  });
 });

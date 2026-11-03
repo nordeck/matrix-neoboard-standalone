@@ -30,31 +30,12 @@ export interface DashboardState {
   viewMode: ViewMode;
 }
 
-/**
- * Sort values persisted by previous versions, that combined the sort field
- * and the direction in a single value.
- */
-const legacySortByValues = [
-  'name_asc',
-  'name_desc',
-  'created_asc',
-  'created_desc',
-] as const;
-
-export type LegacySortBy = (typeof legacySortByValues)[number];
-
-export const dashboardStateSchema = Joi.object({
+export const dashboardStateSchema = Joi.object<DashboardState, true>({
   sortBy: Joi.string()
-    .valid(
-      'recently_viewed',
-      'name',
-      'modified',
-      'created',
-      ...legacySortByValues,
-    )
+    .valid('recently_viewed', 'name', 'modified', 'created')
     .required(),
-  sortDirection: Joi.string().valid('asc', 'desc'),
-  viewMode: Joi.string().valid('tile', 'list'),
+  sortDirection: Joi.string().valid('asc', 'desc').required(),
+  viewMode: Joi.string().valid('tile', 'list').required(),
 }).unknown();
 
 /**
