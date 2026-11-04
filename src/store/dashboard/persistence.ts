@@ -35,40 +35,35 @@ const localStorageKey = 'neoboard-store-dashboard';
  * If nothing is stored or the stored state is invalid, return the default state.
  */
 export function loadDashboardState(): DashboardState {
+  const storedState = tryLoadValidatedFromLocalStorage(
+    localStorageKey,
+    dashboardStateSchema,
+  );
+
   const defaultSortBy: SortBy = isLastViewEnabled()
     ? 'recently_viewed'
     : 'modified';
+
   const defaultState: DashboardState = {
     sortBy: defaultSortBy,
     sortDirection: defaultSortDirections[defaultSortBy],
     viewMode: 'tile',
   };
 
-  const storedState = tryLoadValidatedFromLocalStorage(
-    localStorageKey,
-    dashboardStateSchema,
-  );
-
   if (!storedState) {
     return defaultState;
   }
 
-  const state: DashboardState = {
-    sortBy: storedState.sortBy,
-    sortDirection: storedState.sortDirection,
-    viewMode: storedState.viewMode,
-  };
-
-  // Sorting by last view is not available while the last view is disabled
-  if (state.sortBy === 'recently_viewed' && !isLastViewEnabled()) {
+  // Sorting by last view may not be available
+  if (storedState.sortBy === 'recently_viewed' && !isLastViewEnabled()) {
     return {
-      ...state,
+      ...storedState,
       sortBy: defaultState.sortBy,
       sortDirection: defaultState.sortDirection,
     };
   }
 
-  return state;
+  return storedState;
 }
 
 /**
