@@ -1,5 +1,18 @@
 # @nordeck/matrix-neoboard-standalone
 
+## 1.1.0
+
+### Minor Changes
+
+- 5f18a28: Add dashboard sorting by last modified date, which is now the default.
+
+### Patch Changes
+
+- 57deae3: Update `widget-server` base image to v1.2.4
+- 5f18a28: Refactor sorting options to use a single entry per sort field and allow sorting
+  from the list view column headers. Previously saved dashboard preferences are
+  reset to the new schema.
+
 ## 1.0.1
 
 ### Patch Changes
