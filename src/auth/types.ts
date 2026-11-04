@@ -37,3 +37,9 @@ export const matrixCredentialsSchema = Joi.object({
   deviceId: Joi.string().required(),
   userId: Joi.string().required(),
 }).unknown(true); // allow extra fields for backward compatibility
+
+export function isValidMatrixCredentials(
+  data: unknown,
+): data is MatrixCredentials {
+  return !matrixCredentialsSchema.validate(data).error;
+}

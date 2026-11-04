@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Nordeck IT + Consulting GmbH
+ * Copyright 2024-2026 Nordeck IT + Consulting GmbH
  *
  * NeoBoard Standalone is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -18,7 +18,10 @@
 
 import { Grid, Typography, styled } from '@mui/material';
 
+import { getEnvironmentAppearance } from '../../lib';
 import WelcomeBackground from './welcome-background.svg';
+
+const appearance = getEnvironmentAppearance();
 
 export const WelcomeWrapper = styled('div')({
   flexGrow: 1,
@@ -30,14 +33,16 @@ export const WelcomeGrid = styled(Grid)({
   gridGap: 0,
 });
 
+// Set neoboard colors and rotate the hue for opendesk appearance
 export const WelcomeGridLeftPane = styled(Grid)(({ theme }) => ({
-  backgroundColor: theme.palette.primary.main,
-  color: theme.palette.primary.contrastText,
+  backgroundColor: '#e85e10',
+  color: theme.palette.common.white,
   [theme.breakpoints.down('sm')]: {
     minHeight: '128px',
   },
   backgroundImage: `url(${WelcomeBackground})`,
   backgroundSize: 'cover',
+  filter: appearance === 'opendesk' ? 'hue-rotate(240deg)' : undefined,
 }));
 
 export const WelcomeGridRightPane = styled(Grid)(({ theme }) => ({
