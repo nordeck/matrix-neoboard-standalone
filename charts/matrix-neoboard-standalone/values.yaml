@@ -20,10 +20,34 @@ serviceAccount:
   # Annotations to add to the service account
   annotations: {}
   # The name of the service account to use.
-  # If not set and create is true, a name is generated using the fullname template
+  # If not set and create is true, a name is generated using the fullname template.
   name: ''
 
+# The app never talks to the Kubernetes API, so no token is mounted. This also
+# satisfies openDesk's `disallow-default-serviceaccount` policy, which accepts a
+# pod that either does not use `default` OR mounts no token:
+# https://gitlab.opencode.de/bmi/opendesk/deployment/opendesk/-/blob/main/.kyverno/policies/disallow-default-serviceaccount.yaml
+automountServiceAccountToken: false
+
 podAnnotations: {}
+
+# Satisfies openDesk's `require-health-and-liveness-check` which
+# asserts `periodSeconds > 0` on the rendered manifest:
+# https://gitlab.opencode.de/bmi/opendesk/deployment/opendesk/-/blob/e055e8b35b9f299a2fc46a199ec3f3123347b792/.kyverno/policies/require-health-and-liveness-check.yaml
+livenessProbe:
+  tcpSocket:
+    port: http
+  periodSeconds: 20
+  timeoutSeconds: 3
+  failureThreshold: 6
+
+readinessProbe:
+  httpGet:
+    path: /
+    port: http
+  periodSeconds: 5
+  timeoutSeconds: 3
+  failureThreshold: 3
 
 podSecurityContext:
   {}

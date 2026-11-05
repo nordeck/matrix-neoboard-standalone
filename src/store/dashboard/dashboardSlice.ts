@@ -17,45 +17,30 @@
  */
 
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
-import Joi from 'joi';
 import { RootState } from '../store';
+import { SortBy, ViewMode, defaultSortDirections } from './dashboardState';
 import { loadDashboardState } from './persistence';
-
-export type SortBy =
-  | 'recently_viewed'
-  | 'name_asc'
-  | 'name_desc'
-  | 'created_asc'
-  | 'created_desc';
-
-export type ViewMode = 'tile' | 'list';
-
-export interface DashboardState {
-  sortBy: SortBy;
-  viewMode: ViewMode;
-}
-
-export const dashboardStateSchema = Joi.object({
-  sortBy: Joi.string()
-    .valid(
-      'recently_viewed',
-      'name_asc',
-      'name_desc',
-      'created_asc',
-      'created_desc',
-    )
-    .required(),
-  viewMode: Joi.string().valid('tile', 'list'),
-}).unknown();
 
 export const dashboardSlice = createSlice({
   name: 'dashboard',
   initialState: loadDashboardState(),
   reducers: {
-    setSortBy: (state, action: PayloadAction<SortBy>) => {
+    /**
+     * Toggles the direction if the field is already selected.
+     * Otherwise selects the field with its default direction.
+     */
+    toggleSortBy: (state, action: PayloadAction<SortBy>) => {
+      if (state.sortBy === action.payload) {
+        return {
+          ...state,
+          sortDirection: state.sortDirection === 'asc' ? 'desc' : 'asc',
+        };
+      }
+
       return {
         ...state,
         sortBy: action.payload,
+        sortDirection: defaultSortDirections[action.payload],
       };
     },
     setViewMode: (state, action: PayloadAction<ViewMode>) => {
@@ -67,9 +52,11 @@ export const dashboardSlice = createSlice({
   },
 });
 
-export const { setSortBy, setViewMode } = dashboardSlice.actions;
+export const { toggleSortBy, setViewMode } = dashboardSlice.actions;
 
 export const selectSortBy = (state: RootState) => state.dashboardReducer.sortBy;
+export const selectSortDirection = (state: RootState) =>
+  state.dashboardReducer.sortDirection;
 export const selectViewMode = (state: RootState) =>
   state.dashboardReducer.viewMode;
 

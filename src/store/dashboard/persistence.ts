@@ -17,8 +17,13 @@
  */
 
 import { isLastViewEnabled } from '../../lib';
-import { loadValidatedFromLocalStorage } from '../../lib/storage';
-import { DashboardState, dashboardStateSchema } from './dashboardSlice';
+import { tryLoadValidatedFromLocalStorage } from '../../lib/storage';
+import {
+  DashboardState,
+  SortBy,
+  dashboardStateSchema,
+  defaultSortDirections,
+} from './dashboardState';
 
 /**
  * Key under which the dashboard part of the store is persisted.
@@ -27,15 +32,38 @@ const localStorageKey = 'neoboard-store-dashboard';
 
 /**
  * Load the dashboard state from local storage.
- * If it fails, return the default state.
+ * If nothing is stored or the stored state is invalid, return the default state.
  */
 export function loadDashboardState(): DashboardState {
-  return {
-    // Fall back to default values if an entry is missing from the store
-    sortBy: isLastViewEnabled() ? 'recently_viewed' : 'created_desc',
+  const storedState = tryLoadValidatedFromLocalStorage(
+    localStorageKey,
+    dashboardStateSchema,
+  );
+
+  const defaultSortBy: SortBy = isLastViewEnabled()
+    ? 'recently_viewed'
+    : 'modified';
+
+  const defaultState: DashboardState = {
+    sortBy: defaultSortBy,
+    sortDirection: defaultSortDirections[defaultSortBy],
     viewMode: 'tile',
-    ...loadValidatedFromLocalStorage(localStorageKey, dashboardStateSchema),
   };
+
+  if (!storedState) {
+    return defaultState;
+  }
+
+  // Sorting by last view may not be available
+  if (storedState.sortBy === 'recently_viewed' && !isLastViewEnabled()) {
+    return {
+      ...storedState,
+      sortBy: defaultState.sortBy,
+      sortDirection: defaultState.sortDirection,
+    };
+  }
+
+  return storedState;
 }
 
 /**

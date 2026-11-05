@@ -39,9 +39,6 @@ beforeAll(() => {
 
   // React 18 requires this for concurrent features
   vi.stubGlobal('IS_REACT_ACT_ENVIRONMENT', true);
-
-  // Force React to use the same copy throughout tests
-  vi.mock('react', async () => await vi.importActual('react'));
 });
 
 // Use a different configuration for i18next during tests
