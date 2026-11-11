@@ -154,6 +154,15 @@ env: []
 # - name: REACT_APP_WIDGET_BASE
 #   value: "https://matrix-neoboard-widget.example.com"
 #
+# # Help menu
+#
+# # optional: Links to the user guide shown in the help menu, one per language. The link for
+# # the current language is used, otherwise the english one. If none is set, the menu item is hidden
+# - name: REACT_APP_HELP_CENTER_URL_DE
+#   value: "https://nordeck.github.io/matrix-neoboard-standalone/docs/manuals/neoboard/de/handbuch.pdf"
+# - name: REACT_APP_HELP_CENTER_URL_EN
+#   value: "https://nordeck.github.io/matrix-neoboard-standalone/docs/manuals/neoboard/en/user-guide.pdf"
+#
 # # Branding and appearance
 #
 # # optional: The product name to display. Defaults to "NeoBoard"
