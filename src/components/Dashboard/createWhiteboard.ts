@@ -57,6 +57,17 @@ export async function createWhiteboard(
 
   const promises: Promise<string>[] = [];
 
+  promises.push(
+    standaloneClient.sendStateEvent(
+      'm.room.join_rules',
+      '',
+      {
+        join_rule: 'knock',
+      },
+      roomId,
+    ),
+  );
+
   if (isMatrixRtcMode()) {
     promises.push(
       standaloneClient.sendStateEvent(
