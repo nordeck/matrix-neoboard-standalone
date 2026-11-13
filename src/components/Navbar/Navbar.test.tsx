@@ -39,11 +39,23 @@ describe('Navbar', () => {
 
   it('logs in silently', () => {
     renderWithTheme(<Navbar config={config} />);
-    const navigation = screen.getByRole('navigation');
+    const navigation = screen.getByRole('navigation', {
+      name: 'Navigation bar',
+    });
     const iframe = within(navigation).getByTitle('Silent Login');
     expect(iframe).toBeInTheDocument();
     fireEvent(window, messageEvent);
     expect(iframe).not.toBeInTheDocument();
+  });
+
+  it('provides anchor for the guided tour', () => {
+    renderWithTheme(
+      <Navbar config={config} data-guided-tour-target="header" />,
+    );
+
+    expect(
+      screen.getByRole('navigation', { name: 'Navigation bar' }),
+    ).toHaveAttribute('data-guided-tour-target', 'header');
   });
 
   it('fetches navigation JSON', async () => {

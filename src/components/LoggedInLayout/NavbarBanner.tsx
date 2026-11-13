@@ -20,7 +20,10 @@ import { getEnvironment } from '@matrix-widget-toolkit/mui';
 import { PropsWithChildren, useMemo } from 'react';
 import { assertValidOpenDeskModuleConfig, Navbar } from '../Navbar';
 
-export function NavbarBanner({ children }: PropsWithChildren<{}>) {
+export function NavbarBanner({
+  children,
+  'data-guided-tour-target': dataGuidedTourTarget,
+}: PropsWithChildren<{ 'data-guided-tour-target'?: string }>) {
   const bannerConfig = useMemo(() => {
     const config = {
       banner: {
@@ -49,5 +52,12 @@ export function NavbarBanner({ children }: PropsWithChildren<{}>) {
     return config.banner;
   }, []);
 
-  return <Navbar config={bannerConfig}>{children}</Navbar>;
+  return (
+    <Navbar
+      data-guided-tour-target={dataGuidedTourTarget}
+      config={bannerConfig}
+    >
+      {children}
+    </Navbar>
+  );
 }
