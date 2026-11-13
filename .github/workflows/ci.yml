@@ -38,7 +38,7 @@ jobs:
         with:
           repository: nordeck/matrix-neoboard
           path: matrix-neoboard
-          ref: ${{ steps.sdk-pin.outputs.sha }}
+          ref: nic/feat/NEO-1813-frame-drag-select
           persist-credentials: false
 
       - name: Setup Node.js
