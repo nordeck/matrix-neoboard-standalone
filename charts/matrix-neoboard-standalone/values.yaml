@@ -139,7 +139,17 @@ customization:
 #        </body>
 #      </html>
 
-# Extra env variables to pass to the container.
+# Extra env variables to pass to the container, as a map of name to value.
+#
+# Prefer this over the `env` list below.
+#
+# The available variables are the same as in the examples of `env` below.
+envVars: {}
+#  REACT_APP_HOMESERVER: "example.com"
+#  REACT_APP_APPEARANCE: "opendesk"
+#  REACT_APP_OPENDESK_BANNER_BACKGROUND_COLOR: "#ffffff"
+
+# Extra env variables to pass to the container, as a list.
 #
 # The examples below are the most commonly used options. See the complete reference at
 # https://github.com/nordeck/matrix-neoboard-standalone#configuration
