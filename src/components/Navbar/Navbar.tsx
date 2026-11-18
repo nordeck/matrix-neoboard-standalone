@@ -43,9 +43,14 @@ const Root = styled('nav')(({ theme }) => ({
 
 type Props = PropsWithChildren<{
   config: BannerConfig;
+  'data-guided-tour-target'?: string;
 }>;
 
-export function Navbar({ config, children }: Props) {
+export function Navbar({
+  config,
+  children,
+  'data-guided-tour-target': dataGuidedTourTarget,
+}: Props) {
   const { t, i18n } = useTranslation();
   const [ariaExpanded, setAriaExpanded] = useState(false);
   const [loggedIn, setLoggedIn] = useState(false);
@@ -95,7 +100,10 @@ export function Navbar({ config, children }: Props) {
   };
 
   return (
-    <Root>
+    <Root
+      aria-label={t('navbar.label', 'Navigation bar')}
+      data-guided-tour-target={dataGuidedTourTarget}
+    >
       {loggedIn ? (
         navigationJson && (
           <>

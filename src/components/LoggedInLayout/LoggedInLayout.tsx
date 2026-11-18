@@ -135,7 +135,7 @@ function BannerWrapper({ children }: BannerWrapperProps) {
 
   return (
     <>
-      <Banner>
+      <Banner data-guided-tour-target="header">
         <HeaderTitle
           title={productName}
           homeIcon={appearance === 'neoboard' ? <NeoBoardIcon /> : <HomeIcon />}
