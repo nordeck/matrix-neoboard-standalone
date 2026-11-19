@@ -17,22 +17,24 @@ Therefore, all of NeoBoard's configuration options also apply when using it in s
 NeoBoard standalone itself exposes some aditional configuration options, which
 can either be set via an environment variable or the `.env`-file.
 
-| Name                                   | Description                                                                                                                                                                                    | Example                                    |
-| -------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------ |
-| `REACT_APP_WIDGET_BASE`                | This sets the widget url for when the room is viewed using element-web or other widget-supporting clients. The schema (i.e.: `https://`) is required. If not set, a widget won't be available. | `https://neoboard.example.com`             |
-| `REACT_APP_HOMESERVER`                 | If set, it uses this homeserver instead of showing an input field on the login screen. Either a domain name or homeserver URL.                                                                 | `example.com` or `https://example.com`     |
-| `REACT_APP_SKIP_LOGIN`                 | If set to `true` and `REACT_APP_HOMESERVER` is set, then the application skips welcome/login screens and starts SSO immediately. It is not set by default.                                     | `true`                                     |
-| `REACT_APP_LOGOUT_REDIRECT_URL`        | If set, the application redirects the user to the specified URL after logout.                                                                                                                  | `https://id.example.com/logout`            |
-| `REACT_APP_PRODUCT_NAME`               | The name of the product to be displayed.                                                                                                                                                       | `NeoBoard`                                 |
-| `REACT_APP_APPEARANCE`                 | An appearance to be shown. Either `neoboard` or `opendesk`.                                                                                                                                    | `neoboard`                                 |
-| `REACT_APP_FAVICON_16`                 | The URL of the 16x16 favicon. Defaults to the icon bundled for the configured appearance.                                                                                                      | `https://example.com/favicon-16.png`       |
-| `REACT_APP_FAVICON_32`                 | The URL of the 32x32 favicon. Defaults to the icon bundled for the configured appearance.                                                                                                      | `https://example.com/favicon-32.png`       |
-| `REACT_APP_APPLE_TOUCH_ICON`           | The URL of the 180x180 apple touch icon. Defaults to the icon bundled for the configured appearance.                                                                                           | `https://example.com/apple-touch-icon.png` |
-| `REACT_APP_LIGHT_PRIMARY_COLOR`        | This overrides a primary palette color for the light theme.                                                                                                                                    | `#e85e10`                                  |
-| `REACT_APP_LIGHT_PRIMARY_COLOR_LIGHT`  | This overrides a primary palette light color for the light theme.                                                                                                                              | `#ff8a42`                                  |
-| `REACT_APP_LIGHT_PRIMARY_COLOR_DARK`   | This overrides a primary palette light color for the dark theme.                                                                                                                               | `#b52e00`                                  |
-| `REACT_APP_LIGHT_BACKGROUND_LOGGED_IN` | A background when user is logged in.                                                                                                                                                           | `#fcf9f3`                                  |
-| `REACT_APP_LIGHT_BACKGROUND_CARD`      | A card background when a board is created.                                                                                                                                                     | `#fce2cf`                                  |
+| Name                                    | Description                                                                                                                                                                                    | Example                                    |
+| --------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------ |
+| `REACT_APP_WIDGET_BASE`                 | This sets the widget url for when the room is viewed using element-web or other widget-supporting clients. The schema (i.e.: `https://`) is required. If not set, a widget won't be available. | `https://neoboard.example.com`             |
+| `REACT_APP_HOMESERVER`                  | If set, it uses this homeserver instead of showing an input field on the login screen. Either a domain name or homeserver URL.                                                                 | `example.com` or `https://example.com`     |
+| `REACT_APP_SKIP_LOGIN`                  | If set to `true` and `REACT_APP_HOMESERVER` is set, then the application skips welcome/login screens and starts SSO immediately. It is not set by default.                                     | `true`                                     |
+| `REACT_APP_SKIP_USER_LOGIN`             | If set to `true` and `REACT_APP_SKIP_LOGIN` is not set or `false`, then the application skips server name input to start user login. It is not set by default.                                 | `true`                                     |
+| `REACT_APP_SKIP_RESTRICTED_GUEST_LOGIN` | If set to `true` and `REACT_APP_SKIP_LOGIN` is not set or `false`, then the application skips restricted guests login. It is not set by default. Defaults to `true`,                           | `true`                                     |
+| `REACT_APP_LOGOUT_REDIRECT_URL`         | If set, the application redirects the user to the specified URL after logout.                                                                                                                  | `https://id.example.com/logout`            |
+| `REACT_APP_PRODUCT_NAME`                | The name of the product to be displayed.                                                                                                                                                       | `NeoBoard`                                 |
+| `REACT_APP_APPEARANCE`                  | An appearance to be shown. Either `neoboard` or `opendesk`.                                                                                                                                    | `neoboard`                                 |
+| `REACT_APP_FAVICON_16`                  | The URL of the 16x16 favicon. Defaults to the icon bundled for the configured appearance.                                                                                                      | `https://example.com/favicon-16.png`       |
+| `REACT_APP_FAVICON_32`                  | The URL of the 32x32 favicon. Defaults to the icon bundled for the configured appearance.                                                                                                      | `https://example.com/favicon-32.png`       |
+| `REACT_APP_APPLE_TOUCH_ICON`            | The URL of the 180x180 apple touch icon. Defaults to the icon bundled for the configured appearance.                                                                                           | `https://example.com/apple-touch-icon.png` |
+| `REACT_APP_LIGHT_PRIMARY_COLOR`         | This overrides a primary palette color for the light theme.                                                                                                                                    | `#e85e10`                                  |
+| `REACT_APP_LIGHT_PRIMARY_COLOR_LIGHT`   | This overrides a primary palette light color for the light theme.                                                                                                                              | `#ff8a42`                                  |
+| `REACT_APP_LIGHT_PRIMARY_COLOR_DARK`    | This overrides a primary palette light color for the dark theme.                                                                                                                               | `#b52e00`                                  |
+| `REACT_APP_LIGHT_BACKGROUND_LOGGED_IN`  | A background when user is logged in.                                                                                                                                                           | `#fcf9f3`                                  |
+| `REACT_APP_LIGHT_BACKGROUND_CARD`       | A card background when a board is created.                                                                                                                                                     | `#fce2cf`                                  |
 
 If the appearance is set to `opendesk`, the following options exist for configuring
 the navigation bar:
@@ -57,6 +59,47 @@ the navigation bar:
 
 All options above are read at container start, so changing one only needs a
 redeployment.
+
+### Restricted Guest Access
+
+NeoBoard Standalone has an experimental support for restricted guest access.
+It allows unauthenticated users to join a specific board by opening a link to the board and entering the display name.
+When enabled, the login screen shows a "Join as guest" form.
+
+#### Prerequisites
+
+- Synapse homeserver with Element [Restricted Guests Module](https://github.com/element-hq/element-modules/tree/main/modules/restricted-guests) installed.
+- `REACT_APP_HOMESERVER` must be set, since guest login needs a known homeserver to register against.
+- `REACT_APP_SKIP_RESTRICTED_GUEST_LOGIN` must be set to `false` to activate restricted guest login.
+- A board link: The guest login form only appears when the user navigates to a board URL (e.g. `https://neoboard.example.com/board/!roomId:example.com`).
+  Without a board ID in the URL, only the regular user login is shown.
+- A board must link to the ask to join room.
+
+#### How it works
+
+1. User opens a board link.
+2. The guest enters a display name and clicks "Join as guest".
+3. The application registers a guest account on the configured homeserver.
+4. The guest knocks on the board's Matrix room.
+5. A knock request is accepted. Currently no UI to accept knock requests. Assume to use a bot or Element Web UI to accept knocks.
+6. The guest is logged in and can collaborate on the board.
+
+#### Configuration examples
+
+Show both user login and guest login:
+
+```env
+REACT_APP_HOMESERVER=matrix.example.com
+REACT_APP_SKIP_RESTRICTED_GUEST_LOGIN=false
+```
+
+Show only guest login (hide user login):
+
+```env
+REACT_APP_HOMESERVER=matrix.example.com
+REACT_APP_SKIP_USER_LOGIN=true
+REACT_APP_SKIP_RESTRICTED_GUEST_LOGIN=false
+```
 
 ### Content Security Policy
 

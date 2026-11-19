@@ -15,4 +15,4 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with NeoBoard Standalone. If not, see <https://www.gnu.org/licenses/>.
  */
-export { Login } from './Login.tsx';
+export { Login } from './Login';
