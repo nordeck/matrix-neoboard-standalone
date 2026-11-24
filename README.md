@@ -216,6 +216,27 @@ Install via OCI Registry:
 helm install matrix-neoboard-standalone oci://ghcr.io/nordeck/charts/matrix-neoboard-standalone
 ```
 
+The [configuration](#configuration) options are passed to the container as
+environment variables. The chart accepts them in two forms, which can be
+combined:
+
+```yaml
+# Map of name to value. Helm merges maps key by key, so a values overlay only
+# has to state the variables it changes.
+envVars:
+  REACT_APP_APPEARANCE: 'opendesk'
+  REACT_APP_OPENDESK_BANNER_BACKGROUND_COLOR: '#ffffff'
+
+# List of entries. Helm replaces a list as a whole, so an overlay has to repeat
+# every entry.
+env:
+  - name: REACT_APP_HOMESERVER
+    value: 'example.com'
+```
+
+If a variable is set in both, the value from `envVars` is used. Setting a key
+of `envVars` to `null` in an overlay removes the variable.
+
 ## Supply Chain Security
 
 To ensure transparency and security in our software supply chain, we provide comprehensive Software Bill of Materials (SBOM) reports for this project and signed container images.
