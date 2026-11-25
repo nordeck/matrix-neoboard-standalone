@@ -66,22 +66,6 @@ env:
     value: 'https://portal.example.com'
 ```
 
-## User Manuals
-
-The user manuals (PDF) are not part of the main branch. They are kept in the
-separate [`user-manuals`](https://github.com/nordeck/matrix-neoboard-standalone/tree/user-manuals/docs/manuals)
-branch, in `docs/manuals/<variant>/<language>/`:
-
-| Variant    | German                                                                                                                        | English                                                                                                                           |
-| ---------- |-------------------------------------------------------------------------------------------------------------------------------| --------------------------------------------------------------------------------------------------------------------------------- |
-| `neoboard` | [handbuch.pdf](https://github.com/nordeck/matrix-neoboard-standalone/blob/user-manuals/docs/manuals/neoboard/de/handbuch.pdf) | [user-guide.pdf](https://github.com/nordeck/matrix-neoboard-standalone/blob/user-manuals/docs/manuals/neoboard/en/user-guide.pdf) |
-| `opendesk` | [handbuch.pdf](https://github.com/nordeck/matrix-neoboard-standalone/blob/user-manuals/docs/manuals/opendesk/de/handbuch.pdf) | [user-guide.pdf](https://github.com/nordeck/matrix-neoboard-standalone/blob/user-manuals/docs/manuals/opendesk/en/user-guide.pdf) |
-| `dap`      | [handbuch.pdf](https://github.com/nordeck/matrix-neoboard-standalone/blob/user-manuals/docs/manuals/dap/de/handbuch.pdf)      | [user-guide.pdf](https://github.com/nordeck/matrix-neoboard-standalone/blob/user-manuals/docs/manuals/dap/en/user-guide.pdf)       |
-
-To link a manual from the help menu, host the PDF and configure its URL with
-the help center options of NeoBoard (see
-[the configuration section of the NeoBoard README](https://github.com/nordeck/matrix-neoboard?tab=readme-ov-file#configuration)).
-
 ## Getting Started
 
 Development happens at [GitHub](https://github.com/nordeck/matrix-neoboard-standalone).
